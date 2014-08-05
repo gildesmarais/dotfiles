@@ -1,0 +1,83 @@
+passengers:
+- dotfile
+- homebrew
+- homebrew_cask
+- git_repo
+- npm
+directory_name: "tilde"
+fonts_path: "fonts"
+brews:
+	- ack
+	- archey
+	- colordiff
+	- curl
+	- curl-ca-bundle
+	- encfs
+	- faac
+	- ffmpeg
+	- git
+	- gradle
+	- htop-osx
+	- httrack
+	- lame
+	- maven
+	- maven-shell
+	- midnight-commander
+	- mp3gain
+	- mysql
+	- nmap
+	- node
+	- osxfuse
+	- php55
+	- subversion
+	- tmux
+	- tomcat
+	- watch
+	- wget
+	- wine
+	- winetricks
+	- youtube-dl
+	- z
+	- zsh
+casks:
+	- alfred
+	- appcleaner
+	- bartender
+	- cornerstone
+	- dash
+	- dropbox
+	- firefox
+	- font-fira-sans
+	- font-fontawesome
+	- font-freesans
+	- font-inconsolata
+	- font-pt-mono
+	- font-pt-sans
+	- font-pt-serif
+	- font-roboto
+	- font-source-code-pro
+	- font-ubuntu
+	- github
+	- google-chrome
+	- hipchat
+	- imageoptim
+	- iterm2
+	- keepassx
+	- menumeters
+	- onyx
+	- pixelstick
+	- shiftit
+	- skype
+	- virtualbox
+	- vlc
+gems:
+	- sass
+npms:
+	- bower
+	- grunt-cli
+	- jshint
+	- yo
+repos:
+	"robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
+	"zsh-users/zsh-syntax-highlighting": "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+	"jeremyFreeAgent/oh-my-zsh-powerline-theme": 
