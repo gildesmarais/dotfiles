@@ -77,7 +77,8 @@ npms:
 	- grunt-cli
 	- jshint
 	- yo
+	- npm-check-updates
 repos:
 	"robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
 	"zsh-users/zsh-syntax-highlighting": "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
-	"jeremyFreeAgent/oh-my-zsh-powerline-theme": 
+	# "jeremyFreeAgent/oh-my-zsh-powerline-theme": 
