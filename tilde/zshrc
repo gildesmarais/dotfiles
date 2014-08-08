@@ -42,7 +42,7 @@ COMPLETION_WAITING_DOTS="true"
 # much faster.
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-# Uncomment following line if you want to  shown in the command execution time stamp
+# Uncomment following line if you want to  shown in the command execution time stamp 
 # in the history command output. The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|
 # yyyy-mm-dd
 # HIST_STAMPS="yyyy-mm-dd"
@@ -50,17 +50,16 @@ COMPLETION_WAITING_DOTS="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse node npm rsync tmux )
-plugins=(git battery brew bower encode64 extract forklift gem gpg-agent history mvn node npm osx rsync sublime sudo svn z xcode)
+plugins=(git battery brew bower encode64 extract forklift gem gpg-agent jira history mvn node npm osx rsync sublime sudo svn z xcode)
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:$PATH"
-# export MANPATH="/usr/local/man:$MANPATH"
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
-# Add RVM to PATH for scripting
-PATH=$PATH:$HOME/.rvm/bin
+# export MANPATH="/usr/local/man:$MANPATH"
 
 
 # # Preferred editor for local and remote sessions
@@ -73,7 +72,38 @@ PATH=$PATH:$HOME/.rvm/bin
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
+# ssh
+# export SSH_KEY_PATH="~/.ssh/dsa_id"
+
+JIRA_RAPID_BOARD="true"
+JIRA_URL=https://jira.thepeaklab.biz
+
 alias heidisql="cd ~/.wine/drive_c/Program\ Files/HeidiSQL/ && wine heidisql.exe"
 alias k9j="killall -9 java"
+
+# thanks bitboxer @bitboxer and @klaustopher
+# Trees should have colors
+alias tree="tree -C"
+
+# Respect ANSI Color Strings
+alias less="less -R"
+
+# And now to colourify...
+
+# GRC add color the output (thanks to @klaustopher)
+export GRC=`which grc`
+
+alias colourify="$GRC -es --colour=auto"
+alias configure='colourify ./configure'
+alias diff='colourify diff'
+alias make='colourify make'
+alias gcc='colourify gcc'
+alias g++='colourify g++'
+alias as='colourify as'
+alias gas='colourify gas'
+alias ld='colourify ld'
+alias netstat='colourify netstat'
+alias ping='colourify ping'
+alias traceroute='colourify /usr/sbin/traceroute'
 
 archey
