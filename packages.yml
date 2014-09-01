@@ -81,5 +81,4 @@ npms:
 - yo
 - npm-check-updates
 repos:
-"robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
-"zsh-users/zsh-syntax-highlighting": "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+  "robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
