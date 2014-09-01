@@ -9,6 +9,7 @@ directory_name: "tilde"
 fonts_path: "fonts"
 brews:
 - ack
+- apple-gcc42
 - archey
 - colordiff
 - curl
