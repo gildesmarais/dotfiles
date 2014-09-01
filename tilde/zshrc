@@ -54,12 +54,15 @@ plugins=(git battery brew bower encode64 extract forklift gem gpg-agent jira his
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
+source ~/.profile
 
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:$PATH"
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+# User configuration
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:$PATH:$HOME/.rvm/bin:$HOME/.cabal/bin:$(brew --prefix ruby)/bin"
 
 # export MANPATH="/usr/local/man:$MANPATH"
+
+export JAVA_HOME=`/usr/libexec/java_home`
+export SSL_CERT_FILE=/usr/local/opt/curl-ca-bundle/share/ca-bundle.crt
 
 
 # # Preferred editor for local and remote sessions
@@ -75,11 +78,6 @@ PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
-JIRA_RAPID_BOARD="true"
-JIRA_URL=https://jira.thepeaklab.biz
-
-alias heidisql="cd ~/.wine/drive_c/Program\ Files/HeidiSQL/ && wine heidisql.exe"
-alias k9j="killall -9 java"
 
 # thanks bitboxer @bitboxer and @klaustopher
 # Trees should have colors
@@ -106,19 +104,26 @@ alias netstat='colourify netstat'
 alias ping='colourify ping'
 alias traceroute='colourify /usr/sbin/traceroute'
 
+# aliases found in @holman's dotfiles
+alias glog="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
+alias gp='git push origin HEAD'
+alias gd='git diff'
+alias gc='git commit'
+alias gca='git commit -a'
+alias gco='git checkout'
+alias gcb='git copy-branch-name'
+alias gb='git branch'
+
 # some more aliases \o/
 alias mp3tag="wine ~/.wine/drive_c/Program\ Files/Mp3tag/Mp3tag.exe"
 alias mkvdts2ac3="mkvdts2ac3 --wd ."
 alias yta="youtube-dl -x --audio-format best --restrict-filenames -t"
 alias cask-upgrade=" ~/Dropbox/Apps/cask-upgrade.sh "
-
+alias heidisql="cd ~/.wine/drive_c/Program\ Files/HeidiSQL/ && wine heidisql.exe"
+alias k9j="killall -9 java"
 
 [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
-PATH=$PATH:$HOME/.rvm/bin:$HOME/.cabal/bin:$(brew --prefix ruby)/bin
 
-export JAVA_HOME=`/usr/libexec/java_home`
-export SSL_CERT_FILE=/usr/local/opt/curl-ca-bundle/share/ca-bundle.crt
 
-source ~/.profile
 
 archey
