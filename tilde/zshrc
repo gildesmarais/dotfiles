@@ -42,7 +42,7 @@ COMPLETION_WAITING_DOTS="true"
 # much faster.
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-# Uncomment following line if you want to  shown in the command execution time stamp 
+# Uncomment following line if you want to  shown in the command execution time stamp
 # in the history command output. The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|
 # yyyy-mm-dd
 # HIST_STAMPS="yyyy-mm-dd"
@@ -106,21 +106,19 @@ alias netstat='colourify netstat'
 alias ping='colourify ping'
 alias traceroute='colourify /usr/sbin/traceroute'
 
-
-# some more aliases
-
+# some more aliases \o/
 alias mp3tag="wine ~/.wine/drive_c/Program\ Files/Mp3tag/Mp3tag.exe"
-alias backup="duplicity incremental --exclude-device-files --full-if-older-than=30D --exclude-other-filesystems --asynchronous-upload --no-encryption --exclude '**.vdi' --volsize 200 /Users/gil/ file:///Volumes/gil-ext2-1tb/duplicity-backup-mac-users/"
-#alias backup="duplicity incremental --exclude-device-files --full-if-older-than=30D --exclude-other-filesystems --asynchronous-upload --no-encryption --exclude '**.v**d' --volsize 200 /Users/gil/ sftp://gil@10.13.1.166/mnt/320-raid1/duplicity-backup-mac-users/"
 alias mkvdts2ac3="mkvdts2ac3 --wd ."
-source ~/.profile
 alias yta="youtube-dl -x --audio-format best --restrict-filenames -t"
+alias cask-upgrade=" ~/Dropbox/Apps/cask-upgrade.sh "
+
+
 [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
 PATH=$PATH:$HOME/.rvm/bin:$HOME/.cabal/bin:$(brew --prefix ruby)/bin
-alias cask-upgrade=" ~/Dropbox/Apps/cask-upgrade.sh "
 
 export JAVA_HOME=`/usr/libexec/java_home`
 export SSL_CERT_FILE=/usr/local/opt/curl-ca-bundle/share/ca-bundle.crt
 
+source ~/.profile
 
 archey
