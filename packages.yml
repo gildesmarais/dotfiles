@@ -51,9 +51,9 @@ casks:
 - font-fontawesome
 - font-freesans
 - font-inconsolata
-- font-pt-mono
-- font-pt-sans
-- font-pt-serif
+# - font-pt-mono
+# - font-pt-sans
+# - font-pt-serif
 - font-roboto
 - font-source-code-pro
 - font-ubuntu
