@@ -1,5 +1,6 @@
 passengers:
 - dotfile
+- fonts
 - homebrew
 - homebrew_cask
 - rvm
@@ -57,7 +58,6 @@ casks:
 # - font-pt-serif
 - font-roboto
 - font-source-code-pro
-- font-ubuntu
 - google-chrome
 - hipchat
 - imageoptim
