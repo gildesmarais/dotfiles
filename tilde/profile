@@ -1,0 +1,5 @@
+function generateM3u {
+	ls -1 *.mp3 >> $(basename `pwd`).m3u
+}
+
+
