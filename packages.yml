@@ -58,7 +58,7 @@ casks:
 # - font-pt-serif
 - font-roboto
 - font-source-code-pro
-- google-chrome
+# - google-chrome
 - hipchat
 - imageoptim
 - istat-menus
