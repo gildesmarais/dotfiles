@@ -121,6 +121,7 @@ alias yta="youtube-dl -x --audio-format best --restrict-filenames -t"
 alias cask-upgrade=" ~/Dropbox/Apps/cask-upgrade.sh "
 alias heidisql="cd ~/.wine/drive_c/Program\ Files/HeidiSQL/ && wine heidisql.exe"
 alias k9j="killall -9 java"
+alias lsusb="system_profiler SPUSBDataType"
 
 [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
 
