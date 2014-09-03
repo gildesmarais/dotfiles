@@ -6,6 +6,7 @@ passengers:
 - rvm
 - git_repo
 - npm
+- shell
 directory_name: "tilde"
 fonts_path: "fonts"
 brews:
@@ -75,6 +76,7 @@ rubies:
 - ruby-2.1.2
 gems:
 - sass
+- rspec
 npms:
 - bower
 - grunt-cli
@@ -84,3 +86,5 @@ npms:
 repos:
   "robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
   "chriskempson/tomorrow-theme": "~/versioned/github/tomorrow-theme"
+scripts:
+- scripts/default.sh
