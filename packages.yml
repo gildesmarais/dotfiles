@@ -87,4 +87,4 @@ repos:
   "robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
   "chriskempson/tomorrow-theme": "~/versioned/github/tomorrow-theme"
 scripts:
-- scripts/default.sh
+- scripts/defaults.sh
