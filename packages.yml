@@ -6,7 +6,7 @@ passengers:
 - rvm
 - git_repo
 - npm
-- shell
+# - shell
 directory_name: "tilde"
 fonts_path: "fonts"
 brews:
