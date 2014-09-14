@@ -6,7 +6,7 @@ passengers:
 - rvm
 - git_repo
 - npm
-# - shell
+- shell
 directory_name: "tilde"
 fonts_path: "fonts"
 brews:
@@ -87,5 +87,5 @@ repos:
   "robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
   "chriskempson/tomorrow-theme": "~/versioned/github/tomorrow-theme"
   "clauswitt/zsh-grunt-plugin": "~/.oh-my-zsh/plugins/grunt"
-scripts:
+commands:
 - scripts/defaults.sh
