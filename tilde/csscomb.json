@@ -11,7 +11,7 @@
 		],
 		"leading-zero": false,
 		"quotes": "single",
-		"remove-empty-rulesets": true,
+		"remove-empty-rulesets": false,
 		"sort-order-fallback": "abc",
 		"space-after-colon": 1,
 		"space-after-combinator": 1,
