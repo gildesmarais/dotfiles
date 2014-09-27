@@ -32,6 +32,7 @@ brews:
 - nmap
 - node
 - osxfuse
+- ranger
 - subversion
 - tmux
 - tomcat
