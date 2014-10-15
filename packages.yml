@@ -33,7 +33,7 @@ brews:
 - node
 - osxfuse
 - ranger
-- subversion
+- tidy
 - tmux
 - tomcat
 - watch
@@ -68,7 +68,6 @@ casks:
 - keepassx
 - onyx
 - pixelstick
-- ranger
 - shiftit
 - skype
 - virtualbox
@@ -79,11 +78,14 @@ rubies:
 gems:
 - sass
 - rspec
+- scss-lint
+- mailcatcher
 npms:
 - bower
 - grunt-cli
 - jshint
 - yo
+- csslint
 - npm-check-updates
 repos:
   "robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
