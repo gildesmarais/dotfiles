@@ -21,6 +21,7 @@ brews:
 - ffmpeg
 - git
 - gradle
+- grc
 - htop-osx
 - httrack
 - lame
@@ -85,6 +86,7 @@ npms:
 - jshint
 - yo
 - npm-check-updates
+- fixmyjs
 repos:
   "robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
   "chriskempson/tomorrow-theme": "~/versioned/github/tomorrow-theme"
