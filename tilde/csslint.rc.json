@@ -1,0 +1,51 @@
+{
+  // Possible Errors
+  "box-model": true, // Don't use width or height when using padding or border.
+  "display-property-grouping": true, // Certain properties shouldn't be used with certain display property values.
+  "duplicate-properties": true, // Duplicate properties must appear one after the other.
+  "empty-rules": true, // Rules without any properties specified should be removed.
+  "known-properties": true, // Properties should be known (listed in CSS3 specification) or be a vendor-prefixed property.
+  "non-link-hover": false, // Avoid un-anchored hovers in doctype strict (targets IE6/7)
+
+  // Compatibility
+  "adjoining-classes": false, // Don't use adjoining classes.
+  "box-sizing": false, // The box-sizing properties isn't supported in IE6 and IE7.
+  "compatible-vendor-prefixes": true, // Include all compatible vendor prefixes to reach a wider range of users.
+  "gradients": true, // When using a vendor-prefixed gradient, make sure to use them all.
+  "text-indent": true, // Checks for text indent less than -99px
+  "vendor-prefix": true, // When using a vendor-prefixed property, make sure to include the standard one.
+  "fallback-colors": true, // For older browsers that don't support RGBA, HSL, or HSLA, provide a fallback color.
+  "star-property-hack": true, // Checks for the star property hack (targets IE6/7)
+  "underscore-property-hack": true, // Checks for the underscore property hack (targets IE6)
+  "bulletproof-font-face": true, // Use the bulletproof @font-face syntax to avoid 404's in old IE (http://www.fontspring.com/blog/the-new-bulletproof-font-face-syntax).
+
+  // Performance
+  "font-faces": true, // Too many different web fonts in the same stylesheet.
+  "import": true, // Don't use @import, use <link> instead.
+  "regex-selectors": true, // Selectors that look like regular expressions are slow and should be avoided.
+  "universal-selector": true, // The universal selector (*) is known to be slow.
+  "unqualified-attributes": true, // Unqualified attribute selectors are known to be slow.
+  "zero-units": true, // You don't need to specify units when a value is 0.
+  "overqualified-elements": true, // Don't use classes or IDs with elements (a.foo or a#foo).
+  "shorthand": true, // Use shorthand properties where possible.
+  "duplicate-background-images": true, // Every background-image should be unique. Use a common class for e.g. sprites.
+
+  // Maintainability & Duplication
+  "floats": true, // This rule tests if the float property is used too many times
+  "font-sizes": true, // Checks the number of font-size declarations.
+  "ids": true, // Selectors should not contain IDs.
+  "important": false, // Be careful when using !important declaration
+
+  // Accessibility
+  "outline-none": true, // Use of outline: none or outline: 0 should be limited to :focus rules.
+
+  // OOCSS
+  "qualified-headings": true, // Headings should not be qualified (namespaced).
+  "unique-headings": true, // Headings should be defined only once.
+
+  // Settings
+  "errors": true, // This rule looks for recoverable syntax errors.
+  "rules-count": true, // Track how many rules there are.
+  "selector-max-approaching": true, // Will warn when selector count is >= 3800 selectors.
+  "selector-max": true // Will error when selector count is > 4095.
+}
