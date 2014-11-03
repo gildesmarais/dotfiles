@@ -1,4 +1,14 @@
 #!/bin/sh
+# ask user if script should be executed
+echo
+read -p "Execute defaults.sh? [y/n] " -n 1 -r
+echo 
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then
+  # exit with 0 to avoid termination of exogenesis
+  exit 0
+fi
+
 ###############################################################################
 # General UI/UX                                                               #
 ###############################################################################
