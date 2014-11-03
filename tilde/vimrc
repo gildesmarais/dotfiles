@@ -101,6 +101,11 @@ if ! has('gui_running')
   augroup END
 endif
 
+" Use the clipboard of Mac OS
+if has('mac')
+  set clipboard=unnamed
+end
+
 " Speed up viewport scrolling
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
@@ -193,3 +198,4 @@ map <PageUp> <C-U>
 map <PageDown> <C-D>
 imap <PageUp> <C-O><C-U>
 imap <PageDown> <C-O><C-D>
+
