@@ -16,7 +16,6 @@ brews:
 - colordiff
 - curl
 - curl-ca-bundle
-- encfs
 - faac
 - ffmpeg
 - git
@@ -32,7 +31,6 @@ brews:
 - mariadb
 - nmap
 - node
-- osxfuse
 - ranger
 - tidy
 - tmux
