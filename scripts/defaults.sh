@@ -272,6 +272,13 @@ defaults write com.google.Chrome.canary ExtensionInstallSources -array "https://
 sudo nvram SystemAudioVolume=%80
 
 ###############################################################################
+# SublimeText3                                                                #
+# source: https://github.com/guillermooo/Vintageous/wiki/Repeat-Motion        #
+###############################################################################
+defaults write com.sublimetext.3 ApplePressAndHoldEnabled -bool false
+
+
+###############################################################################
 # Kill affected applications                                                  #
 ###############################################################################
 
