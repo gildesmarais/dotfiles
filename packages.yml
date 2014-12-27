@@ -86,6 +86,7 @@ npms:
 - csslint
 - npm-check-updates
 - fixmyjs
+- spoof
 repos:
   "robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
   "chriskempson/tomorrow-theme": "~/versioned/github/tomorrow-theme"
