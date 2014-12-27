@@ -35,6 +35,7 @@ brews:
 - tidy
 - tmux
 - tomcat
+- pyqt
 - watch
 - wget
 - wine
