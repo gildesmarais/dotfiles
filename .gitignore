@@ -2,7 +2,7 @@ tilde/zsh/local_aliases
 tilde/config/mc/*
 tilde/config/gtk-2.0/
 tilde/config/git
-tilde/vimrc/backups/*
-tilde/vimrc/swaps/*
-tilde/vimrc/undo/*
-tilde/vimrc/viminfo
+tilde/vim/backups/*
+tilde/vim/swaps/*
+tilde/vim/undo/*
+tilde/vim/viminfo
