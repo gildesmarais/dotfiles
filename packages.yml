@@ -47,47 +47,65 @@ casks:
 - alfred
 - appcleaner
 - bartender
-- cornerstone
+- caffeine
+- clamxav
+- clementine
+- coconutbattery
 - dash
+- disk-inventory-x
 - dropbox
 - firefox
 - font-fira-sans
 - font-fontawesome
 - font-freesans
 - font-inconsolata
-# - font-pt-mono
-# - font-pt-sans
-# - font-pt-serif
 - font-roboto
 - font-source-code-pro
-# - google-chrome
+- font-ubuntu
+- gas-mask
+- github
+- gpgtools
+- handbrake
 - hipchat
 - imageoptim
 - istat-menus
 - iterm2
 - keepassx
+- launchrocket
+- lyx
+- macvim
+- monochrome
 - onyx
+- owncloud
+- pandoc
 - pixelstick
-- spectacle
 - skype
+- slack
+- sourcetree
+- spectacle
+- steam
+- tagspaces
+- transmission
 - virtualbox
 - vlc
+- xact
 rubies:
 - ruby-2.2.0
 gems:
-- sass
-- rspec
-- scss-lint
 - mailcatcher
+- rspec
+- sass
+- scss-lint
 npms:
 - bower
-- grunt-cli
-- jshint
-- yo
 - csslint
-- npm-check-updates
 - fixmyjs
+- grunt-cli
+- htmlhint
+- jshint
+- npm-check-updates
 - spoof
+- yo
 repos:
   "robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
   "chriskempson/tomorrow-theme": "~/versioned/github/tomorrow-theme"
