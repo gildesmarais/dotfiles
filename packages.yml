@@ -99,13 +99,23 @@ gems:
 - scss-lint
 npms:
 - bower
+- coffee-script
 - csslint
+- eslint
 - fixmyjs
+- gabby
+- git-changelog
+- git-contributors
+- grunt
 - grunt-cli
 - htmlhint
 - jshint
+- npm
 - npm-check-updates
+- private-bower
 - spoof
+- uglify-js
+- uncss
 - yo
 repos:
   "robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
