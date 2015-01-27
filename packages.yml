@@ -97,6 +97,7 @@ gems:
 npms:
 - bower
 - coffee-script
+- csscomb
 - csslint
 - eslint
 - fixmyjs
@@ -104,6 +105,7 @@ npms:
 - git-contributors
 - grunt
 - grunt-cli
+- hoodie-cli
 - htmlhint
 - jshint
 - npm
