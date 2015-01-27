@@ -49,7 +49,6 @@ casks:
 - appcleaner
 - bartender
 - caffeine
-- clamxav
 - clementine
 - coconutbattery
 - dash
@@ -67,7 +66,6 @@ casks:
 - github
 - gpgtools
 - handbrake
-- hipchat
 - imageoptim
 - istat-menus
 - iterm2
@@ -75,7 +73,6 @@ casks:
 - launchrocket
 - lyx
 - macvim
-- monochrome
 - onyx
 - owncloud
 - pandoc
@@ -103,7 +100,6 @@ npms:
 - csslint
 - eslint
 - fixmyjs
-- gabby
 - git-changelog
 - git-contributors
 - grunt
