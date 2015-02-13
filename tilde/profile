@@ -1,8 +1,18 @@
 function generateM3u {
-	ls -1 *.mp3 >> $(basename `pwd`).m3u
+  ls -1 ./*.mp3 >> $(basename `pwd`).m3u
 }
 
+function m4a2mp3 {
+  for F in *.m4a
 
+  do
+    newname=`basename "$F" .m4a`
+    echo $newname
+    ffmpeg -i "$F" "$newname.wav" && lame $1 "$newname.wav" "$newname.mp3"
+    rm "$newname.wav"
+  done
+}
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+function command_exists {
+  type "$1" >/dev/null 2>&1;
+}

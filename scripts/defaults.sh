@@ -1,8 +1,14 @@
-#!/bin/sh
+#!/bin/bash
+
+# only continue on MacOSX
+if [ "$(uname)" != "Darwin" ]; then
+  exit 0
+fi
+
 # ask user if script should be executed
 echo
 read -p "Execute defaults.sh? [y/n] " -n 1 -r
-echo 
+echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
   # exit with 0 to avoid termination of exogenesis
@@ -131,7 +137,7 @@ defaults write com.apple.screensaver askForPassword -int 1
 defaults write com.apple.screensaver askForPasswordDelay -int 0
 
 # Save screenshots to the desktop, create directory if it does not exist
-mkdir -p ${HOME}/Desktop/Screenshots
+mkdir -p "${HOME}/Desktop/Screenshots"
 defaults write com.apple.screencapture location -string "${HOME}/Desktop/Screenshots"
 
 # Disable shadow in screenshots

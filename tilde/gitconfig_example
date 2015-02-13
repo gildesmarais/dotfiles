@@ -3,12 +3,12 @@
 	smudge = git-media-smudge %f
 [user]
 	name = Gil Desmarais
-	email = gd@thepeaklab.com
+	email = gil.desmarais@gmail.com
 [core]
 	excludesfile = /Users/gil/.gitignore_global
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+	path =
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true

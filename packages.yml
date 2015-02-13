@@ -1,10 +1,10 @@
 passengers:
+- git_repo
 - dotfile
 - fonts
 - homebrew
 - homebrew_cask
 - rvm
-- git_repo
 - npm
 - shell
 directory_name: "tilde"
@@ -110,7 +110,6 @@ npms:
 - jshint
 - npm
 - npm-check-updates
-- private-bower
 - spoof
 - uglify-js
 - uncss
