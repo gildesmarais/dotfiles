@@ -1,4 +1,9 @@
 " Thanks a bunch to https://github.com/gf3/dotfiles/blob/master/.gitconfig ! :)
+" pathogen
+execute pathogen#infect()
+filetype plugin indent on
+
+
 " Make vim more useful
 set nocompatible
 
