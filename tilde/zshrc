@@ -51,7 +51,7 @@ COMPLETION_WAITING_DOTS="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse node npm rsync tmux )
-plugins=(git brew bower encode64 extract forklift gem gpg-agent grunt history node npm osx rsync sublime sudo z)
+plugins=(git brew bower bundler encode64 extract forklift gem gpg-agent grunt history node npm osx rsync sublime sudo z ruby rails)
 
 source $ZSH/oh-my-zsh.sh
 source ~/.profile
