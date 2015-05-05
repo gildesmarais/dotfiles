@@ -15,7 +15,7 @@ brews:
 - archey
 - colordiff
 - curl
-- curl-ca-bundle
+#- curl-ca-bundle
 - faac
 - ffmpeg
 - git
@@ -25,8 +25,8 @@ brews:
 - httrack
 - lame
 - mariadb
-- maven
-- maven-shell
+#- maven
+#- maven-shell
 - midnight-commander
 - mp3gain
 - nmap
@@ -34,9 +34,9 @@ brews:
 - pyqt
 - ranger
 - shellcheck
-- tidy
+#- tidy
 - tmux
-- tomcat
+#- tomcat
 - watch
 - wget
 - wine
@@ -62,7 +62,6 @@ casks:
 - font-roboto
 - font-source-code-pro
 - font-ubuntu
-- gas-mask
 - github
 - gpgtools
 - handbrake
@@ -81,9 +80,6 @@ casks:
 - slack
 - sourcetree
 - spectacle
-- steam
-- tagspaces
-- transmission
 - virtualbox
 - vlc
 - xact
