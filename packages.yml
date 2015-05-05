@@ -113,7 +113,6 @@ npms:
 repos:
   "robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
   "chriskempson/tomorrow-theme": "~/versioned/github/tomorrow-theme"
-  "clauswitt/zsh-grunt-plugin": "~/.oh-my-zsh/plugins/grunt"
   "jeremyFreeAgent/oh-my-zsh-powerline-theme": "~/versioned/github/oh-my-zsh-powerline-theme"
 commands:
 - scripts/defaults.sh
