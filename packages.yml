@@ -19,14 +19,11 @@ brews:
 - faac
 - ffmpeg
 - git
-- gradle
 - grc
 - htop-osx
 - httrack
 - lame
 - mariadb
-- maven
-- maven-shell
 - midnight-commander
 - mp3gain
 - nmap
@@ -49,7 +46,6 @@ casks:
 - appcleaner
 - bartender
 - caffeine
-- clementine
 - coconutbattery
 - dash
 - disk-inventory-x
@@ -62,8 +58,6 @@ casks:
 - font-roboto
 - font-source-code-pro
 - font-ubuntu
-- gas-mask
-- github
 - gpgtools
 - handbrake
 - imageoptim
@@ -72,26 +66,25 @@ casks:
 - keepassx
 - launchrocket
 - lyx
-- macvim
-- onyx
 - owncloud
-- pandoc
 - pixelstick
 - skype
 - slack
 - sourcetree
 - spectacle
 - steam
-- tagspaces
 - transmission
 - virtualbox
 - vlc
-- xact
 rubies:
-- ruby-2.2.1
+- ruby-2.2.2
 gems:
+- awesome_print
+- beautify-ruby
+- byebug
 - mailcatcher
 - rspec
+- rubucop
 - sass
 - scss-lint
 npms:
@@ -110,15 +103,17 @@ npms:
 - jshint
 - npm
 - npm-check-updates
+- pmi
 - spoof
+- tmi
 - uglify-js
 - uncss
 - yo
 repos:
   "robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
   "chriskempson/tomorrow-theme": "~/versioned/github/tomorrow-theme"
-  "clauswitt/zsh-grunt-plugin": "~/.oh-my-zsh/plugins/grunt"
   "jeremyFreeAgent/oh-my-zsh-powerline-theme": "~/versioned/github/oh-my-zsh-powerline-theme"
 commands:
 - scripts/defaults.sh
 - scripts/setup_general.sh
+- scripts/setup_linux.sh
