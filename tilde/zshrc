@@ -134,3 +134,8 @@ fi
 if command_exists archey; then
   archey
 fi
+
+if command_exists fortune; then
+  fortune
+fi
+
