@@ -87,6 +87,8 @@ gems:
 - rubucop
 - sass
 - scss-lint
+- slim_lint
+- rubocop
 npms:
 - bower
 - coffee-script

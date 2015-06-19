@@ -96,6 +96,9 @@ if command_exists git; then
   alias gb='git branch'
 fi
 
+# ruby & rails aliases
+alias be='bundle exec'
+
 # some more aliases \o/
 alias cask-upgrade=" ~/Dropbox/Apps/cask-upgrade.sh "
 alias heidisql="cd ~/.wine/drive_c/Program\ Files/HeidiSQL/ && wine heidisql.exe"
