@@ -205,6 +205,6 @@ imap <PageUp> <C-O><C-U>
 imap <PageDown> <C-O><C-D>
 
 " nerdtree
-autocmd vimenter * NERDTree
-map <C-n> :NERDTreeToggle<CR>
-autocmd VimEnter * wincmd p
+"autocmd vimenter * NERDTree
+"map <C-n> :NERDTreeToggle<CR>
+"autocmd VimEnter * wincmd p
