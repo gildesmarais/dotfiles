@@ -6,38 +6,33 @@ passengers:
 - homebrew_cask
 - rvm
 - npm
-- shell
+#- shell
 directory_name: "tilde"
 fonts_path: "fonts"
 brews:
-- ack
-- apple-gcc42
 - archey
 - colordiff
 - curl
-- curl-ca-bundle
 - faac
 - ffmpeg
 - git
 - grc
+- homebrew/dupes/apple-gcc42
 - htop-osx
 - httrack
 - lame
-- mariadb
 - midnight-commander
 - mp3gain
 - nmap
 - node
-- pyqt
+- postgis
+- postgresql
 - ranger
 - shellcheck
-- tidy
+- the_silver_searcher
 - tmux
-- tomcat
 - watch
 - wget
-- wine
-- winetricks
 - youtube-dl
 - z
 - zsh
@@ -58,6 +53,7 @@ casks:
 - font-roboto
 - font-source-code-pro
 - font-ubuntu
+- gitx
 - gpgtools
 - handbrake
 - imageoptim
@@ -65,15 +61,10 @@ casks:
 - iterm2
 - keepassx
 - launchrocket
-- lyx
-- owncloud
 - pixelstick
-- skype
 - slack
 - sourcetree
 - spectacle
-- steam
-- transmission
 - virtualbox
 - vlc
 rubies:
@@ -81,26 +72,27 @@ rubies:
 gems:
 - awesome_print
 - beautify-ruby
+- bundle
 - byebug
+- exogenesis
+- foreman
+- heroku
 - mailcatcher
 - rspec
+- rubocop
 - rubucop
 - sass
 - scss-lint
 - slim_lint
-- rubocop
 npms:
 - bower
 - coffee-script
 - csscomb
 - csslint
-- eslint
-- fixmyjs
 - git-changelog
 - git-contributors
 - grunt
 - grunt-cli
-- hoodie-cli
 - htmlhint
 - jshint
 - npm
@@ -110,11 +102,10 @@ npms:
 - tmi
 - uglify-js
 - uncss
-- yo
 repos:
   "robbyrussell/oh-my-zsh": "~/.oh-my-zsh"
-  "chriskempson/tomorrow-theme": "~/versioned/github/tomorrow-theme"
-  "jeremyFreeAgent/oh-my-zsh-powerline-theme": "~/versioned/github/oh-my-zsh-powerline-theme"
+#  "chriskempson/tomorrow-theme": "~/versioned/github/tomorrow-theme"
+#  "jeremyFreeAgent/oh-my-zsh-powerline-theme": "~/versioned/github/oh-my-zsh-powerline-theme"
 commands:
 - scripts/defaults.sh
 - scripts/setup_general.sh
