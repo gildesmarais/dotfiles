@@ -28,11 +28,19 @@
 
 # OS generated files #
 ######################
+!tags/
+!tmp/cache/.keep
+*.sw[nop]
+*~
+._*
+.bundle
 .DS_Store
 .DS_Store?
-._*
+.env
 .Spotlight-V100
 .Trashes
 ehthumbs.db
+log/*.log
+rerun.txt
+tags
 Thumbs.db
-*~
