@@ -98,6 +98,8 @@ fi
 
 # ruby & rails aliases
 alias be='bundle exec'
+alias berd='bundle exec rspec --format documentation'
+alias fs='script/start_with_ssl || foreman start'
 
 # some more aliases \o/
 alias cask-upgrade=" ~/Dropbox/Apps/cask-upgrade.sh "
@@ -106,6 +108,9 @@ alias k9j="killall -9 java"
 alias mkvdts2ac3="mkvdts2ac3 --wd ."
 alias mp3tag="wine ~/.wine/drive_c/Program\ Files/Mp3tag/Mp3tag.exe"
 alias yta="youtube-dl -x --audio-format best --restrict-filenames -t"
+
+# temporarily alias
+alias ack='ag'
 
 if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx
