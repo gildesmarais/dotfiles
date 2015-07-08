@@ -1,0 +1,19 @@
+[user]
+	name = Gil Desmarais
+	email = gil@desmarais.de
+[core]
+	excludesfile = /Users/gil/.gitignore_global
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /opt/homebrew-cask/Caskroom/sourcetree/1.7.4.1/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[credential]
+	helper = osxkeychain
+[push]
+	default = simple
+[filter "media"]
+	clean = git media clean %f
+	smudge = git media smudge %f
+	required = true
