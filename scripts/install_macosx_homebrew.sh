@@ -9,10 +9,14 @@ if ! type 'brew' > /dev/null; then
 
   echo Tapping homebrew taps
   brew tap caskroom/fonts
+  brew tap thoughtbot/formulae
 
   echo Installing required homebrew packages
-  brew install homebrew/dupes/apple-gcc42 grc zsh
+  brew install homebrew/dupes/apple-gcc42 grc zsh rcm
 fi
+
+echo Linking dotfiles with rcup
+rcup
 
 echo Install optional homebrew packages
 PACKAGES="archey colordiff curl faac ffmpeg git htop-osx httrack lame midnight-commander"
