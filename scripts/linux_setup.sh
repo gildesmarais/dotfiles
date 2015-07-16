@@ -12,6 +12,7 @@ DEBIAN+PACKAGES="colordiff midnight-commander node"
 # TODO: if gentoo,
 # sudo emerge layman
 # sudo layman -f --overlays https://github.com/bronislav/overlays/raw/master/layman.xml --add bronislav
+# echo "=app-admin/rcm-9999 ~amd64" >> /etc/portage/package.keywords
 # sudo emerge rcm
 
 # emerge ...
