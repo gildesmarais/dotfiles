@@ -1,11 +1,16 @@
 #!/bin/sh
 echo Installing rvm
 gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-curl -sSL https://get.rvm.io | bash -s stable --rails
+curl -sSL https://get.rvm.io | bash -s stable --auto-dotfiles
+
+echo Sourcing rvm scripts
+source ~/.rvm/scripts/rvm
 
 echo Reloading rvm
 rvm reload
 
-echo Installing gems
-GEMS="awesome_print beautify-ruby bundle byebug foreman heroku mailcatcher rspec rubocop rubucop sass scss-lint slim_lint"
-gem install "$GEMS"
+echo Installing Ruby 2.2.3
+rvm use 2.2.3 --default
+
+echo Installing gems in @global gemset
+rvm @global do gem install awesome_print brakeman byebug foreman mailcatcher reek rspec rubocop rubocop-rspec ruby-beautify sass scss_lint slim_lint
