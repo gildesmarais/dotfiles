@@ -33,14 +33,21 @@
 *.sw[nop]
 *~
 ._*
+.apdisk
+.AppleDB
+.AppleDesktop
+.AppleDouble
 .bundle
 .DS_Store
 .DS_Store?
 .env
+.LSOverride
 .Spotlight-V100
 .Trashes
 ehthumbs.db
 log/*.log
+Network Trash Folder
 rerun.txt
 tags
+Temporary Items
 Thumbs.db

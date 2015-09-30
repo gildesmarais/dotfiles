@@ -1,4 +1,5 @@
 export TERM="xterm-256color"
+export PATH="/usr/local/sbin:$PATH"
 
 # do not nag periodically about updating oh-my-zsh
 DISABLE_UPDATE_PROMPT=true
@@ -51,11 +52,10 @@ COMPLETION_WAITING_DOTS="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse node npm rsync tmux )
-plugins=(git brew bower bundler encode64 extract forklift gem gpg-agent grunt history node npm osx rsync sublime sudo z ruby rails)
+plugins=(brew encode64 extract forklift gem git gpg-agent grunt history node npm osx rails rsync ruby sublime sudo tmux z)
 
 source $ZSH/oh-my-zsh.sh
 source ~/.profile
-
 
 # thanks bitboxer @bitboxer and @klaustopher
 # Trees should have colors
@@ -109,6 +109,8 @@ alias mkvdts2ac3="mkvdts2ac3 --wd ."
 alias mp3tag="wine ~/.wine/drive_c/Program\ Files/Mp3tag/Mp3tag.exe"
 alias yta="youtube-dl -x --audio-format best --restrict-filenames -t"
 
+alias hgrep="history | grep"
+
 # temporarily alias
 alias ack='ag'
 
@@ -116,7 +118,6 @@ if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx
   alias lsusb="system_profiler SPUSBDataType"
 
-  export PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:$PATH"
   export JAVA_HOME="/usr/libexec/java_home"
 
   if [[ -d /Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/bin ]]; then
@@ -128,15 +129,10 @@ if [ "$(uname)" = "Darwin" ]; then
   fi
 
   if command_exists brew; then
-    export PATH="$(brew --prefix ruby)/bin:$PATH"
     export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
     [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
   fi
-fi
-
-if command_exists rvm; then
-  export PATH="$HOME/.rvm/bin:$PATH"
 fi
 
 if command_exists archey; then
@@ -146,4 +142,3 @@ fi
 if command_exists fortune; then
   fortune
 fi
-
