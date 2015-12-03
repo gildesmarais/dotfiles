@@ -94,12 +94,12 @@ if command_exists git; then
   alias gco='git checkout'
   alias gcb='git copy-branch-name'
   alias gb='git branch'
+  alias gs='git status'
 fi
 
 # ruby & rails aliases
 alias be='bundle exec'
 alias berd='bundle exec rspec --format documentation'
-alias fs='script/start_with_ssl || foreman start'
 
 # some more aliases \o/
 alias cask-upgrade=" ~/Dropbox/Apps/cask-upgrade.sh "
@@ -142,3 +142,5 @@ fi
 if command_exists fortune; then
   fortune
 fi
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting

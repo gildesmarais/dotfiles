@@ -2,7 +2,7 @@
 
 # only continue on MacOSX
 if [ "$(uname)" != "Darwin" ]; then
-  exit 0
+  exit
 fi
 
 # ask user if script should be executed
@@ -11,8 +11,7 @@ read -p "Execute defaults.sh? [y/n] " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
-  # exit with 0 to avoid termination of exogenesis
-  exit 0
+  exit
 fi
 
 ###############################################################################
@@ -102,9 +101,6 @@ defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
 # Allow hitting the Backspace key to go to the previous page in history
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2BackspaceKeyNavigationEnabled -bool true
 
-# Hide Safari’s bookmarks bar by default
-defaults write com.apple.Safari ShowFavoritesBar -bool false
-
 # Hide Safari’s sidebar in Top Sites
 defaults write com.apple.Safari ShowSidebarInTopSites -bool false
 
@@ -116,9 +112,6 @@ defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
 
 # Make Safari’s search banners default to Contains instead of Starts With
 defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
-
-# Remove useless icons from Safari’s bookmarks bar
-defaults write com.apple.Safari ProxiesInBookmarksBar "()"
 
 # Enable the Develop menu and the Web Inspector in Safari
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
@@ -208,10 +201,6 @@ defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
 # Display emails in threaded mode, sorted by date (oldest at the top)
 defaults write com.apple.mail DraftsViewerAttributes -dict-add "DisplayInThreadedMode" -string "yes"
 
-# Display emails sorted by date (oldest at the top)
-#defaults write com.apple.mail DraftsViewerAttributes -dict-add "SortedDescending" -string "yes"
-#defaults write com.apple.mail DraftsViewerAttributes -dict-add "SortOrder" -string "received-date"
-
 # Disable inline attachments (just show the icons)
 defaults write com.apple.mail DisableInlineAttachmentViewing -bool true
 
@@ -258,11 +247,6 @@ defaults write com.apple.messageshelper.MessageController SOInputLineSettings -d
 
 # Disable continuous spell checking
 defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
-
-###############################################################################
-# Notifcation Center                                                          #
-###############################################################################
-defaults write /System/Library/LaunchAgents/com.apple.notificationcenterui KeepAlive -bool false
 
 ###############################################################################
 # Google Chrome & Google Chrome Canary                                        #

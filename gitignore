@@ -43,6 +43,7 @@
 .env
 .LSOverride
 .Spotlight-V100
+.tags*
 .Trashes
 ehthumbs.db
 log/*.log
