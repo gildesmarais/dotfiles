@@ -129,8 +129,6 @@ if [ "$(uname)" = "Darwin" ]; then
   fi
 
   if command_exists brew; then
-    export HOMEBREW_CASK_OPTS="--appdir=/Applications"
-
     [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
   fi
 fi
