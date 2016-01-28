@@ -118,12 +118,6 @@ if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx
   alias lsusb="system_profiler SPUSBDataType"
 
-  export JAVA_HOME="/usr/libexec/java_home"
-
-  if [[ -d /Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/bin ]]; then
-    export PATH="/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/bin:$PATH"
-  fi
-
   if [[ -e /usr/local/opt/curl-ca-bundle/share/ca-bundle.crt ]]; then
     export SSL_CERT_FILE=/usr/local/opt/curl-ca-bundle/share/ca-bundle.crt
   fi
