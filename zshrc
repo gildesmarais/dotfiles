@@ -104,12 +104,12 @@ alias berd='bundle exec rspec --format documentation'
 # some more aliases \o/
 alias cask-upgrade=" ~/Dropbox/Apps/cask-upgrade.sh "
 alias heidisql="cd ~/.wine/drive_c/Program\ Files/HeidiSQL/ && wine heidisql.exe"
-alias k9j="killall -9 java"
 alias mkvdts2ac3="mkvdts2ac3 --wd ."
 alias mp3tag="wine ~/.wine/drive_c/Program\ Files/Mp3tag/Mp3tag.exe"
 alias yta="youtube-dl -x --audio-format best --restrict-filenames -t"
 
 alias hgrep="history | grep"
+alias psgrep="ps aux | grep"
 
 # temporarily alias
 alias ack='ag'
