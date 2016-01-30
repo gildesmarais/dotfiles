@@ -85,9 +85,6 @@ defaults write com.apple.dock autohide -bool true
 # Make Dock icons of hidden applications translucent
 defaults write com.apple.dock showhidden -bool true
 
-# Add iOS Simulator to Launchpad
-sudo ln -sf /Applications/Xcode.app/Contents/Applications/iPhone\ Simulator.app /Applications/iOS\ Simulator.app
-
 ###############################################################################
 # Safari & WebKit                                                             #
 ###############################################################################
@@ -267,6 +264,12 @@ sudo nvram SystemAudioVolume=%80
 ###############################################################################
 defaults write com.sublimetext.3 ApplePressAndHoldEnabled -bool false
 
+###############################################################################
+# Alfred 2                                                                    #
+###############################################################################
+
+# Allow use of Dropbox's Apps folder
+defaults write com.runningwithcrayons.Alfred-Preferences dropbox.allowappsfolder -bool TRUE
 
 ###############################################################################
 # Kill affected applications                                                  #
