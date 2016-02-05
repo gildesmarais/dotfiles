@@ -100,6 +100,7 @@ fi
 # ruby & rails aliases
 alias be='bundle exec'
 alias berd='bundle exec rspec --format documentation'
+alias rroute='bundle exec rake routes | grep'
 
 # some more aliases \o/
 alias cask-upgrade=" ~/Dropbox/Apps/cask-upgrade.sh "
