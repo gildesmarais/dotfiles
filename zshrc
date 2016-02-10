@@ -137,3 +137,4 @@ if command_exists fortune; then
 fi
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+DISABLE_SPRING=1
