@@ -1,0 +1,34 @@
+AllCops:
+  Exclude:
+    - bin/*
+    - db/migrate/*
+    - Guardfile
+    - schema.rb
+
+Metrics/LineLength:
+  Max: 110
+
+Documentation:
+  Enabled: false
+
+Style/BlockDelimiters:
+  Enabled: false
+
+Style/ParallelAssignment:
+  Enabled: false
+
+Style/BracesAroundHashParameters:
+  Description: 'Enforce braces style around hash parameters.'
+  Enabled: true
+
+Style/HashSyntax:
+  Description: >-
+                 Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
+                 { :a => 1, :b => 2 }.
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#hash-literals'
+  Enabled: true
+
+Style/SpaceInsideParens:
+  Description: 'No spaces after ( or before ).'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-spaces-braces'
+  Enabled: true
