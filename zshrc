@@ -1,5 +1,7 @@
 export TERM="xterm-256color"
 export PATH="/usr/local/sbin:$PATH"
+export LC_ALL="en_US.UTF-8"
+export LANG="en_US.UTF-8"
 
 # do not nag periodically about updating oh-my-zsh
 DISABLE_UPDATE_PROMPT=true
