@@ -113,6 +113,7 @@ alias yta="youtube-dl -x --audio-format best --restrict-filenames -t"
 
 alias hgrep="history | grep"
 alias psgrep="ps aux | grep"
+alias p8="ping 8.8.8.8"
 
 # temporarily alias
 alias ack='ag'
