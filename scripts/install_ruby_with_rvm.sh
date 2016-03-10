@@ -10,7 +10,8 @@ echo Reloading rvm
 rvm reload
 
 echo Installing Ruby 2.2.3
-rvm use 2.2.3 --default
+rvm install 2.3.0
+rvm use 2.3.0 --default
 
 echo Installing gems in @global gemset
 rvm @global do gem install awesome_print brakeman byebug foreman mailcatcher reek rspec rubocop rubocop-rspec ruby-beautify sass scss_lint slim_lint

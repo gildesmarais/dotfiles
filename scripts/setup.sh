@@ -2,8 +2,6 @@
 set -e
 BASEDIR=$(dirname "$0")
 
-mkdir -p ~/.vim/backups ~/.vim/swaps ~/.vim/undo
-
 sh "$BASEDIR/install_oh_my_zsh.sh"
 
 if [ "$(uname)" == "Darwin" ]; then
