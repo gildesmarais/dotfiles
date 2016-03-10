@@ -7,7 +7,7 @@ fi
 
 GENERAL_PACKAGES="curl git zsh htop tmux watch wget vim z"
 GENTOO_PACKAGES="colordiff midnight-commander node"
-DEBIAN+PACKAGES="colordiff midnight-commander node"
+DEBIAN_PACKAGES="colordiff midnight-commander node"
 
 # TODO: if gentoo,
 # sudo emerge layman
