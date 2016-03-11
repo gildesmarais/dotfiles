@@ -135,10 +135,6 @@ if command_exists archey; then
   archey
 fi
 
-if command_exists fortune; then
-  fortune
-fi
-
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 DISABLE_SPRING=1
 alias rdbm='rake db:migrate'
