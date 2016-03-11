@@ -10,3 +10,7 @@ fi
 if [ "$(uname)" == "Linux" ]; then
   sh "$BASEDIR/update_linux.sh"
 fi
+
+if [ -f ~/.update.local.sh ]; then
+  sh ~/.update.local.sh
+fi
