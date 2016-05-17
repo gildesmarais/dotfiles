@@ -119,6 +119,8 @@ alias p8="ping 8.8.8.8"
 
 # temporarily alias
 alias ack='ag'
+alias vi='nvim'
+alias vim='nvim'
 
 if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx
