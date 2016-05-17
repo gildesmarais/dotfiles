@@ -89,7 +89,7 @@ let g:syntastic_check_on_open=1
 let g:syntastic_error_symbol='🙀'
 let g:syntastic_warning_symbol='😿'
 
-
+Plug 'tpope/vim-fugitive'
 
 " Color Theme
 Plug 'chriskempson/vim-tomorrow-theme'
