@@ -39,9 +39,7 @@ set hidden
 set cursorline
 
 " Use the clipboard of Mac OS
-if has('mac')
-  set clipboard=unnamed
-end
+set clipboard=unnamed
 
 " Enable mouse
 set mouse=a
