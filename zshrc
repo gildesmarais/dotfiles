@@ -118,7 +118,6 @@ alias psgrep="ps aux | grep"
 alias p8="ping 8.8.8.8"
 
 # temporarily alias
-alias ack='ag'
 alias vi='nvim'
 alias vim='nvim'
 
@@ -138,6 +137,15 @@ fi
 if command_exists archey; then
   archey
 fi
+
+# suggestions for ag based on ctags https://robots.thoughtbot.com/silver-searcher-tab-completion-with-exuberant-ctags
+_ag() {
+  if (( CURRENT == 2 )); then
+    compadd $(cut -f 1 .git/tags .tags tmp/tags 2>/dev/null | grep -v '!_TAG')
+  fi
+}
+
+compdef _ag ag
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 DISABLE_SPRING=1
