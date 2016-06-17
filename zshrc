@@ -151,3 +151,5 @@ export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 DISABLE_SPRING=1
 alias rdbm='rake db:migrate'
 alias rdbr='rake db:rollback'
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
