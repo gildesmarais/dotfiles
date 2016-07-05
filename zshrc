@@ -56,7 +56,7 @@ COMPLETION_WAITING_DOTS="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse node npm rsync tmux )
-plugins=(brew encode64 extract forklift gem git gpg-agent history node npm osx rails rake rsync ruby sublime ssh-agent tmux z)
+plugins=(brew encode64 extract forklift gem git gpg-agent history node npm osx rsync ruby sublime ssh-agent tmux z)
 
 source $ZSH/oh-my-zsh.sh
 source ~/.profile
@@ -88,15 +88,14 @@ if command_exists grc; then
   alias traceroute='colourify /usr/sbin/traceroute'
 fi
 
+alias pup='pup -c'
+
 if command_exists git; then
   # aliases found in @holman's dotfiles
   alias glog="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
   alias gp='git pull'
   alias gd='git diff'
   alias gc='git commit'
-  alias gca='git commit -a'
-  alias gco='git checkout'
-  alias gcb='git copy-branch-name'
   alias gb='git branch'
   alias gs='git status'
 fi
@@ -120,6 +119,7 @@ alias p8="ping 8.8.8.8"
 # temporarily alias
 alias vi='nvim'
 alias vim='nvim'
+alias nb='newsbeuter'
 
 if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx
