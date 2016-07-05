@@ -2,6 +2,8 @@
 config/git
 config/gtk-2.0/
 config/mc/*
+newsbeuter/history*
+newsbeuter/*.db
 scripts/npm-debug.log
 vim/backups/*
 vim/swaps/*
