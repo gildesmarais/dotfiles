@@ -88,8 +88,6 @@ if command_exists grc; then
   alias traceroute='colourify /usr/sbin/traceroute'
 fi
 
-alias pup='pup -c'
-
 if command_exists git; then
   # aliases found in @holman's dotfiles
   alias glog="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
