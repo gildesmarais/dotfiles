@@ -3,6 +3,9 @@ export PATH="/usr/local/sbin:$PATH"
 export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 
+autoload -U promptinit && promptinit
+prompt pure
+
 # do not nag periodically about updating oh-my-zsh
 DISABLE_UPDATE_PROMPT=true
 
@@ -13,7 +16,7 @@ ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="powerline"
+ZSH_THEME="pure"
 
 #POWERLINE_RIGHT_A="mixed"
 POWERLINE_RIGHT_A="exit-status-on-fail"
