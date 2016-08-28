@@ -3,14 +3,13 @@ export PATH="/usr/local/sbin:$PATH"
 export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 
-autoload -U promptinit && promptinit
-prompt pure
-
 # do not nag periodically about updating oh-my-zsh
 DISABLE_UPDATE_PROMPT=true
 
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
+autoload -U promptinit && promptinit
+prompt pure
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -118,8 +117,11 @@ alias psgrep="ps aux | grep"
 alias p8="ping 8.8.8.8"
 
 # temporarily alias
-alias vi='nvim'
-alias vim='nvim'
+if command_exists nvim; then
+  alias vi='nvim'
+  alias vim='nvim'
+fi
+
 alias nb='newsbeuter'
 
 if [ "$(uname)" = "Darwin" ]; then
