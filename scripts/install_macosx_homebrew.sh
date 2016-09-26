@@ -13,7 +13,7 @@ rcup
 
 echo Install optional homebrew packages
 PACKAGES="archey colordiff curl faac ffmpeg git gpg-agent htop-osx httrack lame midnight-commander"
-PACKAGES="$PACKAGES mp3gain nmap node ranger shellcheck the_silver_searcher tmux watch wget"
+PACKAGES="$PACKAGES mp3gain nmap nvm ranger shellcheck the_silver_searcher tmux watch wget"
 PACKAGES="$PACKAGES youtube-dl z zsh"
 brew update
 brew upgrade
@@ -22,4 +22,4 @@ brew install $PACKAGES
 
 echo Linking sublime text 3 config
 rm -r "~/Library/Application Support/Sublime Text 3"
-ln -s ~/Dropbox/Apps/Sublime-Text-3 "~/Library/Application Support/Sublime Text 3"
+ln -s ~/Documents/Apps/Sublime-Text-3 "~/Library/Application Support/Sublime Text 3"
