@@ -23,3 +23,5 @@
 	ui = 1
 [diff]
 	compactionHeuristic = true
+[merge]
+	conflictstyle = diff3
