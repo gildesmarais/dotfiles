@@ -58,7 +58,7 @@ COMPLETION_WAITING_DOTS="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse node npm rsync tmux )
-plugins=(brew encode64 extract forklift gem git gpg-agent history nvm osx rsync ruby sublime ssh-agent tmux z)
+plugins=(brew encode64 extract forklift gem git gpg-agent history osx rsync ruby sublime ssh-agent tmux z)
 
 source $ZSH/oh-my-zsh.sh
 source ~/.profile
@@ -135,10 +135,6 @@ if [ "$(uname)" = "Darwin" ]; then
   if command_exists brew; then
     [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
   fi
-fi
-
-if command_exists archey; then
-  archey
 fi
 
 # suggestions for ag based on ctags https://robots.thoughtbot.com/silver-searcher-tab-completion-with-exuberant-ctags
