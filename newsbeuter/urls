@@ -6,3 +6,4 @@ https://circleci.com/changelog.rss services
 https://circleci.com/blog/feed.xml services
 https://scrivito.com/blog?format=atom "~Scrivito" ruby
 https://www.hetzner-status.de/de.atom "~Hetzner status"  services
+http://blog.plagscan.com/feed/ "~PlagScan" services
