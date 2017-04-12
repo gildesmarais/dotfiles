@@ -15,7 +15,7 @@ prompt pure
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="pure"
+ZSH_THEME="refined"
 
 #POWERLINE_RIGHT_A="mixed"
 POWERLINE_RIGHT_A="exit-status-on-fail"
@@ -147,8 +147,13 @@ _ag() {
 compdef _ag ag
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-DISABLE_SPRING=1
+export DISABLE_SPRING=1
+
 alias rdbm='rake db:migrate'
 alias rdbr='rake db:rollback'
 
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+#test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+
+export NVM_DIR="/usr/local/opt/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

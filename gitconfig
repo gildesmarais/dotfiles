@@ -21,7 +21,13 @@
 	autocorrect = 1
 [color]
 	ui = 1
-[diff]
-	compactionHeuristic = true
 [merge]
 	conflictstyle = diff3
+[alias]
+  showtool = "!f() { git difftool $1^ $1; }; f"
+  added = difftool --cached
+[diff]
+  tool = icdiff
+  compactionHeuristic = true
+[pager]
+  difftool = true
