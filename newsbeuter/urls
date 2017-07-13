@@ -1,10 +1,8 @@
 https://www.ruby-lang.org/en/feeds/news.rss ruby
 http://weblog.rubyonrails.org/feed/atom.xml ruby
+https://www.nginx.com/feed/ devops
+https://blog.phusion.nl/rss/ devops
+https://www.ansible.com/blog/rss.xml devops
 https://github.com/blog/broadcasts.atom services
 https://github.com/blog/ship.atom services
-https://circleci.com/changelog.rss services
-https://circleci.com/blog/feed.xml services
-https://scrivito.com/blog?format=atom "~Scrivito" ruby
-https://www.hetzner-status.de/de.atom "~Hetzner status"  services
-http://blog.plagscan.com/feed/ "~PlagScan" services
 https://letsencrypt.org/feed.xml services
