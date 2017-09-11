@@ -6,3 +6,6 @@ https://www.ansible.com/blog/rss.xml devops
 https://github.com/blog/broadcasts.atom services
 https://github.com/blog/ship.atom services
 https://letsencrypt.org/feed.xml services
+https://wordpress.org/news/feed/ apps
+https://www.vtiger.com/blog/feed/ apps
+https://blog.jetbrains.com/feed/ apps
