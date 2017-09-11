@@ -1,5 +1,6 @@
 AllCops:
   TargetRubyVersion: 2.3
+  DisplayCopNames: true
   Exclude:
     - bin/*
     - db/migrate/*
@@ -9,6 +10,14 @@ AllCops:
 
 Metrics/LineLength:
   Max: 110
+
+Metrics/BlockLength:
+  Exclude:
+    - "**/*_spec.rb"
+
+Metrics/ModuleLength:
+  Exclude:
+    - "**/*_spec.rb"
 
 Documentation:
   Enabled: false
@@ -40,5 +49,3 @@ Layout/SpaceInsideParens:
   Description: 'No spaces after ( or before ).'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-spaces-braces'
   Enabled: true
-
-
