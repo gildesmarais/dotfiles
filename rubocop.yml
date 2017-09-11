@@ -1,7 +1,9 @@
 AllCops:
+  TargetRubyVersion: 2.3
   Exclude:
     - bin/*
     - db/migrate/*
+    - db/schema.rb
     - Guardfile
     - schema.rb
 
@@ -14,7 +16,13 @@ Documentation:
 Style/BlockDelimiters:
   Enabled: false
 
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
 Style/ParallelAssignment:
+  Enabled: false
+
+Style/AsciiComments:
   Enabled: false
 
 Style/BracesAroundHashParameters:
@@ -28,7 +36,9 @@ Style/HashSyntax:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#hash-literals'
   Enabled: true
 
-Style/SpaceInsideParens:
+Layout/SpaceInsideParens:
   Description: 'No spaces after ( or before ).'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-spaces-braces'
   Enabled: true
+
+
