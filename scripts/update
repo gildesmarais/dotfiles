@@ -4,11 +4,11 @@ BASEDIR=$(dirname "$0")
 cd ~/.dotfiles && git pull
 
 if [ "$(uname)" == "Darwin" ]; then
-  sh "scripts/update_macosx.sh"
+  sh "scripts/update_macosx"
 fi
 
 if [ "$(uname)" == "Linux" ]; then
-  sh "scripts/update_linux.sh"
+  sh "scripts/update_linux"
 fi
 
 if [ -f ~/.update.local.sh ]; then

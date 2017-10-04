@@ -8,14 +8,14 @@ DISABLE_UPDATE_PROMPT=true
 
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
-autoload -U promptinit && promptinit
-prompt pure
+#autoload -U promptinit && promptinit
+#prompt pure
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="refined"
+ZSH_THEME="gentoo"
 
 #POWERLINE_RIGHT_A="mixed"
 POWERLINE_RIGHT_A="exit-status-on-fail"
@@ -146,7 +146,6 @@ _ag() {
 
 compdef _ag ag
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export DISABLE_SPRING=1
 
 alias rdbm='rake db:migrate'
@@ -154,6 +153,9 @@ alias rdbr='rake db:rollback'
 
 #test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
 
 export NVM_DIR="/usr/local/opt/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+

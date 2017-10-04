@@ -8,4 +8,8 @@ https://github.com/blog/ship.atom services
 https://letsencrypt.org/feed.xml services
 https://wordpress.org/news/feed/ apps
 https://www.vtiger.com/blog/feed/ apps
-https://blog.jetbrains.com/feed/ apps
+https://blog.jetbrains.com/feed/ "-Jetbrains Blog" apps
+https://piwik.org/blog/feed "-Piwik Blog" apps
+https://www.fsf.org/static/fsforg/rss/news.xml
+https://act.eff.org/action.atom
+https://www.eff.org/rss/updates.xml
