@@ -106,7 +106,6 @@ alias berd='bundle exec rspec --format documentation'
 alias rroute='bundle exec rake routes | grep'
 
 # some more aliases \o/
-alias cask-upgrade=" ~/Dropbox/Apps/cask-upgrade.sh "
 alias heidisql="cd ~/.wine/drive_c/Program\ Files/HeidiSQL/ && wine heidisql.exe"
 alias mkvdts2ac3="mkvdts2ac3 --wd ."
 alias mp3tag="wine ~/.wine/drive_c/Program\ Files/Mp3tag/Mp3tag.exe"
@@ -122,7 +121,7 @@ if command_exists nvim; then
   alias vim='nvim'
 fi
 
-alias nb='newsbeuter'
+alias nb='newsboat'
 
 if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx
