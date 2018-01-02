@@ -21,6 +21,11 @@ if command_exists yarn; then
   export PATH="$PATH:`yarn global bin`" # make yarn binaries available
 fi
 
+function serve {
+  port="${1:-8080}"
+  ruby -run -e httpd . -p $port
+}
+
 export HOMEBREW_NO_ANALYTICS=1
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
