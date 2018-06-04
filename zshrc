@@ -58,7 +58,7 @@ COMPLETION_WAITING_DOTS="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse node npm rsync tmux )
-plugins=(brew encode64 extract gem git gpg-agent history osx rsync ruby sublime ssh-agent tmux z)
+plugins=(brew docker encode64 extract gem git gpg-agent history osx rsync ruby sublime ssh-agent tmux z)
 
 source $ZSH/oh-my-zsh.sh
 source ~/.profile
@@ -150,6 +150,7 @@ export DISABLE_SPRING=1
 alias rdbm='rake db:migrate'
 alias rdbr='rake db:rollback'
 alias fs='foreman start'
+alias rr='rake routes'
 
 #test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
