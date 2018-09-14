@@ -13,6 +13,16 @@ function m4a2mp3 {
   done
 }
 
+function all2wav {
+  for F in *.{mp3,m4a,mp4,ogg,wav}
+
+  do
+    newname=`basename "$F" .dff`
+    echo $newname
+    ffmpeg -i "$F" "$newname.wav"
+  done
+}
+
 function command_exists {
   type "$1" >/dev/null 2>&1;
 }
