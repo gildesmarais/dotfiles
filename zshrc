@@ -114,6 +114,7 @@ alias ghpr="hub pull-request"
 alias hgrep="history | grep"
 alias psgrep="ps aux | grep"
 alias p8="ping 8.8.8.8"
+alias pup="pup -c"
 
 # temporarily alias
 if command_exists nvim; then
@@ -122,6 +123,8 @@ if command_exists nvim; then
 fi
 
 alias nb='newsboat'
+alias todo="ag '(TODO|FIXME|XXX|NOTE)'"
+
 
 if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx
