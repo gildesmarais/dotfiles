@@ -58,7 +58,7 @@ COMPLETION_WAITING_DOTS="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse node npm rsync tmux )
-plugins=(brew docker encode64 extract gem git gpg-agent history osx rsync ruby sublime ssh-agent tmux z)
+plugins=(brew docker encode64 extract gem gitfast gpg-agent history osx rsync ruby sublime ssh-agent tmux z)
 
 source $ZSH/oh-my-zsh.sh
 source ~/.profile
@@ -98,6 +98,7 @@ if command_exists git; then
   alias gc='git commit'
   alias gb='git branch'
   alias gs='git status'
+  alias gco='git checkout'
 fi
 
 # ruby & rails aliases
@@ -150,10 +151,10 @@ compdef _ag ag
 
 export DISABLE_SPRING=1
 
-alias rdbm='rake db:migrate'
-alias rdbr='rake db:rollback'
-alias fs='foreman start'
-alias rr='rake routes'
+alias rdbm='bundle exec rake db:migrate'
+alias rdbr='bundle exec rake db:rollback'
+alias fs='bundle exec foreman start || foreman start'
+alias rr='bundle exec rake routes'
 
 #test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
