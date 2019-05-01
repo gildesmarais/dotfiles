@@ -8,6 +8,18 @@ AllCops:
     - Guardfile
     - schema.rb
     - node_modules/**
+  Include:
+    - '**/*.thor'
+    - '**/*.rb'
+    - '**/*.gemfile'
+    - '**/*.gemspec'
+    - '**/*.rake'
+    - '**/*.ru'
+    - '**/Gemfile'
+    - '**/Rakefile'
+
+Performance:
+  enabled: true
 
 Metrics/LineLength:
   Max: 110
@@ -56,3 +68,7 @@ Layout/SpaceInsideParens:
 Layout/InitialIndentation:
   Exclude:
     - '**/*.slim'
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - "spec/**/*"
