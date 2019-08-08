@@ -58,7 +58,7 @@ COMPLETION_WAITING_DOTS="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse node npm rsync tmux )
-plugins=(brew docker encode64 extract gem gitfast gpg-agent history osx rsync ruby sublime ssh-agent tmux z)
+plugins=(gitfast gpg-agent ripgrep ssh-agent sublime z)
 
 source $ZSH/oh-my-zsh.sh
 source ~/.profile
@@ -124,8 +124,8 @@ if command_exists nvim; then
 fi
 
 alias nb='newsboat'
-alias todo="ag '(TODO|FIXME|XXX|NOTE)'"
-
+alias todo="rg '(TODO|FIXME|XXX|NOTE)'"
+alias ag="rg"
 
 if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx
