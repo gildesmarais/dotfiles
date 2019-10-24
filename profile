@@ -1,24 +1,24 @@
 function generateM3u {
-  ls -1 ./*.mp3 >> $(basename `pwd`).m3u
+  ls -1 ./*.mp3 >> "$(basename `pwd`).m3u"
 }
 
 function wav2mp3 {
   for F in *.wav
 
   do
-    newname=`basename "$F".wav`
-    echo $newname
-    lame $1 "$newname.wav" "$newname.mp3"
+    newname=$(basename "$F.wav")
+    echo "$newname"
+    lame "$1" "$newname.wav" "$newname.mp3"
     rm "$newname.wav"
   done
 }
 
 function all2wav {
-  for F in *.{mp3,m4a,mp4,ogg,wav,opus}
+  for F in *.{webm,mp3,m4a,mp4,ogg,wav,opus}
 
   do
     newname=`basename "$F" .dff`
-    echo $newname
+    echo "$newname"
     ffmpeg -i "$F" "$newname.wav"
   done
 }
@@ -33,7 +33,7 @@ fi
 
 function serve {
   port="${1:-8080}"
-  ruby -run -e httpd . -p $port
+  ruby -run -e httpd . -p "$port"
 }
 
 function generate_videos_for_web {
