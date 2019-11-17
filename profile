@@ -14,8 +14,7 @@ function wav2mp3 {
 }
 
 function all2wav {
-  for F in *.{webm,mp3,m4a,mp4,ogg,wav,opus}
-
+  for F in *.{webm,mp3,m4a,mp4,ogg,wav,opus,aiff,p3}
   do
     newname=`basename "$F" .dff`
     echo "$newname"

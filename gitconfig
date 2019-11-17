@@ -1,6 +1,6 @@
 [user]
 	name = Gil Desmarais
-	email = gil@desmarais.de
+	email = git@desmarais.de
 [core]
 	excludesfile = /Users/gil/.gitignore_global
 [difftool "sourcetree"]
