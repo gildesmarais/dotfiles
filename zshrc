@@ -153,7 +153,7 @@ export DISABLE_SPRING=1
 
 alias rdbm='bundle exec rake db:migrate'
 alias rdbr='bundle exec rake db:rollback'
-alias fs='bundle exec foreman start || foreman start'
+alias fs='foreman start'
 alias rr='bundle exec rake routes'
 
 #test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
