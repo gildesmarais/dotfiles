@@ -21,9 +21,6 @@ AllCops:
 Performance:
   enabled: true
 
-Metrics/LineLength:
-  Max: 110
-
 Metrics/BlockLength:
   Exclude:
     - "**/*_spec.rb"
@@ -59,6 +56,19 @@ Style/HashSyntax:
                  { :a => 1, :b => 2 }.
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#hash-literals'
   Enabled: true
+
+Layout/LineLength:
+  Max: 110
+  Exclude:
+    - db/seeds.rb
+  AllowHeredoc: true
+  AllowURI: true
+  URISchemes:
+    - http
+    - https
+  IgnoreCopDirectives: false
+  IgnoredPatterns:
+    - '\A\s*(remote_)?test(_\w+)?\s.*(do|->)(\s|\Z)'
 
 Layout/SpaceInsideParens:
   Description: 'No spaces after ( or before ).'
