@@ -83,8 +83,7 @@ if command_exists grc; then
   alias gcc='colourify gcc'
   alias g++='colourify g++'
   alias as='colourify as'
-  alias gas='colourify gas'
-  alias ld='colourify ld'
+
   alias netstat='colourify netstat'
   alias ping='colourify ping'
   alias traceroute='colourify /usr/sbin/traceroute'
@@ -93,10 +92,8 @@ fi
 if command_exists git; then
   # aliases found in @holman's dotfiles
   alias glog="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
-  alias gp='git pull'
   alias gd='git diff'
   alias gc='git commit'
-  alias gb='git branch'
   alias gs='git status'
   alias gco='git checkout'
 fi
@@ -105,25 +102,26 @@ fi
 alias be='bundle exec'
 alias berd='bundle exec rspec --format documentation'
 alias rroute='bundle exec rake routes | grep'
+alias rdbm='bundle exec rake db:migrate'
+alias rdbr='bundle exec rake db:rollback'
+alias fs='foreman start'
+alias rr='bundle exec rake routes'
+
+export DISABLE_SPRING=1
 
 # some more aliases \o/
-alias heidisql="cd ~/.wine/drive_c/Program\ Files/HeidiSQL/ && wine heidisql.exe"
-alias mkvdts2ac3="mkvdts2ac3 --wd ."
 alias mp3tag="wine ~/.wine/drive_c/Program\ Files/Mp3tag/Mp3tag.exe"
-alias yta="youtube-dl -x --audio-format best --restrict-filenames -o '%(title)s-%(id)s.%(ext)s'"
-alias ghpr="hub pull-request"
+
 alias hgrep="history | grep"
 alias psgrep="ps aux | grep"
 alias p8="ping 8.8.8.8"
 alias pup="pup -c"
 
-# temporarily alias
 if command_exists nvim; then
   alias vi='nvim'
   alias vim='nvim'
 fi
 
-alias nb='newsboat'
 alias todo="rg '(TODO|FIXME|XXX|NOTE)'"
 alias ag="rg"
 
@@ -140,24 +138,9 @@ if [ "$(uname)" = "Darwin" ]; then
   fi
 fi
 
-# suggestions for ag based on ctags https://robots.thoughtbot.com/silver-searcher-tab-completion-with-exuberant-ctags
-_ag() {
-  if (( CURRENT == 2 )); then
-    compadd $(cut -f 1 .git/tags .tags tmp/tags 2>/dev/null | grep -v '!_TAG')
-  fi
-}
-
-compdef _ag ag
-
-export DISABLE_SPRING=1
-
-alias rdbm='bundle exec rake db:migrate'
-alias rdbr='bundle exec rake db:rollback'
-alias fs='foreman start'
-alias rr='bundle exec rake routes'
-
 #test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+# jumping words with Alt and left/right arrow
 bindkey "^[^[[C" forward-word
 bindkey "^[^[[D" backward-word
 
