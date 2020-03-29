@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+# loosely based on https://sosedoff.com/2016/11/26/find-environment-variables.html
+
+items = `grep -rnw . -e "ENV"`.split("\n").map do |line|
+  Regexp.last_match(1) if line =~ /ENV.fetch\(['"](\w+)['"]\)/ || line =~ /ENV\[['"](\w+)['"]\]/
+end
+
+items.compact!
+
+abort 'No mention of environment variables found' if items.empty?
+
+warn 'Found these environment variables:'
+puts items.uniq.sort
