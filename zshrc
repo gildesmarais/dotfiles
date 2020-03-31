@@ -129,10 +129,6 @@ if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx
   alias lsusb="system_profiler SPUSBDataType"
 
-  if [[ -e /usr/local/opt/curl-ca-bundle/share/ca-bundle.crt ]]; then
-    export SSL_CERT_FILE=/usr/local/opt/curl-ca-bundle/share/ca-bundle.crt
-  fi
-
   if command_exists brew; then
     [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
   fi
@@ -147,6 +143,6 @@ bindkey "^[^[[D" backward-word
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
 
-export NVM_DIR="/usr/local/opt/nvm"
+export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
