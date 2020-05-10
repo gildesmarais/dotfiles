@@ -46,15 +46,6 @@ Style/ParallelAssignment:
 Style/AsciiComments:
   Enabled: false
 
-Style/HashEachMethods:
-  Enabled: true
-
-Style/HashTransformKeys:
-  Enabled: true
-
-Style/HashTransformValues:
-  Enabled: true
-
 Style/HashSyntax:
   Description: >-
                  Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
@@ -62,7 +53,7 @@ Style/HashSyntax:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#hash-literals'
   Enabled: true
 
-Layout/LineLength:
+Metrics/LineLength:
   Max: 110
   Exclude:
     - db/seeds.rb
