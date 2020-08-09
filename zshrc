@@ -1,74 +1,28 @@
-export TERM="xterm-256color"
-export PATH="/usr/local/sbin:$PATH"
-export LC_ALL="en_US.UTF-8"
-export LANG="en_US.UTF-8"
+#
+# Executes commands at the start of an interactive session.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
 
-# do not nag periodically about updating oh-my-zsh
-DISABLE_UPDATE_PROMPT=true
+# Source Prezto.
+if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+fi
 
-# Path to your oh-my-zsh configuration.
-ZSH=$HOME/.oh-my-zsh
-#autoload -U promptinit && promptinit
-#prompt pure
+# Customize to your needs...
 
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="gentoo"
+# homebrew provided zsh completions
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 
-#POWERLINE_RIGHT_A="mixed"
-POWERLINE_RIGHT_A="exit-status-on-fail"
-POWERLINE_HIDE_HOST_NAME="true"
-POWERLINE_FULL_CURRENT_PATH="true"
-POWERLINE_DETECT_SSH="true"
-POWERLINE_PATH="short"
+  autoload -Uz compinit
+  compinit
+fi
 
-# Set to this to use case-sensitive completion
-# CASE_SENSITIVE="true"
-
-# Uncomment this to disable bi-weekly auto-update checks
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment to change how often before auto-updates occur? (in days)
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment following line if you want to disable colors in ls
-# DISABLE_LS_COLORS="true"
-
-# Uncomment following line if you want to disable autosetting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment following line if you want to disable command autocorrection
-# DISABLE_CORRECTION="true"
-
-# Uncomment following line if you want red dots to be displayed while waiting for completion
-COMPLETION_WAITING_DOTS="true"
-
-# Uncomment following line if you want to disable marking untracked files under
-# VCS as dirty. This makes repository status check for large repositories much,
-# much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment following line if you want to  shown in the command execution time stamp
-# in the history command output. The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|
-# yyyy-mm-dd
-# HIST_STAMPS="yyyy-mm-dd"
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse node npm rsync tmux )
-plugins=(gitfast gpg-agent ripgrep ssh-agent sublime z)
-
-source $ZSH/oh-my-zsh.sh
 source ~/.profile
 
 # thanks bitboxer @bitboxer and @klaustopher
-# Trees should have colors
-if command_exists tree; then
-  alias tree="tree -C"
-fi
-
 # Respect ANSI Color Strings
 alias less="less -R"
 
@@ -89,15 +43,13 @@ if command_exists grc; then
   alias traceroute='colourify /usr/sbin/traceroute'
 fi
 
-if command_exists git; then
-  # aliases found in @holman's dotfiles
-  alias glog="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
-  alias gb='git branch'
-  alias gc='git commit'
-  alias gco='git checkout'
-  alias gd='git diff'
-  alias gs='git status'
-fi
+# aliases found in @holman's dotfiles
+alias glog="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
+alias gb='git branch'
+alias gc='git commit'
+alias gco='git checkout'
+alias gd='git diff'
+alias gs='git status'
 
 # ruby & rails aliases
 alias be='bundle exec'
@@ -135,15 +87,14 @@ if [ "$(uname)" = "Darwin" ]; then
   fi
 fi
 
-#test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
 # jumping words with Alt and left/right arrow
 bindkey "^[^[[C" forward-word
 bindkey "^[^[[D" backward-word
 
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
+# bind asdf
+. $(brew --prefix asdf)/asdf.sh
+export PATH="/usr/local/opt/libpq/bin:$PATH"
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# flutter
+export PATH="/Users/gil/Applications/flutter/bin:$PATH"
+
