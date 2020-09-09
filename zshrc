@@ -98,3 +98,5 @@ export PATH="/usr/local/opt/libpq/bin:$PATH"
 # flutter
 export PATH="/Users/gil/Applications/flutter/bin:$PATH"
 
+
+. /usr/local/opt/asdf/asdf.sh
