@@ -31,5 +31,6 @@
   compactionHeuristic = true
 [pager]
   difftool = true
-[commit]
-	template = /Users/gil/.stCommitMsg
+[pull]
+  ff = only
+
