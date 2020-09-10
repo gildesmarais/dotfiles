@@ -12,6 +12,13 @@ fi
 
 # Customize to your needs...
 
+# bind asdf
+. $(brew --prefix asdf)/asdf.sh
+export PATH="/usr/local/opt/libpq/bin:$PATH"
+
+# add asdf completions
+fpath=(${ASDF_DIR}/completions $fpath)
+
 # homebrew provided zsh completions
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
@@ -21,6 +28,8 @@ if type brew &>/dev/null; then
 fi
 
 source ~/.profile
+
+export DISABLE_SPRING=1
 
 # thanks bitboxer @bitboxer and @klaustopher
 # Respect ANSI Color Strings
@@ -60,8 +69,6 @@ alias rdbr='bundle exec rake db:rollback'
 alias fs='foreman start'
 alias rr='bundle exec rake routes'
 
-export DISABLE_SPRING=1
-
 # some more aliases \o/
 alias mp3tag="wine ~/.wine/drive_c/Program\ Files/Mp3tag/Mp3tag.exe"
 
@@ -75,6 +82,7 @@ if command_exists nvim; then
   alias vim='nvim'
 fi
 
+alias subl="open -a 'Sublime Text'"
 alias todo="rg '(TODO|FIXME|XXX|NOTE)'"
 alias ag="rg"
 
@@ -86,10 +94,6 @@ fi
 # jumping words with Alt and left/right arrow
 bindkey "^[^[[C" forward-word
 bindkey "^[^[[D" backward-word
-
-# bind asdf
-. $(brew --prefix asdf)/asdf.sh
-export PATH="/usr/local/opt/libpq/bin:$PATH"
 
 # flutter
 # TODO: move to zshrc.local
