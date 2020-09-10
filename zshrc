@@ -81,10 +81,6 @@ alias ag="rg"
 if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx
   alias lsusb="system_profiler SPUSBDataType"
-
-  if command_exists brew; then
-    [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
-  fi
 fi
 
 # jumping words with Alt and left/right arrow
@@ -96,7 +92,9 @@ bindkey "^[^[[D" backward-word
 export PATH="/usr/local/opt/libpq/bin:$PATH"
 
 # flutter
+# TODO: move to zshrc.local
 export PATH="/Users/gil/Applications/flutter/bin:$PATH"
 
-
-. /usr/local/opt/asdf/asdf.sh
+if [ -f "$HOME/.zshrc.local" ]; then
+  source "$HOME/.zshrc.local"
+fi
