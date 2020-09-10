@@ -71,6 +71,7 @@ alias rr='bundle exec rake routes'
 
 # some more aliases \o/
 alias mp3tag="wine ~/.wine/drive_c/Program\ Files/Mp3tag/Mp3tag.exe"
+alias subl="open -a 'Sublime Text'"
 
 alias hgrep="history | grep"
 alias psgrep="ps aux | grep"
@@ -82,7 +83,6 @@ if command_exists nvim; then
   alias vim='nvim'
 fi
 
-alias subl="open -a 'Sublime Text'"
 alias todo="rg '(TODO|FIXME|XXX|NOTE)'"
 alias ag="rg"
 
