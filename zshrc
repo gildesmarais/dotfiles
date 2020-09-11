@@ -96,10 +96,6 @@ fi
 bindkey "^[^[[C" forward-word
 bindkey "^[^[[D" backward-word
 
-# flutter
-# TODO: move to zshrc.local
-export PATH="/Users/gil/Applications/flutter/bin:$PATH"
-
 if [ -f "$HOME/.zshrc.local" ]; then
   source "$HOME/.zshrc.local"
 fi
