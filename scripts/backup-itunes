@@ -3,5 +3,5 @@ set -e
 
 rsync --archive --verbose --human-readable --itemize-changes --progress \
       --prune-empty-dirs --delete -e ssh \
-      /Volumes/gil-ext-ssd/Backup_Music/Music \
+      /Users/gil/Music/Music/Media.localized/ \
       gil@10.0.0.7:/mnt/datavol/gil/backup/Backup_Music
