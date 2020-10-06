@@ -27,6 +27,8 @@ if type brew &>/dev/null; then
   compinit
 fi
 
+kitty + complete setup zsh | source /dev/stdin
+
 source ~/.profile
 
 export DISABLE_SPRING=1
