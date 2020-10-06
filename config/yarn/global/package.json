@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "csso": "^4.0.2",
+    "csso-cli": "^2.0.2",
+    "git-stats": "^2.10.9",
+    "i18n-lint": "jwarby/i18n-lint",
+    "lebab": "^3.1.0",
+    "npm-check-updates": "^9.0.2",
+    "prettier": "^1.18.2",
+    "stylelint": "^8.2.0",
+    "stylelint-config-standard": "^18.2.0"
+  }
+}
