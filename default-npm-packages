@@ -1,6 +1,7 @@
-prettier
-stylelint
-standard
+@marp-team/marp-cli
 eslint
 npm-check-updates
+prettier
+standard
+stylelint
 yarn-deduplicate
