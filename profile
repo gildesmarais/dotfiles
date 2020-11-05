@@ -31,8 +31,17 @@ if command_exists yarn; then
 fi
 
 function serve {
-  port="${1:-8080}"
-  ruby -run -e httpd . -p "$port"
+  if command_exists caddy; then
+    if [ -f "./Caddyfile" ]; then
+      caddy run --watch
+    else
+      port="${1:-8080}"
+      caddy file-server --root . --listen "127.0.0.1:$port"
+    fi
+  else
+    port="${1:-8080}"
+    ruby -run -e httpd . -p "$port"
+  fi
 }
 
 function generate_videos_for_web {
