@@ -96,6 +96,7 @@ fi
 alias todo="rg '(TODO|FIXME|XXX|NOTE)'"
 alias ag="rg"
 alias oleoo="npx gildesmarais/oleoo-cli"
+alias pg="playground"
 
 if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx

@@ -1,3 +1,10 @@
+function playground {
+  dir="$HOME/playground/$(date -u +'%Y-%m')"
+
+  [ ! -d "$dir" ] && mkdir -p "$dir"
+  cd "$dir" || echo "Playground: unable to change directory to $dir"
+}
+
 function generateM3u {
   ls -1 ./*.mp3 >> "$(basename `pwd`).m3u"
 }
