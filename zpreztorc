@@ -40,9 +40,7 @@ zstyle ':prezto:load' pmodule \
   'completion' \
   'prompt' \
   'ssh' \
-  'zsh-z' \
-  'autosuggestions' \
-  'fzf-zsh-plugin'
+  'autosuggestions'
 
 #
 # Autosuggestions
