@@ -93,7 +93,7 @@ if command_exists nvim; then
   alias vim='nvim'
 fi
 
-alias todo="rg '(TODO|FIXME|XXX|NOTE)'"
+alias todo="rg '(TODO|FIXME|XXX|NOTE|OPTIMIZE|HACK|REVIEW)'"
 alias ag="rg"
 alias oleoo="npx gildesmarais/oleoo-cli"
 alias pg="playground"
