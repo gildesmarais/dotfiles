@@ -52,3 +52,7 @@ rerun.txt
 tags
 Temporary Items
 Thumbs.db
+
+# Ruby #
+########
+.byebug_history
