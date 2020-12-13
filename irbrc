@@ -20,3 +20,6 @@ def pbpaste
 end
 
 load File.dirname(__FILE__) + '/.railsrc' if $PROGRAM_NAME == 'irb' && ENV['RAILS_ENV']
+
+# improve pasting speed. src: https://github.com/ruby/irb/issues/43#issuecomment-572981408
+IRB.conf[:USE_MULTILINE] = false
