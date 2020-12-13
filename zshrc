@@ -98,6 +98,9 @@ alias ag="rg"
 alias oleoo="npx gildesmarais/oleoo-cli"
 alias pg="playground"
 
+# ll: use exa, if not available fallback to ls -ls
+alias ll="exa -lhF --git --time-style long-iso || ls -ls"
+
 if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx
   alias lsusb="system_profiler SPUSBDataType"
