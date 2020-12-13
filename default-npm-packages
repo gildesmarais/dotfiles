@@ -4,4 +4,5 @@ npm-check-updates
 prettier
 standard
 stylelint
+yarn
 yarn-deduplicate
