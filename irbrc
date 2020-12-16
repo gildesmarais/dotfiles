@@ -1,7 +1,6 @@
-#!/usr/bin/ruby
-require 'rubygems'
+#!/usr/bin/env ruby
 
-AwesomePrint.irb! if require 'awesome_print'
+require 'rubygems'
 
 class Object
   def local_methods(obj = self)
@@ -18,8 +17,6 @@ end
 def pbpaste
   `pbpaste`
 end
-
-load File.dirname(__FILE__) + '/.railsrc' if $PROGRAM_NAME == 'irb' && ENV['RAILS_ENV']
 
 # improve pasting speed. src: https://github.com/ruby/irb/issues/43#issuecomment-572981408
 IRB.conf[:USE_MULTILINE] = false
