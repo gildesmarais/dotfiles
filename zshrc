@@ -72,11 +72,10 @@ alias gs='git status'
 # ruby & rails aliases
 alias be='bundle exec'
 alias berd='bundle exec rspec --format documentation'
-alias rroute='bundle exec rake routes | grep'
 alias rdbm='bundle exec rake db:migrate'
 alias rdbr='bundle exec rake db:rollback'
 alias fs='foreman start'
-alias rr='bundle exec rake routes'
+alias rr='bundle exec rails routes | fzf'
 
 # some more aliases \o/
 alias mp3tag="wine ~/.wine/drive_c/Program\ Files/Mp3tag/Mp3tag.exe"
