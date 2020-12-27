@@ -87,6 +87,11 @@ alias psgrep="ps aux | grep"
 alias p8="ping 8.8.8.8"
 alias pup="pup -c"
 
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+
 if command_exists nvim; then
   alias vi='nvim'
   alias vim='nvim'
