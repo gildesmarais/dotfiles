@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+unless ARGV[0]
+  puts <<~HELP
+    Usage: tracklist2cue audio.wav
+
+    Assuming you have one audio file (e.g. a DJ set), e.g. audio.wav
+    Create a (text) file with the same name as the audio file, with
+    extension .tracklist, e.g. audio.tracklist
+
+    Contents of audio.tracklist:
+    00:00 Artist - Title
+    03:53 Artist - Title
+    08:44 Artist - Title
+    12:40 Artist - Title
+    ...
+
+    This script will create the corresponding cue sheet file.
+  HELP
+
+  exit 1
+end
+
+audio_file = ARGV[0]
+raise 'audio file missing' if !audio_file || !File.exist?(audio_file)
+
+tracklist_file = [audio_file.gsub(File.extname(audio_file), ''), '.tracklist'].join('')
+raise '.tracklist file missing' unless File.exist?(tracklist_file)
+
+cuesheet_file = [audio_file.gsub(File.extname(audio_file), ''), '.cue'].join('')
+raise '.cue already present' if File.exist?(cuesheet_file)
+
+tracks = File.read(tracklist_file).split("\n")
+             .map do |line|
+  split = line.split(' ')
+  performer, title = split[1..-1].join(' ').split(' - ')
+
+  time = split[0].split(':').map(&:to_i)
+                 .concat([0])
+                 .map { |number| format('%02d', number) }
+                 .join(':')
+
+  { time: time, performer: performer, title: title }
+end
+tracks = tracks.each_with_index.map do |track, number|
+  <<~STRING
+    TRACK #{format('%02d', number + 1)}
+      PERFORMER "#{track[:performer]}"
+      TITLE "#{track[:title]}"
+      INDEX 01 #{track[:time]}
+  STRING
+end
+
+cuesheet = <<~CUESHEET
+  PERFORMER ""
+  TITLE ""
+  FILE "#{audio_file}"
+    #{tracks.join}
+CUESHEET
+
+File.open(cuesheet_file, 'w') { |file| file.write cuesheet }
