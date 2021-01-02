@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'readline'
+
+puts 'Give name and enter. Super+D to quit.'
+while (args = Readline.readline('> ', true))
+  args = args.gsub('  ', ' ').gsub(/[()]*/, '').split
+  name = "#{args[0..-2].join('.')}-#{args.last}"
+
+  print('-> ', name, "\n")
+end
