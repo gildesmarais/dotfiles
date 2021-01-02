@@ -1,5 +1,6 @@
 bundler
 byebug
-foreman
-uptimerobot
 cocoapods
+foreman
+rbs
+uptimerobot
