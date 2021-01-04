@@ -101,6 +101,7 @@ alias todo="rg '(TODO|FIXME|XXX|NOTE|OPTIMIZE|HACK|REVIEW)'"
 alias ag="rg"
 alias oleoo="npx gildesmarais/oleoo-cli"
 alias pg="playground"
+alias yarn-upgrade='npx npm-check-updates -u && yarn install && npx yarn-deduplicate yarn.lock & yarn install'
 
 # ll: use exa, if not available fallback to ls -ls
 alias ll="exa -lhF --git --time-style long-iso || ls -ls"
