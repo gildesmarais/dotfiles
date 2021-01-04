@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e
+
+SOURCE_FILE="$1"
+BASE_NAME=$(basename "${SOURCE_FILE%.*}")
+
+# assuming macosx here:
+THREADS=$(sysctl -n hw.logicalcpu)
+THREADS="${THREADS:-2}"
+
+# h264
+ffmpeg -i "$SOURCE_FILE" -threads "$THREADS" -vcodec h264 -acodec aac -strict -2 "$BASE_NAME.x264.mp4"
+
+# h265
+ffmpeg -i "$SOURCE_FILE" -threads "$THREADS" -c:v libx265 -preset medium -x265-params crf=28 -c:a aac -strict experimental -b:a 128k "$BASE_NAME.x265.mp4"
+
+# webm vp9
+# https://developers.google.com/media/vp9/the-basics/
+ffmpeg -i "$SOURCE_FILE" -threads "$THREADS" -vcodec libvpx-vp9 -b:v 1M -quality good -acodec libvorbis "$BASE_NAME.vp9.webm"
