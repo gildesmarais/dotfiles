@@ -36,3 +36,5 @@
 
 [commit]
 	template = /Users/gil/.stCommitMsg
+[http]
+	postBuffer = 524288000
