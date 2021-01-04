@@ -1,3 +1,6 @@
+# vim:fileencoding=utf-8:ft=conf:foldmethod=marker
+
+#: Helper functions {{{
 function playground {
   dir="$HOME/playground/$(date -u +'%Y-%m')"
 
@@ -69,6 +72,16 @@ function generate_videos_for_web {
   # https://developers.google.com/media/vp9/the-basics/
   ffmpeg -i "$SOURCE_FILE" -threads "$THREADS" -vcodec libvpx-vp9 -b:v 1M -quality good -acodec libvorbis "$BASE_NAME.vp9.webm"
 }
+#: }}}
 
+#: exports {{{
 export HOMEBREW_NO_ANALYTICS=1
+export EDITOR=vim
 
+# ruby
+export DISABLE_SPRING=1
+
+# fzf
+export FZF_DEFAULT_COMMAND='rg --files --ignore-case'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+#: }}}

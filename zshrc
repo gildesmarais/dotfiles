@@ -38,8 +38,6 @@ kitty + complete setup zsh | source /dev/stdin
 
 source ~/.profile
 
-export DISABLE_SPRING=1
-
 # thanks bitboxer @bitboxer and @klaustopher
 # Respect ANSI Color Strings
 alias less="less -R"
