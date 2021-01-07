@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -e
+
+ffmpeg -i "$1" -b:v 0 -crf 35 -f mp4 -vcodec libx264 -pix_fmt yuv420p "$(basename -s '.gif' "$1").mp4"
