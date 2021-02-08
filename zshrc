@@ -72,7 +72,7 @@ alias be='bundle exec'
 alias berd='bundle exec rspec --format documentation'
 alias rdbm='bundle exec rake db:migrate'
 alias rdbr='bundle exec rake db:rollback'
-alias fs='foreman start'
+alias fs='overmind start || foreman start'
 alias rr='bundle exec rails routes | fzf'
 
 # some more aliases \o/
