@@ -24,6 +24,7 @@ fi
 
 # ruby
 export DISABLE_SPRING=1
+export RUBYOPT="-W0"
 
 # fzf
 export FZF_DEFAULT_COMMAND='rg --files --ignore-case'
