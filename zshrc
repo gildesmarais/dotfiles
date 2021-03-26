@@ -111,6 +111,9 @@ if [ "$(uname)" = "Darwin" ]; then
   alias lsusb="system_profiler SPUSBDataType"
 fi
 
+# show images in kitty...meow!
+alias icat="kitty +kitten icat --align=left"
+
 # jumping words with Alt and left/right arrow
 bindkey "^[^[[C" forward-word
 bindkey "^[^[[D" backward-word
