@@ -79,6 +79,7 @@ alias rr='bundle exec rails routes | fzf'
 alias mp3tag="wine ~/.wine/drive_c/Program\ Files/Mp3tag/Mp3tag.exe"
 alias subl="open -a 'Sublime Text'"
 alias marta="open -a Marta"
+alias vsc="open -a 'Visual Studio Code'"
 
 alias hgrep="history | grep"
 alias psgrep="ps aux | grep"
