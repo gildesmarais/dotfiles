@@ -144,6 +144,5 @@ mas "OwlOCR", id: 1499181666
 mas "Pixelmator", id: 407963104
 mas "PixelStick", id: 415158530
 mas "ReadKit", id: 588726889
-mas "Rigelian", id: 1363775934
 mas "Tweetbot", id: 1384080005
 mas "Xcode", id: 497799835
