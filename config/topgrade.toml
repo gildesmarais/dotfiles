@@ -40,7 +40,8 @@
 repos = [
     "~/Nextcloud/website/",
     "~/Nextcloud/wiki/",
-    "~/versioned/gildesmarais/bitbar/"
+    "~/versioned/gildesmarais/bitbar/",
+    "~/versioned/gildesmarais/focus-ytdl/"
 ]
 
 # Don't pull the predefined git repos
@@ -60,6 +61,7 @@ repos = [
 [commands]
 "ClamAV: freshclam" = "freshclam --foreground"
 "Homebrew: bundle install" = "brew bundle install --global --quiet"
+"focus-ytdl: run" = "~/versioned/gildesmarais/focus-ytdl/focus-ytdl"
 #"Python Environment" = "~/dev/.env/bin/pip install -i https://pypi.python.org/simple -U --upgrade-strategy eager jupyter"
 
 [brew]
