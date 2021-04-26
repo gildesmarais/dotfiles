@@ -47,13 +47,11 @@ brew "nmap"
 brew "tmux"
 brew "openssl@1.1"
 brew "overmind"
-brew "postgresql", restart_service: true
 brew "proselint"
 brew "pup"
 brew "pwgen"
 brew "rcm"
 brew "reattach-to-user-namespace"
-brew "redis", restart_service: true
 brew "ripgrep"
 brew "rpl"
 brew "shellcheck"
