@@ -136,13 +136,18 @@ mas "Boxy SVG", id: 611658502
 mas "Developer", id: 640199958
 mas "Gapplin", id: 768053424
 mas "Hush", id: 1544743900
+mas "Ionica", id: 1470230251
 mas "iPreview", id: 1519213509
 mas "Ka-Block!", id: 1335413823
 mas "Marked 2", id: 890031187
+mas "Meander", id: 923576113
 mas "Mp3tag", id: 1532597159
 mas "OwlOCR", id: 1499181666
 mas "Pixelmator", id: 407963104
 mas "PixelStick", id: 415158530
 mas "ReadKit", id: 588726889
 mas "Tweetbot", id: 1384080005
+mas "Song Rating", id: 1471420267
+mas "Stockfish", id: 801463932
+mas "Typewriter", id: 1556419263
 mas "Xcode", id: 497799835
