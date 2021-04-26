@@ -11,16 +11,16 @@ backup_dir="/Volumes/gil-ext2-1tb/Backup_$(hostname -s)"
 
 START=$(date "+%s")
 caffeinate sudo rsync --archive --verbose --human-readable --itemize-changes --progress \
-	--compress --delete --delete-excluded --exclude='/Benutzerinformationen' \
-	--exclude='/Network' --exclude='/System' --exclude='/Volumes' \
-	--exclude='/bin' --exclude='/cores' --exclude='/dev' --exclude='/mach_kernel' \
-	--exclude='/net' --exclude='/private' --exclude='/sbin' --exclude='/tmp' \
-	--exclude='/usr' --exclude='/var' --exclude='*/.Trash/*' --exclude='*/.DS_Store' \
-	--exclude="/Applications" --exclude='*/Cache*/' \
-	--exclude='~/Downloads' --exclude='*.app' --exclude='*/.cache/*' --exclude='*.docset*' \
-	/* $backup_dir 2>&1 | tee ~/Documents/Backup/$(date "+%Y-%m-%d_%H%M%S.log")
+  --compress --delete --delete-excluded --exclude='/Benutzerinformationen' \
+  --exclude='/Network' --exclude='/System' --exclude='/Volumes' \
+  --exclude='/bin' --exclude='/cores' --exclude='/dev' --exclude='/mach_kernel' \
+  --exclude='/net' --exclude='/private' --exclude='/sbin' --exclude='/tmp' \
+  --exclude='/usr' --exclude='/var' --exclude='*/.Trash/*' --exclude='*/.DS_Store' \
+  --exclude="/Applications" --exclude='*/Cache*/' \
+  --exclude='~/Downloads' --exclude='*.app' --exclude='*/.cache/*' --exclude='*.docset*' \
+  /* $backup_dir 2>&1 | tee ~/Documents/Backup/$(date "+%Y-%m-%d_%H%M%S.log")
 
 FINISH=$(date "+%s")
 echo $(date "+%Y-%m-%d %H:%M:%S") >$backup_dir/_lastbackup.log
-echo "total time: $((($FINISH - $START) / 60)) minutes, $((($FINISH - $START) % 60)) seconds" >>$backup_dir/_lastbackup.log
+echo "total time: $(((FINISH - START) / 60)) minutes, $(((FINISH - START) % 60)) seconds" >>$backup_dir/_lastbackup.log
 touch "$backup_dir/_lastbackup.log"
