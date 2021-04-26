@@ -58,6 +58,7 @@ repos = [
 
 # Custom commands
 [commands]
+"ClamAV: freshclam" = "freshclam --foreground"
 #"Python Environment" = "~/dev/.env/bin/pip install -i https://pypi.python.org/simple -U --upgrade-strategy eager jupyter"
 
 [brew]
