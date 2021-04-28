@@ -1,0 +1,25 @@
+#!/bin/bash
+set -eu
+
+##
+# Creates a AAC encoded audio (256kbps VBR, 44.1kHz, Stereo) following the
+# "Apple Digital Masters", previously known as "Mastered for iTunes", 
+# guide lines.
+#
+# - https://www.apple.com/itunes/mastered-for-itunes/
+# - https://www.apple.com/itunes/docs/apple-digital-masters.pdf
+#
+# The encoding process is a two-step encoding. In short (full explanation 
+# see PDF file linked above):
+#
+# The intermedia.caf file is a 32bit floating point-file file resampled 
+# to the target sample rate, containing 'Sound Check' information.
+# The intermedia file is then encoded to AAC (file extension ".m4a").
+
+# TODO: check for afconvert command existence
+
+afconvert source.wav intermediate.caf -d 0 -f caff --soundcheck-generate
+afconvert intermediate.caf -d aac -f m4af -u pgcm 2 --soundcheck-read -b 256000 -q 127 -s 2 final.m4a
+
+# TODO: cleanup intermediate.caf file
+
