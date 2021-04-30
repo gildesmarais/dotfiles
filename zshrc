@@ -66,6 +66,7 @@ alias gc='git commit'
 alias gco='git checkout'
 alias gd='git diff'
 alias gs='git status'
+alias gup="git pull --rebase --autostash"
 
 # ruby & rails aliases
 alias be='bundle exec'
