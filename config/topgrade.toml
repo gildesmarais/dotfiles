@@ -38,8 +38,8 @@
 #max_concurrency = 5
 # Additional git repositories to pull
 repos = [
-    "~/Nextcloud/website/",
-    "~/Nextcloud/wiki/",
+    "~/Documents/website/",
+    "~/Documents/wiki/",
     "~/versioned/gildesmarais/bitbar/",
     "~/versioned/gildesmarais/focus-ytdl/"
 ]
