@@ -40,15 +40,15 @@
 repos = [
     "~/Documents/website/",
     "~/Documents/wiki/",
-    "~/versioned/gildesmarais/bitbar/",
-    "~/versioned/gildesmarais/focus-ytdl/"
+    "~/versioned/gildesmarais/*/",
+    "~/versioned/html2rss/*/"
 ]
 
 # Don't pull the predefined git repos
 #predefined_repos = false
 
 # Arguments to pass Git when pulling Repositories
-#arguments = "--rebase --autostash"
+arguments = "--rebase --autostash"
 
 [composer]
 #self_update = true
