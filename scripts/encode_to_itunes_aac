@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'shellwords'
+require 'fileutils'
+
+if ARGV.size.zero? || ['--help', '-h'].include?(ARGV[0])
+  puts <<~HELP
+    Usage: encode_to_itunes_aac [OPTIONS] [WAVE_FILE]
+
+    Options:
+
+      --help, -h  Prints this help.
+
+    Creates a AAC encoded audio (256kbps VBR, 44.1kHz, Stereo) following the
+    "Apple Digital Masters", previously known as "Mastered for iTunes",
+    guide lines.
+
+    - https://www.apple.com/itunes/mastered-for-itunes/
+    - https://www.apple.com/itunes/docs/apple-digital-masters.pdf
+
+    The encoding process is a two-step encoding. In short (full explanation
+    see PDF file linked above):
+
+    The intermedia.caf file is a 32bit floating point-file file resampled
+    to the target sample rate, containing 'Sound Check' information.
+    The intermedia file is then encoded to AAC (file extension ".m4a").
+  HELP
+
+  ARGV.size.zero? ? abort : exit
+end
+
+file_name = ARGV[0]
+
+raise ArgumentError, 'File does not exist!' unless File.exist?(file_name)
+raise "Can't read given file" unless File.readable?(file_name)
+
+file_name_without_extension = File.basename(file_name, '.*')
+
+intermediate = "#{file_name_without_extension}.caf"
+out = "#{file_name_without_extension}.m4a"
+
+puts '1. Creating intermedia file'
+system "afconvert #{Shellwords.escape file_name} #{Shellwords.escape intermediate} -d 0 -f caff --soundcheck-generate"
+
+puts '2. Encoding intermediate file to m4a audio'
+system "afconvert #{Shellwords.escape intermediate} -d aac -f m4af -u pgcm 2 --soundcheck-read -b 256000 -q 127 -s 2 #{Shellwords.escape out}"
+
+puts '3. Deleting intermediate file'
+FileUtils.rm Shellwords.escape(intermediate) if File.exist?(intermediate)
