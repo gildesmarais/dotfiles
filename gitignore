@@ -56,3 +56,7 @@ Thumbs.db
 # Ruby #
 ########
 .byebug_history
+
+# Editor / IDE files #
+######################
+.vscode/
