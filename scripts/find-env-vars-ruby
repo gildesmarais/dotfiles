@@ -3,13 +3,16 @@
 
 # loosely based on https://sosedoff.com/2016/11/26/find-environment-variables.html
 
-items = `grep -rnw . -e "ENV"`.split("\n").map do |line|
+# simple check if ripgrep is installed
+system('rg', '--version', exception: true)
+
+items = `rg --no-heading -w "ENV"`.split("\n").flat_map do |line|
   Regexp.last_match(1) if line =~ /ENV.fetch\(['"](\w+)['"]\)/ || line =~ /ENV\[['"](\w+)['"]\]/
 end
 
-items.compact!
-
-abort 'No mention of environment variables found' if items.empty?
-
-warn 'Found these environment variables:'
-puts items.uniq.sort
+if items.empty?
+  puts 'No mention of environment variables found'
+else
+  puts 'Found these environment variables:'
+  puts items.uniq.sort_by(&:to_s)
+end
