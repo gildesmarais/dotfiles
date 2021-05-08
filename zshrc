@@ -41,6 +41,7 @@ source ~/.profile
 # thanks bitboxer @bitboxer and @klaustopher
 # Respect ANSI Color Strings
 alias less="less -R"
+alias cat="bat"
 
 # And now to colourify...
 
