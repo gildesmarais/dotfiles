@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -eux
+
+youtube-dl -o "%(title)s.%(ext)s" \
+           --exec "$HOME/versioned/gildesmarais/focus-ytdl/focus-ytdl-postprocess {}" \
+           --audio-format best \
+           -x \
+           --add-metadata \
+           --ignore-errors \
+           "$1"
