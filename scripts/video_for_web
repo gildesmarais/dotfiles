@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ux
 
 SOURCE_FILE="$1"
 BASE_NAME=$(basename "${SOURCE_FILE%.*}")
@@ -31,7 +31,7 @@ ffmpeg -i "$SOURCE_FILE" \
   -strict experimental \
   -b:a 128k \
   -movflags +faststart \
-  -profile:v baseline \
+  -profile:v main \
   -crf 30 \
   "$BASE_NAME.x265.mp4"
 
