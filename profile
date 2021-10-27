@@ -21,6 +21,9 @@ fi
 
 # use the dotfiles' scripts
 export PATH="$HOME/.scripts:$PATH"
+
+# make Homebrow's sbin available
+export PATH="/usr/local/sbin:$PATH"
 #: }}}
 
 #: exports {{{
