@@ -38,26 +38,10 @@ kitty + complete setup zsh | source /dev/stdin
 
 source ~/.profile
 
-# thanks bitboxer @bitboxer and @klaustopher
 # Respect ANSI Color Strings
 alias less="less -R"
 
 # And now to colourify...
-
-# GRC add color the output (thanks to @klaustopher)
-if command_exists grc; then
-  alias colourify="grc -es --colour=auto"
-  alias configure='colourify ./configure'
-  alias diff='colourify diff'
-  alias make='colourify make'
-  alias gcc='colourify gcc'
-  alias g++='colourify g++'
-  alias as='colourify as'
-
-  alias netstat='colourify netstat'
-  alias ping='colourify ping'
-  alias traceroute='colourify /usr/sbin/traceroute'
-fi
 
 # aliases found in @holman's dotfiles
 alias glog="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
@@ -99,7 +83,6 @@ fi
 
 alias todo="rg '(TODO|FIXME|XXX|NOTE|OPTIMIZE|HACK|REVIEW)'"
 alias ag="rg"
-alias oleoo="npx gildesmarais/oleoo-cli"
 alias pg="playground"
 alias yarn-upgrade='npx npm-check-updates -u && yarn install && npx yarn-deduplicate yarn.lock & yarn install'
 
@@ -131,4 +114,5 @@ fi
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 eval "$(zoxide init zsh)"
