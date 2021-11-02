@@ -41,7 +41,6 @@ source ~/.profile
 # thanks bitboxer @bitboxer and @klaustopher
 # Respect ANSI Color Strings
 alias less="less -R"
-alias cat="bat"
 
 # And now to colourify...
 
@@ -116,6 +115,9 @@ fi
 
 # show images in kitty...meow!
 alias icat="kitty +kitten icat --align=left"
+
+# use bat for cat, and let it behave like cat
+alias cat="bat --style=plain --paging=never"
 
 # jumping words with Alt and left/right arrow
 bindkey "^[^[[C" forward-word
