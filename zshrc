@@ -41,8 +41,6 @@ source ~/.profile
 # Respect ANSI Color Strings
 alias less="less -R"
 
-# And now to colourify...
-
 # aliases found in @holman's dotfiles
 alias glog="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
 alias gb='git branch'
@@ -55,21 +53,17 @@ alias gup="git pull --rebase --autostash"
 # ruby & rails aliases
 alias be='bundle exec'
 alias berd='bundle exec rspec --format documentation'
+alias ber='bundle exec rspec'
 alias rdbm='bundle exec rake db:migrate'
 alias rdbr='bundle exec rake db:rollback'
 alias fs='overmind start || foreman start'
 alias rr='bundle exec rails routes | fzf'
+alias yarn-upgrade='npx npm-check-updates -u && yarn install && npx yarn-deduplicate yarn.lock & yarn install'
 
 # some more aliases \o/
-alias mp3tag="wine ~/.wine/drive_c/Program\ Files/Mp3tag/Mp3tag.exe"
 alias subl="open -a 'Sublime Text'"
 alias marta="open -a Marta"
 alias vsc="open -a 'Visual Studio Code'"
-
-alias hgrep="history | grep"
-alias psgrep="ps aux | grep"
-alias p8="ping 8.8.8.8"
-alias pup="pup -c"
 
 alias ..="cd .."
 alias ...="cd ../.."
@@ -84,9 +78,11 @@ fi
 alias todo="rg '(TODO|FIXME|XXX|NOTE|OPTIMIZE|HACK|REVIEW)'"
 alias ag="rg"
 alias pg="playground"
-alias yarn-upgrade='npx npm-check-updates -u && yarn install && npx yarn-deduplicate yarn.lock & yarn install'
-
 alias wiki="cd ~/Documents/wiki && ~/.scripts/fuz"
+alias hgrep="history | grep"
+alias psgrep="ps aux | grep"
+alias p8="ping 8.8.8.8"
+alias pup="pup -c"
 
 # ll: use exa, if not available fallback to ls -ls
 alias ll="exa -lhF --git --time-style long-iso || ls -ls"
