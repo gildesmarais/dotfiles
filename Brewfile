@@ -122,6 +122,7 @@ cask "rectangle"
 cask "signal"
 cask "sourcetree"
 cask "soundsource"
+cask "sourcetree"
 cask "swiftbar"
 cask "tor-browser"
 cask "transmit"
@@ -138,6 +139,7 @@ mas "Gapplin", id: 768053424
 mas "Hush", id: 1544743900
 mas "Ionica", id: 1470230251
 mas "iPreview", id: 1519213509
+mas "iStat Menus", id: 1319778037
 mas "Ka-Block!", id: 1335413823
 mas "Marked 2", id: 890031187
 mas "Meander", id: 923576113
