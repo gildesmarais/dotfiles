@@ -107,6 +107,7 @@ cask "handbrake"
 cask "keka"
 cask "kitty"
 cask "libreoffice-language-pack"
+cask "latest"
 cask "libreoffice"
 cask "marta"
 cask "musicbrainz-picard"
@@ -119,8 +120,8 @@ cask "postico"
 cask "raindropio"
 cask "rectangle"
 cask "signal"
-cask "stats"
 cask "sourcetree"
+cask "soundsource"
 cask "swiftbar"
 cask "tor-browser"
 cask "transmit"
@@ -142,6 +143,7 @@ mas "Marked 2", id: 890031187
 mas "Meander", id: 923576113
 mas "Mp3tag", id: 1532597159
 mas "OwlOCR", id: 1499181666
+mas "Pandan", id: 1569600264
 mas "Pixelmator", id: 407963104
 mas "PixelStick", id: 415158530
 mas "ReadKit", id: 588726889
@@ -150,3 +152,4 @@ mas "Song Rating", id: 1471420267
 mas "Stockfish", id: 801463932
 mas "Typewriter", id: 1556419263
 mas "Xcode", id: 497799835
+mas "Zavala", id: 1546457750
