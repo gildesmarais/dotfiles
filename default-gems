@@ -1,11 +1,7 @@
 brakeman
 bundler
 byebug
-cocoapods
-foreman
-license_finder
 rbs
 rubocop
 solargraph
-twterm
 uptimerobot
