@@ -11,6 +11,20 @@ function playground {
 function command_exists {
   type "$1" >/dev/null 2>&1;
 }
+
+##
+# source: https://stackoverflow.com/a/30029855/17449024
+# thank you, Michal!
+listening() {
+    if [ $# -eq 0 ]; then
+        sudo lsof -iTCP -sTCP:LISTEN -n -P
+    elif [ $# -eq 1 ]; then
+        sudo lsof -iTCP -sTCP:LISTEN -n -P | grep -i --color $1
+    else
+        echo "Usage: listening [pattern]"
+    fi
+}
+
 #: }}}
 
 #: PATH extensions {{{
