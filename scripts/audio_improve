@@ -37,6 +37,7 @@ inters = []
   system "ffmpeg -i #{Shellwords.escape current} \
          #{filter} \
          #{Shellwords.escape inters.last}"
+  current = inters.last
 end
 
 FileUtils.mv(inters.pop, out)

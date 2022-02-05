@@ -20,7 +20,7 @@ if ARGV.size.zero? || ['--help', '-h'].include?(ARGV[0])
 end
 
 file_name = ARGV[0]
-raise ArgumentError, 'File does not exist!' unless File.exist?(file_name)
+raise 'File does not exist!' unless File.exist?(file_name)
 raise "Can't read given file" unless File.readable?(file_name)
 
 file_name_without_extension = File.basename(file_name, '.*')
