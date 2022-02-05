@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'shellwords'
+require 'fileutils'
+
+if ARGV.size.zero? || ['--help', '-h'].include?(ARGV[0])
+  puts <<~HELP
+    Usage: audio_improve [OPTIONS] [AUDIO_FILE]
+
+    Uses ffmpeg in multiple steps to:
+
+      - declip
+      - declick
+      - apply a bit of compression
+
+    Options:
+      --help, -h  Prints this help.
+  HELP
+
+  ARGV.size.zero? ? abort : exit
+end
+
+file_name = ARGV[0]
+raise 'File does not exist!' unless File.exist?(file_name)
+raise "Can't read given file" unless File.readable?(file_name)
+
+file_name_without_extension = File.basename(file_name, '.*')
+out = "#{file_name_without_extension}.wav"
+
+current = file_name
+intermediate_template = "#{file_name_without_extension}.inter."
+inters = []
+
+['-af adeclip', '-af adeclick', '-af acompressor=mix=0.5'].each_with_index do |filter, index|
+  inters << [intermediate_template, index, '.wav'].join
+  system "ffmpeg -i #{Shellwords.escape current} \
+         #{filter} \
+         #{Shellwords.escape inters.last}"
+end
+
+FileUtils.mv(inters.pop, out)
+
+inters.each do |f|
+  FileUtils.rm f if File.exist?(f)
+end
