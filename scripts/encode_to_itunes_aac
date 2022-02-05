@@ -38,13 +38,37 @@ raise "Can't read given file" unless File.readable?(file_name)
 file_name_without_extension = File.basename(file_name, '.*')
 
 intermediate = "#{file_name_without_extension}.caf"
+out_untagged = "#{file_name_without_extension}.untagged.m4a"
 out = "#{file_name_without_extension}.m4a"
 
-puts '1. Creating intermedia file'
-system "afconvert #{Shellwords.escape file_name} #{Shellwords.escape intermediate} -d 0 -f caff --soundcheck-generate"
+puts '1. Creating intermediate file'
+system "afconvert #{Shellwords.escape file_name} \
+        #{Shellwords.escape intermediate} \
+        -d 0 \
+        -f caff \
+        --soundcheck-generate"
 
-puts '2. Encoding intermediate file to m4a audio'
-system "afconvert #{Shellwords.escape intermediate} -d aac -f m4af -u pgcm 2 --soundcheck-read -b 256000 -q 127 -s 2 #{Shellwords.escape out}"
+puts '2. Encoding intermediate file to untagged m4a audio'
+system "afconvert #{Shellwords.escape intermediate} \
+        -d aac \
+        -f m4af \
+        -u pgcm 2 \
+        --soundcheck-read \
+        -b 256000 \
+        -q 127 \
+        -s 2 \
+         #{Shellwords.escape out_untagged}"
 
-puts '3. Deleting intermediate file'
-FileUtils.rm Shellwords.escape(intermediate) if File.exist?(intermediate)
+puts '3. copying metadata to m4a'
+system "ffmpeg \
+        -i #{Shellwords.escape file_name} \
+        -i #{Shellwords.escape out_untagged} \
+        -map 1 -map_metadata 0 \
+        -codec copy \
+        #{Shellwords.escape out}"
+
+puts '4. deleting untagged m4a file'
+FileUtils.rm out_untagged if File.exist?(out_untagged)
+
+puts '5. Deleting intermediate file'
+FileUtils.rm intermediate if File.exist?(intermediate)
