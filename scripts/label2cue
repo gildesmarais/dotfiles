@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+unless ARGV[0]
+  puts <<~HELP
+    Usage: label2cue label_track.txt
+
+    Contents of audio.tracklist:
+    assuming txt file structure:
+    0 0 First track
+    261.405839	261.405839	2nd track
+    601.796775	601.796775	3nd track
+    1054.361545	1054.361545	4...
+    1348.886096	1348.886096	5...
+    1716.530426	1716.530426	6...
+    2085.741388	2085.741388 7...
+    ...
+
+    This script will create the corresponding cue sheet file.
+  HELP
+
+  exit 1
+end
+
+file_name = ARGV[0]
+
+raise ArgumentError, 'File does not exist!' unless File.exist?(file_name)
+raise "Can't read given file" unless File.readable?(file_name)
+
+tracks = File.read(file_name).split("\n")
+             .map do |line|
+  split = line.split(' ')
+
+  title = split[2..].join(' ')
+
+  time = split[0].to_f
+  time = [time / 60, time % 60].map { |number| format('%02d', number) }.join(':')
+
+  { time:, title:, performer: '' }
+end
+
+tracks = tracks.each_with_index.map do |track, number|
+  <<~STRING
+    TRACK #{format('%02d', number + 1)}
+      PERFORMER "#{track[:performer]}"
+      TITLE "#{track[:title]}"
+      INDEX 01 #{track[:time]}
+  STRING
+end
+
+puts <<~CUESHEET
+  PERFORMER ""
+  TITLE ""
+  FILE ""
+    #{tracks.join}
+CUESHEET
