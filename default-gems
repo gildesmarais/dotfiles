@@ -1,7 +1,9 @@
 brakeman
 bundler
 byebug
+cocoapods
 rbs
 rubocop
 solargraph
+solargraph-arc
 uptimerobot
