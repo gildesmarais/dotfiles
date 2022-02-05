@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'shellwords'
+require 'fileutils'
+
+if ARGV.size.zero? || ['--help', '-h'].include?(ARGV[0])
+  puts <<~HELP
+    Usage: audio_compress [OPTIONS] [AUDIO_FILE]
+
+    Generates a compressed, equally loud everywhere file.
+    Idea and ffmpeg taken from:
+      https://medium.com/@jud.dagnall/dynamic-range-compression-for-audio-with-ffmpeg-and-compand-621fe2b1a892
+
+      Options:
+      --help, -h  Prints this help.
+  HELP
+
+  ARGV.size.zero? ? abort : exit
+end
+
+file_name = ARGV[0]
+raise ArgumentError, 'File does not exist!' unless File.exist?(file_name)
+raise "Can't read given file" unless File.readable?(file_name)
+
+file_name_without_extension = File.basename(file_name, '.*')
+out = "#{file_name_without_extension}.wav"
+
+system "ffmpeg -i #{Shellwords.escape file_name} \
+       -filter_complex 'compand=attacks=0:points=-80/-900|-45/-15|-27/-9|0/-7|20/-7:gain=5' \
+       #{Shellwords.escape out}"
