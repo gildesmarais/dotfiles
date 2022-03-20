@@ -1,0 +1,14 @@
+#!/bin/bash
+set -euo pipefail
+
+if [ "$(pgrep Music | wc -l)" -gt 0 ]; then
+  artist=$(osascript -e 'tell application "Music" to artist of current track as string');
+  title=$(osascript -e 'tell application "Music" to name of current track as string');
+  album=$(osascript -e 'tell application "Music" to album of current track as string');
+  year=$(osascript -e 'tell application "Music" to year of current track as string');
+  genre=$(osascript -e 'tell application "Music" to genre of current track as string');
+
+  echo "$artist － $title [$album] [Y:$year / G:$genre]"
+else
+ echo "Music isn't running"
+fi
