@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'shellwords'
+require 'fileutils'
+
+if ARGV.size.zero? || ['--help', '-h'].include?(ARGV[0])
+  puts <<~HELP
+    Usage: encode_to_opus [FILE]
+
+    Options:
+
+      --help, -h  Prints this help.
+
+    Creates a 64k VBR OPUS audio file with a frame_duration of 40ms.
+  HELP
+
+  ARGV.size.zero? ? abort : exit
+end
+
+file_name = ARGV[0]
+
+raise 'File does not exist!' unless File.exist?(file_name)
+raise "Can't read given file" unless File.readable?(file_name)
+
+file_name_without_extension = File.basename(file_name, '.*')
+
+out = "#{file_name_without_extension}.opus"
+
+system "ffmpeg -i #{Shellwords.escape file_name} \
+        -c:a libopus \
+        -b:a 64k \
+        -frame_duration 40 \
+         #{Shellwords.escape out}"
