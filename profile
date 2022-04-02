@@ -38,6 +38,9 @@ export PATH="$HOME/.scripts:$PATH"
 
 # make Homebrow's sbin available
 export PATH="/usr/local/sbin:$PATH"
+
+# make cargo bin available
+export PATH="$HOME/.cargo/bin:$PATH"
 #: }}}
 
 #: exports {{{

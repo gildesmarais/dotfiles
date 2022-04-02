@@ -18,23 +18,30 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
-
-# bind asdf
-. $(brew --prefix asdf)/asdf.sh
-export PATH="/usr/local/opt/libpq/bin:$PATH"
-
-# add asdf completions
-fpath=(${ASDF_DIR}/completions $fpath)
+function command_exists {
+  type "$1" >/dev/null 2>&1;
+}
 
 # homebrew provided zsh completions
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 
+# bind asdf
+. $(brew --prefix asdf)/asdf.sh
+
   autoload -Uz compinit
   compinit
 fi
 
-kitty + complete setup zsh | source /dev/stdin
+if command_exists asdf; then
+  # add asdf completions
+  fpath=(${ASDF_DIR}/completions $fpath)
+fi
+
+if command_exists kitty; then
+  kitty + complete setup zsh | source /dev/stdin
+  alias icat="kitty +kitten icat --align=left"
+fi
 
 source ~/.profile
 
@@ -84,19 +91,20 @@ alias psgrep="ps aux | grep"
 alias p8="ping 8.8.8.8"
 alias pup="pup -c"
 
-# ll: use exa, if not available fallback to ls -ls
-alias ll="exa -lhF --git --time-style long-iso || ls -ls"
+if command_exists exa; then
+  alias ll="exa -lhF --git --time-style long-iso"
+fi
 
 if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx
   alias lsusb="system_profiler SPUSBDataType"
 fi
 
-# show images in kitty...meow!
-alias icat="kitty +kitten icat --align=left"
 
-# use bat for cat, and let it behave like cat
-alias cat="bat --style=plain --paging=never"
+if command_exists bat; then
+  # use bat for cat, and let it behave like cat
+  alias cat="bat --style=plain --paging=never"
+fi
 
 # jumping words with Alt and left/right arrow
 bindkey "^[^[[C" forward-word
@@ -106,9 +114,13 @@ if [ -f "$HOME/.zshrc.local" ]; then
   source "$HOME/.zshrc.local"
 fi
 
+export PATH="/usr/local/opt/libpq/bin:$PATH"
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-eval "$(zoxide init zsh)"
+if command_exists zoxide; then
+  eval "$(zoxide init zsh)"
+fi
