@@ -77,11 +77,6 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
-if command_exists nvim; then
-  alias vi='nvim'
-  alias vim='nvim'
-fi
-
 alias todo="rg '(TODO|FIXME|XXX|NOTE|OPTIMIZE|HACK|REVIEW)'"
 alias ag="rg"
 alias pg="playground"
@@ -89,6 +84,7 @@ alias wiki="cd ~/Documents/wiki && ~/.scripts/fuz"
 alias hgrep="history | grep"
 alias psgrep="ps aux | grep"
 alias p8="ping 8.8.8.8"
+alias p6="ping6 2606:4700:4700::1111"
 alias pup="pup -c"
 
 if command_exists exa; then
@@ -115,6 +111,15 @@ if [ -f "$HOME/.zshrc.local" ]; then
 fi
 
 export PATH="/usr/local/opt/libpq/bin:$PATH"
+
+# setup android sdk
+if [[ -d "$HOME/Library/Android/sdk" ]]; then
+  export ANDROID_HOME=$HOME/Library/Android/sdk
+  export PATH=$PATH:$ANDROID_HOME/emulator
+  export PATH=$PATH:$ANDROID_HOME/tools
+  export PATH=$PATH:$ANDROID_HOME/tools/bin
+  export PATH=$PATH:$ANDROID_HOME/platform-tools
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
