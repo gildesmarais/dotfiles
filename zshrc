@@ -31,9 +31,8 @@ if command_exists asdf; then
   fpath=(${ASDF_DIR}/completions $fpath)
 fi
 
-if command_exists kitty; then
-  kitty + complete setup zsh | source /dev/stdin
-  alias icat="kitty +kitten icat --align=left"
+if command_exists wezterm; then
+  alias icat="wezterm imgcat"
 fi
 
 source ~/.profile
@@ -49,6 +48,7 @@ alias gco='git checkout'
 alias gd='git diff'
 alias gs='git status'
 alias gup="git pull --rebase --autostash"
+alias lg="lazygit"
 
 # ruby & rails aliases
 alias be='bundle exec'
