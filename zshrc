@@ -116,8 +116,13 @@ fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 
+# setup fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# setup zoxide
 if command_exists zoxide; then
   eval "$(zoxide init zsh)"
 fi
+
+# setup starship
+eval "$(starship init zsh)"
