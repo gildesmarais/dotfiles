@@ -26,7 +26,10 @@ raise "Can't read given file" unless File.readable?(file_name)
 
 out = "#{file_name}.png"
 
+# -filter_complex 'aformat=channel_layouts=mono,showwavespic=s=1000x80' -frames:v 1 \
+#
 system "ffmpeg -i \
        #{Shellwords.escape file_name} \
-       -filter_complex 'aformat=channel_layouts=mono,showwavespic=s=1000x200' -frames:v 1 \
+       -filter_complex \"aformat=channel_layouts=mono,showwavespic=s=1000x400:colors=white|white:filter=peak\" \
+        -frames:v 1 \
        #{Shellwords.escape out}"

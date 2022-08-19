@@ -31,4 +31,5 @@ system "ffmpeg -i #{Shellwords.escape file_name} \
         -c:a libopus \
         -b:a 64k \
         -frame_duration 40 \
+        -dash 1 \
          #{Shellwords.escape out}"
