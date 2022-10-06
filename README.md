@@ -8,6 +8,7 @@ This repository contains config files to set up my systems and keep them in sync
 - `brew install rcm topgrade`
 - `git clone git@github.com:gildesmarais/dotfiles.git ~/.dotfiles && cd ~/.dotfiles && rcup -v`
 - `topgrade`
+
 - ```sh
   mkdir -p ~/.vim/backups
   mkdir -p ~/.vim/swaps
@@ -33,3 +34,7 @@ brew bundle install --global
 1. `git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"`
 2. `mkdir -p ~/.zprezto-contrib`
 3. open a fresh `zsh` shell
+
+## VSCode
+
+1. Enable key repeat on hold: `defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false`
