@@ -62,7 +62,7 @@ arguments = "--rebase --autostash"
 [commands]
 "ClamAV: freshclam" = "freshclam --foreground"
 "RCM: rcup" = "rcup -v"
-"focus-ytdl: run" = "~/versioned/gildesmarais/focus-ytdl/focus-ytdl"
+# "focus-ytdl: run" = "~/versioned/gildesmarais/focus-ytdl/focus-ytdl"
 #"Python Environment" = "~/dev/.env/bin/pip install -i https://pypi.python.org/simple -U --upgrade-strategy eager jupyter"
 
 [brew]
