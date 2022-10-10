@@ -1,15 +1,15 @@
 [user]
-  name = Gil Desmarais
-  email = git@desmarais.de
+	name = Gil Desmarais
+	email = git@desmarais.de
 [core]
-  excludesfile = /Users/gil/.gitignore_global
+	excludesfile = /Users/gil/.gitignore_global
   autocrlf = input
 [difftool "sourcetree"]
-  cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-  path =
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
 [mergetool "sourcetree"]
-  cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-  trustExitCode = true
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
 [credential]
   helper = osxkeychain
 [push]
@@ -36,10 +36,12 @@
 [pull]
   ff = only
 [commit]
-  template = /Users/gil/.stCommitMsg
+	template = /Users/gil/.stCommitMsg
 [http]
   postBuffer = 524288000
 [fetch]
   prune = true
 [rebase]
-  autosquash = true
+	autosquash = true
+[init]
+	defaultBranch = main
