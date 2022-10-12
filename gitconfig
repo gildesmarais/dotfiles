@@ -35,8 +35,6 @@
   difftool = true
 [pull]
   ff = only
-[commit]
-	template = /Users/gil/.stCommitMsg
 [http]
   postBuffer = 524288000
 [fetch]
