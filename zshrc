@@ -19,13 +19,14 @@ function command_exists {
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 
-  if [[ -d "$(brew --prefix asdf)/asdf.sh" ]]; then
+  if [[ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]]; then
     # bind asdf
-    . $(brew --prefix asdf)/asdf.sh
-    
+    . $(brew --prefix asdf)/libexec/asdf.sh
+
     # add asdf completions
     fpath=(${ASDF_DIR}/completions $fpath)
   fi
+
   autoload -Uz compinit
   compinit
 fi
