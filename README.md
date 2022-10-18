@@ -38,3 +38,17 @@ brew bundle install --global
 ## VSCode
 
 1. Enable key repeat on hold: `defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false`
+
+## macOS: use another default text editor
+
+```sh
+brew install duti python-yq
+curl "https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml" \
+  | yq -r "to_entries | (map(.value.extensions) | flatten) - [null] | unique | .[]" \
+  | xargs -L 1 -I "{}" duti -s com.microsoft.VSCode {} all
+```
+
+Find other editors by `lsappinfo | grep 'bundleID="' | cut -d'"' -f2 | sort`.
+
+Source: <https://alexpeattie.com/blog/associate-source-code-files-with-editor-in-macos-using-duti/>
+
