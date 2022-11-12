@@ -121,12 +121,6 @@ if [ "$(uname)" = "Darwin" ]; then
 fi
 #endregion
 
-#region# sweetened history
-export HISTFILE=~/.zsh_history
-alias hgrep="history | grep"
-alias h="history | fzf"
-#endregion
-
 #region# powerful aliases beginning with 'p'
 alias psgrep="ps aux | grep"
 alias p8="ping 8.8.8.8"
@@ -134,6 +128,18 @@ alias p6="ping6 2606:4700:4700::1111"
 alias pup="pup -c"
 #endregion
 
+#endregion
+
+#region sweetened history (some things taken from https://www.soberkoder.com/better-zsh-history/ )
+export HISTFILE=~/.zsh_history
+export HISTFILESIZE=1000000000
+export HISTSIZE=1000000000
+setopt INC_APPEND_HISTORY
+export HISTTIMEFORMAT="[%F %T] "
+setopt EXTENDED_HISTORY
+setopt HIST_FIND_NO_DUPS
+alias hgrep="history | grep"
+alias h="history | fzf"
 #endregion
 
 #region key bindings
