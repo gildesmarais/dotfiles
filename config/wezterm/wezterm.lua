@@ -8,6 +8,7 @@ return {
             background = "#192129"
         }
     },
+    harfbuzz_features = {'zero'},
     keys = {
         {key = 'p', mods = 'CMD', action = wezterm.action.ShowLauncher}, {
             key = "k",
