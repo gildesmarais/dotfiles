@@ -9,7 +9,7 @@ return {
         }
     },
     keys = {
-        {
+        {key = 'p', mods = 'CMD', action = wezterm.action.ShowLauncher}, {
             key = "k",
             mods = "CMD",
             action = wezterm.action {ClearScrollback = "ScrollbackAndViewport"}
