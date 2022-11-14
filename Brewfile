@@ -73,7 +73,6 @@ brew "zsh-completions"
 brew "yt-dlp/taps/yt-dlp"
 cask "alfred"
 cask "appcleaner"
-cask "bitwarden"
 cask "brave-browser"
 cask "dash"
 cask "firefox"
@@ -121,6 +120,7 @@ cask "wezterm"
 cask "xld"
 mas "Actions", id: 1586435171
 mas "Amphetamine", id: 937984704
+mas "Bitwarden", id: 1352778147
 mas "Boxy SVG", id: 611658502
 mas "Cascadea", id: 1432182561
 mas "Dato", id: 1470584107
