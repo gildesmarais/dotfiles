@@ -3,7 +3,7 @@
 	email = git@desmarais.de
 [core]
 	excludesfile = /Users/gil/.gitignore_global
-  autocrlf = input
+	autocrlf = input
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
@@ -11,34 +11,34 @@
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
 [credential]
-  helper = osxkeychain
+	helper = osxkeychain
 [push]
-  default = current
+	default = current
 [filter "media"]
-  clean = git media clean %f
-  smudge = git media smudge %f
-  required = true
+	clean = git media clean %f
+	smudge = git media smudge %f
+	required = true
 [help]
-  autocorrect = 1
+	autocorrect = 1
 [color]
-  ui = 1
+	ui = 1
 [merge]
-  conflictstyle = diff3
+	conflictstyle = diff3
 [alias]
-  showtool = "!f() { git difftool $1^ $1; }; f"
-  added = difftool --cached
+	showtool = "!f() { git difftool $1^ $1; }; f"
+	added = difftool --cached
 [diff]
-  tool = icdiff
-  compactionHeuristic = true
-  colvorMoved = dimmed-zebra
+	tool = icdiff
+	compactionHeuristic = true
+	colvorMoved = dimmed-zebra
 [pager]
-  difftool = true
+	difftool = true
 [pull]
-  ff = only
+	ff = only
 [http]
-  postBuffer = 524288000
+	postBuffer = 524288000
 [fetch]
-  prune = true
+	prune = true
 [rebase]
 	autosquash = true
 [init]
