@@ -1,6 +1,7 @@
 local wezterm = require 'wezterm';
 
 return {
+    font_size = 12.0,
     color_scheme = "Tomorrow Night Eighties",
     color_schemes = {
         ["Tomorrow Night Eighties"] = {
