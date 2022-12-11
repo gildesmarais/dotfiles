@@ -1,4 +1,5 @@
 local wezterm = require 'wezterm';
+local act = wezterm.action
 
 return {
     font_size = 12.0,
@@ -11,7 +12,9 @@ return {
     },
     harfbuzz_features = {'zero'},
     keys = {
-        {key = 'p', mods = 'CMD', action = wezterm.action.ShowLauncher}, {
+        {key = 'p', mods = 'CMD', action = act.ShowLauncher},
+        {key = 'UpArrow', mods = 'SHIFT', action = act.ScrollByPage(-1)},
+        {key = 'DownArrow', mods = 'SHIFT', action = act.ScrollByPage(1)}, {
             key = "k",
             mods = "CMD",
             action = wezterm.action {ClearScrollback = "ScrollbackAndViewport"}
