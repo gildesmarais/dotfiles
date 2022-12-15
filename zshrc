@@ -34,7 +34,9 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # setup starship
-eval "$(starship init zsh)"
+if command_exists starship; then
+  eval "$(starship init zsh)"
+fi
 
 # setup fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
