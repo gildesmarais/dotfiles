@@ -1,0 +1,4 @@
+#!/bin/bash
+set -euxo pipefail
+
+rclone sync --progress /Users/gil/Music/Music/Media.localized/ g-backup-music:
