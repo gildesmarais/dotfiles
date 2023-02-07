@@ -19,7 +19,7 @@
 	smudge = git media smudge %f
 	required = true
 [help]
-	autocorrect = 1
+	autocorrect = 100
 [color]
 	ui = 1
 [merge]
