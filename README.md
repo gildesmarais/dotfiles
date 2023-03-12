@@ -29,6 +29,18 @@ brew bundle install --global
 2. `defaults write com.apple.screencapture disable-shadow -bool true`
 3. Drag "Location" to Dock, open as Fan
 
+## macOS Configure sudo to auth with TouchID
+
+```sh
+sudo vim /etc/pam.d/sudo
+```
+
+Add as first line:
+
+```
+auth       sufficient     pam_tid.so
+```
+
 ## ZSH Setup
 
 1. `git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"`
