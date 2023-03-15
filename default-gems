@@ -1,9 +1,10 @@
 brakeman
 bundler
 byebug
-cocoapods
-rbs
 rubocop
+rubocop-performance
+rubocop-rspec
 solargraph
 solargraph-rails
+test-prof
 uptimerobot
