@@ -2,7 +2,7 @@ local wezterm = require 'wezterm';
 local act = wezterm.action
 
 return {
-    font_size = 12.0,
+    font_size = 14.0,
     color_scheme = "Tomorrow Night Eighties",
     color_schemes = {
         ["Tomorrow Night Eighties"] = {
