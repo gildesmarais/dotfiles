@@ -3,6 +3,7 @@ bundler
 byebug
 rubocop
 rubocop-performance
+rubocop-rails
 rubocop-rspec
 solargraph
 solargraph-rails
