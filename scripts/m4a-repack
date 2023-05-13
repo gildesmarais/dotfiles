@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -eux
+
+ffmpeg -i "$1" -vn -acodec copy temp.aac
+mv "$1" "$1.original"
+ffmpeg -i temp.aac -acodec copy "$1"
+rm temp.aac

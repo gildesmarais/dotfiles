@@ -37,7 +37,7 @@ sudo vim /etc/pam.d/sudo
 
 Add as first line:
 
-```
+```ini
 auth       sufficient     pam_tid.so
 ```
 
@@ -63,4 +63,3 @@ curl "https://raw.githubusercontent.com/github/linguist/master/lib/linguist/lang
 Find other editors by `lsappinfo | grep 'bundleID="' | cut -d'"' -f2 | sort`.
 
 Source: <https://alexpeattie.com/blog/associate-source-code-files-with-editor-in-macos-using-duti/>
-
