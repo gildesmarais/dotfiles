@@ -73,7 +73,7 @@ alias rdbm='bundle exec rake db:migrate'
 alias rdbr='bundle exec rake db:rollback'
 alias fs='overmind start'
 alias rr='bundle exec rails routes | fzf'
-alias rubocop-global="rubocop --require rubocop-rails --require rubocop-rspec --require rubocop-performance --require test_prof/rubocop -c .rubocop.yml"
+alias rubocop-global="rubocop --require rubocop-rails --require rubocop-rspec --require rubocop-performance --require test_prof/rubocop --require rubocop-thread_safety -c .rubocop.yml"
 alias yarn-upgrade='npx npm-check-updates -u && yarn install && npx yarn-deduplicate yarn.lock & yarn install'
 #endregion
 
