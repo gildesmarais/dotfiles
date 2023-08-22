@@ -67,6 +67,7 @@ set nowrap " Do not wrap lines.
 set nu " Enable line numbers.
 set ofu=syntaxcomplete#Complete " Set omni-completion method.
 set report=0 " Show all changes.
+set rtp+=/usr/local/opt/fzf " Make use of fzf
 set ruler " Show the cursor position
 set scrolloff=3 " Start scrolling three lines before horizontal border of window.
 set shell=/bin/sh " Use /bin/sh for executing shell commands
