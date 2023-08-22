@@ -10,7 +10,7 @@ if command_exists caddy; then
     caddy run --watch
   else
     port="${PORT:-8080}"
-    caddy file-server -browse --root . --listen "127.0.0.1:$port"
+    caddy file-server --browse --root . --listen "127.0.0.1:$port"
   fi
 else
   port="${$PORT:-8080}"
