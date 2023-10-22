@@ -1,6 +1,6 @@
 #region functions
 function command_exists {
-  type "$1" >/dev/null 2>&1;
+  type "$1" >/dev/null 2>&1
 }
 
 fzf_git_checkout() {
