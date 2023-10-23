@@ -8,8 +8,10 @@ This repository contains config files to set up my systems and keep them in sync
 - `brew install rcm topgrade`
 - `git clone git@github.com:gildesmarais/dotfiles.git ~/.dotfiles && cd ~/.dotfiles && rcup -v`
 - `topgrade`
+- `cd ~/.dotfiles && brew bundle`
+- Setup vim:
 
-- ```sh
+  ```sh
   mkdir -p ~/.vim/backups
   mkdir -p ~/.vim/swaps
   mkdir -p ~/.vim/undo
