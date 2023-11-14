@@ -1,0 +1,124 @@
+#!/bin/bash
+
+set -exo pipefail
+
+#region Finder
+# Show hidden files in Finder
+defaults write com.apple.finder AppleShowAllFiles -boolean true;
+
+# Show all filename extensions in Finder
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true;
+
+# Show status bar in Finder
+defaults write com.apple.finder ShowStatusBar -bool true;
+
+# Show path bar in Finder
+defaults write com.apple.finder ShowPathbar -bool true;
+
+# Show the ~/Library folder
+chflags nohidden ~/Library;
+
+# Show the /Volumes folder
+sudo chflags nohidden /Volumes;
+
+# Expand save panel by default
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true;
+
+# Expand print panel by default
+defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true;
+
+killall Finder;
+#endregion
+
+#region Safari
+# Enable Safari's debug menu
+defaults write com.apple.Safari IncludeInternalDebugMenu -bool true;
+
+# Enable the Develop menu and the Web Inspector in Safari
+defaults write com.apple.Safari IncludeDevelopMenu -bool true;
+defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true;
+defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" -bool true;
+
+# Add a context menu item for showing the Web Inspector in web views
+defaults write NSGlobalDomain WebKitDeveloperExtras -bool true;
+#endregion
+
+#region Files
+# Disable the warning when changing a file extension
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false;
+
+# Avoid creating .DS_Store files on network volumes
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true;
+#endregion
+
+#region Security
+# Empty Trash securely by default
+defaults write com.apple.finder EmptyTrashSecurely -bool true;
+#endregion
+
+#region Dock
+# Automatically hide and show the Dock
+defaults write com.apple.dock autohide -bool true;
+
+# Remove the auto-hiding Dock delay
+defaults write com.apple.dock autohide-delay -float 0;
+
+# Remove the animation when hiding/showing the Dock
+defaults write com.apple.dock autohide-time-modifier -float 0;
+
+# set dock icons size
+defaults write com.apple.dock tilesize -int 24;
+
+# set dock icons magnification
+defaults write com.apple.dock magnification -bool true;
+
+# set dock icons magnification size
+defaults write com.apple.dock largesize -int 36;
+
+killall Dock;
+#endregion
+
+#region Keyboard
+# Disable press-and-hold for keys in favor of key repeat
+defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false;
+
+# Set a blazingly fast keyboard repeat rate
+defaults write NSGlobalDomain KeyRepeat -int 1;
+
+# Set a shorter Delay until key repeat
+defaults write NSGlobalDomain InitialKeyRepeat -int 15;
+#endregion
+
+#region Screen
+# Save screenshots to the desktop
+mkdir -p "${HOME}/Desktop/Screenshots";
+defaults write com.apple.screencapture location -string "${HOME}/Desktop/Screenshots";
+
+# Disable shadow in screenshots
+defaults write com.apple.screencapture disable-shadow -bool true;
+
+# set the screensaver to start after 5 minutes
+defaults -currentHost write com.apple.screensaver idleTime -int 300;
+
+# Require password immediately after sleep or screen saver begins
+defaults write com.apple.screensaver askForPassword -int 1;
+defaults write com.apple.screensaver askForPasswordDelay -int 0;
+#endregion
+
+#region Cursor / Pointer
+# Disable "natural" scrolling
+defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false;
+
+# Disable mouse acceleration
+defaults write .GlobalPreferences com.apple.mouse.scaling -1;
+defaults write .GlobalPreferences com.apple.trackpad.scaling -1;
+defaults write .GlobalPreferences com.apple.scrollwheel.scaling -1;
+
+# enable three finger drag
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true;
+#endregion
+
+#region Mail
+# Copy email addresses as `foo@example.com` instead of `Foo Bar ` in Mail.app
+defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false;
+#endregion
