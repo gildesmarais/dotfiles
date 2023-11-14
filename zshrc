@@ -104,7 +104,7 @@ alias .....="cd ../../../.."
 
 #region# magic folder commands
 alias pg="playground"
-alias wiki="cd ~/Documents/wiki && ~/.scripts/fuz"
+alias wiki="cd ~/versioned/gildesmarais/wiki && ~/.scripts/fuz"
 #endregion
 
 #region# better cat and "imagec" (icat)
