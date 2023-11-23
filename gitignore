@@ -40,7 +40,6 @@
 .bundle
 .DS_Store
 .DS_Store?
-.env
 .LSOverride
 .Spotlight-V100
 .tags*
@@ -57,7 +56,3 @@ Thumbs.db
 ########
 .byebug_history
 .yardoc/
-
-# Editor / IDE files #
-######################
-.vscode/
