@@ -40,8 +40,6 @@ disable = ["gnome_shell_extensions", "github_cli_extensions", "helm"]
 #max_concurrency = 5
 # Additional git repositories to pull
 repos = [
-    "~/Documents/website/",
-    "~/Documents/wiki/",
     "~/versioned/gildesmarais/*/",
     "~/versioned/html2rss/*/"
 ]
@@ -50,7 +48,7 @@ repos = [
 #predefined_repos = false
 
 # Arguments to pass Git when pulling Repositories
-arguments = "--rebase --autostash"
+pull_arguments = "--rebase --autostash"
 
 [composer]
 #self_update = true
