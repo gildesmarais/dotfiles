@@ -48,5 +48,9 @@ return {
         -- E.g. http://127.0.0.1:8000 for a local development server,
         -- or http://192.168.1.1 for the web interface of many routers.
         {regex = [[\b\w+://(?:[\d]{1,3}\.){3}[\d]{1,3}\S*\b]], format = '$0'}
+    },
+    quick_select_patterns = {
+      -- match text surrounded by backticks
+      '`.*`'
     }
 }
