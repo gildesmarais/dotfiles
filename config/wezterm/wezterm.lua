@@ -12,9 +12,13 @@ return {
     },
     harfbuzz_features = {'zero'},
     keys = {
-        {key = 'p', mods = 'CMD', action = act.ShowLauncher},
+        {key = 'p', mods = 'CMD|SHIFT', action = act.ShowLauncher},
+        {key = 'p', mods = 'CMD', action = act.ScrollByPage(-1)},
+        {key = 'd', mods = 'CMD', action = act.ScrollByPage(1)}, 
         {key = 'UpArrow', mods = 'SHIFT', action = act.ScrollByPage(-1)},
-        {key = 'DownArrow', mods = 'SHIFT', action = act.ScrollByPage(1)}, {
+        {key = 'DownArrow', mods = 'SHIFT', action = act.ScrollByPage(1)},
+        {key = '/', mods = 'CMD', action = act.Search 'CurrentSelectionOrEmptyString' },
+        {
             key = "k",
             mods = "CMD",
             action = wezterm.action {ClearScrollback = "ScrollbackAndViewport"}
