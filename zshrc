@@ -136,6 +136,7 @@ alias psgrep="ps aux | grep"
 alias p8="ping 8.8.8.8"
 alias p6="ping6 2606:4700:4700::1111"
 alias pup="pup -c"
+alias pw="pwgen -nyB1 $(shuf -i 46-64 -n 1) 1"
 #endregion
 
 #endregion
