@@ -23,7 +23,7 @@
 [color]
 	ui = 1
 [merge]
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 [alias]
 	showtool = "!f() { git difftool $1^ $1; }; f"
 	added = difftool --cached
