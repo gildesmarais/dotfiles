@@ -9,6 +9,13 @@ require 'rubygems'
 # source: https://github.com/ruby/irb/issues/43#issuecomment-572981408
 IRB.conf[:USE_MULTILINE] = false
 
+Reline::Face.config(:completion_dialog) do |conf|
+  conf.define :default, foreground: :white, background: :blue
+  #                                                     ^^^^^ `:cyan` by default
+  conf.define :enhanced, foreground: :white, background: :magenta
+  conf.define :scrollbar, foreground: :white, background: :blue
+end
+
 ##
 # monkey-patch (restricted to irb session) Class
 class Class
