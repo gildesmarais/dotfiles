@@ -69,6 +69,7 @@ alias gco='fzf_git_checkout'
 alias gd='git diff'
 alias gs='git status'
 alias gup="git pull --rebase --autostash"
+alias gundo="git reset --soft HEAD~1"
 alias lg="lazygit"
 #endregion
 
