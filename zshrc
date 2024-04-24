@@ -46,7 +46,9 @@ if command_exists starship; then
 fi
 
 # setup fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if command_exists fzf; then
+  eval "$(fzf --zsh)"
+fi
 
 # setup zoxide
 if command_exists zoxide; then
