@@ -127,8 +127,11 @@ fi
 #region# likewise powerful aliases beginning with 'l'
 alias less="less -R"
 
-if command_exists exa; then
-  alias ll="exa -lhF --git --time-style long-iso"
+if command_exists lsd; then
+  alias ls='lsd'
+  alias ll='lsd -l'
+  alias la='lsd -a'
+  alias lla='lsd -la'
 fi
 
 if [ "$(uname)" = "Darwin" ]; then
