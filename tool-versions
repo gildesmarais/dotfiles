@@ -1,8 +1,8 @@
 aws-vault 6.4.0
 deno 1.39.2
 golang 1.19.4
-kubectl 1.21.8
+kubectl 1.28.4
 nodejs 20.12.2
-python 3.12.1
-ruby 3.2.2
+python 3.12.2
+ruby 3.2.4
 rust 1.64.0
