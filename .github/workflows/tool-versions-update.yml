@@ -1,0 +1,40 @@
+name: Tool Versions Update
+on:
+  workflow_dispatch: ~
+  push:
+  schedule:
+    - cron: '0 0 * * *'
+
+permissions: read-all
+
+jobs:
+  tool-versions-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@v3
+
+      # Configure asdf plugins
+      # - run: asdf plugin-add aws-vault https://github.com/karancode/asdf-aws-vault.git
+      # - run: asdf plugin-add deno https://github.com/asdf-community/asdf-deno.git
+      # - run: asdf plugin-add golang https://github.com/asdf-community/asdf-golang.git
+      # - run: asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+      # - run: asdf plugin-add python https://github.com/asdf-community/asdf-python.git
+      # - run: asdf plugin-add kubectl https://github.com/asdf-community/asdf-kubectl.git
+      # - run: asdf plugin-add ruby https://github.com/asdf-vm/asdf-ruby.git
+      # - run: asdf plugin-add rust https://github.com/asdf-community/asdf-rust.git
+
+      - name: Update tooling
+        uses: ericcornelissen/tool-versions-update-action/commit@v1
+        id: tooling
+        with:
+          max: 2
+
+      - name: Log tooling changes
+        if: steps.tooling.outputs.did-update == 'true'
+        run: git diff .tool-versions
