@@ -10,6 +10,10 @@ permissions: read-all
 jobs:
   tool-versions-update:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -31,10 +35,8 @@ jobs:
 
       - name: Update tooling
         uses: ericcornelissen/tool-versions-update-action/commit@v1
-        id: tooling
-        with:
-          max: 2
+        id: tool-versions-update
 
-      - name: Log tooling changes
-        if: steps.tooling.outputs.did-update == 'true'
+      - name: Show diff
+        if: steps.tool-versions-update.outputs.did-update == 'true'
         run: git diff .tool-versions
