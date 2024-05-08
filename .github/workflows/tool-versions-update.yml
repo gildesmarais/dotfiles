@@ -13,7 +13,6 @@ jobs:
     permissions:
       contents: write
 
-      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,7 +27,7 @@ jobs:
       # - run: asdf plugin-add deno https://github.com/asdf-community/asdf-deno.git
       # - run: asdf plugin-add golang https://github.com/asdf-community/asdf-golang.git
       # - run: asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-      # - run: asdf plugin-add python https://github.com/asdf-community/asdf-python.git
+      - run: asdf plugin-add python https://github.com/asdf-community/asdf-python.git
       # - run: asdf plugin-add kubectl https://github.com/asdf-community/asdf-kubectl.git
       # - run: asdf plugin-add ruby https://github.com/asdf-vm/asdf-ruby.git
       # - run: asdf plugin-add rust https://github.com/asdf-community/asdf-rust.git
