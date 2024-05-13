@@ -80,8 +80,8 @@ alias lg="lazygit"
 
 #region# ruby & rails, node aliases
 alias be='bundle exec'
-alias berd='bundle exec rspec --format documentation'
-alias ber='bundle exec rspec'
+alias berd='RAILS_ENV=${RAILS_ENV:-test} bundle exec rspec --format documentation'
+alias ber='RAILS_ENV=${RAILS_ENV:-test} bundle exec rspec'
 alias rdbm='bundle exec rake db:migrate'
 alias rdbr='bundle exec rake db:rollback'
 alias fs='overmind start'
