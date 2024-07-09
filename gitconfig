@@ -4,6 +4,7 @@
 [core]
 	excludesfile = /Users/gil/.gitignore_global
 	autocrlf = input
+	attributesfile = ~/.gitattributes
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
@@ -47,3 +48,6 @@
 	gpgsign = true
 [gpg]
 	format = ssh
+[merge "merge-structure-sql"]
+	name = Rails structure.sql merge driver
+	driver = git-merge-structure-sql %A %O %B

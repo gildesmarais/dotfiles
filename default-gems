@@ -1,6 +1,7 @@
 brakeman
 bundler
 byebug
+git-merge-structure-sql
 rubocop
 rubocop-performance
 rubocop-rails
