@@ -10,3 +10,6 @@ error_symbol = '[\$](bold red)'
 
 [ruby]
 symbol = "🔺"
+
+[kubernetes]
+disabled = false
