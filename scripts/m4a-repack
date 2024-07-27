@@ -2,7 +2,20 @@
 
 set -eux
 
-ffmpeg -i "$1" -vn -acodec copy temp.aac
-mv "$1" "$1.original"
-ffmpeg -i "$1.temp.aac" -acodec copy "$1"
-rm "$1.temp.aac"
+# Ensure the input file exists
+if [ ! -f "$1" ]; then
+  echo "Input file does not exist: $1"
+  exit 1
+fi
+
+# Define the original and new file names
+original_file="$1.original"
+new_file="$1"
+
+# Extract the audio and replace the original file
+if [ ! -f "$original_file" ]; then
+  ffmpeg -i "$1" -vn -acodec copy "$1.aac"
+  mv "$1" "$original_file"
+  ffmpeg -i "$1.aac" -acodec copy "$new_file"
+  rm "$1.aac"
+fi
