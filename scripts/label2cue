@@ -1,19 +1,18 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-unless ARGV[0]
+if ARGV.empty?
   puts <<~HELP
     Usage: label2cue label_track.txt
 
-    Contents of audio.tracklist:
-    assuming txt file structure:
+    Contents of label_track.txt should follow:
     0 0 First track
-    261.405839	261.405839	2nd track
-    601.796775	601.796775	3nd track
-    1054.361545	1054.361545	4...
-    1348.886096	1348.886096	5...
-    1716.530426	1716.530426	6...
-    2085.741388	2085.741388 7...
+    261.405839 261.405839 2nd track
+    601.796775 601.796775 3rd track
+    1054.361545 1054.361545 4th track
+    1348.886096 1348.886096 5th track
+    1716.530426 1716.530426 6th track
+    2085.741388 2085.741388 7th track
     ...
 
     This script will create the corresponding cue sheet file.
@@ -25,23 +24,30 @@ end
 file_name = ARGV[0]
 
 raise ArgumentError, 'File does not exist!' unless File.exist?(file_name)
+
 raise "Can't read given file" unless File.readable?(file_name)
 
-tracks = File.read(file_name).split("\n")
-             .map do |line|
+tracks = File.read(file_name).lines.map(&:strip).reject(&:empty?).map do |line|
   split = line.split(' ')
 
+  raise "Incorrect format in line: #{line}" if split.size < 3
+
+  start_time = split[0].to_f
   title = split[2..].join(' ')
 
-  time = split[0].to_f
-  time = [time / 60, time % 60].map { |number| format('%02d', number) }.join(':')
+  minutes = (start_time / 60).to_i
+  seconds = (start_time % 60).to_i
+  frames = ((start_time % 1) * 75).to_i
 
-  { time:, title:, performer: '' }
+  formatted_time = format('%<minutes>02d:%<seconds>02d:%<frames>02d', minutes:, seconds:,
+                                                                      frames:)
+
+  { time: formatted_time, title:, performer: '' }
 end
 
-tracks = tracks.each_with_index.map do |track, number|
+tracks = tracks.each_with_index.map do |track, index|
   <<~STRING
-    TRACK #{format('%02d', number + 1)}
+    TRACK #{format('%02d', index + 1)} AUDIO
       PERFORMER "#{track[:performer]}"
       TITLE "#{track[:title]}"
       INDEX 01 #{track[:time]}
@@ -49,8 +55,8 @@ tracks = tracks.each_with_index.map do |track, number|
 end
 
 puts <<~CUESHEET
-  PERFORMER ""
-  TITLE ""
-  FILE ""
-    #{tracks.join}
+    PERFORMER ""
+    TITLE ""
+    FILE "#{File.basename(file_name, '.*')}.mp3" MP3
+  #{tracks.join}
 CUESHEET
