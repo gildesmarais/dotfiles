@@ -4,28 +4,48 @@
 require 'shellwords'
 require 'fileutils'
 
-if ARGV.size.zero? || ['--help', '-h'].include?(ARGV[0])
+# Function to print usage information
+def print_usage_and_exit
   puts <<~HELP
     Usage: audio_compress [OPTIONS] [AUDIO_FILE]
 
     Generates a compressed, equally loud everywhere file.
     Idea and ffmpeg taken from:
-      https://medium.com/@jud.dagnall/dynamic-range-compression-for-audio-with-ffmpeg-and-compand-621fe2b1a892
+    https://medium.com/@jud.dagnall/dynamic-range-compression-for-audio-with-ffmpeg-and-compand-621fe2b1a892
 
-      Options:
+    Options:
       --help, -h  Prints this help.
   HELP
-
-  ARGV.size.zero? ? abort : exit
+  exit 1
 end
 
+# Check if no arguments or help option is provided
+print_usage_and_exit if ARGV.empty? || ['--help', '-h'].include?(ARGV[0])
+
+# Extract filename from arguments
 file_name = ARGV[0]
-raise 'File does not exist!' unless File.exist?(file_name)
-raise "Can't read given file" unless File.readable?(file_name)
 
+# Check if file exists and is readable
+unless File.exist?(file_name) && File.readable?(file_name)
+  raise "Error: File '#{file_name}' does not exist or is not readable."
+end
+
+# Determine output filename without extension
 file_name_without_extension = File.basename(file_name, '.*')
-out = "#{file_name_without_extension}.wav"
+out = "#{file_name_without_extension}.compressed.wav"
 
-system "ffmpeg -i #{Shellwords.escape file_name} \
-       -filter_complex 'compand=attacks=0:points=-80/-900|-45/-15|-27/-9|0/-7|20/-7:gain=5' \
-       #{Shellwords.escape out}"
+# Escape filename for shell safety
+escaped_file_name = Shellwords.escape(file_name)
+
+# Execute ffmpeg command to apply audio compression
+ffmpeg_command = "ffmpeg -i #{escaped_file_name} " \
+                 "-filter_complex 'compand=attacks=0:points=-80/-900|-45/-15|-27/-9|0/-7|20/-7:gain=5' " \
+                 "#{Shellwords.escape(out)}"
+
+# Execute the ffmpeg command
+success = system(ffmpeg_command)
+
+# Check if the ffmpeg command executed successfully
+raise 'Error: ffmpeg command failed with non-zero exit status.' unless success
+
+puts "Compression complete. Output file: #{out}"
