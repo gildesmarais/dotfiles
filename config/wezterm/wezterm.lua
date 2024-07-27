@@ -55,6 +55,6 @@ return {
     },
     quick_select_patterns = {
       -- match text surrounded by backticks
-      '`.*`'
+      '`(.*)`'
     }
 }
