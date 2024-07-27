@@ -4,7 +4,7 @@
 require 'shellwords'
 require 'fileutils'
 
-if ARGV.size.zero? || ['--help', '-h'].include?(ARGV[0])
+if ARGV.empty? || ['--help', '-h'].include?(ARGV[0])
   puts <<~HELP
     Usage: audio_waveform [OPTIONS] [AUDIO_FILE]
 
@@ -17,7 +17,7 @@ if ARGV.size.zero? || ['--help', '-h'].include?(ARGV[0])
       --help, -h  Prints this help.
   HELP
 
-  ARGV.size.zero? ? abort : exit
+  ARGV.empty? ? abort : exit
 end
 
 file_name = ARGV[0]

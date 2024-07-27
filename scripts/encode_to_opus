@@ -4,7 +4,7 @@
 require 'shellwords'
 require 'fileutils'
 
-if ARGV.size.zero? || ['--help', '-h'].include?(ARGV[0])
+if ARGV.empty? || ['--help', '-h'].include?(ARGV[0])
   puts <<~HELP
     Usage: encode_to_opus [FILE]
 
@@ -15,7 +15,7 @@ if ARGV.size.zero? || ['--help', '-h'].include?(ARGV[0])
     Creates a 64k VBR OPUS audio file with a frame_duration of 40ms.
   HELP
 
-  ARGV.size.zero? ? abort : exit
+  ARGV.empty? ? abort : exit
 end
 
 file_name = ARGV[0]
