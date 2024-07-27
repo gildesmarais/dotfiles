@@ -1,12 +1,43 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
 require 'readline'
 
-puts 'Give name and enter. Super+D to quit.'
-while (args = Readline.readline('> ', true))
-  args = args.gsub('  ', ' ').gsub(/[()]*/, '').split
-  name = "#{args[0..-2].join('.')}-#{args.last}"
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.basename($PROGRAM_NAME)} [OPTIONS] [ARGUMENTS]"
 
-  print('-> ', name, "\n")
+  opts.on('-r', '--repl', 'Start in REPL mode for interactive input') do
+    options[:repl] = true
+  end
+
+  opts.on('-h', '--help', 'Prints this help') do
+    puts opts
+    exit
+  end
+end.parse!
+
+# Function to format the input according to Scene Standards
+def format_scene_name(input)
+  args = input.gsub('  ', ' ').gsub(/[()]*/, '').strip.split
+  return if args.empty?
+
+  group = args.last
+  name_parts = args[0..-2]
+  content_name = name_parts.join('.')
+  "#{content_name}-#{group}"
+end
+
+if options[:repl]
+  puts 'Interactive mode. Enter names and press Enter (Ctrl+D to exit):'
+  while (input = Readline.readline('> ', true))
+    formatted_name = format_scene_name(input)
+    puts formatted_name if formatted_name
+  end
+else
+  ARGV.each do |arg|
+    formatted_name = format_scene_name(arg)
+    puts formatted_name if formatted_name
+  end
 end
