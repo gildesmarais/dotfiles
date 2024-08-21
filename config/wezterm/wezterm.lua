@@ -14,7 +14,7 @@ return {
     keys = {
         {key = 'p', mods = 'CMD|SHIFT', action = act.ShowLauncher},
         {key = 'p', mods = 'CMD', action = act.ScrollByPage(-1)},
-        {key = 'd', mods = 'CMD', action = act.ScrollByPage(1)}, 
+        {key = 'd', mods = 'CMD', action = act.ScrollByPage(1)},
         {key = 'UpArrow', mods = 'SHIFT', action = act.ScrollByPage(-1)},
         {key = 'DownArrow', mods = 'SHIFT', action = act.ScrollByPage(1)},
         {key = '/', mods = 'CMD', action = act.Search 'CurrentSelectionOrEmptyString' },
@@ -33,7 +33,15 @@ return {
             key = "RightArrow",
             mods = "OPT",
             action = wezterm.action {SendString = "\x1bf"}
-        }
+        },
+        {
+          key = ',',
+          mods = 'SUPER',
+          action = wezterm.action.SpawnCommandInNewTab {
+            cwd = wezterm.home_dir,
+            args = { 'vim', wezterm.config_file },
+          },
+        },
     },
     hyperlink_rules = {
         -- Linkify things that look like URLs and the host has a TLD name.
