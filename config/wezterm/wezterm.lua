@@ -72,6 +72,7 @@ return {
             background = "#192129"
         }
     },
+    window_decorations = 'RESIZE',
     harfbuzz_features = {'zero'},
     keys = {
         {key = 'p', mods = 'CMD|SHIFT', action = act.ShowLauncher},
