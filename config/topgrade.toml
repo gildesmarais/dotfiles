@@ -4,7 +4,7 @@
 
 # Disable specific steps - same options as the command line flag
 #disable = ["system", "emacs"]
-disable = ["gnome_shell_extensions", "github_cli_extensions", "helm"]
+disable = ["gnome_shell_extensions", "github_cli_extensions", "helm", "pnpm"]
 
 # Ignore failures for these steps
 #ignore_failures = ["powershell"]
