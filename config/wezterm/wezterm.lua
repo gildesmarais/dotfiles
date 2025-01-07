@@ -126,6 +126,12 @@ return {
     },
     quick_select_patterns = {
       -- match text surrounded by backticks
-      '`(.*)`'
+      '`(.*)`',
+      -- match kubernetes pod ids
+      '\\b[a-zA-Z0-9]+-[a-zA-Z0-9]+-[a-zA-Z0-9]+\\b',
+      -- match all text after a colon on a line
+      ':\\s*(.*)',
+      -- match a line indented by a multiple of 4 spaces or tab
+      '^((    |\t)+).*',
     }
 }
