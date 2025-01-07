@@ -1,9 +1,4 @@
-@marp-team/marp-cli
 eslint
 npm-check-updates
 prettier
-react-devtools
-standard
 stylelint
-yarn
-yarn-deduplicate
