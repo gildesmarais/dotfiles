@@ -125,13 +125,24 @@ return {
         {regex = [[\b\w+://(?:[\d]{1,3}\.){3}[\d]{1,3}\S*\b]], format = '$0'}
     },
     quick_select_patterns = {
-      -- match text surrounded by backticks
-      '`(.*)`',
       -- match kubernetes pod ids
       '\\b[a-zA-Z0-9]+-[a-zA-Z0-9]+-[a-zA-Z0-9]+\\b',
-      -- match all text after a colon on a line
-      ':\\s*(.*)',
-      -- match a line indented by a multiple of 4 spaces or tab
-      '^((    |\t)+).*',
-    }
+      -- Match Docker container IDs (12+ hex chars; commonly 12-64)
+      '\\b[0-9a-fA-F]{12,64}\\b',
+
+      -- match line starting with "$ "
+      '^\\$ (.*)$',
+
+      -- match within ' or `
+      '[\'`]([^\'`]+)[\'`]',
+
+      -- Match Unix file paths (very rough - may not cover all edge cases)
+      --    Looks for a leading "/", followed by one or more segments of word chars, dots, or dashes
+      '\\b(/[\\w.-]+)+\\b',
+
+      -- Match RSpec commands with file/line references.
+      --    e.g. "rspec ./spec/models/user_spec.rb:42"
+      --    This pattern captures the spec file path and optional line/colon parts.
+      '\\brspec\\s+(?:\\./)?(\\S+\\.rb(?::\\d+)?)',
+    },
 }
