@@ -75,7 +75,22 @@ alias gd='git diff'
 alias gs='git status'
 alias gup="git pull --rebase --autostash"
 alias gundo="git reset --soft HEAD~1"
-alias lg="lazygit"
+alias lag="lazygit"
+
+# git_default_branch: get the default branch of the current git repository (assumes remote is named 'origin')
+function git_default_branch() {
+  git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
+}
+
+# git_changed: show files changed in the current branch, compared to the default branch
+function git_changed() {
+  local branch=${1:-$(git_default_branch)}
+  git diff --name-only --diff-filter=AM $branch
+}
+
+alias git-changed="git_changed"
+alias git-staged="git diff --name-only --cached"
+
 #endregion
 
 #region# ruby & rails, node aliases
