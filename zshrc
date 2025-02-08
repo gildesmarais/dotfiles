@@ -173,8 +173,8 @@ setopt INC_APPEND_HISTORY
 export HISTTIMEFORMAT="[%F %T] "
 setopt EXTENDED_HISTORY
 setopt HIST_FIND_NO_DUPS
-alias hgrep="history | grep"
-alias h="history | fzf"
+alias hgrep="history 0 | grep"
+alias h="history 0 | fzf"
 #endregion
 
 #region key bindings
