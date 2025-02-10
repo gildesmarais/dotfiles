@@ -16,14 +16,6 @@ fzf_git_checkout() {
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 
-  if [[ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]]; then
-    # bind asdf
-    . $(brew --prefix asdf)/libexec/asdf.sh
-
-    # add asdf completions
-    fpath=(${ASDF_DIR}/completions $fpath)
-  fi
-
   autoload -Uz compinit
   compinit
 
@@ -38,6 +30,11 @@ source ~/.profile
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+fi
+
+if command_exists asdf; then
+  export ASDF_DATA_DIR="$HOME/.asdf"
+  export PATH="$ASDF_DATA_DIR/shims:$PATH"
 fi
 
 # setup starship
