@@ -162,14 +162,29 @@ alias pw="pwgen -nyB1 $(shuf -i 46-64 -n 1) 1"
 
 #endregion
 
-#region sweetened history (some things taken from https://www.soberkoder.com/better-zsh-history/ )
+#region sweetened history
+# some things taken from https://www.soberkoder.com/better-zsh-history/
+# and some from https://github.com/oleander/dotfiles/blob/ba685761acc713bf33a635c450a1f0a9c6748a81/configs/zshrc#L79C1-L81C53
+# and https://hassek.github.io/zsh-history-tweaking/
+# Thanks! <3
+setopt HIST_VERIFY            # When retrieving history, don't execute immediately, allow editing first
+setopt SHARE_HISTORY          # Share history between sessions.
+setopt EXTENDED_HISTORY       # Write the history file in the ":start:elapsed;command" format.
+setopt HIST_FIND_NO_DUPS      # Do not display a line previously found.
+setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when the shell exits.
+setopt HIST_EXPIRE_DUPS_FIRST # Expire duplicate entries first when trimming history.
+setopt HIST_IGNORE_DUPS       # Don't record an entry that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS   # Delete old recorded entry if new entry is a duplicate.
+setopt HIST_IGNORE_SPACE      # Don't record an entry starting with a space.
+setopt HIST_SAVE_NO_DUPS      # Don't write duplicate entries in the history file.
+setopt HIST_REDUCE_BLANKS     # Remove superfluous blanks before recording entry.
+
+export HISTFILE="~/.zsh_history"
 export HISTFILE=~/.zsh_history
 export HISTFILESIZE=1000000000
 export HISTSIZE=1000000000
-setopt INC_APPEND_HISTORY
 export HISTTIMEFORMAT="[%F %T] "
-setopt EXTENDED_HISTORY
-setopt HIST_FIND_NO_DUPS
+
 alias hgrep="history 0 | grep"
 alias h="history 0 | fzf"
 #endregion
