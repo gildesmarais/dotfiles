@@ -91,6 +91,11 @@ alias git-staged="git diff --name-only --cached"
 #endregion
 
 #region# ruby & rails, node aliases
+
+function rubocop_update() {
+  bundle update $(rg -o "rubocop[\w-]*" Gemfile | tr '\n' ' ')
+}
+
 alias be='bundle exec'
 alias berd='RAILS_ENV=${RAILS_ENV:-test} bundle exec rspec --format documentation'
 alias ber='RAILS_ENV=${RAILS_ENV:-test} bundle exec rspec'
@@ -99,6 +104,7 @@ alias rdbr='bundle exec rake db:rollback'
 alias fs='overmind start'
 alias rr='bundle exec rails routes | fzf'
 alias rubocop-global="rubocop --require rubocop-rails --require rubocop-rspec --require rubocop-performance --require test_prof/rubocop --require rubocop-thread_safety -c .rubocop.yml"
+alias rubocop-update="rubocop_update"
 alias yarn-upgrade='npx npm-check-updates -u && yarn install && npx yarn-deduplicate yarn.lock & yarn install'
 #endregion
 
