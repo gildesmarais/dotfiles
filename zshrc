@@ -72,6 +72,7 @@ alias gd='git diff'
 alias gs='git status'
 alias gup="git pull --rebase --autostash"
 alias gundo="git reset --soft HEAD~1"
+alias gupstream="git branch --set-upstream-to="origin/$(git branch --show-current)" $(git branch --show-current)"
 alias lag="lazygit"
 
 # git_default_branch: get the default branch of the current git repository (assumes remote is named 'origin')
