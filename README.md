@@ -56,7 +56,7 @@ auth       sufficient     pam_tid.so
 ## macOS: use another default text editor
 
 ```sh
-brew install duti python-yq
+brew install duti yq
 curl "https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml" \
   | yq -r "to_entries | (map(.value.extensions) | flatten) - [null] | unique | .[]" \
   | xargs -L 1 -I "{}" duti -s com.microsoft.VSCode {} all
