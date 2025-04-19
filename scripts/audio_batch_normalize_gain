@@ -1,0 +1,220 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+##
+# Transparently normalizes the perceived loudness of audio files to a target LUFS value.
+# Uses ffmpeg's loudnorm filter in analyze-only mode to compute gain adjustments without compression.
+# Applies clean gain using volume filter, encodes to FLAC, and strips or replaces problematic metadata
+# (e.g. iTunNORM, REPLAYGAIN, TRAKTOR4, GAIN_NORMALIZED) for reliable DJ software compatibility (e.g. Traktor).
+# Supports batch processing, logging, and dry-run mode with multi-core performance.
+#
+# Example usage:
+#   ./normalize_gain.rb -i ./my_audio -o ./normalized_audio
+#   ./normalize_gain.rb --dry-run
+#   ./normalize_gain.rb --log=my_custom_log.txt
+
+require 'bundler/inline'
+require 'etc'
+require 'fileutils'
+require 'logger'
+require 'open3'
+require 'optparse'
+require 'parallel'
+require 'ruby-progressbar'
+require 'shellwords'
+
+# Inline gem handling
+gemfile(true) do
+  source 'https://rubygems.org'
+  gem 'parallel'
+  gem 'ruby-progressbar'
+end
+
+# --- CONFIGURATION ---
+module Config
+  LUFS_TARGET = -8.0
+  TOLERANCE = 0.1
+  JOBS = Etc.nprocessors
+  SUPPORTED_EXT = %w[.mp3 .wav .m4a .mp4 .aac .flac .aiff .alac].freeze
+  DEFAULT_LOG = 'lufs_normalization.log'
+
+  FFMPEG_METADATA = [
+    '-map_metadata', '0',
+    '-map_metadata:s:a:0', '-1',
+    '-metadata', 'iTunNORM=',
+    '-metadata', 'iTunSMPB=',
+    '-metadata', 'SYNOPSIS=',
+    '-metadata', 'REPLAYGAIN_TRACK_GAIN=',
+    '-metadata', 'REPLAYGAIN_ALBUM_GAIN=',
+    '-metadata', 'REPLAYGAIN_TRACK_PEAK=',
+    '-metadata', 'REPLAYGAIN_ALBUM_PEAK='
+  ].freeze
+end
+
+# --- CLI OPTIONS ---
+options = {
+  input_dir: 'input',
+  output_dir: 'normalized',
+  dry_run: false,
+  log_file: Config::DEFAULT_LOG
+}
+
+opt_parser = OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.basename($PROGRAM_NAME)} [options]"
+  opts.on('-i', '--input DIR', 'Input directory (default: input)') do |v|
+    options[:input_dir] = File.expand_path(v)
+  end
+  opts.on('-o', '--output DIR', 'Output directory (default: normalized)') do |v|
+    options[:output_dir] = File.expand_path(v)
+  end
+  opts.on('--dry-run', 'Perform a dry run without modifying files') do
+    options[:dry_run] = true
+  end
+  opts.on('--log FILE', "Log file (default: #{Config::DEFAULT_LOG})") do |v|
+    options[:log_file] = v
+  end
+  opts.on('-h', '--help', 'Display this help message') do
+    puts opts
+    exit
+  end
+end
+
+begin
+  opt_parser.parse!
+rescue OptionParser::InvalidOption => e
+  puts e
+  puts opt_parser
+  exit 1
+end
+
+# Validate input directory exists
+abort "❌ Input directory #{options[:input_dir]} does not exist." unless Dir.exist?(options[:input_dir])
+
+# Ensure output directory exists
+FileUtils.mkdir_p(options[:output_dir]) unless Dir.exist?(options[:output_dir])
+
+# Setup Logger
+logger = Logger.new(options[:log_file])
+logger.level = Logger::INFO
+
+# --- TOOL CHECKS ---
+def check_tool(cmd, name, logger)
+  return if system("which #{cmd} > /dev/null 2>&1")
+
+  logger.fatal("Required tool '#{name}' not found. Please install it and try again.")
+  abort "❌ Required tool '#{name}' not found. Please install it and try again."
+end
+
+logger.info('🔍 Checking for required CLI tools...')
+check_tool('ffmpeg', 'ffmpeg', logger)
+check_tool('ffprobe', 'ffprobe', logger)
+
+# --- UTILS ---
+def scan_files(base)
+  Dir.glob("#{base}/**/*").select do |file|
+    File.file?(file) && Config::SUPPORTED_EXT.include?(File.extname(file).downcase)
+  end
+end
+
+def detect_mean_volume(file, logger)
+  cmd = [
+    'ffmpeg', '-i', file,
+    '-af', "loudnorm=I=#{Config::LUFS_TARGET}:TP=-1.5:LRA=11:print_format=summary",
+    '-f', 'null', '-'
+  ]
+  stdout, status = Open3.capture2e(*cmd)
+  unless status.success?
+    logger.error("ffmpeg failed to process #{file} for volume detection.")
+    return nil
+  end
+  if stdout =~ /Input Integrated:\s*(-?\d+(\.\d+)?)/
+    Regexp.last_match(1).to_f
+  else
+    logger.error("Could not parse volume for #{file}.")
+    nil
+  end
+end
+
+# --- FFmpeg Command Builder ---
+def build_ffmpeg_command(type, input_path, gain_db, output_path)
+  base_cmd = ['ffmpeg', '-y', '-i', input_path]
+  case type
+  when :normalize
+    cmd = base_cmd + ['-af', "volume=#{gain_db}dB"] +
+          Config::FFMPEG_METADATA +
+          ['-metadata', "GAIN_NORMALIZED=#{gain_db.round(2)}",
+           '-c:a', 'flac',
+           '-compression_level', '8',
+           output_path]
+  when :copy
+    cmd = base_cmd +
+          Config::FFMPEG_METADATA +
+          ['-c:a', 'flac',
+           '-compression_level', '8',
+           '-metadata', 'GAIN_NORMALIZED=0.0',
+           Shellwords.escape(output_path)]
+  else
+    raise ArgumentError, "Unknown command type: #{type}"
+  end
+  cmd
+end
+
+def execute_command(cmd, dry_run, logger)
+  return "🧪 Dry run: would execute: #{cmd.join(' ')}" if dry_run
+
+  begin
+    result = system(*cmd)
+    unless result
+      logger.error("Command failed: #{cmd.join(' ')}")
+      return "❌ Error executing: #{cmd.join(' ')}"
+    end
+    result
+  rescue StandardError => e
+    logger.error("Exception executing command: #{e.message}")
+    "❌ Exception occurred: #{e.message}"
+  end
+end
+
+def process_file(infile, input_dir, output_dir, dry_run, logger)
+  rel_path = infile.sub(%r{\A#{Regexp.escape(input_dir)}/?}, '').sub(%r{\A\./}, '')
+  target_dir = File.join(output_dir, File.dirname(rel_path))
+  outfile = File.join(target_dir, "#{File.basename(rel_path, '.*')}.flac")
+
+  return "⏩ Already exists: #{rel_path}" if File.exist?(outfile) && !dry_run
+
+  mean_volume = detect_mean_volume(infile, logger)
+  return "⚠️ Could not detect volume: #{rel_path}" unless mean_volume
+
+  gain_needed = Config::LUFS_TARGET - mean_volume.to_f
+
+  if gain_needed.abs <= Config::TOLERANCE
+    cmd = build_ffmpeg_command(:copy, infile, 0.0, outfile)
+    message = execute_command(cmd, dry_run, logger)
+    return message.is_a?(String) ? message : "✅ Already normalized: #{rel_path} → copied to output"
+  end
+
+  cmd = build_ffmpeg_command(:normalize, infile, gain_needed, outfile)
+  message = execute_command(cmd, dry_run, logger)
+  message.is_a?(String) ? message : "🎧 Normalized with gain #{gain_needed.round(2)}dB: #{outfile}"
+end
+
+# --- MAIN EXECUTION ---
+files = scan_files(options[:input_dir])
+logger.info("🚀 Starting#{options[:dry_run] ? ' dry-run' : ''} gain normalization" \
+            "with LUFS-based analysis on #{files.size} files" \
+            "using #{Config::JOBS} threads...")
+puts "📅 Input: #{options[:input_dir]}"
+puts "📄 Output: #{options[:output_dir]}"
+puts "🗘️ Logging to: #{options[:log_file]}"
+
+progressbar = ProgressBar.create(total: files.size, format: '%a %B %p%% %t')
+results = Parallel.map(files, in_processes: Config::JOBS) do |file|
+  result = process_file(file, options[:input_dir], options[:output_dir], options[:dry_run], logger)
+  logger.info(result)
+  progressbar.increment
+  result
+end
+
+puts "\n📦 Summary:"
+results.each { |r| puts r }
+logger.info("🗘️ Normalization completed. Processed #{files.size} files.")
