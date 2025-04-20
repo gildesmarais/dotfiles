@@ -4,32 +4,84 @@
 require 'shellwords'
 require 'fileutils'
 
-if ARGV.empty? || ['--help', '-h'].include?(ARGV[0])
+def print_help
   puts <<~HELP
     Usage: audio_waveform [OPTIONS] [AUDIO_FILE]
 
-    Generates a waveform from an audio_wave and saves it as png.
+    Generates a waveform from an audio file and saves it as PNG.
+    If the --embed switch is provided and the audio file is of type mp3, m4a, or flac,
+    the generated waveform image will be embedded as cover art.
 
-    Idea and ffmpeg taken from:
-      https://medium.com/@jud.dagnall/dynamic-range-compression-for-audio-with-ffmpeg-and-compand-621fe2b1a892
-
-      Options:
-      --help, -h  Prints this help.
+    Options:
+      --help, -h        Prints this help.
+      --embed           Embed the generated waveform image as cover art into the audio file (supported: mp3, m4a, flac)
   HELP
+end
 
+if ARGV.empty? || ['--help', '-h'].include?(ARGV[0])
+  print_help
   ARGV.empty? ? abort : exit
 end
+
+embed = !ARGV.delete('--embed').nil?
+size = '800x200'
+fg_peak = '0xff8800@0.80'
+fg_rms = '0xf7b76e@0.80' # a lightly less saturated color
+
+ffmpeg_quiet_flags = '-loglevel error -hide_banner'
 
 file_name = ARGV[0]
 raise 'File does not exist!' unless File.exist?(file_name)
 raise "Can't read given file" unless File.readable?(file_name)
 
+# Generate waveform image
 out = "#{file_name}.png"
 
-# -filter_complex 'aformat=channel_layouts=mono,showwavespic=s=1000x80' -frames:v 1 \
-#
-system "ffmpeg -i \
-       #{Shellwords.escape file_name} \
-       -filter_complex \"aformat=channel_layouts=mono,showwavespic=s=1000x400:colors=white|white:filter=peak\" \
-        -frames:v 1 \
-       #{Shellwords.escape out}"
+filter_complex = [
+  "[0:a]aformat=channel_layouts=mono,showwavespic=s=#{size}:scale=lin:draw=full:split_channels=1:colors=#{fg_peak}:filter=peak[pk]",
+  "[0:a]aformat=channel_layouts=mono,showwavespic=s=#{size}:scale=lin:draw=full:split_channels=1:colors=#{fg_rms}:filter=average[rms]",
+  '[pk][rms]overlay=format=auto'
+]
+
+waveform_cmd = %(
+  ffmpeg -i #{Shellwords.escape(file_name)} \
+         -filter_complex '#{filter_complex.join(';')}' \
+         -frames:v 1 -update 1 #{Shellwords.escape(out)} \
+         #{ffmpeg_quiet_flags}
+).squeeze(' ').strip
+
+raise 'Failed to generate waveform image.' unless system(waveform_cmd)
+
+# Embed cover art if --embed is specified and the audio file is supported
+if embed
+  ext = File.extname(file_name).downcase
+  if ['.mp3', '.m4a', '.flac'].include?(ext)
+    base = File.basename(file_name, ext)
+    dir = File.dirname(file_name)
+    temp_out = File.join(dir, "#{base}_temp#{ext}")
+
+    embed_cmd = case ext
+                when '.mp3'
+                  %(ffmpeg #{ffmpeg_quiet_flags} -i #{Shellwords.escape(file_name)} -i #{Shellwords.escape(out)} \
+                      -map 0 -map 1 -c copy -id3v2_version 3 \
+                      -metadata:s:v title="Cover" -metadata:s:v comment="Cover (front)" \
+                      #{Shellwords.escape(temp_out)})
+                when '.m4a', '.flac'
+                  %(ffmpeg #{ffmpeg_quiet_flags} -i #{Shellwords.escape(file_name)} -i #{Shellwords.escape(out)} \
+                      -map 0 -map 1 -c copy -disposition:v attached_pic \
+                      #{Shellwords.escape(temp_out)}
+                      )
+                end
+
+    raise 'Failed to embed cover art.' unless system(embed_cmd)
+
+    FileUtils.mv(temp_out, file_name, force: true)
+    FileUtils.rm_f(out) if File.exist?(out)
+    puts "Cover art embedded into: #{file_name}"
+
+  else
+    warn "Embedding not supported for file type #{ext}. Waveform image saved as #{out}."
+  end
+else
+  puts "Waveform image saved as #{out}."
+end
