@@ -136,7 +136,105 @@ alias .....="cd ../../../.."
 
 #region# magic folder commands
 alias pg="playground"
-alias wiki="cd ~/versioned/gildesmarais/wiki && ~/.scripts/fuz"
+wiki() {
+  local wiki_path="$HOME/versioned/gildesmarais/wiki"
+  local initial_query="$1"
+
+  if [[ "$initial_query" == "--help" ]]; then
+    cat <<EOF
+Usage: wiki [search_query | --help]
+
+Search and open wiki content from: $wiki_path
+
+Modes:
+  --help              Show this help message.
+
+Keys:
+  Ctrl-F              Switch to file name search
+  Ctrl-G              Return to content search
+
+Dependencies:
+  - fzf
+  - ripgrep (rg)
+  - bat (for previews)
+  - code (Visual Studio Code CLI)
+
+Examples:
+  wiki                # Start browsing all wiki content
+  wiki "topic"        # Search for "topic"
+EOF
+    return 0
+  fi
+
+  cd "$wiki_path" || {
+    echo "Error: Cannot enter wiki directory: $wiki_path"
+    return 1
+  }
+
+  # Force VS Code
+  local editor="code"
+
+  local cmd_file="find . -type f"
+  local cmd_rg="rg --color=always --line-number --no-heading --with-filename --smart-case"
+
+  local preview_cmd='
+    f() {
+      if [[ "$1" == *:* ]]; then
+        local file="${1%%:*}"
+        local line="${1#*:}"
+        line="${line%%:*}"
+        bat --color=always --highlight-line "$line" --line-range=:500 "${file#./}"
+      else
+        bat --color=always --style=numbers --line-range=:500 "${1#./}"
+      fi
+    }; f {}
+  '
+
+  local fzf_opts=(
+    --ansi
+    --layout=reverse
+    --border
+    --height=40%
+    --info=inline
+    --exit-0
+    --preview "$preview_cmd"
+    --preview-window 'right:50%'
+    --bind "ctrl-f:reload($cmd_file)"
+    --bind "ctrl-g:reload($cmd_rg {q})"
+    --query "$initial_query"
+  )
+
+  if [[ -n "$initial_query" ]]; then
+    echo "Searching content for '$initial_query'..."
+  else
+    echo "Starting interactive wiki search (Ctrl-F = file name, Ctrl-G = content)..."
+  fi
+
+  local fzf_selection
+  fzf_selection=$(
+    rg --color=always --line-number --no-heading --with-filename --smart-case "" |
+    fzf "${fzf_opts[@]}"
+  )
+
+  if [[ -n "$fzf_selection" ]]; then
+    local file="${fzf_selection%%:*}"
+    local line_and_rest="${fzf_selection#*:}"
+    local line="${line_and_rest%%:*}"
+    file="${file#./}"
+
+    if [[ "$fzf_selection" == *:*:* ]]; then
+      echo "Opening $file at line $line in VS Code"
+      "$editor" . --goto "$file:$line"
+    else
+      echo "Opening $file in VS Code"
+      "$editor" . "$file"
+    fi
+  else
+    echo "No selection made. Opening wiki root in VS Code."
+    "$editor" .
+  fi
+}
+
 #endregion
 
 #region# better cat and "imagec" (icat)
