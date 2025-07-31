@@ -17,30 +17,33 @@ This repository contains config files to set up my systems and keep them in sync
   mkdir -p ~/.vim/undo
   ```
 
+## macOS System Configuration
+
+Run the following script to apply system-wide defaults:
+
+```sh
+./scripts/macos-defaults
+```
+
+For settings that cannot be scripted, follow these manual steps:
+
+- **Apple Watch Unlock:** Enable via `System Settings` > `Touch ID & Password`.
+- **Three Finger Swipe:** Verify in `System Settings` > `Trackpad` > `More Gestures`.
+- **Pointer Outline Color:** Configure in `System Settings` > `Accessibility`.
+- **Screenshot Location:** Open the Screenshot App, navigate to `Options`, and set your preferred save location.
+- **Sudo with Touch ID:**
+  1.  Open the sudoers file for editing: `sudo vim /etc/pam.d/sudo`
+  2.  Add the following line at the top of the file:
+      ```ini
+      auth       sufficient     pam_tid.so
+      ```
+
 ## macOS homebrew
 
 After symlinking the Brewfile, install the specified applications with:
 
 ```sh
 brew bundle install --global
-```
-
-## macOS Screenshot
-
-1. Open Screenshot App, Options, Location -> Other Location
-2. `defaults write com.apple.screencapture disable-shadow -bool true`
-3. Drag "Location" to Dock, open as Fan
-
-## macOS Configure sudo to auth with TouchID
-
-```sh
-sudo vim /etc/pam.d/sudo
-```
-
-Add as first line:
-
-```ini
-auth       sufficient     pam_tid.so
 ```
 
 ## ZSH Setup
@@ -51,7 +54,7 @@ auth       sufficient     pam_tid.so
 
 ## VSCode
 
-1. Enable key repeat on hold: `defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false`
+Key repeat on hold is enabled via the `macos-defaults` script.
 
 ## macOS: use another default text editor
 

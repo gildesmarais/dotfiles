@@ -1,108 +1,134 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# scripts/macos-defaults
+# Sets sensible macOS defaults.
+# The original idea (and a couple settings) were grabbed from
+# Mathias Bynens's script: https://github.com/mathiasbynens/dotfiles/blob/main/.macos
 
 set -exo pipefail
 
-#region Finder
-# Show hidden files in Finder
-defaults write com.apple.finder AppleShowAllFiles -boolean true;
+# Close any open System Preferences panes, to prevent them from overriding
+# settings we’re about to change
+osascript -e 'tell application "System Preferences" to quit'
 
-# Show all filename extensions in Finder
-defaults write NSGlobalDomain AppleShowAllExtensions -bool true;
-
-# Show status bar in Finder
-defaults write com.apple.finder ShowStatusBar -bool true;
-
-# Show path bar in Finder
-defaults write com.apple.finder ShowPathbar -bool true;
-
-# Show the ~/Library folder
-chflags nohidden ~/Library;
-
+#region General UI/UX
 # Expand save panel by default
-defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true;
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
 
 # Expand print panel by default
-defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true;
-
-killall Finder;
+defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
+defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
 #endregion
 
-#region Files
+#region Finder
+# Show hidden files in Finder
+defaults write com.apple.finder AppleShowAllFiles -boolean true
+
+# Show all filename extensions in Finder
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+
+# Show status bar in Finder
+defaults write com.apple.finder ShowStatusBar -bool true
+
+# Show path bar in Finder
+defaults write com.apple.finder ShowPathbar -bool true
+
+# Show the ~/Library folder
+chflags nohidden ~/Library
+
 # Disable the warning when changing a file extension
-defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false;
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 
 # Avoid creating .DS_Store files on network volumes
-defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true;
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 #endregion
 
-#region Security
-# Empty Trash securely by default
-defaults write com.apple.finder EmptyTrashSecurely -bool true;
-#endregion
 
 #region Dock
 # Automatically hide and show the Dock
-defaults write com.apple.dock autohide -bool true;
+defaults write com.apple.dock autohide -bool true
 
 # Remove the auto-hiding Dock delay
-defaults write com.apple.dock autohide-delay -float 0;
+defaults write com.apple.dock autohide-delay -float 0
 
 # Remove the animation when hiding/showing the Dock
-defaults write com.apple.dock autohide-time-modifier -float 0;
+defaults write com.apple.dock autohide-time-modifier -float 0
 
-# set dock icons size
-defaults write com.apple.dock tilesize -int 24;
+# Set dock icons size
+defaults write com.apple.dock tilesize -int 24
 
-# set dock icons magnification
-defaults write com.apple.dock magnification -bool true;
+# Set dock icons magnification
+defaults write com.apple.dock magnification -bool true
 
-# set dock icons magnification size
-defaults write com.apple.dock largesize -int 36;
-
-killall Dock;
+# Set dock icons magnification size
+defaults write com.apple.dock largesize -int 36
 #endregion
+
 
 #region Keyboard
 # Disable press-and-hold for keys in favor of key repeat
-defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false;
+defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
 # Set a blazingly fast keyboard repeat rate
-defaults write NSGlobalDomain KeyRepeat -int 1;
+defaults write NSGlobalDomain KeyRepeat -int 1
 
 # Set a shorter Delay until key repeat
-defaults write NSGlobalDomain InitialKeyRepeat -int 15;
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
 #endregion
+
 
 #region Screen
-# Save screenshots to the desktop
-mkdir -p "${HOME}/Desktop/Screenshots";
-defaults write com.apple.screencapture location -string "${HOME}/Desktop/Screenshots";
+# Save screenshots to a custom location
+mkdir -p "${HOME}/Desktop/Screenshots"
+defaults write com.apple.screencapture location -string "${HOME}/Desktop/Screenshots"
 
 # Disable shadow in screenshots
-defaults write com.apple.screencapture disable-shadow -bool true;
+defaults write com.apple.screencapture disable-shadow -bool true
 
-# set the screensaver to start after 5 minutes
-defaults -currentHost write com.apple.screensaver idleTime -int 300;
+# Set the screensaver to start after 5 minutes
+defaults -currentHost write com.apple.screensaver idleTime -int 300
 
 # Require password immediately after sleep or screen saver begins
-defaults write com.apple.screensaver askForPassword -int 1;
-defaults write com.apple.screensaver askForPasswordDelay -int 0;
+defaults write com.apple.screensaver askForPassword -int 1
+defaults write com.apple.screensaver askForPasswordDelay -int 0
 #endregion
 
-#region Cursor / Pointer
-# Disable "natural" scrolling
-defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false;
 
-# Disable mouse acceleration
-defaults write .GlobalPreferences com.apple.mouse.scaling -1;
-defaults write .GlobalPreferences com.apple.trackpad.scaling -1;
-defaults write .GlobalPreferences com.apple.scrollwheel.scaling -1;
+#region Input Devices
+# Disable "natural" scrolling for mouse and trackpad
+defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
 
-# enable three finger drag
-defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true;
+# --- Trackpad ---
+# Enable tap to click
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+
+# Enable three-finger drag
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
+
+# --- Mouse ---
+# Set mouse tracking speed
+# A value of 3.0 is a good starting point.
+defaults write NSGlobalDomain com.apple.mouse.scaling -float 3.0
 #endregion
 
-#region Mail
+
+#region App-Specific Settings
+# --- Mail ---
 # Copy email addresses as `foo@example.com` instead of `Foo Bar ` in Mail.app
-defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false;
+defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
+
+# --- VSCode ---
+# Enable key repeat on hold
+defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
+#endregion
+
+
+#region Kill affected applications
+for app in "Dock" "Finder" "Mail" "SystemUIServer"; do
+  killall "${app}" &> /dev/null
+done
+
+echo "Done. Note that some of these changes require a logout/restart to take effect."
 #endregion
