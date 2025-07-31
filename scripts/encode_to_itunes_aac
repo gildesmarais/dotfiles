@@ -36,6 +36,16 @@ raise 'File does not exist!' unless File.exist?(file_name)
 raise "Can't read given file" unless File.readable?(file_name)
 
 file_name_without_extension = File.basename(file_name, '.*')
+file_extension = File.extname(file_name)
+
+if file_extension != '.wav'
+  puts '0. Converting input file to wav'
+  file_name = "#{file_name_without_extension}.wav"
+  system "ffmpeg -i #{Shellwords.escape ARGV[0]} #{Shellwords.escape file_name}"
+
+  file_name_without_extension = File.basename(file_name, '.*')
+  file_extension = File.extname(file_name)
+end
 
 intermediate = "#{file_name_without_extension}.caf"
 out_untagged = "#{file_name_without_extension}.untagged.m4a"
@@ -61,7 +71,7 @@ system "afconvert #{Shellwords.escape intermediate} \
 
 puts '3. copying metadata to m4a'
 system "ffmpeg \
-        -i #{Shellwords.escape file_name} \
+        -i #{Shellwords.escape ARGV[0]} \
         -i #{Shellwords.escape out_untagged} \
         -map 1 -map_metadata 0 \
         -codec copy \

@@ -1,0 +1,106 @@
+#!/bin/bash
+
+###############################################################################
+# Checks & Setup
+###############################################################################
+
+# Make sure an input file was provided
+if [ -z "$1" ]; then
+  echo "Usage: $0 <input_audio_file>"
+  exit 1
+fi
+
+input_file="$1"
+
+# Make sure the input file exists
+if [ ! -f "$input_file" ]; then
+  echo "File not found: $input_file"
+  exit 1
+fi
+
+# Make sure ffmpeg is installed
+if ! command -v ffmpeg &>/dev/null; then
+  echo "Error: ffmpeg not found or not installed."
+  exit 1
+fi
+
+# Make sure awk is installed
+if ! command -v awk &>/dev/null; then
+  echo "Error: awk not found or not installed."
+  exit 1
+fi
+
+# Get the script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENCODER_SCRIPT="$SCRIPT_DIR/encode_to_itunes_aac"
+
+# Make sure the custom encoder script is present and executable
+if [ ! -x "$ENCODER_SCRIPT" ]; then
+  echo "Error: $ENCODER_SCRIPT not found or not executable."
+  exit 1
+fi
+
+# Extract the filename portion and remove its extension with sed
+filename="$(basename "$input_file")"
+filename_no_ext="$(echo "$filename" | sed 's/\.[^.]*$//')"
+
+###############################################################################
+# 1) First pass: volumedetect
+###############################################################################
+
+echo "Running first pass (volumedetect)..."
+detect_output=$(ffmpeg -i "$input_file" -af volumedetect -f null /dev/null 2>&1)
+
+# Extract max_volume
+max_volume=$(echo "$detect_output" | sed -n 's/.*max_volume: \([-0-9.\+]*\) dB.*/\1/p')
+if [ -z "$max_volume" ]; then
+  echo "Error: Could not detect max_volume from volumedetect output."
+  exit 1
+fi
+echo "Detected max_volume: $max_volume dB"
+
+###############################################################################
+# 2) Calculate required gain
+###############################################################################
+
+required_gain=$(awk -v mv="$max_volume" '
+BEGIN {
+  if (mv < 0) {
+    printf "%.2f", -mv
+  } else {
+    printf "0.00"
+  }
+}')
+echo "Calculated gain to apply: ${required_gain} dB"
+
+###############################################################################
+# 3) Second pass: apply the gain -> normalized WAV
+###############################################################################
+
+normalized_wav="${filename_no_ext}.wav"
+echo "Normalizing audio -> $normalized_wav"
+ffmpeg -y -i "$input_file" -map_metadata 0 -af "volume=${required_gain}dB" "$normalized_wav"
+
+###############################################################################
+# 4) Convert normalized WAV -> normalized M4A
+###############################################################################
+
+final_m4a="${filename_no_ext}.m4a"
+
+# If there's already a normalized M4A with the same name, rename it
+if [ -f "$final_m4a" ]; then
+  backup_m4a="${filename_no_ext}.m4a.bak"
+  mv "$final_m4a" "$backup_m4a"
+  echo "Existing $final_m4a renamed to: $backup_m4a"
+fi
+
+echo "Converting $normalized_wav -> $final_m4a..."
+"$ENCODER_SCRIPT" "$normalized_wav" "$final_m4a"
+if [ $? -eq 0 ]; then
+  echo "Conversion successful: $final_m4a"
+  # Remove the intermediate WAV
+  rm -f "$normalized_wav"
+else
+  echo "M4A conversion failed."
+  exit 1
+fi

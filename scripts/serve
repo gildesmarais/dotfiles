@@ -13,6 +13,6 @@ if command_exists caddy; then
     caddy file-server --browse --root . --listen "127.0.0.1:$port"
   fi
 else
-  port="${$PORT:-8080}"
+  port="${PORT:-8080}"
   ruby -run -e httpd . -p "$port"
 fi

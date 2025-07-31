@@ -3,8 +3,9 @@
 set -eux
 
 yt-dlp -o "%(title)s.%(ext)s" \
-       --exec "$HOME/versioned/gildesmarais/focus-ytdl/focus-ytdl-postprocess {}" \
+       --exec "$HOME/.scripts/leech-audio-convert {}" \
        --audio-format best \
+       --audio-quality 0 \
        -x \
        --add-metadata \
        --ignore-errors \

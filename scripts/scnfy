@@ -20,7 +20,7 @@ end.parse!
 
 # Function to format the input according to Scene Standards
 def format_scene_name(input)
-  args = input.gsub('  ', ' ').gsub(/[()]*/, '').strip.split
+  args = input.gsub(/\s+/, ' ').gsub(/[-()_]/, '').strip.split(' ')
   return if args.empty?
 
   group = args.last
