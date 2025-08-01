@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+#
+# leech-audio
+#
+# Downloads the best quality audio from a given URL using yt-dlp and passes
+# the downloaded file to the `process-audio` script for normalization and
+# encoding. A robust pipeline for fetching and preparing web audio.
+
+set -eux
+
+if ! command -v yt-dlp > /dev/null 2>&1; then
+  echo "Error: yt-dlp not found or not installed."
+  exit 1
+fi
+
+yt-dlp -o "%(title)s.%(ext)s" \
+       --exec "process-audio {}" \
+       --audio-format best \
+       --audio-quality 0 \
+       -x \
+       --add-metadata \
+       --ignore-errors \
+       "$1"

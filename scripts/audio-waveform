@@ -1,4 +1,10 @@
 #!/usr/bin/env ruby
+#
+# audio_waveform
+#
+# Generates a visual waveform from an audio file and saves it as a PNG image.
+# Can also embed the waveform as cover art into MP3, M4A, or FLAC files.
+
 # frozen_string_literal: true
 
 require 'shellwords'

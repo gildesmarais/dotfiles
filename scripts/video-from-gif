@@ -1,5 +1,12 @@
-#!/bin/bash
-set -eux
+#!/usr/bin/env bash
+#
+# gif2mp4
+#
+# Converts a GIF to a high-quality, web-optimized MP4 using a two-pass
+# ffmpeg encoding process. This provides better compression and ensures video
+# dimensions are even, making it ideal for web use.
+
+set -euo pipefail
 
 # Input GIF file
 INPUT_FILE="$1"

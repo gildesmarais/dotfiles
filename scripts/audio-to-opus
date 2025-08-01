@@ -1,4 +1,10 @@
 #!/usr/bin/env ruby
+#
+# encode_to_opus
+#
+# Encodes an audio file to the Opus format using ffmpeg, creating a 64k VBR
+# file ideal for high-quality, low-bitrate applications like streaming.
+
 # frozen_string_literal: true
 
 require 'shellwords'

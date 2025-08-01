@@ -22,7 +22,7 @@ This repository contains config files to set up my systems and keep them in sync
 Run the following script to apply system-wide defaults:
 
 ```sh
-./scripts/macos-defaults
+./scripts/macos-defaults-apply
 ```
 
 For settings that cannot be scripted, follow these manual steps:

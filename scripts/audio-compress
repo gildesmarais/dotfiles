@@ -1,4 +1,11 @@
 #!/usr/bin/env ruby
+#
+# audio_compress
+#
+# Applies dynamic range compression to an audio file using ffmpeg's 'compand'
+# filter. Useful for creating a consistent listening experience in noisy
+# environments by reducing the difference between loud and quiet parts.
+
 # frozen_string_literal: true
 
 require 'shellwords'

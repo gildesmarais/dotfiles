@@ -1,4 +1,11 @@
 #!/usr/bin/env ruby
+#
+# tracklist2cue
+#
+# Generates a CUE sheet from a simple `.tracklist` file containing timestamps
+# and "Artist - Title" entries. Automates CUE sheet creation from a
+# human-readable format, ideal for chapterizing long audio files like mixes.
+
 # frozen_string_literal: true
 
 unless ARGV[0]

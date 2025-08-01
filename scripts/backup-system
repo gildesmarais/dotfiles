@@ -1,5 +1,13 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+#
+# backup
+#
+# Performs a full system backup to an external volume using `rsync`. It
+# archives the root directory (`/`) while excluding numerous system, cache,
+# and temporary directories. Logs output and timing, and uses `caffeinate`
+# to prevent sleep during the backup.
+
+set -euo pipefail
 
 backup_dir="/Volumes/gil-ext2-1tb/Backup_$(hostname -s)"
 

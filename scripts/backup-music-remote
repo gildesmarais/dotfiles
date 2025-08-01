@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#
+# g-backup-sync
+#
+# Synchronizes the local iTunes Music library with a remote backup location
+# (assumed to be a cloud provider) using rclone.
+
+set -euo pipefail
+
+if ! command -v rclone &> /dev/null; then
+  echo "Error: rclone not found or not installed."
+  exit 1
+fi
+
+rclone sync --progress /Users/gil/Music/Music/Media.localized/ g-backup-music:

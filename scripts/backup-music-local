@@ -1,5 +1,11 @@
-#!/bin/bash
-set -eux
+#!/usr/bin/env bash
+#
+# backup-itunes
+#
+# Backs up the local iTunes Music library to a remote server on the local
+# network via SSH using `rsync`.
+
+set -euo pipefail
 
 rsync --archive --verbose --human-readable --itemize-changes --progress \
   --prune-empty-dirs --delete -e ssh \

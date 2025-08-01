@@ -1,5 +1,12 @@
-#!/bin/bash
-set -ux
+#!/usr/bin/env bash
+#
+# video_for_web
+#
+# Encodes a source video into three formats optimized for web delivery: H.264
+# (MP4), H.265 (MP4), and VP9 (WebM). Automates the creation of a complete
+# set of formats for broad browser compatibility.
+
+set -euo pipefail
 
 SOURCE_FILE="$1"
 BASE_NAME=$(basename "${SOURCE_FILE%.*}")

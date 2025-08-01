@@ -1,4 +1,12 @@
 #!/usr/bin/env ruby
+#
+# encode_to_itunes_aac
+#
+# Encodes a WAV file to an AAC format (.m4a) following the "Apple Digital
+# Masters" guidelines. This two-step process uses an intermediate CAF file
+# to include 'Sound Check' data, ensuring a high-quality VBR AAC output
+# optimized for the Apple ecosystem.
+
 # frozen_string_literal: true
 
 require 'shellwords'

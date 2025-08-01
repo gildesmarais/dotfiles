@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#
+# video2gif
+#
+# Converts a video file into an optimized animated GIF. It pipes frames from
+# `ffmpeg` to ImageMagick's `convert` command, allowing for more control and
+# better optimization than a single-tool solution.
+
+set -euo pipefail
+
+filename=$(basename -- "$1")
+extension="${filename##*.}"
+gifname="$(basename -s ".$extension" "$filename").gif"
+
+ffmpeg -i "$1" \
+  -vf "fps=10,scale=320:-1:flags=lanczos" \
+  -c:v pam \
+  -f image2pipe - | \
+    convert -delay 10 \
+      - \
+      -loop 0 \
+      -layers optimize \
+      "$gifname"

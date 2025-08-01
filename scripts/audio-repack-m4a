@@ -1,6 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# m4a-repack
+#
+# Repacks an M4A container by extracting the raw AAC audio stream and creating
+# a new, clean M4A file from it. Useful for stripping unwanted video tracks or
+# corrupted metadata from files that should be audio-only.
 
-set -eux
+set -euo pipefail
 
 # Ensure the input file exists
 if [ ! -f "$1" ]; then

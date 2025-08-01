@@ -1,4 +1,11 @@
 #!/usr/bin/env ruby
+#
+# audio_improve
+#
+# Applies a series of audio improvement filters to a file using ffmpeg.
+# It performs declipping, declicking, and light compression to clean up and
+# enhance raw audio recordings.
+
 # frozen_string_literal: true
 
 require 'shellwords'

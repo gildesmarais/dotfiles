@@ -1,4 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# leech-audio-convert
+#
+# Post-processor for audio files, typically called by `download-audio`. It
+# normalizes the audio to 0dB peak volume and then encodes it to a
+# high-quality M4A using the `audio-to-aac` script, creating a file
+# ready for a music library.
+
+set -euo pipefail
 
 ###############################################################################
 # Checks & Setup
@@ -32,7 +41,7 @@ fi
 
 # Get the script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ENCODER_SCRIPT="$SCRIPT_DIR/encode_to_itunes_aac"
+ENCODER_SCRIPT="$SCRIPT_DIR/audio-to-aac"
 
 # Make sure the custom encoder script is present and executable
 if [ ! -x "$ENCODER_SCRIPT" ]; then
@@ -40,9 +49,9 @@ if [ ! -x "$ENCODER_SCRIPT" ]; then
   exit 1
 fi
 
-# Extract the filename portion and remove its extension with sed
+# Extract the filename portion and remove its extension
 filename="$(basename "$input_file")"
-filename_no_ext="$(echo "$filename" | sed 's/\.[^.]*$//')"
+filename_no_ext="${filename%.*}"
 
 ###############################################################################
 # 1) First pass: volumedetect
@@ -95,8 +104,7 @@ if [ -f "$final_m4a" ]; then
 fi
 
 echo "Converting $normalized_wav -> $final_m4a..."
-"$ENCODER_SCRIPT" "$normalized_wav" "$final_m4a"
-if [ $? -eq 0 ]; then
+if "$ENCODER_SCRIPT" "$normalized_wav" "$final_m4a"; then
   echo "Conversion successful: $final_m4a"
   # Remove the intermediate WAV
   rm -f "$normalized_wav"

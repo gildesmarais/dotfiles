@@ -1,5 +1,12 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+#
+# serve
+#
+# Starts a local web server in the current directory. Prefers `caddy` if
+# installed (using a local `Caddyfile` if present), otherwise falls back to
+# Ruby's built-in HTTP server.
+
+set -euo pipefail
 
 function command_exists {
   type "$1" >/dev/null 2>&1;

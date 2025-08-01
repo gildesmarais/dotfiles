@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+#
+# wiki
+#
+# An interactive search interface for a local wiki. Uses `fzf` for the UI,
+# `ripgrep` for content searching, `bat` for previews, and opens the selected
+# file in VS Code. Combines several best-in-class CLI tools into a single,
+# cohesive workflow.
 
 # A local wiki search tool using fzf, ripgrep, bat, and VS Code.
 # Editor is fixed to 'code' but you may set $EDITOR or $VISUAL for other scripts.
@@ -43,8 +50,9 @@ editor="code"
 cmd_file="find . -type f"
 cmd_rg="rg --color=always --line-number --no-heading --with-filename --smart-case"
 
-preview_cmd='
-f() {
+# Define a function for the fzf preview.
+# We export it so it's available to the subshell that fzf creates.
+_fzf_preview_func() {
   if [[ "$1" == *:* ]]; then
     local file="${1%%:*}"
     local line="${1#*:}"
@@ -53,8 +61,11 @@ f() {
   else
     bat --color=always --style=numbers --line-range=:500 "${1#./}"
   fi
-}; f {}
-'
+}
+export -f _fzf_preview_func
+
+# Set the preview command to call our exported function.
+preview_cmd='_fzf_preview_func {}'
 
 fzf_opts=(
   --ansi

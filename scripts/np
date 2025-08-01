@@ -1,4 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# np
+#
+# Checks if the Music app is running and prints the artist and title of the
+# "now playing" track.
+
 set -euo pipefail
 
 if [ "$(pgrep Music | wc -l)" -gt 0 ]; then

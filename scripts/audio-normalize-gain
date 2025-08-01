@@ -1,17 +1,14 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-##
-# Transparently normalizes the perceived loudness of audio files to a target LUFS value.
-# Uses ffmpeg's loudnorm filter in analyze-only mode to compute gain adjustments without compression.
-# Applies clean gain using volume filter, encodes to FLAC, and strips or replaces problematic metadata
-# (e.g. iTunNORM, REPLAYGAIN, TRAKTOR4, GAIN_NORMALIZED) for reliable DJ software compatibility (e.g. Traktor).
-# Supports batch processing, logging, and dry-run mode with multi-core performance.
+# Normalizes audio files to a target LUFS value by applying clean gain,
+# encoding to FLAC, and stripping problematic metadata to ensure compatibility
+# with DJ software. Supports batch processing with multi-core performance.
 #
 # Example usage:
-#   ./normalize_gain.rb -i ./my_audio -o ./normalized_audio
-#   ./normalize_gain.rb --dry-run
-#   ./normalize_gain.rb --log=my_custom_log.txt
+#   ./audio-normalize-gain -i ./my_audio -o ./normalized_audio
+#   ./audio-normalize-gain --dry-run
+#   ./audio-normalize-gain --log=my_custom_log.txt
 
 require 'bundler/inline'
 require 'etc'

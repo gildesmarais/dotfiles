@@ -1,4 +1,11 @@
 #!/usr/bin/env ruby
+#
+# label2cue
+#
+# Converts a text file from Audacity's "Export Labels" format into a
+# standard CUE sheet, printing the result to standard output. Useful for
+# splitting long recordings into tracks without re-encoding.
+
 # frozen_string_literal: true
 
 if ARGV.empty?

@@ -1,4 +1,11 @@
 #!/usr/bin/env ruby
+#
+# scnfy
+#
+# Formats a string to conform to "Scene" naming conventions (e.g.,
+# "Show.Name.S01E01-GROUP"). Can be run on arguments or in an
+# interactive REPL mode.
+
 # frozen_string_literal: true
 
 require 'optparse'

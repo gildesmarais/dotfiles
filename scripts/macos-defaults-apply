@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
+#
+# macos-defaults
+#
+# An interactive wizard for setting macOS user defaults. It can be run in
+# interactive, apply-all, or dry-run mode, and only applies settings that
+# differ from the current configuration. A safe way to configure a new macOS
+# system or enforce a consistent setup.
 
-# scripts/macos-defaults
 # Sets sensible macOS defaults, interactively.
 # Inspired by Mathias Bynens's .macos script: https://github.com/mathiasbynens/dotfiles
 
