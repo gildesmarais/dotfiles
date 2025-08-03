@@ -136,6 +136,8 @@ alias .....="cd ../../../.."
 
 #region# magic folder commands
 alias pg="playground"
+
+export WIKI_DIR="$HOME/versioned/gildesmarais/wiki"
 alias wiki="$HOME/.dotfiles/scripts/wiki"
 
 #endregion

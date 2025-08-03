@@ -7,12 +7,10 @@
 # file in VS Code. Combines several best-in-class CLI tools into a single,
 # cohesive workflow.
 
-# A local wiki search tool using fzf, ripgrep, bat, and VS Code.
-# Editor is fixed to 'code' but you may set $EDITOR or $VISUAL for other scripts.
-
 set -euo pipefail
 
-wiki_path="$HOME/versioned/gildesmarais/wiki"
+wiki_path="${WIKI_DIR:-$HOME/Documents/wiki}"
+
 initial_query="${1:-}"
 
 if [[ "$initial_query" == "--help" ]]; then
@@ -20,6 +18,7 @@ if [[ "$initial_query" == "--help" ]]; then
 Usage: wiki [search_query | --help]
 
 Search and open wiki content from: $wiki_path
+You can override this path by setting the WIKI_DIR environment variable.
 
 Modes:
   --help              Show this help message.
@@ -37,6 +36,7 @@ Dependencies:
 Examples:
   wiki                # Start browsing all wiki content
   wiki "topic"        # Search for "topic"
+  WIKI_DIR=/path/to/my/wiki wiki # Use a different wiki path
 EOF
   exit 0
 fi
@@ -46,7 +46,9 @@ cd "$wiki_path" || {
   exit 1
 }
 
-editor="code"
+# Set your preferred text editor.
+editor="${EDITOR:-code}"
+
 cmd_file="find . -type f"
 cmd_rg="rg --color=always --line-number --no-heading --with-filename --smart-case"
 
