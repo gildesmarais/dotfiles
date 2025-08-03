@@ -7,6 +7,8 @@ cmd_note() {
         create_new_note "$NOTE_PATH" "$DATE"
     fi
 
+    echo -e "\n### $(date +'%H:%M')\n" >> "$NOTE_PATH"
+
     local last_line
     last_line=$(wc -l < "$NOTE_PATH" | tr -d ' ')
     if [ "$last_line" -eq 0 ]; then

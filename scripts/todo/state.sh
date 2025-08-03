@@ -13,7 +13,7 @@ _config() {
         TODO_AUTO_PUSH="${TODO_AUTO_PUSH:-false}"
     fi
 
-    TODO_CHANGES_MADE="false"
+    export TODO_CHANGES_MADE="false"
 
     if command -v glow &> /dev/null; then
         DEFAULT_GLOW_STATUS="true"
@@ -31,7 +31,7 @@ _config() {
 
 _init_state() {
     DATE=$(date +%Y-%m-%d)
-    NOTE_PATH="$NOTE_DIR/$DATE.md"
+    export NOTE_PATH="$NOTE_DIR/$DATE.md"
 
     if [ ! -d "$NOTE_DIR" ]; then
         _verbose_echo "Creating notes directory: $NOTE_DIR"
