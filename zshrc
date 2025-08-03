@@ -123,7 +123,7 @@ alias vsc="open -a 'Visual Studio Code'"
 #endregion
 
 #region# grepping code
-alias todo="rg '(TODO|FIXME|XXX|NOTE|OPTIMIZE|HACK|REVIEW)'"
+alias todo-rg="rg '(TODO|FIXME|XXX|NOTE|OPTIMIZE|HACK|REVIEW)'"
 alias ag="rg"
 #endregion
 
@@ -140,6 +140,8 @@ alias pg="playground"
 export WIKI_DIR="$HOME/versioned/gildesmarais/wiki"
 alias wiki="$HOME/.dotfiles/scripts/wiki"
 
+export TODO_NOTE_DIR="$HOME/versioned/gildesmarais/wiki/notes/daily"
+alias todo="$HOME/.dotfiles/scripts/todo"
 #endregion
 
 #region# better cat and "imagec" (icat)

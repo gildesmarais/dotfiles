@@ -1,0 +1,138 @@
+#!/bin/bash
+
+# ==========================================================
+# Script: todo
+# Description: The main entry point for the CLI-based PKM tool.
+#              This file handles command-line arguments and sources
+#              all core functions from a separate file.
+#
+# Usage:
+#   todo [COMMAND] [OPTIONS] [TODO_ITEMS]
+#
+# Customization:
+#   - Set NOTE_DIR to your desired notes directory.
+#   - Set EDITOR to your preferred text editor.
+#   - Set TODO_AUTO_COMMIT to "true" to enable Git commits.
+#   - Set TODO_USE_GLOW to override the auto-detection.
+# ==========================================================
+
+# --- Configuration ---
+# Set the directory where you want to store your daily notes.
+NOTE_DIR="${TODO_NOTE_DIR:-$HOME/notes/daily}"
+
+# Set your preferred text editor.
+EDITOR="${EDITOR:-vim}"
+
+# Enable Git auto-commit? Set to "true" or "false".
+TODO_AUTO_COMMIT="false"
+
+# Automatically use glow for prettier markdown output if the command is found.
+if command -v glow &> /dev/null; then
+    DEFAULT_GLOW_STATUS="true"
+else
+    DEFAULT_GLOW_STATUS="false"
+fi
+TODO_USE_GLOW="${TODO_USE_GLOW:-$DEFAULT_GLOW_STATUS}"
+
+# Check for fzf, fall back to a simple menu if not found.
+if command -v fzf &> /dev/null; then
+    FZF_INSTALLED=true
+else
+    FZF_INSTALLED=false
+fi
+
+# --- Source Functions ---
+# Find the directory of the current script and source the functions file.
+SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. "$SOURCE_DIR/todo.functions.sh"
+
+
+# --- Handle command-line arguments and stdin ---
+COMMAND=""
+VERBOSE_FLAG="false"
+TODO_ITEMS=()
+POSITIONAL_ARGS=()
+
+for arg in "$@"; do
+    case "$arg" in
+        -v|--verbose)
+            VERBOSE_FLAG="true"
+            ;;
+        list|open|help|add|edit|motd)
+            COMMAND="$arg"
+            ;;
+        *)
+            POSITIONAL_ARGS+=("$arg")
+            ;;
+    esac
+done
+
+if [ -p /dev/stdin ]; then
+    while IFS= read -r line; do
+        if [ -n "$line" ]; then
+            TODO_ITEMS+=("$line")
+        fi
+    done
+fi
+TODO_ITEMS+=("${POSITIONAL_ARGS[@]}")
+
+
+# --- Main Logic based on Command ---
+# Get the current date and note path for all commands.
+DATE=$(date +%Y-%m-%d)
+NOTE_PATH="$NOTE_DIR/$DATE.md"
+
+# Check if the notes directory exists. If not, create it.
+if [ ! -d "$NOTE_DIR" ]; then
+    if [ "$VERBOSE_FLAG" == "true" ]; then
+        echo "Creating notes directory: $NOTE_DIR"
+    fi
+    mkdir -p "$NOTE_DIR"
+fi
+
+
+if [ -z "$COMMAND" ]; then
+    if [ ${#TODO_ITEMS[@]} -gt 0 ]; then
+        COMMAND="add"
+    else
+        if [ "$FZF_INSTALLED" = true ]; then
+            interactive_fzf_menu
+        else
+            echo "fzf not found. Falling back to simple menu."
+            interactive_select_menu
+        fi
+        exit_gracefully
+    fi
+fi
+
+case "$COMMAND" in
+    help)
+        show_help
+        exit_gracefully
+        ;;
+    list)
+        list_command
+        exit_gracefully
+        ;;
+    motd)
+        motd_command
+        exit_gracefully
+        ;;
+    open)
+        open_command
+        exit_gracefully
+        ;;
+    edit)
+        open_editor
+        exit_gracefully
+        ;;
+    add)
+        add_command
+        exit_gracefully
+        ;;
+    *)
+        echo "Error: Unknown command '$COMMAND'" >&2
+        show_help
+        exit 1
+        ;;
+esac
