@@ -136,12 +136,6 @@ alias .....="cd ../../../.."
 
 #region# magic folder commands
 alias pg="playground"
-
-export WIKI_DIR="$HOME/versioned/gildesmarais/wiki"
-alias wiki="$HOME/.dotfiles/scripts/wiki"
-
-export TODO_NOTE_DIR="$HOME/versioned/gildesmarais/wiki/notes/daily"
-alias todo="$HOME/.dotfiles/scripts/todo"
 #endregion
 
 #region# better cat and "imagec" (icat)
@@ -213,3 +207,11 @@ alias h="history 0 | fzf"
 bindkey "^[^[[C" forward-word
 bindkey "^[^[[D" backward-word
 #endregion
+
+#region Setup PKM tools
+export WIKI_DIR="$HOME/versioned/gildesmarais/wiki"
+alias wiki="$HOME/.dotfiles/scripts/wiki"
+
+export TODO_NOTE_DIR="$HOME/versioned/gildesmarais/wiki/notes/daily"
+alias todo="$HOME/.dotfiles/scripts/todo"
+alias note="$HOME/.dotfiles/scripts/todo note"
