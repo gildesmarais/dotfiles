@@ -1,72 +1,54 @@
 #!/bin/bash
+set -euo pipefail
 
 # ==========================================================
 # Script: todo
-# Description: The main entry point for the CLI-based PKM tool.
-#              This file handles command-line arguments and sources
-#              all core functions from a separate file.
-#
-# Usage:
-#   todo [COMMAND] [OPTIONS] [TODO_ITEMS]
-#
-# Customization:
-#   - Set NOTE_DIR to your desired notes directory.
-#   - Set EDITOR to your preferred text editor.
-#   - Set TODO_AUTO_COMMIT to "true" to enable Git commits.
-#   - Set TODO_USE_GLOW to override the auto-detection.
+# Description: Main entry point for the todo script.
+#              Handles argument parsing and command routing.
 # ==========================================================
 
-# --- Configuration ---
-# Set the directory where you want to store your daily notes.
-NOTE_DIR="${TODO_NOTE_DIR:-$HOME/notes/daily}"
-
-# Set your preferred text editor.
-EDITOR="${EDITOR:-vim}"
-
-# Enable Git auto-commit? Set to "true" or "false".
-TODO_AUTO_COMMIT="false"
-
-# Automatically use glow for prettier markdown output if the command is found.
-if command -v glow &> /dev/null; then
-    DEFAULT_GLOW_STATUS="true"
-else
-    DEFAULT_GLOW_STATUS="false"
-fi
-TODO_USE_GLOW="${TODO_USE_GLOW:-$DEFAULT_GLOW_STATUS}"
-
-# Check for fzf, fall back to a simple menu if not found.
-if command -v fzf &> /dev/null; then
-    FZF_INSTALLED=true
-else
-    FZF_INSTALLED=false
-fi
-
-# --- Source Functions ---
-# Find the directory of the current script and source the functions file.
-SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# --- Setup ---
+# Find the directory of the current script, source functions and config.
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=todo.functions.sh
 . "$SOURCE_DIR/todo.functions.sh"
 
+# Load configuration and check dependencies.
+_config
+_check_dependencies
 
-# --- Handle command-line arguments and stdin ---
+# --- Argument Parsing ---
 COMMAND=""
 VERBOSE_FLAG="false"
 TODO_ITEMS=()
-POSITIONAL_ARGS=()
 
-for arg in "$@"; do
-    case "$arg" in
-        -v|--verbose)
+# Parse options
+while getopts ":v" opt; do
+    case ${opt} in
+        v)
             VERBOSE_FLAG="true"
             ;;
-        list|open|help|add|edit|motd)
-            COMMAND="$arg"
-            ;;
-        *)
-            POSITIONAL_ARGS+=("$arg")
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            show_help
+            exit 1
             ;;
     esac
 done
+shift $((OPTIND -1))
 
+# The first non-option argument is the command.
+if [ $# -gt 0 ]; then
+    COMMAND="$1"
+    shift
+fi
+
+# The rest are todo items.
+if [ $# -gt 0 ]; then
+    TODO_ITEMS+=("$@")
+fi
+
+# Also read from stdin.
 if [ -p /dev/stdin ]; then
     while IFS= read -r line; do
         if [ -n "$line" ]; then
@@ -74,61 +56,60 @@ if [ -p /dev/stdin ]; then
         fi
     done
 fi
-TODO_ITEMS+=("${POSITIONAL_ARGS[@]}")
 
-
-# --- Main Logic based on Command ---
+# --- Main Logic ---
 # Get the current date and note path for all commands.
 DATE=$(date +%Y-%m-%d)
 NOTE_PATH="$NOTE_DIR/$DATE.md"
 
-# Check if the notes directory exists. If not, create it.
+# Create notes directory if it doesn't exist.
 if [ ! -d "$NOTE_DIR" ]; then
-    if [ "$VERBOSE_FLAG" == "true" ]; then
-        echo "Creating notes directory: $NOTE_DIR"
-    fi
+    _verbose_echo "Creating notes directory: $NOTE_DIR"
     mkdir -p "$NOTE_DIR"
 fi
 
-
+# --- Command Routing ---
+# If no command is given, decide what to do.
 if [ -z "$COMMAND" ]; then
     if [ ${#TODO_ITEMS[@]} -gt 0 ]; then
         COMMAND="add"
     else
+        # If no command and no items, show interactive menu.
         if [ "$FZF_INSTALLED" = true ]; then
-            interactive_fzf_menu
+            interactive_mode
         else
-            echo "fzf not found. Falling back to simple menu."
-            interactive_select_menu
+            _verbose_echo "fzf not found, which is required for interactive mode."
+            show_help
         fi
         exit_gracefully
     fi
 fi
 
+# Route to the appropriate function based on the command.
 case "$COMMAND" in
     help)
         show_help
-        exit_gracefully
         ;;
     list)
-        list_command
-        exit_gracefully
+        cmd_list "$@"
         ;;
     motd)
-        motd_command
-        exit_gracefully
-        ;;
-    open)
-        open_command
-        exit_gracefully
+        cmd_motd
         ;;
     edit)
-        open_editor
-        exit_gracefully
+        cmd_edit
+        ;;
+    note)
+        cmd_note
         ;;
     add)
-        add_command
-        exit_gracefully
+        cmd_add
+        ;;
+    meta)
+        cmd_meta "$@"
+        ;;
+    filter)
+        cmd_filter
         ;;
     *)
         echo "Error: Unknown command '$COMMAND'" >&2
@@ -136,3 +117,5 @@ case "$COMMAND" in
         exit 1
         ;;
 esac
+
+exit_gracefully
