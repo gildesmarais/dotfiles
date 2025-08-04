@@ -213,5 +213,8 @@ export WIKI_DIR="$HOME/versioned/gildesmarais/wiki"
 alias wiki="$HOME/.dotfiles/scripts/wiki"
 
 export TODO_NOTE_DIR="$HOME/versioned/gildesmarais/wiki/notes/daily"
-alias todo="$HOME/.dotfiles/scripts/todo"
-alias note="$HOME/.dotfiles/scripts/todo note"
+alias todo="$HOME/.dotfiles/scripts/todo/todo"
+alias note="$todo note"
+#endregion
+
+[[ $- == *i* ]] && todo motd
