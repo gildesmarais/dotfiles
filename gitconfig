@@ -1,15 +1,17 @@
 [user]
 	name = Gil Desmarais
 	email = git@desmarais.de
+	signingkey = /Users/gil/.ssh/id_rsa.pub
 [core]
 	excludesfile = /Users/gil/.gitignore_global
 	autocrlf = input
 	attributesfile = ~/.gitattributes
+	editor = vim
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
 [mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
 [credential]
 	helper = osxkeychain
@@ -46,6 +48,7 @@
 	defaultBranch = main
 [commit]
 	gpgsign = true
+	template = /Users/gil/.stCommitMsg
 [gpg]
 	format = ssh
 [merge "merge-structure-sql"]

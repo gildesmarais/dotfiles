@@ -11,6 +11,8 @@ dispatch() {
     if declare -F "$handler" > /dev/null; then
         _verbose_echo "Dispatching command '$command' to handler '$handler'."
         "$handler" "$@"
+    elif [ "$command" = "help" ]; then
+        show_help
     else
         echo "Error: Unknown command '$command'" >&2
         show_help
@@ -19,7 +21,7 @@ dispatch() {
 }
 
 _verbose_echo() {
-    if [ "$VERBOSE_FLAG" == "true" ]; then
+    if [ "${VERBOSE_FLAG:-false}" = "true" ]; then
         echo "$@"
     fi
 }
@@ -29,15 +31,11 @@ show_help() {
 Usage: todo [COMMAND] [OPTIONS] [TODO_ITEMS]
 
 Commands:
-  (default)           Launches an interactive menu.
   add [items]         Adds one or more tasks to the daily note.
   list [scope]        Displays tasks. Scope can be 'today' (default), 'week', or 'all'.
+                      Use -o (open only), -a (all states), -d (done only) to filter.
   motd                Displays today's to-do list, for shell startup.
-  edit                Opens the daily note in your editor, cursor at first task.
-  note                Opens the daily note, cursor at the end of the file.
-  filter              Interactively fuzzy search all open tasks.
-  meta list           Display front matter for today's note.
-  meta set <k> <v>    Set a front matter key-value pair.
+  done                Fuzzy-pick open tasks (from all notes) and mark them done.
   help                Show this help message.
 
 Options:
@@ -49,16 +47,15 @@ Examples:
   todo list
   todo list week
   todo list all
-  todo edit
+  todo list -o        # today: show *o*pen tasks
+  todo list -a week   #  week: show *a*ll tasks (open and done)
+  todo list -d        # today: show *d*one tasks
   todo motd
-  todo filter
-  todo meta set mood focused
-  todo meta set tags "deep-work,project-a"
+  todo done
 EOF
 }
 
 exit_gracefully() {
     _verbose_echo "Exiting..."
-    git_push_resiliently "$TODO_AUTO_PUSH" "$NOTE_DIR" "$DATE"
     exit 0
 }

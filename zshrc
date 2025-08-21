@@ -16,9 +16,6 @@ fzf_git_checkout() {
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 
-  autoload -Uz compinit
-  compinit
-
   export PATH="/usr/local/opt/libpq/bin:$PATH"
 fi
 #endregion
@@ -212,9 +209,25 @@ bindkey "^[^[[D" backward-word
 export WIKI_DIR="$HOME/versioned/gildesmarais/wiki"
 alias wiki="$HOME/.dotfiles/scripts/wiki"
 
-export TODO_NOTE_DIR="$HOME/versioned/gildesmarais/wiki/notes/daily"
+wike() {
+    local editor="${VISUAL:-${EDITOR:-vi}}"
+    if [ -d "$WIKI_DIR" ]; then
+        "$editor" "$WIKI_DIR"
+    else
+        echo "Error: WIKI_DIR is not a directory or is not set." >&2
+    fi
+}
+
+export TODO_NOTE_DIR="$HOME/versioned/gildesmarais/wiki/Calendar"
+export TODO_AUTO_GIT_SYNC=true
+
 alias todo="$HOME/.dotfiles/scripts/todo/todo"
+alias t='todo add'
+alias td='todo done'
+alias tl='todo list'
 alias note="todo note"
 #endregion
+
+export VISUAL=code
 
 [[ $- == *i* ]] && todo motd

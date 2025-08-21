@@ -1,69 +1,88 @@
-# `todo` - Command-Line Note and Task Manager
+# Todo Script
 
-`todo` is a powerful and fast command-line utility designed for developers and power users to manage daily notes and to-do lists directly from their terminal. It integrates seamlessly into your existing shell workflow, providing quick access to task management without context switching to a graphical UI.
+A modular, command-line todo management system that integrates with daily notes.
 
 ## Features
 
-- **Quick Task Management:** Add, list, edit, and filter tasks with simple commands.
-- **Daily Notes:** Easily manage daily markdown notes with YAML front matter.
-- **Fuzzy Search:** Interactive fuzzy search (`fzf`) for efficient task and note navigation.
-- **Markdown Rendering:** Beautiful terminal rendering of notes (`glow`).
-- **Git Integration:** Optional auto-commit feature for note changes.
+- Add todos to daily notes
+- List todos by scope (today, week, all)
+- Mark todos as done with fuzzy selection
+- Message of the day (MOTD) for shell startup
+- Compact multi-day listings
+- Auto-git-sync for seamless cross-machine workflow
 
-## Installation
+## Commands
 
-**Install Dependencies (if not already present):**
-`todo` relies on the following tools:
+- `add [items]` - Adds one or more tasks to the daily note
+- `list [scope]` - Displays tasks. Scope can be 'today' (default), 'week', or 'all'
+- `motd` - Displays today's to-do list, for shell startup
+- `done` - Fuzzy-pick open tasks (from all notes) and mark them done
+- `help` - Show help message
 
-- `yq` (for YAML front matter parsing)
-- `fzf` (for interactive fuzzy search)
-- `glow` (optional, for markdown rendering)
-- `git` (optional, for auto-commit)
+## Auto-Git-Sync
 
-You can install them using your system's package manager (e.g., `brew` on macOS, `apt` on Debian/Ubuntu, `pacman` on Arch Linux).
-Example (macOS with Homebrew):
+The todo script can automatically sync with git after adding todos, enabling seamless cross-machine workflow.
+
+### Setup
+
+1. **Enable auto-sync** in your shell config (`.zshrc`, `.bashrc`, etc.):
+   ```bash
+   export TODO_AUTO_GIT_SYNC=true
+   ```
+
+2. **Ensure your notes directory is a git repository**:
+   ```bash
+   cd ~/Documents/notes  # or your TODO_NOTE_DIR
+   git init
+   git remote add origin <your-notes-repo-url>
+   ```
+
+3. **Configure git for clean pulls** (optional):
+   ```bash
+   git config pull.ff only
+   ```
+
+### How It Works
+
+When `TODO_AUTO_GIT_SYNC=true`:
+1. After adding a todo, the script automatically:
+   - Pulls latest changes from remote
+   - Adds the modified note file
+   - Commits with message "Add todo: [item]"
+   - Pushes to remote
+
+2. Uses merge strategy for conflict-free, interrupt-free operation
+3. Only acts on the modified note file
+4. Provides verbose output when `-v` flag is used
+
+### Benefits
+
+- **Interrupt-free**: No git conflicts or prompts
+- **Always fresh**: Pulls latest changes before adding todos
+- **Automatic**: No need to remember git commands
+- **Cross-machine**: Todos sync automatically across devices
+- **Configurable**: Can be enabled/disabled per environment
+
+## Configuration
+
+Set these environment variables to customize behavior:
+
+- `TODO_NOTE_DIR` - Directory for daily notes (default: `$HOME/Documents/notes/daily`)
+- `TODO_USE_GLOW` - Use glow for markdown rendering (default: auto-detect)
+- `TODO_AUTO_GIT_SYNC` - Enable automatic git sync (default: false)
+
+## Examples
 
 ```bash
-brew install yq fzf glow git
+# Add a todo (auto-syncs if enabled)
+todo add "Buy groceries #errands"
+
+# List today's open tasks
+todo list
+
+# List all open tasks for the week
+todo list week -o
+
+# Mark a task as done
+todo done
 ```
-
-## Usage
-
-The `todo` script is invoked with `todo <command> [arguments]`.
-
-### Available Commands:
-
-- **`todo add <task>`**
-  Adds a new to-do item to your daily note.
-  Example: `todo add "Fix bug in authentication module"`
-
-- **`todo edit [query]`**
-  Opens your daily note in your preferred editor (`$EDITOR`). If a query is provided, it attempts to jump to the line containing the query.
-  Example: `todo edit`
-  Example: `todo edit "authentication module"`
-
-- **`todo filter <query>`**
-  Filters and displays tasks from your notes based on a query using `fzf`.
-  Example: `todo filter "bug"`
-
-- **`todo list`**
-  Displays your current daily note, rendered with `glow` (if installed).
-  Example: `todo list`
-
-- **`todo meta <subcommand> [arguments]`**
-  Manages YAML front matter in your daily note.
-  - **`todo meta list`**
-    Lists all front matter key-value pairs for the current daily note.
-    Example: `todo meta list`
-  - **`todo meta set <key> <value>`**
-    Sets a front matter key to a specified value. If the key is `tags`, the value can be a comma-separated string (e.g., "tag1,tag2").
-    Example: `todo meta set status "in progress"`
-    Example: `todo meta set tags "dev,urgent"`
-
-- **`todo motd`**
-  Displays the Message of the Day, typically showing your tasks for the current day. This is often sourced in your shell's startup file.
-  Example: `todo motd`
-
-- **`todo note [query]`**
-  Similar to `edit`, opens your daily note. This command is an alias for `edit`.
-  Example: `todo note`

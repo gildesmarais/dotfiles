@@ -5,4 +5,4 @@ kubectl 1.28.4
 nodejs 22.13.1
 python 3.12.3
 ruby 3.4.1
-rust 1.64.0
+rust 1.86.0
