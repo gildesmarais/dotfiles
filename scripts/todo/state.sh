@@ -4,16 +4,7 @@ set -euo pipefail
 # State Management
 _config() {
     NOTE_DIR="${TODO_NOTE_DIR:-$HOME/Documents/notes/daily}"
-    EDITOR="${EDITOR:-vim}"
-    TODO_AUTO_COMMIT="${TODO_AUTO_COMMIT:-false}"
-
-    if [ "${TODO_AUTO_COMMIT}" = "true" ] && [ "${TODO_AUTO_PUSH:-}" != "false" ]; then
-        TODO_AUTO_PUSH="true"
-    else
-        TODO_AUTO_PUSH="${TODO_AUTO_PUSH:-false}"
-    fi
-
-    export TODO_CHANGES_MADE="false"
+    EDITOR="${VISUAL:-${EDITOR:-vim}}"
 
     if command -v glow &> /dev/null; then
         DEFAULT_GLOW_STATUS="true"
@@ -22,15 +13,11 @@ _config() {
     fi
     TODO_USE_GLOW="${TODO_USE_GLOW:-$DEFAULT_GLOW_STATUS}"
 
-    if command -v fzf &> /dev/null; then
-        FZF_INSTALLED=true
-    else
-        FZF_INSTALLED=false
-    fi
 }
 
 _init_state() {
-    DATE=$(date +%Y-%m-%d)
+    export DATE
+    DATE=$(date +%Y%m%d)
     export NOTE_PATH="$NOTE_DIR/$DATE.md"
 
     if [ ! -d "$NOTE_DIR" ]; then
@@ -40,13 +27,7 @@ _init_state() {
 }
 
 _check_dependencies() {
-    local dependencies=("awk" "grep" "sed" "date" "yq")
-    if [ "$FZF_INSTALLED" = true ]; then
-        dependencies+=("fzf")
-    fi
-    if [ "$TODO_AUTO_COMMIT" = true ]; then
-        dependencies+=("git")
-    fi
+    local dependencies=("awk" "grep" "sed" "date")
 
     if [ "$TODO_USE_GLOW" = true ]; then
         if ! command -v glow &> /dev/null; then

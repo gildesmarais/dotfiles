@@ -46,14 +46,10 @@ brew "zoxide"
 brew "zsh"
 brew "zsh-completions"
 brew "yt-dlp/taps/yt-dlp"
-cask "alfred"
-cask "android-platform-tools"
-cask "android-studio"
+cask "raycast"
 cask "appcleaner"
-cask "beatunes"
 cask "bitwarden"
 cask "brave-browser"
-cask "chromedriver"
 cask "dash"
 cask "docker"
 cask "font-fira-code"
@@ -66,13 +62,11 @@ cask "font-roboto"
 cask "font-roboto-mono"
 cask "font-source-code-pro"
 cask "font-ubuntu-mono"
-cask "freac"
 cask "google-chrome"
 cask "keka"
 cask "latest"
 cask "libreoffice"
 cask "marta"
-cask "mountain-duck"
 cask "musicbrainz-picard"
 cask "omnifocus"
 cask "onyx"
@@ -80,36 +74,22 @@ cask "raindropio"
 cask "rectangle"
 cask "signal"
 cask "sourcetree"
-cask "steam"
 cask "telegram"
-cask "ticktick"
 cask "tor-browser"
-cask "transmit"
 cask "visual-studio-code"
-cask "vlc"
 cask "wezterm"
 cask "xld"
 mas "Actions", id: 1586435171
 mas "Amphetamine", id: 937984704
 mas "Bitwarden", id: 1352778147
 mas "Boxy SVG", id: 611658502
-mas "Cascadea", id: 1432182561
-mas "Cuterdio", id: 1489513385
 mas "Dark Reader for Safari", id: 1438243180
 mas "Dato", id: 1470584107
 mas "Developer", id: 640199958
 mas "Gapplin", id: 768053424
 mas "HEIC Converter", id: 1294126402
-mas "Hush", id: 1544743900
 mas "iPreview", id: 1519213509
-mas "iStat Menus", id: 1319778037
-mas "Ivory", id: 6444602274
-mas "Ka-Block!", id: 1335413823
 mas "Marked 2", id: 890031187
-mas "Meander", id: 923576113
 mas "Mp3tag", id: 1532597159
-mas "OwlOCR", id: 1499181666
 mas "Pandan", id: 1569600264
-mas "ReadKit", id: 588726889
-mas "Reeder", id: 1529448980
 mas "Xcode", id: 497799835

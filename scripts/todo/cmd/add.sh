@@ -13,5 +13,4 @@ cmd_add() {
         echo "Added: $item"
     done
 
-    auto_commit_if_enabled "$TODO_AUTO_COMMIT" "$NOTE_DIR" "$NOTE_PATH" "$DATE"
 }

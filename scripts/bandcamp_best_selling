@@ -1,0 +1,286 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Bandcamp Best-Selling Digger (429-safe)
+# - Scrapes "best-selling" grids from artist/label pages (or a fan's follows)
+# - CSV: source_url,rank,title,artist,release_url,type,supporters
+# - Robust HTTP handling:
+#   * Exponential backoff (retriable)
+#   * Honors Retry-After on 429/503
+#   * Jitter + polite baseline delay between requests
+
+require 'net/http'
+require 'optparse'
+require 'csv'
+require 'nokogiri'
+require 'open-uri'
+require 'uri'
+require 'retriable'
+require 'openssl'
+require 'zlib'
+
+USER_AGENT = "Mozilla/5.0 (compatible; DJ-Digger/1.1; +https://example.invalid)"
+DEFAULT_LIMIT = 12
+
+Options = Struct.new(
+  :input, :output, :fan, :limit, :supporters,
+  :max_retries, :base_sleep, :max_sleep, :baseline_delay,
+  :fan_pages, :verbose
+)
+
+def parse_options
+  opts = Options.new(nil, "bandcamp_best_selling.csv", nil, DEFAULT_LIMIT, false, 6, 1.2, 20.0, 0.6, 5, false)
+  OptionParser.new do |o|
+    o.banner = "Usage: ruby bandcamp_best_selling.rb [options]"
+    o.on("--input FILE", "Text file with Bandcamp pages (one per line)") { |v| opts.input = v }
+    o.on("--fan NAME", "Public fan page (bandcamp.com/NAME) to read follows") { |v| opts.fan = v }
+    o.on("--output FILE", "Output CSV (default: #{opts.output})") { |v| opts.output = v }
+    o.on("--limit N", Integer, "Top releases per source (default: #{opts.limit})") { |v| opts.limit = v }
+    o.on("--supporters", "Fetch 'supported by X fans' per release") { opts.supporters = true }
+    o.on("--max-retries N", Integer, "Max retries per request (default: #{opts.max_retries})") { |v| opts.max_retries = v }
+    o.on("--base-sleep S", Float, "Backoff base seconds (default: #{opts.base_sleep})") { |v| opts.base_sleep = v }
+    o.on("--max-sleep S", Float, "Backoff cap seconds (default: #{opts.max_sleep})") { |v| opts.max_sleep = v }
+    o.on("--baseline-delay S", Float, "Baseline polite delay per request (default: #{opts.baseline_delay})") { |v| opts.baseline_delay = v }
+    o.on("--fan-pages N", Integer, "Max fan follow pages to scan (default: #{opts.fan_pages})") { |v| opts.fan_pages = v }
+    o.on("-v", "--verbose", "Enable verbose logs") { opts.verbose = true }
+  end.parse!
+  abort "ERROR: Provide --input urls.txt or --fan <name>" if opts.input.nil? && opts.fan.nil?
+  opts
+end
+
+# ------- Rate/Retry helpers -------
+
+def jitter(sec) = sec * (0.85 + rand * 0.3) # +/-15% jitter
+def polite_baseline_delay!(seconds) = sleep(jitter(seconds))
+
+def retry_wait_from_retry_after(ex)
+  return nil unless ex.respond_to?(:io) && ex.io
+
+  headers = (ex.io.respond_to?(:meta) && ex.io.meta) ? ex.io.meta : {}
+
+  value = if headers.is_a?(Hash)
+    headers.to_h.transform_keys { |k| k.to_s.downcase }['retry-after']
+  elsif headers.respond_to?(:to_a)
+    pair = headers.to_a.find do |k, v|
+      k.to_s.downcase == 'retry-after' || k.to_s.downcase.start_with?('retry-after:')
+    end
+    if pair.is_a?(Array)
+      pair.length >= 2 ? pair[1] : pair[0].to_s.split(":", 2).last
+    elsif pair
+      pair.to_s.split(":", 2).last
+    end
+  end
+
+  return nil unless value
+
+  str = value.to_s.strip
+  if str =~ /^\d+$/
+    str.to_i
+  else
+    begin
+      t = Time.httpdate(str)
+      [(t - Time.now).ceil, 0].max
+    rescue
+      nil
+    end
+  end
+end
+
+def fetch_html(url, ua:, opts:)
+  # Retriable handles network errors + 429/5xx with exponential backoff + Retry-After
+  Retriable.retriable(
+    tries: opts.max_retries,
+    on: [
+      OpenURI::HTTPError, IOError, Errno::ECONNRESET, Errno::ETIMEDOUT,
+      Net::OpenTimeout, Net::ReadTimeout, SocketError, EOFError,
+      OpenSSL::SSL::SSLError, Zlib::DataError
+    ],
+    base_interval: opts.base_sleep,
+    max_interval: opts.max_sleep,
+    multiplier: 1.7,
+    rand_factor: 0.25,
+    on_retry: (opts.verbose ? proc do |exception, try, elapsed, next_interval|
+      warn "Retry #{try} for #{url} (#{exception.class}: #{exception.message.strip}) after #{elapsed.round(1)}s, next in ~#{next_interval.round(1)}s"
+    end : proc { |_exception, _try, _elapsed, _next_interval| nil })
+  ) do
+    polite_baseline_delay!(opts.baseline_delay)
+    begin
+      warn "GET #{url}" if opts.verbose
+      URI.open(url, "User-Agent" => ua, read_timeout: 30, open_timeout: 15) do |io|
+        return Nokogiri::HTML(io.read)
+      end
+    rescue OpenURI::HTTPError => e
+      # Explicit 429/503 handling via Retry-After
+      code = (e.io&.status&.first&.to_i rescue nil)
+      if [429, 503].include?(code)
+        wait = retry_wait_from_retry_after(e)
+        if wait && wait > 0
+          wait = [wait, opts.max_sleep].min
+          warn "Retry-After=#{wait}s for #{url}" if opts.verbose
+          sleep(wait)
+        end
+      end
+      raise
+    end
+  end
+end
+
+def absolute_url(base, href)
+  return nil if href.nil? || href.empty?
+  URI.join(base, href).to_s
+rescue
+  href
+end
+
+# ------- Parse helpers -------
+
+def sanitize_cell(value)
+  return nil if value.nil?
+  value.to_s.gsub(/\s+/, ' ').strip
+end
+
+def discover_best_selling_candidates(root_url, ua:, opts:)
+  doc = fetch_html(root_url, ua:, opts:)
+  return [root_url] unless doc
+
+  # Look for a link mentioning best-selling or sort
+  link = doc.css('a').find do |a|
+    t = a.text.to_s.strip.downcase
+    href = a['href'].to_s
+    t.include?('best-selling') || href.include?('best-selling') || href.include?('sort_field=top')
+  end
+
+  candidates = []
+  candidates << absolute_url(root_url, link['href']) if link
+  candidates << absolute_url(root_url, '/music')
+  candidates << root_url
+  candidates.compact.uniq
+end
+
+def parse_release_grid(doc, base_url, limit)
+  items = []
+  selectors = [
+    '.music-grid .item',
+    '.leftMiddleMiddle .item',
+    '.grid .item',
+    '.merch-grid li'
+  ]
+  nodes = selectors.flat_map { |sel| doc.css(sel).to_a }.uniq
+  nodes.first(limit).each do |item|
+    title_node  = item.at_css('.title, .item-title, .heading, .trackTitle')
+    title       = sanitize_cell(title_node&.text)
+    artist_node = item.at_css('.artist, .subhead, .secondaryText')
+    artist      = sanitize_cell(artist_node&.text)
+    artist      = artist.sub(/^by\s+/i, '') if artist
+    link        = item.at_css('a')&.[]('href')
+    url         = absolute_url(base_url, link)
+    type        = item['data-item-type'] || item.at_css('.itemtype, .detail-item-type')&.text&.strip || 'release'
+    items << { title:, artist:, url:, type: }
+  end
+  items
+end
+
+def extract_supporters_count(release_url, ua:, opts:)
+  doc = fetch_html(release_url, ua:, opts:)
+  return nil unless doc
+  txt = doc.at_css('.supported-by, #supporters, .supporters')&.text&.strip
+  if txt && txt =~ /supported\s+by\s+([\d,]+)/i
+    $1.delete(',').to_i
+  else
+    avatars = doc.css('.fan-avatars img, .fan-avatars a, .supporters .fan').size
+    avatars.positive? ? avatars : nil
+  end
+end
+
+def fan_follow_pages(fan_name, max_pages: 5)
+  pages = []
+  1.upto(max_pages) do |n|
+    if n == 1
+      pages << "https://bandcamp.com/#{fan_name}/following/artists_and_labels"
+    else
+      pages << "https://bandcamp.com/#{fan_name}/following/artists_and_labels?page=#{n}"
+    end
+  end
+  pages
+end
+
+def extract_followed_urls_from_fan_page(url, ua:, opts:)
+  doc = fetch_html(url, ua:, opts:)
+  return [] unless doc
+  links = doc.css('a').map { |a| a['href'].to_s }.select { |h| h =~ %r{https?://[a-z0-9\-.]+\.bandcamp\.com/?}i }
+  links = links.uniq
+  warn "Fan page #{url}: found #{links.size} followed URLs" if opts.verbose
+  links
+end
+
+def read_sources_from_file(path)
+  File.readlines(path, chomp: true).map(&:strip).reject { |l| l.empty? || l.start_with?('#') }
+end
+
+# ------- Main -------
+
+def main
+  opts = parse_options
+  ua = USER_AGENT
+
+  sources =
+    if opts.input
+      read_sources_from_file(opts.input)
+    else
+      fan_follow_pages(opts.fan, max_pages: opts.fan_pages).flat_map { |p| extract_followed_urls_from_fan_page(p, ua:, opts:) }
+    end
+  sources = sources.uniq
+  abort "No sources discovered." if sources.empty?
+
+  total_rows = 0
+
+  CSV.open(opts.output, "w", write_headers: true,
+           headers: %w[source_url rank title artist release_url type supporters]) do |csv|
+    sources.each do |source_url|
+      warn "Discovering candidates for #{source_url}" if opts.verbose
+      candidates = discover_best_selling_candidates(source_url, ua:, opts:)
+      warn "Candidates: #{candidates.join(', ')}" if opts.verbose
+      page_doc = nil
+      target = nil
+      candidates.each do |cand|
+        page_doc = fetch_html(cand, ua:, opts:)
+        if page_doc && !page_doc.text.strip.empty?
+          target = cand
+          warn "Selected candidate: #{target}" if opts.verbose
+          break
+        end
+      end
+      next unless page_doc
+
+      releases = parse_release_grid(page_doc, target, opts.limit)
+      warn "Found #{releases.size} release items at #{target}" if opts.verbose
+      if releases.empty? && target != source_url
+        root_doc = fetch_html(source_url, ua:, opts:)
+        releases = parse_release_grid(root_doc, source_url, opts.limit) if root_doc
+        warn "Fallback to root: found #{releases.size} release items" if opts.verbose && releases
+      end
+
+      releases.each_with_index do |r, i|
+        supporters = nil
+        if opts.supporters && r[:url]
+          warn "Fetching supporters for #{r[:url]}" if opts.verbose
+          supporters = extract_supporters_count(r[:url], ua:, opts:)
+        end
+        csv << [
+          sanitize_cell(source_url),
+          i + 1,
+          sanitize_cell(r[:title]),
+          sanitize_cell(r[:artist]),
+          sanitize_cell(r[:url]),
+          sanitize_cell(r[:type]),
+          supporters
+        ]
+        total_rows += 1
+      end
+    end
+  end
+
+  puts "Wrote #{total_rows} rows to #{opts.output}"
+end
+
+main if __FILE__ == $0
