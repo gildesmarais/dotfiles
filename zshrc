@@ -231,3 +231,4 @@ alias note="todo note"
 export VISUAL=code
 
 [[ $- == *i* ]] && todo motd
+source "$HOME/.zshrc.local"
