@@ -1,15 +1,15 @@
 [user]
 	name = Gil Desmarais
-	email = git@desmarais.de
-	signingkey = /Users/gil/.ssh/id_rsa.pub
+	email = g.desmarais@goreha.com
+	signingkey = 7C2E25C11CC96C54
 [core]
-	excludesfile = /Users/gil/.gitignore_global
+	excludesfile = /Users/gildesmarais/.gitignore_global
 	autocrlf = input
 	attributesfile = ~/.gitattributes
 	editor = vim
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+	path =
 [mergetool "sourcetree"]
 	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
@@ -48,6 +48,5 @@
 	defaultBranch = main
 [commit]
 	gpgsign = true
-	template = /Users/gil/.stCommitMsg
-[gpg]
-	format = ssh
+[tag]
+	gpgSign = true

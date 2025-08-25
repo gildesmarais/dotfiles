@@ -1,4 +1,4 @@
-local font_size = 16;
+local font_size = 20;
 
 local wezterm = require 'wezterm';
 local act = wezterm.action
@@ -66,6 +66,7 @@ wezterm.on('update-status', function(window, _)
 end)
 
 return {
+    front_end = "WebGpu",
     font_size = font_size,
     color_scheme = "Tomorrow Night Eighties",
     color_schemes = {
