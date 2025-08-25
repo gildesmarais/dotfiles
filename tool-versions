@@ -1,8 +1,7 @@
-aws-vault 6.4.0
-deno 1.39.2
-golang 1.19.4
+aws-vault 7.2.0
+awscli 2.24.27
 kubectl 1.28.4
 nodejs 22.13.1
 python 3.12.3
-ruby 3.4.1
+ruby 3.4.2
 rust 1.86.0
