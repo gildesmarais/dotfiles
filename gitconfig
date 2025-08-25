@@ -51,6 +51,3 @@
 	template = /Users/gil/.stCommitMsg
 [gpg]
 	format = ssh
-[merge "merge-structure-sql"]
-	name = Rails structure.sql merge driver
-	driver = git-merge-structure-sql %A %O %B
