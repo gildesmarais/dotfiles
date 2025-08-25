@@ -223,7 +223,7 @@ wike() {
     fi
 }
 
-export TODO_NOTE_DIR="$HOME/versioned/gildesmarais/wiki/Calendar"
+export TODO_NOTE_DIR="$WIKI_DIR/Calendar"
 export TODO_AUTO_GIT_SYNC=true
 
 alias todo="$HOME/.dotfiles/scripts/todo/todo"
