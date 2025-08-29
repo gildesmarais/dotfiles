@@ -157,7 +157,7 @@ AFFECTED_APPS+=("Finder")
 set_default "Enable Dock auto-hiding" com.apple.dock autohide -bool true
 set_default "Set auto-hide delay to zero" com.apple.dock autohide-delay -float 0
 set_default "Set animation speed to zero" com.apple.dock autohide-time-modifier -float 0
-set_default "Set icon size" com.apple.dock tilesize -int 36
+set_default "Set icon size" com.apple.dock tilesize -int 27
 set_default "Enable magnification" com.apple.dock magnification -bool true
 set_default "Set magnification icon size" com.apple.dock largesize -int 72
 AFFECTED_APPS+=("Dock")
@@ -183,7 +183,7 @@ set_default "Disable 'natural' scrolling" NSGlobalDomain com.apple.swipescrolldi
 set_default "Enable tap to click" com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 set_default "Enable tap to click (current user)" com.apple.AppleMultitouchTrackpad Clicking -bool true
 set_default "Enable three-finger drag" com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
-set_default "Set mouse scaling" NSGlobalDomain com.apple.mouse.scaling -float 3.0
+set_default "Set mouse scaling" NSGlobalDomain com.apple.mouse.scaling -float 3
 #endregion
 
 #region App-Specific Settings
