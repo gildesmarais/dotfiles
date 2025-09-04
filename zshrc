@@ -217,7 +217,9 @@ alias wiki="$HOME/.dotfiles/scripts/wiki"
 wike() {
     local editor="${VISUAL:-${EDITOR:-vi}}"
     if [ -d "$WIKI_DIR" ]; then
-        "$editor" "$WIKI_DIR"
+        cd "$WIKI_DIR" && git pull --quiet;
+        "$editor" "$WIKI_DIR";
+        popd;
     else
         echo "Error: WIKI_DIR is not a directory or is not set." >&2
     fi
