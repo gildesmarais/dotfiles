@@ -2,20 +2,86 @@
 #
 # video_for_web
 #
-# Encodes a source video into three formats optimized for web delivery: H.264
-# (MP4), H.265 (MP4), and VP9 (WebM). Automates the creation of a complete
-# set of formats for broad browser compatibility.
+# Encodes a source video into formats optimized for web delivery.
+# Default: H.264 (MP4), H.265 (MP4), and VP9 (WebM).
+#
+# Usage:
+#   video-for-web [--h264] [--x265] [--vp9] <source_file>
+#
+# If no codec flags are provided, all three outputs are generated.
 
 set -euo pipefail
 
-SOURCE_FILE="$1"
+SOURCE_FILE=""
+WANT_H264=0
+WANT_X265=0
+WANT_VP9=0
+
+usage() {
+  echo "Usage: video-for-web [--h264] [--x265] [--vp9] <source_file>" 1>&2
+  echo "  --h264  Generate H.264 (x264) MP4 output" 1>&2
+  echo "  --x265  Generate H.265 (x265) MP4 output" 1>&2
+  echo "  --vp9   Generate VP9 (WebM) output" 1>&2
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --h264|--x264)
+      WANT_H264=1
+      shift
+      ;;
+    --x265)
+      WANT_X265=1
+      shift
+      ;;
+    --vp9|--webm)
+      WANT_VP9=1
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      echo "Unknown option: $1" 1>&2
+      usage
+      exit 1
+      ;;
+    *)
+      if [[ -z "$SOURCE_FILE" ]]; then
+        SOURCE_FILE="$1"
+        shift
+      else
+        echo "Unexpected argument: $1" 1>&2
+        usage
+        exit 1
+      fi
+      ;;
+  esac
+done
+
+if [[ -z "$SOURCE_FILE" ]]; then
+  usage
+  exit 1
+fi
+
+if [[ $WANT_H264 -eq 0 && $WANT_X265 -eq 0 && $WANT_VP9 -eq 0 ]]; then
+  WANT_H264=1
+  WANT_X265=1
+  WANT_VP9=1
+fi
+
 BASE_NAME=$(basename "${SOURCE_FILE%.*}")
 
 # assuming macosx here:
 THREADS=$(sysctl -n hw.logicalcpu)
 THREADS="${THREADS:-2}"
 
-# h264
+if [[ $WANT_H264 -eq 1 ]]; then
 ffmpeg -i "$SOURCE_FILE" \
   -threads "$THREADS" \
   -vcodec h264 \
@@ -27,8 +93,9 @@ ffmpeg -i "$SOURCE_FILE" \
   -movflags +faststart \
   -pix_fmt yuv420p \
   "$BASE_NAME.x264.mp4"
+fi
 
-# h265
+if [[ $WANT_X265 -eq 1 ]]; then
 ffmpeg -i "$SOURCE_FILE" \
   -threads "$THREADS" \
   -c:v libx265 \
@@ -41,7 +108,9 @@ ffmpeg -i "$SOURCE_FILE" \
   -profile:v main \
   -crf 30 \
   "$BASE_NAME.x265.mp4"
+fi
 
+if [[ $WANT_VP9 -eq 1 ]]; then
 # webm vp9
 # https://developers.google.com/media/vp9/the-basics/
 ffmpeg -i "$SOURCE_FILE" \
@@ -52,3 +121,4 @@ ffmpeg -i "$SOURCE_FILE" \
   -acodec libvorbis \
   -movflags +faststart \
   "$BASE_NAME.vp9.webm"
+fi
