@@ -54,13 +54,14 @@ if command_exists zoxide; then
   eval "$(zoxide init zsh)"
 fi
 
-# setup zsh-autosuggestion
-[ -f $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
 # source ~/.zshrc.local
 if [ -f "$HOME/.zshrc.local" ]; then
   source "$HOME/.zshrc.local"
 fi
+
+# setup zsh-autosuggestion
+[ -f $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
 #endregion
 
 #region aliases
