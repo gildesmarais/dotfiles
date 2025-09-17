@@ -34,9 +34,9 @@ if command_exists asdf; then
   export PATH="$ASDF_DATA_DIR/shims:$PATH"
 
   # append completions to fpath
-  # fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
+  fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
   # initialise completions with ZSH's compinit
-  # autoload -Uz compinit && compinit
+  autoload -Uz compinit && compinit
 fi
 
 # setup starship
@@ -53,6 +53,28 @@ fi
 if command_exists zoxide; then
   eval "$(zoxide init zsh)"
 fi
+
+# setup zsh-autosuggestion
+[ -f $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+#region completion optimizations
+# Minimal completion setup
+mkdir -p ~/.zsh/cache
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh/cache
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+# Fuzzy brew functions
+brew-search() {
+  brew search --formula | fzf --multi --reverse --prompt="brew> " | xargs -r brew install
+}
+
+brew-remove() {
+  brew list --formula | fzf --multi --reverse --prompt="remove> " | xargs -r brew uninstall
+}
+
+#endregion
 
 # source ~/.zshrc.local
 if [ -f "$HOME/.zshrc.local" ]; then
