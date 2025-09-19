@@ -89,7 +89,9 @@ fi
 #region aliases
 
 #region# git related (some found in @holman's dotfiles)
-alias glog="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
+glog() {
+  git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative "$@"
+}
 alias gb='git branch'
 alias gc='git commit'
 alias gco='fzf_git_checkout'
