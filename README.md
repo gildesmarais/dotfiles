@@ -17,6 +17,14 @@ This repository contains config files to set up my systems and keep them in sync
   mkdir -p ~/.vim/undo
   ```
 
+### Quick-start tools
+
+| Script                           | What it does                                                                                                            | Prerequisites                                                         |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `./scripts/macos-defaults-apply` | Guided wizard that applies my preferred macOS defaults and prompts for the manual tweaks listed below.                  | macOS, `sudo` access for protected settings.                          |
+| `./scripts/wiki`                 | `fzf`-powered browser for the local wiki directory that opens files in your preferred editor.                           | `fzf`, `git`, `rg`, optional `VISUAL`/`EDITOR` or `WIKI_*` overrides. |
+| `./scripts/download-audio`       | Fetches remote audio (e.g., YouTube URLs) and normalises them via the `process-audio` pipeline for library-ready files. | `aria2`, `ffmpeg`, `yt-dlp`; installs live in the Brewfile.           |
+
 ## macOS System Configuration
 
 Run the following script to apply system-wide defaults:
@@ -45,6 +53,11 @@ After symlinking the Brewfile, install the specified applications with:
 ```sh
 brew bundle install --global
 ```
+
+This step pulls down the command-line helpers the shell expects to find:
+
+- `lsd` for the `ls`/`ll` aliases defined in `zshrc`.
+- `zsh-autosuggestions` to enable inline completions when the plugin is available.
 
 ## ZSH Setup
 
