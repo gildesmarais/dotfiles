@@ -13,10 +13,16 @@ fzf_git_checkout() {
 #endregion
 
 #region homebrew provided stuff: zsh completions, libs
-if type brew &>/dev/null; then
-  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+if command_exists brew; then
+  brew_prefix="$(brew --prefix)"
+
+  FPATH="$brew_prefix/share/zsh/site-functions:$FPATH"
 
   export PATH="/usr/local/opt/libpq/bin:$PATH"
+
+  if [ -f "$brew_prefix/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+    source "$brew_prefix/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  fi
 fi
 #endregion
 
@@ -54,9 +60,6 @@ if command_exists zoxide; then
   eval "$(zoxide init zsh)"
 fi
 
-# setup zsh-autosuggestion
-[ -f $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
 #region completion optimizations
 # Minimal completion setup
 mkdir -p ~/.zsh/cache
@@ -80,9 +83,6 @@ brew-remove() {
 if [ -f "$HOME/.zshrc.local" ]; then
   source "$HOME/.zshrc.local"
 fi
-
-# setup zsh-autosuggestion
-[ -f $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 #endregion
 
