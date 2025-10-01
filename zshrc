@@ -18,7 +18,7 @@ if command_exists brew; then
 
   FPATH="$brew_prefix/share/zsh/site-functions:$FPATH"
 
-  export PATH="/usr/local/opt/libpq/bin:$PATH"
+  export PATH="$brew_prefix/opt/libpq/bin:$PATH"
 
   if [ -f "$brew_prefix/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
     source "$brew_prefix/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
