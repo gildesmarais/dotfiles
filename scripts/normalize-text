@@ -1,0 +1,271 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+require 'json'
+require 'yaml'
+
+DEFAULT_REPLACEMENTS = {
+  '–' => ' - ',
+  '—' => ' - ',
+  '‘' => "'",
+  '’' => "'",
+  '“' => '"',
+  '”' => '"',
+  "\u00A0" => ' ',
+  "\u200B" => '',
+  "\u200C" => '',
+  "\u200D" => '',
+  "\uFEFF" => '',
+  "\u202F" => ' ',
+  "\u3000" => ' ',
+  "\u205F" => ' ',
+  '…' => '...',
+  '•' => '*',
+  '®' => '(R)',
+  '©' => '(C)',
+  '™' => '(TM)',
+  '×' => 'x',
+  '≈' => '~',
+  '≠' => '!=',
+  '≤' => '<=',
+  '≥' => '>='
+}.freeze
+
+class AsciiSanitizer
+  # Tracks replacements made during the last call to #process
+  attr_reader :last_stats
+
+  def initialize(table: DEFAULT_REPLACEMENTS, collapse_space: true, markdown_aware: false, preserve: nil, nfkc: false, strip: true)
+    @table = table.freeze
+    @collapse_space = collapse_space
+    @markdown_aware = markdown_aware
+    @preserve = preserve && Regexp.new(preserve)
+    @strip = strip
+
+    # Store the regex for the replacement keys for optimization
+    @regex = Regexp.union(@table.keys)
+
+    @nfkc = nfkc
+    @last_stats = Hash.new(0)
+  end
+
+  # Public, thread-safe (resets stats internally)
+  # Returns the processed string.
+  def process(input)
+    @last_stats = Hash.new(0) # Reset stats for the new run
+    return input if input.nil? || input.empty?
+
+    text = input.dup
+    # Ensure text is normalized before transformation
+    text = text.unicode_normalize(:nfkc) if @nfkc
+
+    if @markdown_aware
+      out = process_markdown_aware(text)
+    else
+      out = transform(text)
+    end
+
+    # Apply global final cleanup steps
+    if @collapse_space
+      out.gsub!(/\s+/, ' ')
+    end
+    out.strip! if @strip
+    out
+  end
+
+  private
+
+  # Helper method to apply replacements and collect stats
+  def transform(chunk)
+    return chunk if chunk.nil? || chunk.empty?
+
+    # Perform the replacement and simultaneously increment the count in @last_stats
+    chunk.gsub(@regex) do |match|
+      @last_stats[match] += 1
+      @table[match]
+    end
+  end
+
+  # Skip replacements inside code fences/inline code and preserved regions.
+  def process_markdown_aware(text)
+    segments = []
+    i = 0
+    # Use non-greedy match for inline code: `[^`\n]*?`
+    code_fence = /(^|\n)```.*?```/m
+    inline_code = /`[^`\n]*?`/
+
+    # Build a combined regex of “protected” regions
+    protected = Regexp.union(code_fence, inline_code, @preserve || /(?!)/)
+
+    text.scan(protected) do
+      m = Regexp.last_match
+      # Process text before protected block
+      if m.begin(0) > i
+        chunk = text[i...m.begin(0)]
+        segments << transform(chunk)
+      end
+      # Append protected block unchanged
+      segments << m[0]
+      i = m.end(0)
+    end
+
+    # Tail after last protected block
+    segments << transform(text[i..]) if i < text.length
+
+    # We do NOT collapse space here; it's done in the public #process method.
+    segments.join
+  end
+end
+
+# ---- CLI ----
+
+def unified_diff(path, before, after)
+  require 'tempfile'
+  a = Tempfile.create(['before', '.txt']); b = Tempfile.create(['after', '.txt'])
+  a.write(before); a.flush; b.write(after); b.flush
+  diff = IO.popen(["diff", "-u", a.path, b.path], &:read)
+  a.close!; b.close!
+  diff
+rescue Errno::ENOENT
+  "--- before\n+++ after\n#{before.inspect} -> #{after.inspect}\n"
+end
+
+# --- MAIN EXECUTION LOGIC ---
+
+options = {
+  in_place: false,
+  backup: nil,
+  stats: false,
+  diff: false,
+  markdown_aware: false,
+  preserve: nil,
+  nfkc: false,
+  dry_run: false,
+  collapse_space: true # Default to true for standard CLI file processing
+}
+
+OptionParser.new do |opt|
+  opt.banner = "Usage: sanitize [options] [FILES...]"
+  opt.on("--in-place[=SUFFIX]", "Edit files in place; optionally keep backup with SUFFIX (e.g., .bak).") { |s| options[:in_place] = true; options[:backup] = s }
+  opt.on("--stats", "Print replacement counts JSON to STDERR.") { options[:stats] = true }
+  opt.on("--diff", "Print unified diff to STDOUT (implies --dry-run).") { options[:diff] = true; options[:dry_run] = true }
+  opt.on("--markdown-aware", "Skip code blocks/inline code.") { options[:markdown_aware] = true }
+  opt.on("--preserve REGEX", "Skip regions matching REGEX (e.g., URLs).") { |r| options[:preserve] = r }
+  opt.on("--nfkc", "Apply Unicode NFKC normalization first.") { options[:nfkc] = true }
+  opt.on("--config FILE", "JSON/YAML replacements file.") { |f| options[:config] = f }
+  opt.on("--dry-run", "Do not write changes; exit 2 if changes detected.") { options[:dry_run] = true }
+  opt.on("--no-collapse-space", "Preserve newlines and multiple spaces (useful for REPL).") { options[:collapse_space] = false }
+  opt.on("-h", "--help", "Show help.") { puts opt; exit 0 }
+end.parse!
+
+# Load custom table if provided
+table = DEFAULT_REPLACEMENTS
+if options[:config]
+  content = File.read(options[:config])
+  parsed = if options[:config].end_with?(".yml", ".yaml")
+             YAML.safe_load(content)
+           else
+             JSON.parse(content)
+           end
+  table = DEFAULT_REPLACEMENTS.merge(parsed)
+end
+
+total_stats = Hash.new(0)
+changes_detected = false
+files = ARGV
+
+# --- START: REPL vs. Pipe vs. File ---
+
+if files.empty? && $stdin.tty?
+  # REPL paste-mode:
+  # Force newline/whitespace preservation here to ensure copy-paste UX.
+  options[:collapse_space] = false
+
+  sanitizer = AsciiSanitizer.new(
+    table: table,
+    collapse_space: options[:collapse_space],
+    markdown_aware: options[:markdown_aware],
+    preserve: options[:preserve],
+    nfkc: options[:nfkc],
+    strip: false # Keep outer whitespace/newlines too
+  )
+
+  # UX messages to STDERR so STDOUT is clean for copy-paste.
+  $stderr.puts "Paste your text, then press Ctrl+D (macOS/Linux) or Ctrl+Z then Enter (Windows) to process:"
+  input_block = $stdin.read
+  processed = sanitizer.process(input_block)
+
+  sanitizer.last_stats.each { |k, v| total_stats[k] += v }
+
+  # Print ONLY the normalized text, preserving all newlines.
+  print processed
+  $stderr.puts "\nDone."
+
+else
+  # Piped or File mode
+  sanitizer = AsciiSanitizer.new(
+    table: table,
+    collapse_space: options[:collapse_space], # obey CLI choice here
+    markdown_aware: options[:markdown_aware],
+    preserve: options[:preserve],
+    nfkc: options[:nfkc],
+    strip: true
+  )
+
+  if files.empty?
+    # Piped mode
+    input = STDIN.read
+    before = input.dup
+    after = sanitizer.process(input)
+    sanitizer.last_stats.each { |k, v| total_stats[k] += v }
+    changes_detected ||= (before != after)
+
+    if options[:diff]
+      puts unified_diff("(stdin)", before, after)
+    else
+      puts after
+    end
+  else
+    # File mode
+    files.each do |path|
+      content = File.read(path, mode: "r:bom|utf-8")
+      before = content.dup
+      after = sanitizer.process(content)
+
+      sanitizer.last_stats.each { |k, v| total_stats[k] += v }
+      next if before == after && !options[:in_place] && !options[:diff]
+
+      changes_detected ||= (before != after)
+
+      if options[:diff]
+        puts unified_diff(path, before, after)
+        next
+      end
+
+      if options[:in_place] && before != after && !options[:dry_run]
+        backup = options[:backup]
+        File.write("#{path}#{backup}", before) if backup
+
+        tmp = "#{path}.tmp.#{$$}"
+        File.write(tmp, after)
+        File.rename(tmp, path)
+      else
+        puts after
+      end
+    end
+  end
+end
+# --- END: REPL vs. Pipe vs. File ---
+
+if options[:stats]
+  STDERR.puts JSON.pretty_generate({
+    replacements: total_stats.sort.to_h,
+    total_replacements: total_stats.values.sum
+  })
+end
+
+# Exit codes: 0 = success, 2 = changes detected in dry-run/diff
+if (options[:dry_run] || options[:diff]) && changes_detected
+  exit 2
+end
