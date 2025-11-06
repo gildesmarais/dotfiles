@@ -1,0 +1,33 @@
+gui:
+  nerdFontsVersion: "3"
+  showIcons: true
+  showRandomTip: false
+  showCommandLog: false
+  showFileTree: true
+  sidePanelWidth: 0.33
+  confirmOnQuit: true
+  theme:
+    lightTheme: false
+    selectedLineBgColor: ["reverse"]
+
+git:
+  paging:
+    colorArg: always
+    pager: ""
+  merging:
+    manualCommit: true
+
+os:
+  editCommand: "code"
+  editCommandTemplate: "code -g {{filename}}:{{line}}"
+
+keybinding:
+  main:
+    toggleSelectHunk: "s"        # stage/unstage hunk
+    toggleSelectLine: "<space>"  # stage/unstage line
+    editFile: "e"                # jump to editor at cursor line
+    discardChange: "u"           # discard (LG will confirm)
+    openFile: "o"
+  files:
+    enter: "<enter>"
+    stage: "s"

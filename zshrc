@@ -100,7 +100,10 @@ alias gs='git status'
 alias gup="git pull --rebase --autostash"
 alias gundo="git reset --soft HEAD~1"
 alias gupstream="git_set_upstream"
-alias lag="lazygit"
+
+lag() {
+  lazygit --use-config-file ~/.config/lazygit/config.yml -p "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" "$@"
+}
 
 # git_set_upstream: set the upstream branch to the current branch
 function git_set_upstream() {
