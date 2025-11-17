@@ -34,12 +34,12 @@ async function runTodo(args: string[]): Promise<string> {
     if (useLoginShell && loginShell) {
       const commandLine = buildShellCommand(resolvedTodoCommand, args);
       const { stdout } = await execa(loginShell, ["-lc", commandLine], {
-        env: process.env,
+        env: buildEnv(),
       });
       return stdout.trim();
     }
 
-    const { stdout } = await execa(resolvedTodoCommand, args, { env: process.env });
+    const { stdout } = await execa(resolvedTodoCommand, args, { env: buildEnv() });
     return stdout.trim();
   } catch (error) {
     if (isExecaError(error)) {
@@ -79,6 +79,13 @@ export async function addTodo(text: string) {
     throw new TodoCLIError("Todo cannot be empty");
   }
   await runTodo(["add", value]);
+}
+
+export async function openTodo(id: string) {
+  if (!id) {
+    throw new TodoCLIError("Missing todo identifier");
+  }
+  await runTodo(["open", "--id", id]);
 }
 
 function resolveTodoCommand(): string {
@@ -130,6 +137,14 @@ function shellEscape(value: string) {
     return value;
   }
   return `'${value.replace(/'/g, `'\\''`)}'`;
+}
+
+function buildEnv() {
+  return {
+    ...process.env,
+    TODO_RAYCAST_CONTEXT: "true",
+    TODO_PREFER_GUI_OPEN: "true",
+  };
 }
 
 export function getErrorMessage(error: unknown): string {

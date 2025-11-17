@@ -25,33 +25,17 @@
   "commands": [
     {
       "name": "todo",
-      "title": "Todo List",
-      "description": "Show open todos across the last few weeks",
+      "title": "todo",
+      "description": "List open todos, complete items, and add via prefix commands",
       "mode": "view",
-      "path": "src/motd.tsx",
-      "keywords": ["todo", "list", "tasks"]
-    },
-    {
-      "name": "add-todo",
-      "title": "Add Todo",
-      "description": "Create a new todo via the CLI",
-      "mode": "view",
-      "path": "src/add-todo.tsx",
-      "keywords": ["todo", "add", "new"]
-    },
-    {
-      "name": "quick-add",
-      "title": "Quick Todo",
-      "description": "Add a todo directly from the command bar",
-      "mode": "no-view",
-      "path": "src/quick-add.ts",
-      "keywords": ["todo", "quick", "add"],
+      "path": "src/todo.tsx",
+      "keywords": ["todo", "list", "tasks", "add"],
       "arguments": [
         {
-          "name": "text",
+          "name": "query",
           "type": "text",
-          "placeholder": "Buy groceries #errands",
-          "required": true
+          "placeholder": "add Buy groceries #errands",
+          "required": false
         }
       ]
     }

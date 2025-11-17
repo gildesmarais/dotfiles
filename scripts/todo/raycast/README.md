@@ -2,11 +2,9 @@
 
 Commands for interacting with the local `todo` CLI through Raycast.
 
-## Available Commands
+## Command
 
-- **Todo List (`todo`)** — Shows open todos from the past few weeks (mirrors `todo motd`).
-- **Add Todo** — Prompts for a single line and runs `todo add`.
-- **Quick Todo** — `no-view` command with an inline argument. Type `todo buy milk` (or `todo 'buy milk #errands'`) directly in Raycast to add instantly.
+- **`todo`** — Typing `todo` opens the filtered list (mirrors `todo motd`). Press `↩` to mark done, `⌘O` to open in `$EDITOR`. Typing `todo add Buy milk #errands` adds the task instantly before the list renders.
 
 ## Requirements
 
@@ -14,6 +12,7 @@ Commands for interacting with the local `todo` CLI through Raycast.
 - Any configuration (note directory, git sync, etc.) should be handled via the CLI itself.
 - Raycast often runs in a minimal environment. If `todo` is not found, set `TODO_RAYCAST_BIN` (e.g. `~/.dotfiles/scripts/todo/todo`) in the command configuration or export it globally. You can also override `TODO_RAYCAST_SHELL`/`TODO_RAYCAST_USE_SHELL` if you prefer a different login shell behavior.
 - Ensure any `TODO_*` env vars (e.g. `TODO_NOTE_DIR`, `TODO_AUTO_GIT_SYNC`) are available to Raycast. The simplest approach is exporting them in a login shell file like `~/.zprofile` so they’re inherited when the Raycast command launches.
+- The extension sets `TODO_RAYCAST_CONTEXT=true` and `TODO_PREFER_GUI_OPEN=true` when invoking the CLI so that `todo open` prefers GUI launchers even when `$EDITOR` points to a terminal editor.
 
 ## Development
 

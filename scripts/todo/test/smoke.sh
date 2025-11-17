@@ -27,7 +27,8 @@ export TODO_USE_GLOW=false
 export TODO_AUTO_GIT_SYNC=false
 export TODO_AUTO_COMMIT=false
 export VERBOSE_FLAG="true"
-export EDITOR="${EDITOR:-true}"
+unset VISUAL
+export EDITOR=true
 
 today_iso="$(iso_date 0)"
 yesterday_iso="$(iso_date -1)"
@@ -98,6 +99,9 @@ if [ -z "${first_id:-}" ]; then
     echo "ERROR: Failed to obtain first task id from JSON MOTD" >&2
     exit 1
 fi
+
+echo "Running todo open ..."
+"$TODO_BIN" open "$first_id"
 
 echo "Running todo done --ids ..."
 "$TODO_BIN" done --ids "$first_id"

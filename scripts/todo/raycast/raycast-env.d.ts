@@ -15,21 +15,13 @@ declare type Preferences = ExtensionPreferences
 declare namespace Preferences {
   /** Preferences accessible in the `todo` command */
   export type Todo = ExtensionPreferences & {}
-  /** Preferences accessible in the `add-todo` command */
-  export type AddTodo = ExtensionPreferences & {}
-  /** Preferences accessible in the `quick-add` command */
-  export type QuickAdd = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
   /** Arguments passed to the `todo` command */
-  export type Todo = {}
-  /** Arguments passed to the `add-todo` command */
-  export type AddTodo = {}
-  /** Arguments passed to the `quick-add` command */
-  export type QuickAdd = {
-  /** Buy groceries #errands */
-  "text": string
+  export type Todo = {
+  /** add Buy groceries #errands */
+  "query": string
 }
 }
 

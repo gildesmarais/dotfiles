@@ -36,6 +36,7 @@ Commands:
                       Use -o (open only), -a (all states), -d (done only) to filter.
   motd [--json]       Shows last four weeks of open tasks (JSON when --json is passed).
   done [--ids ...]    Mark tasks done (interactive fzf picker or explicit ids).
+  open [--id ...]     Open the note containing a task identifier (path:line) in $EDITOR.
   help                Show this help message.
 
 Options:
