@@ -24,6 +24,7 @@ export class TodoCLIError extends Error {
 const resolvedTodoCommand = resolveTodoCommand();
 const loginShell = process.env.TODO_RAYCAST_SHELL || process.env.SHELL || "/bin/zsh";
 const useLoginShell = process.env.TODO_RAYCAST_USE_SHELL !== "false";
+const lookbackDays = resolveLookbackDays();
 
 const isExecaError = (error: unknown): error is ExecaError => {
   return typeof error === "object" && error !== null && "stdout" in error;
@@ -52,8 +53,8 @@ async function runTodo(args: string[]): Promise<string> {
   }
 }
 
-export async function fetchMotdTodos(): Promise<TodoItem[]> {
-  const output = await runTodo(["motd", "--json"]);
+export async function fetchRecentTodos(): Promise<TodoItem[]> {
+  const output = await runTodo(["list", "--json", "--lookback-days", String(lookbackDays)]);
   if (!output) {
     return [];
   }
@@ -122,6 +123,19 @@ function expandHome(input: string) {
 
 function isPathLike(value: string) {
   return value.includes("/") || value.includes("\\") || value.startsWith(".");
+}
+
+function resolveLookbackDays() {
+  const fallback = 28;
+  const raw = process.env.TODO_RAYCAST_LOOKBACK_DAYS;
+  if (!raw) {
+    return fallback;
+  }
+  const parsed = Number.parseInt(raw, 10);
+  if (Number.isNaN(parsed) || parsed <= 0) {
+    return fallback;
+  }
+  return parsed;
 }
 
 function buildShellCommand(command: string, args: string[]) {

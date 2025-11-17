@@ -34,7 +34,9 @@ Commands:
   add [items]         Adds one or more tasks to the daily note.
   list [scope]        Displays tasks. Scope can be 'today' (default), 'week', or 'all'.
                       Use -o (open only), -a (all states), -d (done only) to filter.
-  motd [--json]       Shows last four weeks of open tasks (JSON when --json is passed).
+                      Append --json to return open tasks from the last N days (default 28; set via TODO_LIST_JSON_LOOKBACK_DAYS).
+                      Use --lookback-days N with --json to override the window.
+  motd               Shows last four weeks of open tasks (text output only).
   done [--ids ...]    Mark tasks done (interactive fzf picker or explicit ids).
   open [--id ...]     Open the note containing a task identifier (path:line) in $EDITOR.
   help                Show this help message.

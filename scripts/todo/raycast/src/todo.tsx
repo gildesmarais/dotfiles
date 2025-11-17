@@ -2,14 +2,14 @@ import { Action, ActionPanel, CommandProps, List, Toast, showToast } from "@rayc
 import { useCachedPromise } from "@raycast/utils";
 import { useEffect, useMemo, useRef } from "react";
 
-import { TodoItem, addTodo, fetchMotdTodos, getErrorMessage, markTodoDone, openTodo } from "./lib/todo";
+import { TodoItem, addTodo, fetchRecentTodos, getErrorMessage, markTodoDone, openTodo } from "./lib/todo";
 
 type CommandArguments = {
   query?: string;
 };
 
 export default function TodoCommand(props: CommandProps<CommandArguments>) {
-  const { data, isLoading, revalidate } = useCachedPromise(fetchMotdTodos, [], {
+  const { data, isLoading, revalidate } = useCachedPromise(fetchRecentTodos, [], {
     keepPreviousData: true,
     initialData: [],
   });
