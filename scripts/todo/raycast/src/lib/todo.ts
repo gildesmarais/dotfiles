@@ -24,7 +24,7 @@ export class TodoCLIError extends Error {
 const resolvedTodoCommand = resolveTodoCommand();
 const loginShell = process.env.TODO_RAYCAST_SHELL || process.env.SHELL || "/bin/zsh";
 const useLoginShell = process.env.TODO_RAYCAST_USE_SHELL !== "false";
-const lookbackDays = resolveLookbackDays();
+export const defaultLookbackDays = resolveLookbackDays();
 
 const isExecaError = (error: unknown): error is ExecaError => {
   return typeof error === "object" && error !== null && "stdout" in error;
@@ -53,8 +53,9 @@ async function runTodo(args: string[]): Promise<string> {
   }
 }
 
-export async function fetchRecentTodos(): Promise<TodoItem[]> {
-  const output = await runTodo(["list", "--json", "--lookback-days", String(lookbackDays)]);
+export async function fetchRecentTodos(lookbackDays = defaultLookbackDays): Promise<TodoItem[]> {
+  const windowSize = Number.isFinite(lookbackDays) && lookbackDays > 0 ? lookbackDays : defaultLookbackDays;
+  const output = await runTodo(["list", "--json", "--lookback-days", String(windowSize)]);
   if (!output) {
     return [];
   }
@@ -63,7 +64,7 @@ export async function fetchRecentTodos(): Promise<TodoItem[]> {
     const payload = JSON.parse(output) as TodoItem[];
     return Array.isArray(payload) ? payload : [];
   } catch (error) {
-    throw new TodoCLIError("Failed to parse todo motd JSON", output);
+    throw new TodoCLIError("Failed to parse todo list JSON", output);
   }
 }
 

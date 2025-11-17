@@ -1,15 +1,26 @@
-import { Action, ActionPanel, CommandProps, List, Toast, showToast } from "@raycast/api";
+import { Action, ActionPanel, CommandProps, Icon, List, Toast, showToast } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { TodoItem, addTodo, fetchRecentTodos, getErrorMessage, markTodoDone, openTodo } from "./lib/todo";
+import {
+  TodoItem,
+  addTodo,
+  defaultLookbackDays,
+  fetchRecentTodos,
+  getErrorMessage,
+  markTodoDone,
+  openTodo,
+} from "./lib/todo";
 
 type CommandArguments = {
   query?: string;
 };
 
+const LOOKBACK_OPTIONS = Array.from(new Set([7, 14, 28, 56, defaultLookbackDays])).sort((a, b) => a - b);
+
 export default function TodoCommand(props: CommandProps<CommandArguments>) {
-  const { data, isLoading, revalidate } = useCachedPromise(fetchRecentTodos, [], {
+  const [lookbackDays, setLookbackDays] = useState(defaultLookbackDays);
+  const { data, isLoading, revalidate } = useCachedPromise(fetchRecentTodos, [lookbackDays], {
     keepPreviousData: true,
     initialData: [],
   });
@@ -82,14 +93,38 @@ export default function TodoCommand(props: CommandProps<CommandArguments>) {
   }
 
   return (
-    <List isLoading={isLoading} searchBarPlaceholder="Filter todos">
+    <List
+      isLoading={isLoading}
+      searchBarPlaceholder={`Filter todos from the last ${lookbackDays} days`}
+      searchBarAccessory={
+        <List.Dropdown
+          tooltip="Lookback Window"
+          value={String(lookbackDays)}
+          onChange={(value) => setLookbackDays(Number.parseInt(value, 10))}
+        >
+          {LOOKBACK_OPTIONS.map((option) => (
+            <List.Dropdown.Item key={option} title={`${option} days`} value={String(option)} />
+          ))}
+        </List.Dropdown>
+      }
+    >
       {sections.length === 0 ? (
         <List.EmptyView
           title="No open todos"
-          description="You are all caught up—type `todo add ...` to create one."
+          description={`You are all caught up in the last ${lookbackDays} days—type 'todo add ...' to create one.`}
           actions={
             <ActionPanel>
               <Action title="Refresh" onAction={revalidate} />
+              <ActionPanel.Submenu title="Set Lookback Window" icon={Icon.Calendar}>
+                {LOOKBACK_OPTIONS.map((option) => (
+                  <Action
+                    key={option}
+                    title={`${option} days`}
+                    onAction={() => setLookbackDays(option)}
+                    style={option === lookbackDays ? Action.Style.Primary : Action.Style.Regular}
+                  />
+                ))}
+              </ActionPanel.Submenu>
             </ActionPanel>
           }
         />
@@ -108,6 +143,16 @@ export default function TodoCommand(props: CommandProps<CommandArguments>) {
                     <ActionPanel.Section>
                       <Action.CopyToClipboard title="Copy Todo" content={item.text} />
                       <Action title="Refresh" onAction={revalidate} />
+                      <ActionPanel.Submenu title="Set Lookback Window" icon={Icon.Calendar}>
+                        {LOOKBACK_OPTIONS.map((option) => (
+                          <Action
+                            key={option}
+                            title={`${option} days`}
+                            onAction={() => setLookbackDays(option)}
+                            style={option === lookbackDays ? Action.Style.Primary : Action.Style.Regular}
+                          />
+                        ))}
+                      </ActionPanel.Submenu>
                     </ActionPanel.Section>
                   </ActionPanel>
                 }

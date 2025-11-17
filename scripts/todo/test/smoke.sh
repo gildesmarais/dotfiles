@@ -108,7 +108,7 @@ echo "Running todo open ..."
 "$TODO_BIN" open "$first_id"
 
 echo "Running todo done --ids ..."
-"$TODO_BIN" done --ids "$first_id"
+"$TODO_BIN" "done" --ids "$first_id"
 
 motd_output_after="$("$TODO_BIN" motd)"
 if printf "%s" "$motd_output_after" | grep -q "Smoke inserted task"; then
