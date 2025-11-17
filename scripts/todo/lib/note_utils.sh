@@ -21,6 +21,64 @@ ensure_note_structure() {
     true
 }
 
+_to_iso_date() {
+    local input_date="$1"
+    if [[ "$input_date" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+        printf "%s\n" "$input_date"
+    elif [[ "$input_date" =~ ^[0-9]{8}$ ]]; then
+        printf "%s-%s-%s\n" "${input_date:0:4}" "${input_date:4:2}" "${input_date:6:2}"
+    else
+        printf "%s\n" "$input_date"
+    fi
+}
+
+note_path_for_date() {
+    local raw_date="$1"
+    local iso_date
+    iso_date=$(_to_iso_date "$raw_date")
+    local compact_date="${iso_date//-/}"
+    local candidates=(
+        "$NOTE_DIR/$iso_date.md"
+    )
+    if [ "$compact_date" != "$iso_date" ]; then
+        candidates+=("$NOTE_DIR/$compact_date.md")
+    fi
+
+    local candidate
+    for candidate in "${candidates[@]}"; do
+        if [ -f "$candidate" ]; then
+            printf "%s\n" "$candidate"
+            return 0
+        fi
+    done
+    return 1
+}
+
+offset_date() {
+    local offset_raw="${1:-0}"
+    local format="${2:-%F}"
+    local offset=$((offset_raw))
+
+    if date -v-1d +"$format" >/dev/null 2>&1; then
+        if [ "$offset" -ge 0 ]; then
+            date -v+"${offset}"d +"$format"
+        else
+            date -v"${offset}"d +"$format"
+        fi
+        return 0
+    fi
+
+    if date -d '1 day ago' +"$format" >/dev/null 2>&1; then
+        date -d "${offset} days" +"$format"
+        return 0
+    fi
+
+python3 - <<PY
+from datetime import date, timedelta
+print((date.today() + timedelta(days=int("${offset}"))).strftime("${format}"))
+PY
+}
+
 add_todo_item() {
     local note_path="$1"
     local item="$2"
@@ -43,15 +101,26 @@ add_todo_item() {
 }
 
 _find_git_root() {
-    local note_path="$1"
+    local target_path="$1"
     local current_dir
-    current_dir="$(dirname "$note_path")"
 
-    # Walk up the directory tree to find .git, stop at $HOME
-    while [ "$current_dir" != "/" ] && [ -n "$current_dir" ] && [ "$current_dir" != "$HOME" ]; do
+    if [ -z "${target_path:-}" ]; then
+        return 1
+    fi
+
+    if [ -d "$target_path" ]; then
+        current_dir="$target_path"
+    else
+        current_dir="$(dirname "$target_path")"
+    fi
+
+    while [ -n "$current_dir" ]; do
         if [ -d "$current_dir/.git" ]; then
             echo "$current_dir"
             return 0
+        fi
+        if [ "$current_dir" = "/" ]; then
+            break
         fi
         current_dir="$(dirname "$current_dir")"
     done
@@ -134,4 +203,69 @@ _auto_git_sync() {
         fi
 
         echo "Git sync completed"
+}
+
+open_file_at_position() {
+    local editor_cmdline="$1"
+    local file_path="$2"
+    local line_number="${3:-1}"
+
+    if [ -z "${editor_cmdline:-}" ]; then
+        echo "Error: EDITOR is not set." >&2
+        return 1
+    fi
+
+    if [ -z "${file_path:-}" ]; then
+        echo "Error: No file path provided to open_file_at_position." >&2
+        return 1
+    fi
+
+    if [ -z "${line_number:-}" ] || ! [[ "$line_number" =~ ^[0-9]+$ ]]; then
+        line_number=1
+    fi
+
+    # Split potential multi-word EDITOR into command + args
+    read -r -a editor_parts <<< "$editor_cmdline"
+    local editor_bin="${editor_parts[0]}"
+    local editor_args=("${editor_parts[@]:1}")
+
+    case "$(basename "$editor_bin")" in
+        code|code-insiders|subl)
+            editor_args+=("-g" "$file_path:$line_number")
+            ;;
+        *)
+            editor_args+=("+${line_number}" "$file_path")
+            ;;
+    esac
+
+    "$editor_bin" "${editor_args[@]}"
+}
+
+auto_commit_if_enabled() {
+    local auto_commit_flag="$1"
+    local note_dir="$2"
+    local note_path="$3"
+    local date_str="$4"
+
+    [ "${auto_commit_flag:-false}" = "true" ] || return 0
+
+    local git_root
+    git_root="$(_find_git_root "$note_dir")" || {
+        _verbose_echo "Auto-commit requested but no git repository detected."
+        return 0
+    }
+
+    local relative_path="${note_path#"$git_root"/}"
+
+    if ! git -C "$git_root" add "$relative_path"; then
+        _verbose_echo "Auto-commit: failed to add $relative_path"
+        return 1
+    fi
+
+    if ! git -C "$git_root" commit -m "Update note: $date_str" --quiet; then
+        _verbose_echo "Auto-commit: commit skipped (no changes?)."
+        return 0
+    fi
+
+    _verbose_echo "Auto-commit: saved note changes."
 }

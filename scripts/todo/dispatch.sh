@@ -34,7 +34,7 @@ Commands:
   add [items]         Adds one or more tasks to the daily note.
   list [scope]        Displays tasks. Scope can be 'today' (default), 'week', or 'all'.
                       Use -o (open only), -a (all states), -d (done only) to filter.
-  motd                Displays today's to-do list, for shell startup.
+  motd                Shows last four weeks of open tasks for shell startup.
   done                Fuzzy-pick open tasks (from all notes) and mark them done.
   help                Show this help message.
 

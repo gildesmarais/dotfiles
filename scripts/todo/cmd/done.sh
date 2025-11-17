@@ -62,24 +62,12 @@ build_done_candidates() {
 			candidates_from_file "$NOTE_PATH" "$DATE"
 			;;
 		week)
-			date_offset() {
-				local d=${1:-0}
-				if date -v-1d +%F >/dev/null 2>&1; then
-					date -v-"${d}"d +%F
-				elif date -d '1 day ago' +%F >/dev/null 2>&1; then
-					date -d "${d} day ago" +%F
-				else
-					python3 - <<PY
-from datetime import date, timedelta
-print((date.today() - timedelta(days=int("${d}"))).isoformat())
-PY
-				fi
-			}
 			local i date note_path
 			for i in {0..6}; do
-				date=$(date_offset "$i")
-				note_path="$NOTE_DIR/$date.md"
-				[ -f "$note_path" ] && candidates_from_file "$note_path" "$date"
+				date=$(offset_date "-$i")
+				if note_path=$(note_path_for_date "$date"); then
+					candidates_from_file "$note_path" "$date"
+				fi
 			done
 			;;
 		all)

@@ -72,42 +72,17 @@ cmd_list() {
             ;;
         week)
             _verbose_echo "Generating weekly agenda (compact)..."
-            date_offset() {
-                local d=${1:-0}
-                if date -v-1d +%F >/dev/null 2>&1; then
-                    if [ "$d" -eq 0 ]; then
-                        date +%F
-                    elif [ "$d" -gt 0 ]; then
-                        date -v+"${d}"d +%F
-                    else
-                        date -v"${d}"d +%F
-                    fi
-                elif date -d '1 day ago' +%F >/dev/null 2>&1; then
-                    if [ "$d" -eq 0 ]; then
-                        date +%F
-                    elif [ "$d" -gt 0 ]; then
-                        date -d "${d} days" +%F
-                    else
-                        date -d "${d#-} days ago" +%F
-                    fi
-                else
-                    python3 - <<PY
-from datetime import date, timedelta
-print((date.today() + timedelta(days=int("${d}"))).isoformat())
-PY
-                fi
-            }
-
             for i in {6..0}; do
                 local date
-                date=$(date_offset "-$i")
-                local note_path="$NOTE_DIR/$date.md"
-                if [ -f "$note_path" ]; then
-                    if [ "$show_open" = true ] && [ "$show_done" = true ]; then
-                        render_tasks_header_agnostic "$note_path" "$date" "$TODO_USE_GLOW"
-                    else
-                        render_tasks_compact "$note_path" "$date" "$TODO_USE_GLOW" "$max_per_day" "$show_open" "$show_done"
-                    fi
+                date=$(offset_date "-$i")
+                local note_path
+                if ! note_path=$(note_path_for_date "$date"); then
+                    continue
+                fi
+                if [ "$show_open" = true ] && [ "$show_done" = true ]; then
+                    render_tasks_header_agnostic "$note_path" "$date" "$TODO_USE_GLOW"
+                else
+                    render_tasks_compact "$note_path" "$date" "$TODO_USE_GLOW" "$max_per_day" "$show_open" "$show_done"
                 fi
             done
             ;;

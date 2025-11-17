@@ -70,7 +70,18 @@ Set these environment variables to customize behavior:
 - `TODO_NOTE_DIR` - Directory for daily notes (default: `$HOME/Documents/notes/daily`)
 - `TODO_USE_GLOW` - Use glow for markdown rendering (default: auto-detect)
 - `TODO_AUTO_GIT_SYNC` - Enable automatic git sync (default: false)
+- `TODO_AUTO_COMMIT` - Auto-commit the note after running `todo note` (default: false)
 - `TODO_MOTD_LOOKBACK_DAYS` - Number of days to scan for MOTD (default: 28)
+
+## Testing
+
+You can run a lightweight regression check (no git operations) with:
+
+```bash
+bash todo/test/smoke.sh
+```
+
+It creates a temporary notes directory and exercises `add`, `list week`, and `motd`.
 
 ## Examples
 
