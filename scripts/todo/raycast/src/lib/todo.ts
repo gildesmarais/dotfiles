@@ -133,9 +133,6 @@ function shellEscape(value: string) {
   if (value === "") {
     return "''";
   }
-  if (!/[\s'"$\\]/.test(value)) {
-    return value;
-  }
   return `'${value.replace(/'/g, `'\\''`)}'`;
 }
 
