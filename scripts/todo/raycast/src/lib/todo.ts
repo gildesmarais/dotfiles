@@ -1,0 +1,143 @@
+import { existsSync } from "fs";
+import os from "os";
+import path from "path";
+
+import { execa, type ExecaError } from "execa";
+
+export type TodoItem = {
+  id: string;
+  date: string;
+  text: string;
+  raw: string;
+};
+
+export class TodoCLIError extends Error {
+  stderr?: string;
+
+  constructor(message: string, stderr?: string) {
+    super(message);
+    this.name = "TodoCLIError";
+    this.stderr = stderr;
+  }
+}
+
+const resolvedTodoCommand = resolveTodoCommand();
+const loginShell = process.env.TODO_RAYCAST_SHELL || process.env.SHELL || "/bin/zsh";
+const useLoginShell = process.env.TODO_RAYCAST_USE_SHELL !== "false";
+
+const isExecaError = (error: unknown): error is ExecaError => {
+  return typeof error === "object" && error !== null && "stdout" in error;
+};
+
+async function runTodo(args: string[]): Promise<string> {
+  try {
+    if (useLoginShell && loginShell) {
+      const commandLine = buildShellCommand(resolvedTodoCommand, args);
+      const { stdout } = await execa(loginShell, ["-lc", commandLine], {
+        env: process.env,
+      });
+      return stdout.trim();
+    }
+
+    const { stdout } = await execa(resolvedTodoCommand, args, { env: process.env });
+    return stdout.trim();
+  } catch (error) {
+    if (isExecaError(error)) {
+      const stderr = error.stderr?.trim();
+      const stdout = error.stdout?.trim();
+      const message = stderr?.length ? stderr : stdout?.length ? stdout : error.message;
+      throw new TodoCLIError(message, stderr);
+    }
+    throw error;
+  }
+}
+
+export async function fetchMotdTodos(): Promise<TodoItem[]> {
+  const output = await runTodo(["motd", "--json"]);
+  if (!output) {
+    return [];
+  }
+
+  try {
+    const payload = JSON.parse(output) as TodoItem[];
+    return Array.isArray(payload) ? payload : [];
+  } catch (error) {
+    throw new TodoCLIError("Failed to parse todo motd JSON", output);
+  }
+}
+
+export async function markTodoDone(id: string) {
+  if (!id) {
+    throw new TodoCLIError("Missing todo identifier");
+  }
+  await runTodo(["done", "--ids", id]);
+}
+
+export async function addTodo(text: string) {
+  const value = text.trim();
+  if (!value) {
+    throw new TodoCLIError("Todo cannot be empty");
+  }
+  await runTodo(["add", value]);
+}
+
+function resolveTodoCommand(): string {
+  const envCandidate = process.env.TODO_RAYCAST_BIN || "";
+  if (envCandidate) {
+    const expanded = expandHome(envCandidate);
+    if (isPathLike(expanded)) {
+      if (existsSync(expanded)) {
+        return expanded;
+      }
+    } else {
+      return expanded;
+    }
+  }
+
+  const home = os.homedir();
+  const defaults = [path.join(home, ".dotfiles", "scripts", "todo", "todo")];
+
+  for (const entry of defaults) {
+    if (existsSync(entry)) {
+      return entry;
+    }
+  }
+
+  return "todo";
+}
+
+function expandHome(input: string) {
+  if (!input.startsWith("~")) {
+    return input;
+  }
+  return path.join(os.homedir(), input.slice(1));
+}
+
+function isPathLike(value: string) {
+  return value.includes("/") || value.includes("\\") || value.startsWith(".");
+}
+
+function buildShellCommand(command: string, args: string[]) {
+  const parts = [command, ...args].map(shellEscape);
+  return parts.join(" ");
+}
+
+function shellEscape(value: string) {
+  if (value === "") {
+    return "''";
+  }
+  if (!/[\s'"$\\]/.test(value)) {
+    return value;
+  }
+  return `'${value.replace(/'/g, `'\\''`)}'`;
+}
+
+export function getErrorMessage(error: unknown): string {
+  if (error instanceof TodoCLIError) {
+    return error.message;
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return "Unknown error";
+}

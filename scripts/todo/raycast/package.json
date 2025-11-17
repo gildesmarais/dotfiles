@@ -1,0 +1,59 @@
+{
+  "name": "todo-raycast-extension",
+  "version": "0.1.0",
+  "description": "Raycast commands for the dotfiles todo CLI",
+  "type": "module",
+  "scripts": {
+    "dev": "ray dev",
+    "build": "ray build"
+  },
+  "dependencies": {
+    "@raycast/api": "^1.77.0",
+    "@raycast/utils": "^1.16.0",
+    "execa": "^7.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "typescript": "^5.4.5"
+  },
+  "schemaVersion": 1,
+  "title": "Todo CLI",
+  "author": "gildesmarais",
+  "description": "List, complete, and add todos through the todo CLI.",
+  "icon": "assets/icon.png",
+  "categories": ["Productivity"],
+  "commands": [
+    {
+      "name": "todo",
+      "title": "Todo List",
+      "description": "Show open todos across the last few weeks",
+      "mode": "view",
+      "path": "src/motd.tsx",
+      "keywords": ["todo", "list", "tasks"]
+    },
+    {
+      "name": "add-todo",
+      "title": "Add Todo",
+      "description": "Create a new todo via the CLI",
+      "mode": "view",
+      "path": "src/add-todo.tsx",
+      "keywords": ["todo", "add", "new"]
+    },
+    {
+      "name": "quick-add",
+      "title": "Quick Todo",
+      "description": "Add a todo directly from the command bar",
+      "mode": "no-view",
+      "path": "src/quick-add.ts",
+      "keywords": ["todo", "quick", "add"],
+      "arguments": [
+        {
+          "name": "text",
+          "type": "text",
+          "placeholder": "Buy groceries #errands",
+          "required": true
+        }
+      ]
+    }
+  ]
+}
