@@ -15,8 +15,8 @@ A modular, command-line todo management system that integrates with daily notes.
 
 - `add [items]` - Adds one or more tasks to the daily note
 - `list [scope]` - Displays tasks. Scope can be 'today' (default), 'week', or 'all'
-- `motd` - Displays the last four weeks of open todos for shell startup
-- `done` - Fuzzy-pick open tasks (from all notes) and mark them done
+- `motd [--json]` - Displays the last four weeks of open todos (JSON output when `--json` is passed)
+- `done [--ids ...]` - Fuzzy-pick open tasks (from all notes) or mark explicit identifiers done
 - `help` - Show help message
 
 ## Auto-Git-Sync

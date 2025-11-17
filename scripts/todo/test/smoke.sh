@@ -72,4 +72,45 @@ if ! printf "%s" "$motd_output" | grep -q "Legacy compact task"; then
     exit 1
 fi
 
+echo "Running todo motd --json..."
+motd_json="$("$TODO_BIN" motd --json)"
+printf "%s" "$motd_json" | python3 -c '
+import json
+import sys
+
+data = json.load(sys.stdin)
+if not data:
+    sys.exit("ERROR: Expected JSON MOTD to contain tasks")
+
+if not any(item.get("text") == "Smoke inserted task" for item in data):
+    sys.exit("ERROR: JSON MOTD missing newly added task")
+'
+
+first_id=$(printf "%s" "$motd_json" | python3 -c '
+import json
+import sys
+
+data = json.load(sys.stdin)
+print(data[0]["id"] if data else "")
+')
+
+if [ -z "${first_id:-}" ]; then
+    echo "ERROR: Failed to obtain first task id from JSON MOTD" >&2
+    exit 1
+fi
+
+echo "Running todo done --ids ..."
+"$TODO_BIN" done --ids "$first_id"
+
+motd_json_after="$("$TODO_BIN" motd --json)"
+printf "%s" "$motd_json_after" | python3 -c '
+import json
+import sys
+
+data = json.load(sys.stdin)
+target = sys.argv[1]
+if any(item.get("id") == target for item in data):
+    sys.exit("ERROR: Task id still present after todo done --ids")
+' "$first_id"
+
 echo "Smoke test succeeded."
