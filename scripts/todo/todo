@@ -11,6 +11,8 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
 . "$SOURCE_DIR/lib/note_utils.sh"
 # shellcheck disable=SC1091
+. "$SOURCE_DIR/lib/json_utils.sh"
+# shellcheck disable=SC1091
 . "$SOURCE_DIR/ui/renderer.sh"
 
 for cmd_file in "$SOURCE_DIR"/cmd/*.sh; do

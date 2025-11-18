@@ -1,0 +1,43 @@
+{
+  "name": "todo-raycast-extension",
+  "version": "0.1.0",
+  "description": "Raycast commands for the dotfiles todo CLI",
+  "type": "module",
+  "scripts": {
+    "dev": "ray dev",
+    "build": "ray build"
+  },
+  "dependencies": {
+    "@raycast/api": "^1.77.0",
+    "@raycast/utils": "^1.16.0",
+    "execa": "^7.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "typescript": "^5.4.5"
+  },
+  "schemaVersion": 1,
+  "title": "Todo CLI",
+  "author": "gildesmarais",
+  "description": "List, complete, and add todos through the todo CLI.",
+  "icon": "assets/icon.png",
+  "categories": ["Productivity"],
+  "commands": [
+    {
+      "name": "todo",
+      "title": "todo",
+      "description": "List open todos, complete items, and add via prefix commands",
+      "mode": "view",
+      "path": "src/todo.tsx",
+      "keywords": ["todo", "list", "tasks", "add"],
+      "arguments": [
+        {
+          "name": "query",
+          "type": "text",
+          "placeholder": "add Buy groceries #errands",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

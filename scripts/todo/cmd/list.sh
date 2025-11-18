@@ -11,6 +11,9 @@ cmd_list() {
     local show_open=true
     local show_done=true
     local flags_given=false
+    local json_output=false
+    local json_lookback="${TODO_LIST_JSON_LOOKBACK_DAYS:-28}"
+    local lookback_override=false
 
     # Parse flags first
     while [ $# -gt 0 ]; do
@@ -33,6 +36,19 @@ cmd_list() {
                 flags_given=true
                 shift
                 ;;
+            --json)
+                json_output=true
+                shift
+                ;;
+            --lookback-days)
+                if [ $# -lt 2 ]; then
+                    echo "Error: '--lookback-days' expects a numeric value." >&2
+                    return 1
+                fi
+                json_lookback="$2"
+                lookback_override=true
+                shift 2
+                ;;
             week|all|today)
                 scope="$1"
                 shift
@@ -44,6 +60,19 @@ cmd_list() {
                 ;;
         esac
     done
+
+    if [ "$json_output" = true ]; then
+        if ! [[ "$json_lookback" =~ ^[0-9]+$ ]] || [ "$json_lookback" -le 0 ]; then
+            json_lookback=28
+        fi
+        _todo_print_open_tasks_json "$json_lookback"
+        return 0
+    fi
+
+    if [ "$lookback_override" = true ]; then
+        echo "Error: '--lookback-days' can only be used together with '--json'." >&2
+        return 1
+    fi
 
     # Smart defaults based on scope (only when no explicit flags given)
     if [ "$scope" != "today" ] && [ "$flags_given" = false ]; then
@@ -72,42 +101,17 @@ cmd_list() {
             ;;
         week)
             _verbose_echo "Generating weekly agenda (compact)..."
-            date_offset() {
-                local d=${1:-0}
-                if date -v-1d +%F >/dev/null 2>&1; then
-                    if [ "$d" -eq 0 ]; then
-                        date +%F
-                    elif [ "$d" -gt 0 ]; then
-                        date -v+"${d}"d +%F
-                    else
-                        date -v"${d}"d +%F
-                    fi
-                elif date -d '1 day ago' +%F >/dev/null 2>&1; then
-                    if [ "$d" -eq 0 ]; then
-                        date +%F
-                    elif [ "$d" -gt 0 ]; then
-                        date -d "${d} days" +%F
-                    else
-                        date -d "${d#-} days ago" +%F
-                    fi
-                else
-                    python3 - <<PY
-from datetime import date, timedelta
-print((date.today() + timedelta(days=int("${d}"))).isoformat())
-PY
-                fi
-            }
-
             for i in {6..0}; do
                 local date
-                date=$(date_offset "-$i")
-                local note_path="$NOTE_DIR/$date.md"
-                if [ -f "$note_path" ]; then
-                    if [ "$show_open" = true ] && [ "$show_done" = true ]; then
-                        render_tasks_header_agnostic "$note_path" "$date" "$TODO_USE_GLOW"
-                    else
-                        render_tasks_compact "$note_path" "$date" "$TODO_USE_GLOW" "$max_per_day" "$show_open" "$show_done"
-                    fi
+                date=$(offset_date "-$i")
+                local note_path
+                if ! note_path=$(note_path_for_date "$date"); then
+                    continue
+                fi
+                if [ "$show_open" = true ] && [ "$show_done" = true ]; then
+                    render_tasks_header_agnostic "$note_path" "$date" "$TODO_USE_GLOW"
+                else
+                    render_tasks_compact "$note_path" "$date" "$TODO_USE_GLOW" "$max_per_day" "$show_open" "$show_done"
                 fi
             done
             ;;
