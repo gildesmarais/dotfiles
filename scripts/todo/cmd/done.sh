@@ -26,8 +26,11 @@ cmd_done() {
 	done
 
 	if [ ${#ids[@]} -gt 0 ]; then
+		set +e
 		_mark_done_by_ids "${ids[@]}"
-		return 0
+		local rc=$?
+		set -e
+		return "$rc"
 	fi
 
 	if ! command -v fzf >/dev/null 2>&1; then
