@@ -111,11 +111,16 @@ candidates_from_file() {
 }
 
 _mark_done_by_ids() {
-	local -a ids=("$@")
+	# Using "$@" avoids nounset issues on empty arrays across bash versions
+	if [ "$#" -eq 0 ]; then
+		echo "Error: No task ids provided." >&2
+		return 1
+	fi
+
 	local toggled_count=0
 
 	local id
-	for id in "${ids[@]}"; do
+	for id in "$@"; do
 		if _mark_task_done_by_key "$id"; then
 			((toggled_count++))
 		else
