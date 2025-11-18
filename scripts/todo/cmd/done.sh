@@ -161,20 +161,33 @@ from pathlib import Path
 
 path = Path(sys.argv[1])
 idx = int(sys.argv[2]) - 1
-text = path.read_text(encoding="utf-8")
+try:
+    text = path.read_text(encoding="utf-8")
+except Exception as exc:
+    print(f"PYERR: failed to read {path}: {exc}", file=sys.stderr)
+    sys.exit(1)
+
 lines = text.splitlines()
 had_trailing_nl = text.endswith("\n")
 
 if idx < 0 or idx >= len(lines):
+    print(f"PYERR: index {idx} out of range, total lines {len(lines)}", file=sys.stderr)
     sys.exit(1)
 
 line = lines[idx]
 if not line.startswith("- [ ] "):
+    print(f"PYERR: line does not start with '- [ ] ': {line}", file=sys.stderr)
     sys.exit(1)
 
 lines[idx] = "- [x]" + line[5:]
 output = "\n".join(lines) + ("\n" if had_trailing_nl else "")
-path.write_text(output, encoding="utf-8")
+
+try:
+    path.write_text(output, encoding="utf-8")
+except Exception as exc:
+    print(f"PYERR: failed to write {path}: {exc}", file=sys.stderr)
+    sys.exit(1)
+
 PY
 			then
 				return 0
