@@ -34,14 +34,19 @@ _to_iso_date() {
 
 note_path_for_date() {
     local raw_date="$1"
+    local note_dir="${NOTE_DIR:-${TODO_NOTE_DIR:-}}"
+    if [ -z "$note_dir" ]; then
+        _verbose_echo "NOTE_DIR is not set; cannot resolve note path." >&2
+        return 1
+    fi
     local iso_date
     iso_date=$(_to_iso_date "$raw_date")
     local compact_date="${iso_date//-/}"
     local candidates=(
-        "$NOTE_DIR/$iso_date.md"
+        "$note_dir/$iso_date.md"
     )
     if [ "$compact_date" != "$iso_date" ]; then
-        candidates+=("$NOTE_DIR/$compact_date.md")
+        candidates+=("$note_dir/$compact_date.md")
     fi
 
     local candidate
