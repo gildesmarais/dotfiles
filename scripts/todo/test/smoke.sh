@@ -26,7 +26,7 @@ export TODO_NOTE_DIR="$SMOKE_DIR"
 export TODO_USE_GLOW=false
 export TODO_AUTO_GIT_SYNC=false
 export TODO_AUTO_COMMIT=false
-export VERBOSE_FLAG="true"
+export VERBOSE_FLAG="false"
 unset VISUAL
 export EDITOR=true
 
@@ -108,12 +108,7 @@ echo "Running todo open ..."
 "$TODO_BIN" open "$first_id"
 
 echo "Running todo done --ids ..."
-todo_done_output="$("$TODO_BIN" "done" --ids "$first_id" 2>&1)" || {
-    echo "ERROR: todo done --ids failed" >&2
-    echo "$todo_done_output"
-    exit 1
-}
-printf "%s\n" "$todo_done_output"
+"$TODO_BIN" "done" --ids "$first_id"
 
 motd_output_after="$("$TODO_BIN" motd)"
 if printf "%s" "$motd_output_after" | grep -q "Smoke inserted task"; then

@@ -124,7 +124,6 @@ _mark_done_by_ids() {
 
 	local id
 	for id in "$@"; do
-		_verbose_echo "Marking task id: $id"
 		if _mark_task_done_by_key "$id"; then
 			((toggled_count++))
 		else
@@ -154,7 +153,6 @@ _mark_task_done_by_key() {
 
 	local line
 	line=$(sed -n "${line_no}p" "$path") || return 1
-	_verbose_echo "Line content at $path:$line_no => $line"
 
 	case "$line" in
 		"- [ ] "*)
@@ -194,9 +192,6 @@ except Exception as exc:
 PY
 			then
 				return 0
-			else
-				_verbose_echo "Toggle failed for $path:$line_no (status $?)"
-				return 1
 			fi
 			;;
 	esac
