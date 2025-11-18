@@ -108,10 +108,12 @@ echo "Running todo open ..."
 "$TODO_BIN" open "$first_id"
 
 echo "Running todo done --ids ..."
-if ! "$TODO_BIN" "done" --ids "$first_id"; then
+todo_done_output="$("$TODO_BIN" "done" --ids "$first_id" 2>&1)" || {
     echo "ERROR: todo done --ids failed" >&2
+    echo "$todo_done_output"
     exit 1
-fi
+}
+printf "%s\n" "$todo_done_output"
 
 motd_output_after="$("$TODO_BIN" motd)"
 if printf "%s" "$motd_output_after" | grep -q "Smoke inserted task"; then
