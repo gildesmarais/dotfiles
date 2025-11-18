@@ -22,4 +22,4 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Run smoke test
-        run: scripts/todo/test/smoke.sh
+        run: bash -x scripts/todo/test/smoke.sh
