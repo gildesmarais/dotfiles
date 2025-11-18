@@ -42,4 +42,7 @@ cmd_motd() {
     if [ "$printed_any" = true ]; then
         return 0
     fi
+
+    # Having nothing to show is not an error for shell startup usage.
+    return 0
 }
