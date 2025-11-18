@@ -191,6 +191,9 @@ except Exception as exc:
 PY
 			then
 				return 0
+			else
+				_verbose_echo "Toggle failed for $path:$line_no (status $?)"
+				return 1
 			fi
 			;;
 	esac
