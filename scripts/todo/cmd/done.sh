@@ -155,11 +155,30 @@ _mark_task_done_by_key() {
 
 	case "$line" in
 		"- [ ] "*)
-			if sed -i.bak "${line_no}s/^- \[ \]/- [x]/" "$path"; then
-				rm -f "$path.bak"
+			if python3 - "$path" "$line_no" <<'PY'
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+idx = int(sys.argv[2]) - 1
+text = path.read_text(encoding="utf-8")
+lines = text.splitlines()
+had_trailing_nl = text.endswith("\n")
+
+if idx < 0 or idx >= len(lines):
+    sys.exit(1)
+
+line = lines[idx]
+if not line.startswith("- [ ] "):
+    sys.exit(1)
+
+lines[idx] = "- [x]" + line[5:]
+output = "\n".join(lines) + ("\n" if had_trailing_nl else "")
+path.write_text(output, encoding="utf-8")
+PY
+			then
 				return 0
 			fi
-			rm -f "$path.bak"
 			;;
 	esac
 
