@@ -121,6 +121,7 @@ _mark_done_by_ids() {
 
 	local id
 	for id in "$@"; do
+		_verbose_echo "Marking task id: $id"
 		if _mark_task_done_by_key "$id"; then
 			((toggled_count++))
 		else
@@ -150,6 +151,7 @@ _mark_task_done_by_key() {
 
 	local line
 	line=$(sed -n "${line_no}p" "$path") || return 1
+	_verbose_echo "Line content at $path:$line_no => $line"
 
 	case "$line" in
 		"- [ ] "*)
