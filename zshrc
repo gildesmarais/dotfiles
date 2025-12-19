@@ -35,15 +35,6 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-if command_exists asdf; then
-  export ASDF_DATA_DIR="$HOME/.asdf"
-  export PATH="$ASDF_DATA_DIR/shims:$PATH"
-
-  # append completions to fpath
-  fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
-  # initialise completions with ZSH's compinit
-  autoload -Uz compinit && compinit
-fi
 
 # setup starship
 if command_exists starship; then
