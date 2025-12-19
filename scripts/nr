@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+#
+# nr - Fuzzy picker for npm scripts (requires jq and fzf)
+
+set -euo pipefail
+
+# 1. Dependency Check
+for cmd in npm jq fzf; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        echo "nr: $cmd is required but not installed." >&2
+        exit 127
+    fi
+done
+
+# 2. Pass-through mode
+if [ "$#" -gt 0 ]; then
+    exec npm run "$@"
+fi
+
+# 3. Context check
+if [ ! -f package.json ]; then
+    echo "nr: no package.json found in $(pwd)." >&2
+    exit 1
+fi
+
+# 4. Extract scripts and run fzf
+# Use a tab delimiter to keep script names intact and preview the full command.
+scripts=$(jq -r '(.scripts // {}) | to_entries | map([.key, "# " + .value, .value] | @tsv) | .[]' package.json)
+if [ -z "$scripts" ]; then
+    echo "nr: no npm scripts found." >&2
+    exit 1
+fi
+
+selection=$(printf "%s\n" "$scripts" \
+    | fzf --reverse \
+          --height=40% \
+          --prompt="npm run > " \
+          --header="[Tab/Arrow to browse, Enter to run]" \
+          --delimiter=$'\t' \
+          --with-nth=1,2 \
+          --preview 'printf "%s\n" {3}' \
+          --preview-window="bottom:1:wrap" \
+    | cut -f 1) || true
+
+# 5. Execution
+if [ -n "$selection" ]; then
+    exec npm run "$selection"
+fi
