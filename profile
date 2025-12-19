@@ -28,11 +28,6 @@ listening() {
 #: }}}
 
 #: PATH extensions {{{
-# make yarn binaries available
-if yarn --version >/dev/null 2>&1; then
-  export PATH="$PATH:$(yarn global bin)"
-fi
-
 # use the dotfiles' scripts
 export PATH="$HOME/.scripts:$PATH"
 
