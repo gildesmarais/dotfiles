@@ -186,6 +186,11 @@ if [ "$(uname)" = "Darwin" ]; then
   # we are on macosx
   alias lsusb="system_profiler SPUSBDataType"
 fi
+
+if command_exists lazydocker; then
+  alias lad="lazydocker"
+fi
+
 #endregion
 
 #region# powerful aliases beginning with 'p'
