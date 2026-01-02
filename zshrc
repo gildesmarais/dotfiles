@@ -81,10 +81,12 @@ fi
 
 #region# git related (some found in @holman's dotfiles)
 glog() {
-  git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative "$@"
+  git log --oneline --decorate --all --graph
 }
+
 alias gb='git branch'
 alias gc='git commit'
+alias gca='git commit --amend'
 alias gco='fzf_git_checkout'
 alias gd='git diff'
 alias gs='git status'
