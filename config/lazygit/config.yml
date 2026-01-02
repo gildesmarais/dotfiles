@@ -11,9 +11,9 @@ gui:
     selectedLineBgColor: ["reverse"]
 
 git:
-  paging:
-    colorArg: always
-    pager: ""
+  pagers:
+    - colorArg: always
+      pager: ""
   merging:
     manualCommit: true
 
@@ -23,10 +23,10 @@ os:
 
 keybinding:
   main:
-    toggleSelectHunk: "s"        # stage/unstage hunk
-    toggleSelectLine: "<space>"  # stage/unstage line
-    editFile: "e"                # jump to editor at cursor line
-    discardChange: "u"           # discard (LG will confirm)
+    toggleSelectHunk: "s" # stage/unstage hunk
+    toggleSelectLine: "<space>" # stage/unstage line
+    editFile: "e" # jump to editor at cursor line
+    discardChange: "u" # discard (LG will confirm)
     openFile: "o"
   files:
     enter: "<enter>"
