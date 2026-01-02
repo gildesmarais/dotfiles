@@ -1,0 +1,93 @@
+###############################
+# MCP SERVER CONFIGURATION
+###############################
+
+# Context7 — local container, API key optional
+[mcp_servers.context7]
+url = "http://localhost:8080/mcp"
+enabled = true
+# If your Context7 container still proxies to their cloud backend:
+# http_headers = { "CONTEXT7_API_KEY" = "YOUR_API_KEY" }
+
+# Local filesystem — allows Codex to read/write inside repo only
+[mcp_servers.filesystem]
+command = "codex-mcp-fs"
+args = ["--root", "."]
+# Override --root per project when needed.
+
+[mcp_servers.github]
+command = "codex-mcp-github"
+enabled = true
+# env = { "GITHUB_TOKEN" = "ghp_xxx" }
+
+# See: https://developer.chrome.com/blog/chrome-devtools-mcp
+[mcp_servers.chrome_devtools]
+command = "npx"
+args = ["chrome-devtools-mcp@latest", "--port", "9000"]
+enabled_tools = ["open", "screenshot"]
+# disabled_tools = ["screenshot"] # applied after enabled_tools
+startup_timeout_sec = 20
+tool_timeout_sec = 45
+enabled = false
+# Optional; enable when needed.
+
+# Local process executor — gives Codex access to safe CLI commands
+[mcp_servers.process]
+command = "codex-mcp-process"
+
+# Explicit allowlist to keep surface tight
+allow_commands = [
+  "bin/rails",
+  "bundle",
+  "devcontainer exec --workspace-folder .",
+  "devcontainer up --workspace-folder .",
+  "docker build",
+  "docker run",
+  "docker-compose build",
+  "docker-compose down",
+  "docker-compose up",
+  "gh issue",
+  "gh pr",
+  "git branch",
+  "git checkout",
+  "git commit",
+  "git diff",
+  "git log",
+  "git status",
+  "jest",
+  "metro",
+  "npx",
+  "pnpm",
+  "make lint",
+  "make lintfix",
+  "make ready"
+]
+
+deny_commands = ["rm", "rmdir", "sudo", "curl", "wget", "git push", "git pull", "kubectl", "helm", "ssh", "scp"]
+
+###############################
+# RUNTIME DEFAULTS
+###############################
+
+[settings]
+# Controls how Codex prioritises MCP sources
+preferred_mcp_order = ["filesystem", "process", "context7"]
+
+# Show MCP execution logs in Codex output for debugging
+show_mcp_logs = true
+
+# Cap context window to avoid token bloat on large projects
+max_context_kb = 512
+# Language defaults omitted to let Codex infer per repo.
+
+# Safe mode: Codex must ask before write operations
+confirm_before_write = true
+
+###############################
+# ENVIRONMENT SHORTCUTS
+###############################
+
+[env]
+RAILS_ENV = "development"
+NODE_ENV = "development"
+PATH = "/usr/local/bin:/usr/bin:/bin"
