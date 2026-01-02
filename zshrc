@@ -48,7 +48,7 @@ fi
 
 # setup zoxide
 if command_exists zoxide; then
-  eval "$(zoxide init zsh)"
+  eval "$(zoxide init --cmd cd zsh)"
 fi
 
 #region completion optimizations
