@@ -4,12 +4,36 @@
 # Inserts a blank line between shell prompts
 add_newline = true
 
+# Faster prompt for demos and workshops
+command_timeout = 500
+
 [character]
 success_symbol = '[\$](bold green)'
 error_symbol = '[\$](bold red)'
 
+[nodejs]
+symbol = "⬢ "
+style = "bold green"
+
+[python]
+symbol = "🐍 "
+style = "bold yellow"
+
+[golang]
+symbol = "🐹 "
+style = "bold cyan"
+
+[rust]
+symbol = "🦀 "
+style = "bold red"
+
 [ruby]
-symbol = "🔺"
+symbol = "🔺 "
+style = "bold magenta"
+
+[docker_context]
+symbol = "🐳 "
+style = "bold blue"
 
 [kubernetes]
 disabled = false
