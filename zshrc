@@ -250,17 +250,17 @@ wike() {
     fi
 }
 
-export TODO_NOTE_DIR="$WIKI_DIR/Calendar"
-export TODO_AUTO_GIT_SYNC=true
+export PKM_TODO_NOTE_DIR="$WIKI_DIR/Calendar"
+export PKM_TODO_AUTO_GIT_SYNC=true
 
-alias todo="$HOME/.dotfiles/scripts/todo/todo"
+alias pkm="$HOME/versioned/gildesmarais/pkm/target/release/pkm"
+alias todo="pkm todo"
 alias t='todo add'
 alias td='todo done'
 alias tl='todo list'
-alias note="todo note"
 #endregion
 
 export VISUAL=code
 
-[[ $- == *i* ]] && todo motd
+[[ $- == *i* ]] && pkm todo motd
 source "$HOME/.zshrc.local"
