@@ -237,6 +237,7 @@ bindkey "^[^[[D" backward-word
 #endregion
 
 #region Setup PKM tools
+export PKM_INDEX_ROOT="$HOME/versioned/gildesmarais/wiki"
 export WIKI_DIR="$HOME/versioned/gildesmarais/wiki"
 alias wiki="$HOME/.dotfiles/scripts/wiki"
 
@@ -253,7 +254,6 @@ wike() {
 export PKM_TODO_NOTE_DIR="$WIKI_DIR/Calendar"
 export PKM_TODO_AUTO_GIT_SYNC=true
 
-alias pkm="$HOME/versioned/gildesmarais/pkm/target/release/pkm"
 alias todo="pkm todo"
 alias t='todo add'
 alias td='todo done'
