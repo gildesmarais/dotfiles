@@ -237,26 +237,13 @@ bindkey "^[^[[D" backward-word
 #endregion
 
 #region Setup PKM tools
-export WIKI_DIR="$HOME/versioned/gildesmarais/wiki"
-alias wiki="$HOME/.dotfiles/scripts/wiki"
-
-wike() {
-    local editor="${VISUAL:-${EDITOR:-vi}}"
-    if [ -d "$WIKI_DIR" ]; then
-        cd "$WIKI_DIR" && git pull --quiet --rebase;
-        "$editor" "$WIKI_DIR";
-    else
-        echo "Error: WIKI_DIR is not a directory or is not set." >&2
-    fi
-}
-
 export PKM_NOTES_ROOT="$HOME/versioned/gildesmarais/wiki"
 export PKM_TODO_NOTE_DIR="$WIKI_DIR/Calendar"
 export PKM_TODO_AUTO_GIT_SYNC=true
 
+alias note="pkm daily new"
+alias wiki="pkm search --interactive"
 alias todo="pkm todo"
-alias t='todo add'
-alias td='todo done'
 alias tl='todo list'
 #endregion
 
