@@ -1,4 +1,3 @@
-eslint
+corepack
 npm-check-updates
 prettier
-stylelint
