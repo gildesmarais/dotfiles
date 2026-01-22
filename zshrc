@@ -250,4 +250,19 @@ alias tl='todo list'
 export VISUAL=code
 
 [[ $- == *i* ]] && pkm todo motd
+
+#region Completions
+autoload -U compinit && compinit
+
+# setup docker completions
+fpath=($HOME/.docker/completions $fpath)
+
+# setup carapace
+if command_exists carapace; then
+  export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
+  zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+  source <(carapace _carapace)
+fi
+#endregion
+
 source "$HOME/.zshrc.local"
