@@ -250,13 +250,10 @@ bindkey "^[^[[D" backward-word
 
 #region Setup PKM tools
 export PKM_NOTES_ROOT="$HOME/versioned/gildesmarais/wiki"
-export PKM_TODO_NOTE_DIR="$WIKI_DIR/Calendar"
 export PKM_TODO_AUTO_GIT_SYNC=true
 
-alias note="pkm daily new"
+alias note="pkm day"
 alias wiki="pkm search --interactive"
-alias todo="pkm todo"
-alias tl='todo list'
 #endregion
 
 export VISUAL=code
