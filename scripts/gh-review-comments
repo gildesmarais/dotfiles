@@ -109,7 +109,7 @@ elif [[ "$pr_input" =~ ^[0-9]+$ ]]; then
 elif [[ -z "$pr_input" ]]; then
   if ! resolve_current_pr; then
     if [[ -t 0 && -t 1 ]]; then
-      printf 'No PR found for the current branch. Open `gh pr create --web`? [y/N] '
+      printf "No PR found for the current branch. Open \`gh pr create --web\`? [y/N] "
       read -r confirm
       if [[ "$confirm" =~ ^[Yy]$ ]]; then
         gh pr create --web
@@ -125,6 +125,7 @@ else
 fi
 
 # Fetch review threads (includes resolution state) with pagination via GraphQL.
+# shellcheck disable=SC2016
 query='
 query($owner: String!, $repo: String!, $number: Int!, $after: String) {
   repository(owner: $owner, name: $repo) {
