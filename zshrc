@@ -56,8 +56,20 @@ fi
 mkdir -p ~/.zsh/cache
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
-zstyle ':completion:*' menu select
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+# zstyle ':completion:*' menu select
+# zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+# setup docker completions
+fpath=($HOME/.docker/completions $fpath)
+
+# setup carapace
+if command_exists carapace; then
+  export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
+  zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+  source <(carapace _carapace)
+fi
+#endregion
+
 
 # Fuzzy brew functions
 brew-search() {
@@ -253,16 +265,3 @@ export VISUAL=code
 
 #region Completions
 autoload -U compinit && compinit
-
-# setup docker completions
-fpath=($HOME/.docker/completions $fpath)
-
-# setup carapace
-if command_exists carapace; then
-  export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
-  zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
-  source <(carapace _carapace)
-fi
-#endregion
-
-source "$HOME/.zshrc.local"
