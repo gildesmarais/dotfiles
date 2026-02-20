@@ -252,7 +252,7 @@ bindkey "^[^[[D" backward-word
 export PKM_NOTES_ROOT="$HOME/versioned/gildesmarais/wiki"
 export PKM_TODO_AUTO_GIT_SYNC=true
 
-alias note="pkm day"
+alias note="cd $PKM_NOTES_ROOT && pkm day && popd"
 alias wiki="pkm search --interactive"
 #endregion
 
