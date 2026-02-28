@@ -93,8 +93,9 @@ fi
 
 #region# git related (some found in @holman's dotfiles)
 glog() {
-  git log --oneline --decorate --all --graph
+  git log --abbrev-commit --date=short --decorate=short --decorate-refs='refs/heads/*' --decorate-refs='refs/tags/*' --pretty=format:'%C(red)%h%Creset %C(bold blue)%an%Creset: %s %C(yellow)%d%Creset %C(green)(%ad)%Creset'
 }
+--abbrev-commit
 
 alias gb='git branch'
 alias gc='git commit'
