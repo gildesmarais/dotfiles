@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loop Code Quality"
+  short_description: "Review risks and patch obvious issues"
+  default_prompt: "implement → run tests → run loop-code-quality → patch issues"
