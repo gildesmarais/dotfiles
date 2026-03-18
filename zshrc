@@ -3,11 +3,25 @@ function command_exists {
   type "$1" >/dev/null 2>&1
 }
 
-fzf_git_checkout() {
+fzf_git_switch() {
   if [ $# -eq 0 ]; then
-    git branch --all | fzf | tr -d '[:space:]' | xargs git checkout
+    local ref
+    ref="$(
+      git for-each-ref --format='%(refname:short)' refs/heads refs/remotes |
+        rg -v '^origin/HEAD$' |
+        fzf
+    )" || return 1
+
+    case "$ref" in
+      origin/*)
+        git switch --track "${ref#origin/}" 2>/dev/null || git switch "${ref#origin/}" 2>/dev/null || git switch -c "${ref#origin/}" --track "$ref"
+        ;;
+      *)
+        git switch "$ref"
+        ;;
+    esac
   else
-    git checkout "$@"
+    git switch "$@"
   fi
 }
 #endregion
@@ -99,22 +113,20 @@ glog() {
 alias gb='git branch'
 alias gc='git commit'
 alias gca='git commit --amend'
-alias gco='fzf_git_checkout'
+alias gco='fzf_git_switch'
+alias gcp='git cherry-pick -x'
 alias gd='git diff'
-alias gs='git status'
+alias gfix='git commit --fixup'
+alias gmain='gco $(git_default_branch)'
+alias gpf='git push --force-with-lease'
+alias gpu='git push -u origin HEAD'
+alias gria='git rebase -i --autostash --autosquash'
+alias gs='git status -sb'
 alias gup="git pull --rebase --autostash"
 alias gundo="git reset --soft HEAD~1"
-alias gupstream="git_set_upstream"
 
 lag() {
   lazygit --use-config-file ~/.config/lazygit/config.yml -p "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" "$@"
-}
-
-# git_set_upstream: set the upstream branch to the current branch
-function git_set_upstream() {
-  local current_branch="$(git symbolic-ref --short HEAD)"
-
-  git branch --set-upstream-to="origin/$current_branch" "$current_branch"
 }
 
 # git_default_branch: get the default branch of the current git repository (assumes remote is named 'origin')
@@ -122,10 +134,45 @@ function git_default_branch() {
   git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
 }
 
+gnew() {
+  local new_branch="$1"
+  local default_branch stash_name had_stash=0
+
+  if [ -z "$new_branch" ]; then
+    echo "usage: gnew <branch-name>" >&2
+    return 1
+  fi
+
+  default_branch="$(git_default_branch)" || return 1
+  stash_name="gnew: $(date +%Y-%m-%dT%H:%M:%S)"
+
+  if ! git diff --quiet || ! git diff --cached --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]; then
+    git stash push -u -m "$stash_name" || return 1
+    had_stash=1
+  fi
+
+  git fetch --all --prune || return 1
+
+  if git show-ref --verify --quiet "refs/heads/$new_branch"; then
+    git switch "$new_branch" || return 1
+  else
+    git switch -c "$new_branch" "origin/$default_branch" || return 1
+  fi
+
+  if [ "$had_stash" -eq 1 ]; then
+    if git stash apply "stash^{/$stash_name}"; then
+      git stash drop "stash^{/$stash_name}" >/dev/null
+    else
+      echo "stash kept due to conflicts: $stash_name" >&2
+      return 1
+    fi
+  fi
+}
+
 # git_changed: show files changed in the current branch, compared to the default branch
 function git_changed() {
   local branch=${1:-$(git_default_branch)}
-  git diff --name-only --diff-filter=AM $branch
+  git diff --name-only --diff-filter=AM "$branch...HEAD"
 }
 
 alias git-changed="git_changed"
