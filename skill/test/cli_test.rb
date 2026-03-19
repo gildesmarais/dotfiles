@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 require "fileutils"
 require "minitest/autorun"
 require "open3"
+require "pathname"
 require "rbconfig"
 require "tmpdir"
 
@@ -12,15 +15,16 @@ class SkillCliTest < Minitest::Test
     @dotfiles_root = File.join(@tmpdir, "dotfiles")
     @project_root = File.join(@tmpdir, "project")
     @script_path = File.join(@dotfiles_root, "scripts", "skill")
+    @skill_root = File.join(@dotfiles_root, "skill")
     @skills_dir = File.join(@dotfiles_root, "skills")
-    @cli_path = File.join(@dotfiles_root, "skill", "src", "cli.rb")
+    @cli_path = File.join(@skill_root, "src", "cli.rb")
 
     FileUtils.mkdir_p(File.dirname(@script_path))
-    FileUtils.mkdir_p(File.dirname(@cli_path))
     FileUtils.mkdir_p(@skills_dir)
+    FileUtils.mkdir_p(@skill_root)
 
     FileUtils.cp(File.expand_path("../../scripts/skill", __dir__), @script_path)
-    FileUtils.cp(File.expand_path("../src/cli.rb", __dir__), @cli_path)
+    FileUtils.cp_r(File.expand_path("../src", __dir__), @skill_root)
     FileUtils.chmod("+x", @script_path)
 
     FileUtils.mkdir_p(@project_root)
@@ -49,6 +53,13 @@ class SkillCliTest < Minitest::Test
     refute(File.symlink?(File.join(@project_root, ".codex", "skills", "--project")))
   end
 
+  def test_unknown_command_exits_with_explicit_error
+    result = run_skill("wat")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "skill: unknown command: wat")
+  end
+
   def test_link_rejects_existing_non_symlink
     create_store_skill("ruby-dev")
     FileUtils.mkdir_p(File.join(@project_root, ".codex", "skills", "ruby-dev"))
@@ -58,6 +69,18 @@ class SkillCliTest < Minitest::Test
     assert_equal(1, result.exitstatus)
     assert(File.directory?(File.join(@project_root, ".codex", "skills", "ruby-dev")))
     refute(File.symlink?(File.join(@project_root, ".codex", "skills", "ruby-dev")))
+  end
+
+  def test_global_project_option_applies_to_mutating_commands
+    create_store_skill("ruby-dev")
+    custom_project = File.join(@tmpdir, "custom-project")
+    FileUtils.mkdir_p(custom_project)
+
+    result = run_skill("--project", custom_project, "link", "ruby-dev")
+
+    assert_equal(0, result.exitstatus)
+    assert(File.symlink?(File.join(custom_project, ".codex", "skills", "ruby-dev")))
+    refute_path_exists(File.join(@project_root, ".codex", "skills", "ruby-dev"))
   end
 
   def test_adopt_rejects_existing_symlink_to_other_target
@@ -99,6 +122,66 @@ class SkillCliTest < Minitest::Test
     refute_path_exists(File.join(@project_root, ".codex", "skills", "old-name"))
   end
 
+  def test_status_reports_linked_local_and_file_entries
+    create_store_skill("ruby-dev")
+    create_link("ruby-dev")
+
+    local_path = File.join(@project_root, ".codex", "skills", "local-skill")
+    file_path = File.join(@project_root, ".codex", "skills", "notes.txt")
+    FileUtils.mkdir_p(local_path)
+    File.write(file_path, "notes")
+
+    result = run_skill("status")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "linked\truby-dev -> #{@skills_dir}/ruby-dev")
+    assert_includes(result.output, "local\tlocal-skill")
+    assert_includes(result.output, "file\tnotes.txt")
+  end
+
+  def test_clean_removes_broken_symlinks_only
+    create_store_skill("ruby-dev")
+    live_link = create_link("ruby-dev")
+    broken_link = create_broken_link("missing")
+
+    result = run_skill("clean")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "removed broken symlink missing")
+    assert(File.symlink?(live_link))
+    refute_path_exists(broken_link)
+  end
+
+  def test_promote_moves_local_project_skill_into_store_and_relinks
+    local_skill = File.join(@project_root, ".codex", "skills", "my-skill")
+    FileUtils.mkdir_p(local_skill)
+    File.write(File.join(local_skill, "SKILL.md"), "# My Skill\n")
+
+    result = run_skill("promote", "my-skill")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "promoted my-skill -> #{File.realpath(@skills_dir)}/my-skill")
+    assert(File.directory?(File.join(@skills_dir, "my-skill")))
+    assert(File.symlink?(local_skill))
+    assert_equal(File.join(File.realpath(@skills_dir), "my-skill"), File.readlink(local_skill))
+  end
+
+  def test_rename_leaves_project_symlink_alone_when_it_points_elsewhere
+    create_store_skill("old-name")
+    create_store_skill("other")
+
+    old_link = File.join(@project_root, ".codex", "skills", "old-name")
+    FileUtils.mkdir_p(File.dirname(old_link))
+    File.symlink(File.join(@skills_dir, "other"), old_link)
+
+    result = run_skill("rename", "old-name", "new-name")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "stored skill renamed; project symlink left unchanged because it pointed elsewhere")
+    assert_equal(File.join(@skills_dir, "other"), File.readlink(old_link))
+    assert(File.directory?(File.join(@skills_dir, "new-name")))
+  end
+
   def test_doctor_exits_non_zero_when_issues_are_present
     create_store_skill("ruby-dev")
     broken_link = File.join(@project_root, ".codex", "skills", "ruby-dev")
@@ -109,6 +192,33 @@ class SkillCliTest < Minitest::Test
 
     assert_equal(1, result.exitstatus)
     assert_includes(result.output, "issue\tbroken symlink ruby-dev")
+  end
+
+  def test_doctor_exits_zero_with_warning_only
+    create_store_skill("ruby-dev")
+    FileUtils.mkdir_p(File.join(@project_root, ".codex", "skills"))
+
+    result = run_skill("doctor")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "warning\tstored skill not linked in project ruby-dev")
+    assert_includes(result.output, "doctor found 0 issue(s), 1 warning(s)")
+  end
+
+  def test_doctor_accepts_relative_symlink_into_store
+    create_store_skill("ruby-dev")
+    link_path = File.join(@project_root, ".codex", "skills", "ruby-dev")
+    FileUtils.mkdir_p(File.dirname(link_path))
+    store_path = Pathname.new(File.join(@skills_dir, "ruby-dev"))
+    link_dir = Pathname.new(File.dirname(link_path))
+    relative_target = store_path.relative_path_from(link_dir)
+    File.symlink(relative_target.to_s, link_path)
+
+    result = run_skill("doctor")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "ok\tlinked ruby-dev")
+    assert_includes(result.output, "skill: doctor found no issues")
   end
 
   def test_cli_file_runs_when_executed_directly
@@ -148,6 +258,14 @@ class SkillCliTest < Minitest::Test
     link_path = File.join(@project_root, ".codex", "skills", name)
     FileUtils.mkdir_p(File.dirname(link_path))
     File.symlink(File.join(@skills_dir, name), link_path)
+    link_path
+  end
+
+  def create_broken_link(name)
+    link_path = File.join(@project_root, ".codex", "skills", name)
+    FileUtils.mkdir_p(File.dirname(link_path))
+    File.symlink(File.join(@skills_dir, "#{name}-target"), link_path)
+    link_path
   end
 
   def refute_path_exists(path)

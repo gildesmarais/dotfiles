@@ -5,8 +5,8 @@ RUBOCOP_BIN_DIR := $(dir $(RUBOCOP))
 .PHONY: test lint
 
 test:
-	$(SYSTEM_RUBY) -Itest test/cli_test.rb
+	$(SYSTEM_RUBY) -Itest -e 'Dir["test/*_test.rb"].sort.each { |file| require File.expand_path(file) }'
 
 lint:
 	mkdir -p .cache
-	PATH="$(RUBOCOP_BIN_DIR):$(PATH)" XDG_CACHE_HOME=$(CURDIR)/.cache $(RUBOCOP) -c .rubocop.yml ../scripts/skill src/cli.rb test/cli_test.rb
+	PATH="$(RUBOCOP_BIN_DIR):$(PATH)" XDG_CACHE_HOME=$(CURDIR)/.cache $(RUBOCOP) -c .rubocop.yml ../scripts/skill src test
