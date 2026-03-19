@@ -38,6 +38,8 @@ if command_exists brew; then
     source "$brew_prefix/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
   fi
 fi
+
+FPATH="$HOME/.dotfiles/completions:$FPATH"
 #endregion
 
 #region shell setup with sourcing and evals

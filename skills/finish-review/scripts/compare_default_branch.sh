@@ -8,6 +8,16 @@ fi
 
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 
+resolve_base_ref() {
+  local branch="$1"
+
+  if git show-ref --verify --quiet "refs/remotes/origin/${branch}"; then
+    printf "origin/%s" "${branch}"
+  else
+    printf "%s" "${branch}"
+  fi
+}
+
 # Determine default branch (prefer origin/HEAD, then remote show, then main/master)
 default_branch=""
 if git symbolic-ref --quiet refs/remotes/origin/HEAD >/dev/null 2>&1; then
@@ -27,10 +37,7 @@ if [[ -z "${default_branch}" ]]; then
   fi
 fi
 
-base_ref="origin/${default_branch}"
-if ! git show-ref --verify --quiet "refs/remotes/${base_ref}"; then
-  base_ref="${default_branch}"
-fi
+base_ref=$(resolve_base_ref "${default_branch}")
 
 printf "Current branch: %s\n" "${current_branch}"
 printf "Default branch: %s\n" "${default_branch}"
@@ -40,6 +47,8 @@ printf "Base ref: %s\n\n" "${base_ref}"
 if git remote get-url origin >/dev/null 2>&1; then
   git fetch -q origin "${default_branch}" >/dev/null 2>&1 || true
 fi
+
+base_ref=$(resolve_base_ref "${default_branch}")
 
 printf "Commits ahead/behind (base...HEAD):\n"
 git rev-list --left-right --count "${base_ref}...HEAD"

@@ -1,0 +1,81 @@
+#compdef skill
+
+local store_dir="${HOME}/.dotfiles/skills"
+
+_skill_store_names() {
+  local -a skills
+  skills=(${(f)"$(command ls -1 "$store_dir" 2>/dev/null)"})
+  skills=(${skills:#.*})
+  print -l -- $skills
+}
+
+_skill_project_root() {
+  git rev-parse --show-toplevel 2>/dev/null || pwd
+}
+
+_skill_project_names() {
+  local project_root project_dir
+  project_root="$(_skill_project_root)"
+  project_dir="${project_root}/.codex/skills"
+  local -a skills
+  skills=(${(f)"$(command ls -1 "$project_dir" 2>/dev/null)"})
+  skills=(${skills:#.*})
+  print -l -- $skills
+}
+
+_skill_commands() {
+  local -a commands
+  commands=(
+    'list:list stored skills'
+    'status:show project skill status'
+    'link:link stored skills into the project'
+    'unlink:remove project skill symlinks'
+    'clean:remove broken project skill symlinks'
+    'doctor:diagnose project skill links and local copies'
+    'adopt:move a local skill directory into dotfiles and link it here'
+    'promote:move a project skill into dotfiles and relink it'
+    'rename:rename a stored skill'
+    'help:show usage'
+  )
+  _describe -t commands 'skill command' commands
+}
+
+local curcontext="$curcontext" state line
+typeset -A opt_args
+
+_arguments -C \
+  '(-p --project)'{-p,--project}'[project root]:project root:_files -/' \
+  '1:command:_skill_commands' \
+  '*::arg:->args'
+
+case "$state" in
+  args)
+    case "${line[1]:-${words[2]:-}}" in
+      link)
+        _alternative \
+          'options:option:((--all\:"link all stored skills"))' \
+          'skills:stored skill:_skill_store_names'
+        ;;
+      unlink)
+        _describe -t skills 'project skill' "$(_skill_project_names)"
+        ;;
+      promote)
+        _describe -t skills 'project skill' "$(_skill_project_names)"
+        ;;
+      adopt)
+        if (( CURRENT == 3 )); then
+          _files -/
+        elif (( CURRENT == 4 )); then
+          _message 'new skill name'
+        fi
+        ;;
+      rename)
+        if (( CURRENT == 3 )); then
+          _describe -t skills 'stored skill' "$(_skill_store_names)"
+        elif (( CURRENT == 4 )); then
+          _message 'new skill name'
+        fi
+        ;;
+    esac
+    ;;
+esac

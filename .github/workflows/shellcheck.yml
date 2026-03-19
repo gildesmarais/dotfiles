@@ -12,7 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: Run ShellCheck
+      - name: Run ShellCheck on scripts
         uses: ludeeus/action-shellcheck@master
         with:
           scandir: "./scripts"
+      - name: Run ShellCheck on skills
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: "./skills"

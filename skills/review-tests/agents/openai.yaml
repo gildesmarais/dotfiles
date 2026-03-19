@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Tests"
+  short_description: "Review tests for over-mocking and contract gaps"
+  default_prompt: "Use $review-tests to review changed specs for over-mocking, missing contract coverage, and architectural seams that would improve precision."

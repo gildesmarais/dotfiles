@@ -11,15 +11,17 @@ Deliver a production-finish review for a git branch by comparing to the default 
 
 ## Workflow
 
-1) Establish scope and assumptions
+1. Establish scope and assumptions
+
 - Identify repo root, target branch, and default branch.
 - Read `AGENTS.md` if present and follow repo-specific rules.
 - Capture explicit assumptions and missing context.
 
-2) Understand changes vs default branch (mandatory)
+2. Understand changes vs default branch (mandatory)
+
 - Path resolution sanity check: confirm `${CODEX_HOME:-$HOME/.codex}/skills/finish-review/scripts/compare_default_branch.sh` exists and is executable before invoking it.
 - Run the skill-local script (not repo-local):
-  - ```${CODEX_HOME:-$HOME/.codex}/skills/finish-review/scripts/compare_default_branch.sh```
+  - `${CODEX_HOME:-$HOME/.codex}/skills/finish-review/scripts/compare_default_branch.sh`
 - If the script is unavailable, run this fallback directly in the repo:
   - `git rev-list --left-right --count origin/$(git remote show origin | awk '/HEAD branch/ {print $NF; exit}')...HEAD`
   - `git --no-pager diff --stat origin/$(git remote show origin | awk '/HEAD branch/ {print $NF; exit}')...HEAD`
@@ -29,41 +31,49 @@ Deliver a production-finish review for a git branch by comparing to the default 
   - diffstat and file list
   - high-risk areas to inspect first
 
-3) Review in priority order (non-negotiable)
+3. Review in priority order (non-negotiable)
+
 - Production readiness
 - Industry-standard patterns
 - Maintainability and ownership transfer
 - Risk identification and due diligence
 - Compliance posture clarity
 
-4) Apply the review workflow
+4. Apply the review workflow
+
 - Assess architecture, boundaries, responsibilities.
 - Evaluate code quality, failure modes, edge cases.
 - Validate config, logging, security, and ops concerns.
 - Enumerate risks, debt, limitations, and compliance gaps.
 
-5) Use the autonomous review loop until convergence or blocked
+5. Use the autonomous review loop until convergence or blocked
+
 - Scan -> Evaluate -> Decide -> Document -> Re-check.
 - Stop only when Critical is empty and Important has owners or rationale.
 
 ## Output format (required)
 
 **Findings**
+
 - Categorize as Critical / Important / Nice-to-Have.
 - Each finding includes impact and recommended action.
 
 **Non-Goals**
+
 - List explicit exclusions and intentionally unaddressed areas.
 
 **Confidence & Uncertainty**
+
 - Separate known facts from inferred or unverified items.
 
 **Compliance & Risk Posture**
+
 - What would pass review.
 - What would be flagged.
 - Minimum viable remediation or compensating controls.
 
 **Executive Summary**
+
 - Production readiness: Yes / No / Conditional.
 - Top risks.
 - Immediate actions.
@@ -79,4 +89,5 @@ Deliver a production-finish review for a git branch by comparing to the default 
 ## Resources
 
 ### scripts/
+
 - `compare_default_branch.sh`: detect default branch and summarize diff vs current branch.

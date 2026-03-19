@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ruby Dev"
+  short_description: "Ruby implementation and validation workflow"
+  default_prompt: "Use $ruby-dev to investigate, change, and validate Ruby code with small safe edits, repo-native commands, and explicit routing to test review or finish-review when appropriate."

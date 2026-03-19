@@ -1,0 +1,593 @@
+#!/usr/bin/env bash
+#
+# skill - manage project-local Codex skill symlinks backed by ~/.dotfiles
+
+set -euo pipefail
+
+resolve_script_path() {
+  local source_path="${BASH_SOURCE[0]}"
+
+  while [ -L "${source_path}" ]; do
+    local source_dir
+    source_dir=$(cd "$(dirname "${source_path}")" && pwd)
+    source_path=$(readlink "${source_path}")
+    case "${source_path}" in
+      /*) ;;
+      *) source_path="${source_dir}/${source_path}" ;;
+    esac
+  done
+
+  cd "$(dirname "${source_path}")" && pwd
+}
+
+SCRIPT_DIR=$(resolve_script_path)
+DOTFILES_ROOT=$(cd "${SCRIPT_DIR}/.." && pwd)
+STORE_DIR="${DOTFILES_ROOT}/skills"
+
+PROJECT_ROOT=""
+PROJECT_SKILLS_DIR=""
+
+usage() {
+  cat <<EOF
+Usage: skill [--project PATH] <command> [args]
+
+Manage symlinked Codex skills for a project using dotfiles as the canonical store.
+
+Commands:
+  list                         List skills available in ${STORE_DIR}
+  status                       Show skills linked in the project
+  link <name> [name ...]       Link one or more stored skills into the project
+  link --all                   Link every non-hidden skill from the store
+  unlink <name> [name ...]     Remove one or more project skill symlinks
+  clean                        Remove broken symlinks from the project
+  doctor                       Diagnose project skill links and local copies
+  adopt <path> [name]          Move a local skill directory into dotfiles and link it here
+  promote <name>               Move project .codex/skills/<name> into dotfiles and relink it
+  rename <old> <new>           Rename a stored skill and update this project's symlink if needed
+  help                         Show this help
+
+Options:
+  -p, --project PATH           Project root. Defaults to the git root or current directory.
+
+Examples:
+  skill list
+  skill status
+  skill link ruby-dev
+  skill link --all
+  skill unlink ruby-dev
+  skill clean
+  skill doctor
+  skill adopt ../my-skill
+  skill promote my-skill
+  skill rename ruby-dev ruby
+EOF
+}
+
+die() {
+  echo "skill: $*" >&2
+  exit 1
+}
+
+note() {
+  echo "skill: $*"
+}
+
+resolve_project_root() {
+  if [ -n "${PROJECT_ROOT}" ]; then
+    return
+  fi
+
+  if command -v git >/dev/null 2>&1; then
+    local git_root
+    git_root=$(git rev-parse --show-toplevel 2>/dev/null || true)
+    if [ -n "${git_root}" ]; then
+      PROJECT_ROOT="${git_root}"
+    fi
+  fi
+
+  if [ -z "${PROJECT_ROOT}" ]; then
+    PROJECT_ROOT=$(pwd)
+  fi
+}
+
+init_project_paths() {
+  resolve_project_root
+  PROJECT_SKILLS_DIR="${PROJECT_ROOT}/.codex/skills"
+}
+
+ensure_store() {
+  [ -d "${STORE_DIR}" ] || die "skill store not found: ${STORE_DIR}"
+}
+
+ensure_project_skills_dir() {
+  init_project_paths
+  mkdir -p "${PROJECT_SKILLS_DIR}"
+}
+
+is_hidden_name() {
+  case "$1" in
+    .* ) return 0 ;;
+    * ) return 1 ;;
+  esac
+}
+
+store_skill_path() {
+  printf "%s/%s" "${STORE_DIR}" "$1"
+}
+
+project_skill_path() {
+  printf "%s/%s" "${PROJECT_SKILLS_DIR}" "$1"
+}
+
+assert_skill_name() {
+  local name="$1"
+
+  [ -n "${name}" ] || die "skill name cannot be empty"
+  case "${name}" in
+    */* ) die "skill name must not contain '/': ${name}" ;;
+    .|.. ) die "invalid skill name: ${name}" ;;
+  esac
+}
+
+list_store_skills() {
+  ensure_store
+
+  local found=0
+  local path
+  for path in "${STORE_DIR}"/*; do
+    [ -e "${path}" ] || continue
+    [ -d "${path}" ] || continue
+    found=1
+    basename "${path}"
+  done
+
+  if [ "${found}" -eq 0 ]; then
+    note "no non-hidden skills found in ${STORE_DIR}"
+  fi
+}
+
+show_status() {
+  init_project_paths
+
+  note "project: ${PROJECT_ROOT}"
+  note "store: ${STORE_DIR}"
+
+  if [ ! -d "${PROJECT_SKILLS_DIR}" ]; then
+    note "project skill directory does not exist: ${PROJECT_SKILLS_DIR}"
+    return 0
+  fi
+
+  local found=0
+  local path
+  for path in "${PROJECT_SKILLS_DIR}"/* "${PROJECT_SKILLS_DIR}"/.*; do
+    [ -e "${path}" ] || [ -L "${path}" ] || continue
+    case "$(basename "${path}")" in
+      .|..) continue ;;
+    esac
+    found=1
+
+    if [ -L "${path}" ]; then
+      local target
+      target=$(readlink "${path}")
+      if [ -e "${path}" ]; then
+        printf "linked\t%s -> %s\n" "$(basename "${path}")" "${target}"
+      else
+        printf "broken\t%s -> %s\n" "$(basename "${path}")" "${target}"
+      fi
+    elif [ -d "${path}" ]; then
+      printf "local\t%s\n" "$(basename "${path}")"
+    else
+      printf "file\t%s\n" "$(basename "${path}")"
+    fi
+  done
+
+  if [ "${found}" -eq 0 ]; then
+    note "no project skills found in ${PROJECT_SKILLS_DIR}"
+  fi
+}
+
+link_one() {
+  local name="$1"
+  local source target
+
+  ensure_store
+  ensure_project_skills_dir
+  assert_skill_name "${name}"
+
+  source=$(store_skill_path "${name}")
+  target=$(project_skill_path "${name}")
+
+  [ -d "${source}" ] || die "stored skill not found: ${source}"
+
+  if [ -L "${target}" ]; then
+    local current
+    current=$(readlink "${target}")
+    if [ "${current}" = "${source}" ]; then
+      note "already linked: ${name}"
+      return 0
+    fi
+    die "refusing to replace existing symlink: ${target} -> ${current}"
+  fi
+
+  if [ -e "${target}" ]; then
+    die "refusing to replace existing path: ${target}"
+  fi
+
+  ln -s "${source}" "${target}"
+  note "linked ${name} -> ${source}"
+}
+
+link_all() {
+  ensure_store
+
+  local found=0
+  local path
+  for path in "${STORE_DIR}"/*; do
+    [ -e "${path}" ] || continue
+    [ -d "${path}" ] || continue
+    found=1
+    link_one "$(basename "${path}")"
+  done
+
+  if [ "${found}" -eq 0 ]; then
+    note "no non-hidden skills to link"
+  fi
+}
+
+unlink_one() {
+  local name="$1"
+  local target
+
+  init_project_paths
+  assert_skill_name "${name}"
+  target=$(project_skill_path "${name}")
+
+  if [ -L "${target}" ]; then
+    rm "${target}"
+    note "unlinked ${name}"
+    return 0
+  fi
+
+  if [ -e "${target}" ]; then
+    die "refusing to remove non-symlink path: ${target}"
+  fi
+
+  note "not linked: ${name}"
+}
+
+clean_links() {
+  init_project_paths
+
+  if [ ! -d "${PROJECT_SKILLS_DIR}" ]; then
+    note "nothing to clean; missing ${PROJECT_SKILLS_DIR}"
+    return 0
+  fi
+
+  local cleaned=0
+  local path
+  for path in "${PROJECT_SKILLS_DIR}"/* "${PROJECT_SKILLS_DIR}"/.*; do
+    [ -L "${path}" ] || continue
+    case "$(basename "${path}")" in
+      .|..) continue ;;
+    esac
+
+    if [ ! -e "${path}" ]; then
+      rm "${path}"
+      note "removed broken symlink $(basename "${path}")"
+      cleaned=$((cleaned + 1))
+    fi
+  done
+
+  if [ "${cleaned}" -eq 0 ]; then
+    note "no broken symlinks found"
+  fi
+}
+
+promote_skill() {
+  local name="$1"
+  local source target
+
+  ensure_store
+  ensure_project_skills_dir
+  assert_skill_name "${name}"
+
+  source=$(project_skill_path "${name}")
+  target=$(store_skill_path "${name}")
+
+  if [ ! -e "${source}" ] && [ ! -L "${source}" ]; then
+    die "project skill not found: ${source}"
+  fi
+
+  if [ -L "${source}" ]; then
+    local current
+    current=$(readlink "${source}")
+    if [ "${current}" = "${target}" ]; then
+      note "already promoted: ${name}"
+      return 0
+    fi
+    die "refusing to promote existing symlink: ${source} -> ${current}"
+  fi
+
+  if [ ! -d "${source}" ]; then
+    die "project skill must be a directory: ${source}"
+  fi
+
+  if [ -e "${target}" ] || [ -L "${target}" ]; then
+    die "destination already exists in dotfiles: ${target}"
+  fi
+
+  mv "${source}" "${target}"
+  ln -s "${target}" "${source}"
+  note "promoted ${name} -> ${target}"
+}
+
+adopt_skill() {
+  local source_input="$1"
+  local name="${2:-}"
+  local source target link_path
+
+  ensure_store
+  ensure_project_skills_dir
+
+  [ -n "${source_input}" ] || die "adopt requires a source path"
+
+  if [ -z "${name}" ]; then
+    name=$(basename "${source_input}")
+  fi
+  assert_skill_name "${name}"
+
+  if [ "${source_input}" = "${name}" ] && [ -d "$(project_skill_path "${name}")" ]; then
+    promote_skill "${name}"
+    return 0
+  fi
+
+  if [ "${source_input#/}" != "${source_input}" ]; then
+    source="${source_input}"
+  else
+    source=$(cd "$(dirname "${source_input}")" && pwd)/$(basename "${source_input}")
+  fi
+
+  [ -d "${source}" ] || die "source skill directory not found: ${source}"
+
+  target=$(store_skill_path "${name}")
+  link_path=$(project_skill_path "${name}")
+
+  if [ -e "${target}" ] || [ -L "${target}" ]; then
+    die "destination already exists in dotfiles: ${target}"
+  fi
+
+  if [ -L "${link_path}" ]; then
+    local current
+    current=$(readlink "${link_path}")
+    [ "${current}" = "${target}" ] && die "project already links ${name} to ${target}"
+    die "refusing to replace existing symlink: ${link_path} -> ${current}"
+  fi
+
+  if [ -e "${link_path}" ]; then
+    if [ "${source}" != "${link_path}" ]; then
+      die "refusing to replace existing project path: ${link_path}"
+    fi
+  fi
+
+  mv "${source}" "${target}"
+
+  if [ -e "${link_path}" ] || [ -L "${link_path}" ]; then
+    rm -rf "${link_path}"
+  fi
+
+  ln -s "${target}" "${link_path}"
+  note "adopted ${name} -> ${target}"
+}
+
+rename_skill() {
+  local old_name="$1"
+  local new_name="$2"
+  local old_target new_target old_link new_link
+
+  ensure_store
+  ensure_project_skills_dir
+  assert_skill_name "${old_name}"
+  assert_skill_name "${new_name}"
+
+  [ "${old_name}" != "${new_name}" ] || die "old and new skill names are identical"
+
+  old_target=$(store_skill_path "${old_name}")
+  new_target=$(store_skill_path "${new_name}")
+  old_link=$(project_skill_path "${old_name}")
+  new_link=$(project_skill_path "${new_name}")
+
+  [ -d "${old_target}" ] || die "stored skill not found: ${old_target}"
+  if [ -e "${new_target}" ] || [ -L "${new_target}" ]; then
+    die "destination already exists in dotfiles: ${new_target}"
+  fi
+  if [ -e "${new_link}" ] || [ -L "${new_link}" ]; then
+    die "destination already exists in project: ${new_link}"
+  fi
+
+  mv "${old_target}" "${new_target}"
+
+  if [ -L "${old_link}" ]; then
+    local current
+    current=$(readlink "${old_link}")
+    if [ "${current}" = "${old_target}" ]; then
+      rm "${old_link}"
+      ln -s "${new_target}" "${new_link}"
+      note "updated project link ${old_name} -> ${new_name}"
+    else
+      note "stored skill renamed; project symlink left unchanged because it pointed elsewhere"
+    fi
+  elif [ -e "${old_link}" ]; then
+    note "stored skill renamed; project path ${old_link} left unchanged because it is not a symlink"
+  fi
+
+  note "renamed ${old_name} -> ${new_name}"
+}
+
+doctor_skills() {
+  ensure_store
+  init_project_paths
+
+  local issues=0
+  local warnings=0
+  local path name target found_link
+
+  note "project: ${PROJECT_ROOT}"
+  note "store: ${STORE_DIR}"
+
+  if [ ! -d "${PROJECT_SKILLS_DIR}" ]; then
+    printf "warning\tmissing project skill directory %s\n" "${PROJECT_SKILLS_DIR}"
+    warnings=$((warnings + 1))
+    note "doctor found ${issues} issue(s), ${warnings} warning(s)"
+    return 0
+  fi
+
+  for path in "${PROJECT_SKILLS_DIR}"/* "${PROJECT_SKILLS_DIR}"/.*; do
+    [ -e "${path}" ] || [ -L "${path}" ] || continue
+    name=$(basename "${path}")
+    case "${name}" in
+      .|..) continue ;;
+    esac
+
+    if [ -L "${path}" ]; then
+      target=$(readlink "${path}")
+
+      if [ ! -e "${path}" ]; then
+        printf "issue\tbroken symlink %s -> %s\n" "${name}" "${target}"
+        issues=$((issues + 1))
+        continue
+      fi
+
+      case "${target}" in
+        "${STORE_DIR}"/*)
+          if [ "$(basename "${target}")" != "${name}" ]; then
+            printf "issue\tname mismatch %s -> %s\n" "${name}" "${target}"
+            issues=$((issues + 1))
+          else
+            printf "ok\tlinked %s\n" "${name}"
+          fi
+          ;;
+        *)
+          printf "issue\tsymlink outside store %s -> %s\n" "${name}" "${target}"
+          issues=$((issues + 1))
+          ;;
+      esac
+    elif [ -d "${path}" ]; then
+      printf "issue\tlocal directory still present %s\n" "${name}"
+      issues=$((issues + 1))
+    else
+      printf "issue\tnon-directory path present %s\n" "${name}"
+      issues=$((issues + 1))
+    fi
+  done
+
+  for path in "${STORE_DIR}"/*; do
+    [ -e "${path}" ] || continue
+    [ -d "${path}" ] || continue
+    name=$(basename "${path}")
+    found_link=0
+
+    if [ -L "$(project_skill_path "${name}")" ] && [ "$(readlink "$(project_skill_path "${name}")")" = "${path}" ]; then
+      found_link=1
+    fi
+
+    if [ "${found_link}" -eq 0 ]; then
+      printf "warning\tstored skill not linked in project %s\n" "${name}"
+      warnings=$((warnings + 1))
+    fi
+  done
+
+  if [ "${issues}" -eq 0 ] && [ "${warnings}" -eq 0 ]; then
+    note "doctor found no issues"
+    return 0
+  fi
+
+  note "doctor found ${issues} issue(s), ${warnings} warning(s)"
+  [ "${issues}" -eq 0 ]
+}
+
+parse_args() {
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      -p|--project)
+        [ "$#" -ge 2 ] || die "missing value for $1"
+        PROJECT_ROOT="$2"
+        shift 2
+        ;;
+      help|-h|--help)
+        usage
+        exit 0
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  [ "$#" -gt 0 ] || {
+    usage
+    exit 1
+  }
+
+  COMMAND="$1"
+  shift
+  COMMAND_ARGS=("$@")
+}
+
+COMMAND=""
+COMMAND_ARGS=()
+
+parse_args "$@"
+
+case "${COMMAND}" in
+  list)
+    [ "${#COMMAND_ARGS[@]}" -eq 0 ] || die "list does not accept extra arguments"
+    list_store_skills
+    ;;
+  status)
+    [ "${#COMMAND_ARGS[@]}" -eq 0 ] || die "status does not accept extra arguments"
+    show_status
+    ;;
+  link)
+    if [ "${#COMMAND_ARGS[@]}" -eq 1 ] && [ "${COMMAND_ARGS[0]}" = "--all" ]; then
+      link_all
+    else
+      [ "${#COMMAND_ARGS[@]}" -gt 0 ] || die "link requires at least one skill name or --all"
+      for skill_name in "${COMMAND_ARGS[@]}"; do
+        link_one "${skill_name}"
+      done
+    fi
+    ;;
+  unlink)
+    [ "${#COMMAND_ARGS[@]}" -gt 0 ] || die "unlink requires at least one skill name"
+    for skill_name in "${COMMAND_ARGS[@]}"; do
+      unlink_one "${skill_name}"
+    done
+    ;;
+  clean)
+    [ "${#COMMAND_ARGS[@]}" -eq 0 ] || die "clean does not accept extra arguments"
+    clean_links
+    ;;
+  doctor)
+    [ "${#COMMAND_ARGS[@]}" -eq 0 ] || die "doctor does not accept extra arguments"
+    doctor_skills
+    ;;
+  adopt)
+    [ "${#COMMAND_ARGS[@]}" -ge 1 ] || die "adopt requires a source path"
+    [ "${#COMMAND_ARGS[@]}" -le 2 ] || die "adopt accepts a source path and optional name"
+    adopt_skill "${COMMAND_ARGS[@]}"
+    ;;
+  promote)
+    [ "${#COMMAND_ARGS[@]}" -eq 1 ] || die "promote requires exactly one skill name"
+    promote_skill "${COMMAND_ARGS[0]}"
+    ;;
+  rename)
+    [ "${#COMMAND_ARGS[@]}" -eq 2 ] || die "rename requires old and new skill names"
+    rename_skill "${COMMAND_ARGS[0]}" "${COMMAND_ARGS[1]}"
+    ;;
+  help)
+    usage
+    ;;
+  *)
+    die "unknown command: ${COMMAND}"
+    ;;
+esac

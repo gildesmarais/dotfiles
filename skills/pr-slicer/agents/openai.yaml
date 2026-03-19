@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR Slicer"
+  short_description: "Rebuild large branches into focused PRs"
+  default_prompt: "Use $pr-slicer to rebuild this branch into reviewable PRs off the default branch."

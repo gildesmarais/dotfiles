@@ -24,6 +24,31 @@ This repository contains config files to set up my systems and keep them in sync
 | `./scripts/macos-defaults-apply` | Guided wizard that applies my preferred macOS defaults and prompts for the manual tweaks listed below.                  | macOS, `sudo` access for protected settings.                          |
 | `./scripts/wiki`                 | `fzf`-powered browser for the local wiki directory that opens files in your preferred editor.                           | `fzf`, `git`, `rg`, optional `VISUAL`/`EDITOR` or `WIKI_*` overrides. |
 | `./scripts/download-audio`       | Fetches remote audio (e.g., YouTube URLs) and normalises them via the `process-audio` pipeline for library-ready files. | `aria2`, `ffmpeg`, `yt-dlp`; installs live in the Brewfile.           |
+| `./scripts/skill`                | Links project `.codex/skills` entries to the canonical `~/.dotfiles/skills` store and can promote local skills.        | Bash, optional `git` for auto-detecting the project root.             |
+
+## Codex Skills
+
+`./scripts/skill` manages per-project `.codex/skills` symlinks backed by `~/.dotfiles/skills`.
+
+Examples:
+
+```sh
+skill list
+skill status
+skill link ruby-dev
+skill link --all
+skill unlink ruby-dev
+skill clean
+skill doctor
+skill adopt ../my-skill
+skill promote my-skill
+skill rename ruby-dev ruby
+```
+
+Use `skill --project /path/to/project ...` to target a project other than the current git root or working directory.
+
+`adopt` moves an arbitrary local skill directory into `~/.dotfiles/skills` and links it into the current project. `rename` renames the canonical stored skill and updates this project's symlink when it points to the old name.
+`doctor` reports broken links, mismatched targets, local copies still sitting in `.codex/skills`, and stored skills not linked into the current project.
 
 ## macOS System Configuration
 
