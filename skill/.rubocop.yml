@@ -20,16 +20,7 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Enabled: false
 
-Layout/LineLength:
-  Enabled: false
-
 Style/Documentation:
-  Enabled: false
-
-Style/FrozenStringLiteralComment:
-  Enabled: false
-
-Style/IfUnlessModifier:
   Enabled: false
 
 Style/StringLiterals:
