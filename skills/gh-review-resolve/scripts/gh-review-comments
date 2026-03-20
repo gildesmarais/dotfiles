@@ -76,28 +76,34 @@ require_cmd gh
 require_cmd jq
 
 resolve_current_pr() {
-  local pr_json
-  pr_json=$(gh pr view --json number,headRepositoryOwner,headRepository 2>/dev/null || true)
+  local pr_json repo_info
+  pr_json=$(gh pr view --json number,url 2>/dev/null || true)
   if [[ -z "$pr_json" || "$pr_json" == "null" ]]; then
     return 1
   fi
 
-  owner=$(printf '%s' "$pr_json" | jq -r '.headRepositoryOwner.login // empty')
-  repo=$(printf '%s' "$pr_json" | jq -r '.headRepository.name // empty')
   pr_number=$(printf '%s' "$pr_json" | jq -r '.number // empty')
+  pr_url=$(printf '%s' "$pr_json" | jq -r '.url // empty')
+  repo_info=$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || true)
 
-  if [[ -z "$owner" || -z "$repo" || -z "$pr_number" ]]; then
+  if [[ -z "$repo_info" || "$repo_info" != */* ]]; then
+    return 1
+  fi
+
+  owner="${repo_info%%/*}"
+  repo="${repo_info##*/}"
+
+  if [[ -z "$owner" || -z "$repo" || -z "$pr_number" || -z "$pr_url" ]]; then
     return 1
   fi
 }
 
-# Accept full URLs (pull or pulls), with optional trailing slash or query string.
 if [[ "$pr_input" =~ github.com/([^/]+)/([^/]+)/pull[s]?/([0-9]+) ]]; then
   owner="${BASH_REMATCH[1]}"
   repo="${BASH_REMATCH[2]}"
   pr_number="${BASH_REMATCH[3]}"
+  pr_url="https://github.com/${owner}/${repo}/pull/${pr_number}"
 elif [[ "$pr_input" =~ ^[0-9]+$ ]]; then
-  # Infer owner/repo from current directory using gh repo view.
   repo_info=$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || true)
   if [[ -z "$repo_info" ]]; then
     echo "Could not infer owner/repo from current directory. Provide full PR URL." >&2
@@ -106,17 +112,10 @@ elif [[ "$pr_input" =~ ^[0-9]+$ ]]; then
   owner="${repo_info%%/*}"
   repo="${repo_info##*/}"
   pr_number="$pr_input"
+  pr_url="https://github.com/${owner}/${repo}/pull/${pr_number}"
 elif [[ -z "$pr_input" ]]; then
   if ! resolve_current_pr; then
-    if [[ -t 0 && -t 1 ]]; then
-      printf "No PR found for the current branch. Open \`gh pr create --web\`? [y/N] "
-      read -r confirm
-      if [[ "$confirm" =~ ^[Yy]$ ]]; then
-        gh pr create --web
-      fi
-    else
-      echo "No PR found for the current branch. Provide a PR URL or number." >&2
-    fi
+    echo "No PR found for the current branch. Provide a PR URL or number." >&2
     exit 1
   fi
 else
@@ -136,6 +135,7 @@ query($owner: String!, $repo: String!, $number: Int!, $after: String) {
           endCursor
         }
         nodes {
+          id
           isResolved
           path
           line
@@ -182,6 +182,7 @@ done
 
 threads_json=$(printf '%s' "$threads_json" | jq '
   map({
+    thread_id: .id,
     resolved: .isResolved,
     path: .path,
     line: .line,
@@ -209,11 +210,31 @@ filtered_threads=$(printf '%s' "$threads_json" | jq --arg filter "$filter" '
 ')
 
 if [[ "$format" == "json" ]]; then
-  printf '%s\n' "$filtered_threads"
+  jq -n \
+    --arg owner "$owner" \
+    --arg repo "$repo" \
+    --arg pr_number "$pr_number" \
+    --arg pr_url "${pr_url-}" \
+    --argjson threads "$filtered_threads" \
+    '{
+      pr: {
+        owner: $owner,
+        repo: $repo,
+        number: ($pr_number | tonumber),
+        url: $pr_url
+      },
+      threads: $threads
+    }'
   exit 0
 fi
 
-printf '%s' "$filtered_threads" | jq -r --argjson trunc_len 800 --arg flag_truncate "$truncate_body" '
+printf '%s' "$filtered_threads" | jq -r \
+  --arg owner "$owner" \
+  --arg repo "$repo" \
+  --arg pr_number "$pr_number" \
+  --arg pr_url "${pr_url-}" \
+  --argjson trunc_len 800 \
+  --arg flag_truncate "$truncate_body" '
   def status(flag): if flag then "resolved" else "unresolved" end;
   def body_text:
     if $flag_truncate == "true" then
@@ -222,11 +243,15 @@ printf '%s' "$filtered_threads" | jq -r --argjson trunc_len 800 --arg flag_trunc
       .body
     end;
 
-  # Each thread: print header then comments indented.
-  sort_by(.comments[0].created_at) | .[] as $t |
-    "Thread [\(status($t.resolved))] \($t.path // "<no-path>") line \($t.line // "-")\n  URL: \($t.html_url // "")" +
-    (if $t.comments | length == 0 then "\n  (no comments)" else
-      ("\n" + ($t.comments | sort_by(.created_at) | map(
-        "  - \(.user.login) @ \(.created_at)\n    " + (body_text | gsub("\\n"; "\\n    "))
-      ) | join("\n"))) end) + "\n"
+  "PR \($owner)/\($repo)#\($pr_number)\nURL: \($pr_url)\n" +
+  (
+    sort_by(.comments[0].created_at) | map(
+      . as $t |
+      "Thread [\(status($t.resolved))] \($t.path // "<no-path>") line \($t.line // "-")\n  URL: \($t.html_url // "")" +
+      (if $t.comments | length == 0 then "\n  (no comments)" else
+        ("\n" + ($t.comments | sort_by(.created_at) | map(
+          "  - \(.user.login) @ \(.created_at)\n    " + (body_text | gsub("\\n"; "\\n    "))
+        ) | join("\n"))) end) + "\n"
+    ) | .[] 
+  )
 '

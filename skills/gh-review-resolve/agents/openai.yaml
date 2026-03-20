@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Review Resolve"
+  short_description: "Resolve GitHub PR review comments end to end"
+  default_prompt: "Use $gh-review-resolve to find the current PR, pass the discovered PR identifier to the bundled helper, address valid findings, run project gates, push changes, and resolve clearly addressed comments."
