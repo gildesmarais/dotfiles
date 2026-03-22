@@ -100,7 +100,7 @@ Never commit or validate from the backup or source branch when the active PR has
 
 - Before `gh pr create`, run `gh pr view --json number,url,state,headRefName,baseRefName`.
 - If a PR already exists for the branch, update it with `gh pr edit` instead of creating a new one.
-- Use `gh pr create --web` only when the PR does not yet exist.
+- When no PR exists yet, default to opening `gh pr create --web` without waiting for extra user confirmation unless the user explicitly asked not to.
 - After opening the browser flow, do not say the PR is open until existence is confirmed with `gh pr view`.
 - Otherwise say only that the browser creation flow was opened.
 
@@ -122,6 +122,7 @@ Never commit or validate from the backup or source branch when the active PR has
 - Fetch the updated default branch.
 - Rebuild PR 2 from the new default branch.
 - Repeat until the slice plan is complete.
+- After the final slice is ready or merged, offer to clean up dedicated git worktrees and prune stale worktree metadata.
 
 ## Interaction Mode
 
@@ -129,4 +130,5 @@ Never commit or validate from the backup or source branch when the active PR has
 - Do not interrupt with progress narration unless blocked.
 - Report back when a PR branch is ready to open.
 - Provide a descriptive PR title and body text when handing it back.
-- Prefer `gh pr create --web --title ... --body ...` so the user can review the final draft before submission.
+- Prefer `gh pr create --web --title ... --body ...` and open it automatically once the branch is pushed and verified, unless the user has asked for a different PR flow.
+- After the last slice, explicitly ask whether to remove dedicated PR worktrees and run `git worktree prune`.

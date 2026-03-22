@@ -1,0 +1,7 @@
+interface:
+  display_name: "Ruby Perf Review"
+  short_description: "Review Ruby code for big-O, memory churn, and performance risks."
+  default_prompt: "Use $review-perf-ruby to review this Ruby code or diff for performance risks, big-O issues, memory churn, and concrete optimization options."
+
+policy:
+  allow_implicit_invocation: true
