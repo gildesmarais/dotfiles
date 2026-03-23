@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Security Compliance"
+  short_description: "Review code for security, privacy, and compliance risk."
+  default_prompt: "Use $review-security-compliance to audit this change for security and compliance gaps, with severity-ranked findings and remediation actions."
