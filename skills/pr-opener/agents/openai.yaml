@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR Opener"
+  short_description: "Commit, push, and open PRs"
+  default_prompt: "Use $pr-opener to commit my session changes, push the branch, and open a GitHub PR in the browser."
