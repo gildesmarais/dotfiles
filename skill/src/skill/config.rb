@@ -48,8 +48,9 @@ module Skill
 
     def self.central_config_path(env = ENV)
       xdg_config_home = env["XDG_CONFIG_HOME"]
+      home_dir = env["HOME"] || ENV["HOME"] || File.expand_path("~")
       base_dir = if xdg_config_home.nil? || xdg_config_home.empty?
-                   File.join(File.expand_path("~"), ".config")
+                   File.join(home_dir, ".config")
                  else
                    File.expand_path(xdg_config_home)
                  end
@@ -265,7 +266,18 @@ module Skill
     end
 
     def deep_copy(hash)
-      Marshal.load(Marshal.dump(hash))
+      case hash
+      when Hash
+        hash.each_with_object({}) do |(key, value), result|
+          result[deep_copy(key)] = deep_copy(value)
+        end
+      when Array
+        hash.map { |value| deep_copy(value) }
+      when String
+        hash.dup
+      else
+        hash
+      end
     end
 
     def blank?(value)

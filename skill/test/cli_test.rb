@@ -171,6 +171,37 @@ class SkillCliTest < Minitest::Test
     assert(File.symlink?(broken_link))
   end
 
+  def test_clean_continues_across_destinations_before_failing
+    write_central_config(<<~YAML)
+      store_dir: #{@skills_dir}
+      tools:
+        codex:
+          destinations:
+            - .codex/skills
+          authoring: true
+        generic:
+          destinations:
+            - .skills
+      defaults:
+        tools:
+          - codex
+          - generic
+    YAML
+
+    removable_link = create_broken_link("missing")
+    foreign_link = File.join(@project_root, ".skills", "foreign")
+    FileUtils.mkdir_p(File.dirname(foreign_link))
+    File.symlink("../elsewhere/missing", foreign_link)
+
+    result = run_skill("clean")
+
+    assert_equal(1, result.exitstatus)
+    refute_path_exists(removable_link)
+    assert(File.symlink?(foreign_link))
+    assert_includes(result.output, "removed broken symlink missing")
+    assert_includes(result.output, "failed to clean 1 broken symlink(s)")
+  end
+
   def test_promote_moves_local_project_skill_into_store_and_relinks
     local_skill = File.join(@project_root, ".codex", "skills", "my-skill")
     FileUtils.mkdir_p(local_skill)
@@ -272,6 +303,19 @@ class SkillCliTest < Minitest::Test
     assert_equal(0, result.exitstatus)
     assert_includes(result.output, "ok\tlinked ruby-dev")
     assert_includes(result.output, "skill: doctor found no issues")
+  end
+
+  def test_doctor_reports_symlink_to_different_stored_skill
+    create_store_skill("ruby-dev")
+    create_store_skill("ruby")
+    link_path = File.join(@project_root, ".codex", "skills", "ruby-dev")
+    FileUtils.mkdir_p(File.dirname(link_path))
+    File.symlink(File.join(@skills_dir, "ruby"), link_path)
+
+    result = run_skill("doctor")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "issue\tsymlink to different stored skill ruby-dev")
   end
 
   def test_cli_file_runs_when_executed_directly

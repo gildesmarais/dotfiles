@@ -116,6 +116,14 @@ class SkillUnitTest < Minitest::Test
     assert_includes(config.destinations, ".skills")
   end
 
+  def test_central_config_path_uses_supplied_home_when_xdg_config_home_is_unset
+    env = { "HOME" => "/tmp/skill-home" }
+
+    path = Skill::Config.central_config_path(env)
+
+    assert_equal("/tmp/skill-home/.config/skill/config.yml", path)
+  end
+
   def test_config_loads_supported_project_config_shape
     fixture_path = File.expand_path("../test_project/.skill.yml", __dir__)
     FileUtils.cp(fixture_path, File.join(@project_root, ".skill.yml"))

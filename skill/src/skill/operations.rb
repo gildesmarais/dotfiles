@@ -121,6 +121,8 @@ module Skill
     end
 
     def clean_links
+      failures = []
+
       @paths.project_skills_dirs.each do |dir|
         unless Dir.exist?(dir)
           @shell_ui.note("nothing to clean; missing #{dir}")
@@ -143,8 +145,9 @@ module Skill
         end
 
         @shell_ui.note("no broken symlinks found in #{dir}") if cleaned.zero?
-        raise ExitError, "failed to clean #{failures.length} broken symlink(s) in #{dir}" unless failures.empty?
       end
+
+      raise ExitError, "failed to clean #{failures.length} broken symlink(s)" unless failures.empty?
     end
 
     def promote_skill(name)

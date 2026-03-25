@@ -6,7 +6,6 @@ require_relative "skill/doctor"
 require_relative "skill/error"
 require_relative "skill/operations"
 require_relative "skill/paths"
-require_relative "skill/state"
 require_relative "skill/ui"
 
 module Skill

@@ -45,7 +45,11 @@ module Skill
             puts("issue\tbroken symlink #{entry[:name]} -> #{entry[:target]} in #{dir}")
             issues += 1
           when :symlink_elsewhere
-            puts("issue\tsymlink outside store #{entry[:name]} -> #{entry[:target]} in #{dir}")
+            if inside_store?(entry[:resolved_target])
+              puts("issue\tsymlink to different stored skill #{entry[:name]} -> #{entry[:target]} in #{dir}")
+            else
+              puts("issue\tsymlink outside store #{entry[:name]} -> #{entry[:target]} in #{dir}")
+            end
             issues += 1
           when :local_directory
             puts("issue\tlocal directory still present #{entry[:name]} in #{dir}")
@@ -77,6 +81,12 @@ module Skill
 
       @shell_ui.note("doctor found #{issues} issue(s), #{warnings} warning(s)")
       raise ExitError.new(status: 1) unless issues.zero?
+    end
+
+    private
+
+    def inside_store?(path)
+      Filesystem.within_directory?(path, @paths.store_dir)
     end
   end
 end
