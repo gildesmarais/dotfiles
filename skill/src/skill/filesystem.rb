@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "pathname"
+
 require_relative "error"
 
 module Skill
@@ -27,9 +29,21 @@ module Skill
     end
 
     def normalized_path(path)
-      File.realpath(path)
+      expanded = File.expand_path(path)
+      File.realpath(expanded)
     rescue StandardError
-      File.expand_path(path)
+      parent = File.dirname(expanded)
+      begin
+        File.join(File.realpath(parent), File.basename(expanded))
+      rescue StandardError
+        expanded
+      end
+    end
+
+    def create_symlink(target, link_path)
+      link_dir = File.dirname(link_path)
+      relative_target = Pathname.new(normalized_path(target)).relative_path_from(Pathname.new(link_dir))
+      File.symlink(relative_target.to_s, link_path)
     end
   end
 end

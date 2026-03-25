@@ -1,0 +1,39 @@
+# Central skill CLI configuration.
+#
+# This file defines known tool profiles and their preferred project-local
+# skill destinations. The dotfiles skill store remains the canonical source
+# of truth; project paths are linked working sets.
+#
+# Copy this file to:
+#   ~/.config/skill/config.yml
+#
+# By default only the `codex` tool is active. Projects can opt into additional
+# tools with <project>/.skill.yml.
+
+# Relative paths are resolved from the dotfiles root.
+store_dir: skills
+
+tools:
+  codex:
+    # Codex-compatible working set.
+    destinations:
+      - .codex/skills
+    # Exactly one active tool should resolve as the authoring destination.
+    authoring: true
+
+  generic:
+    # Generic tool compatibility path.
+    destinations:
+      - .skills
+
+  github:
+    # GitHub-specific skill path for tools that inspect repository metadata.
+    destinations:
+      - .github/skills
+
+defaults:
+  # Default active tool set for projects without local overrides.
+  tools:
+    - codex
+  # Optional. If omitted, the first active authoring-capable tool is used.
+  authoring_tool: codex

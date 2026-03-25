@@ -1,0 +1,9 @@
+tools:
+  - codex
+  - github
+extra_destinations:
+  - .skills
+required:
+  - ruby-dev
+ignore:
+  - secret-skill

@@ -6,6 +6,7 @@ require_relative "skill/doctor"
 require_relative "skill/error"
 require_relative "skill/operations"
 require_relative "skill/paths"
+require_relative "skill/state"
 require_relative "skill/ui"
 
 module Skill
@@ -20,6 +21,7 @@ module Skill
       "adopt" => :run_adopt,
       "promote" => :run_promote,
       "rename" => :run_rename,
+      "config" => :run_config,
       "help" => :run_help
     }.freeze
 
@@ -33,7 +35,8 @@ module Skill
       "skill doctor",
       "skill adopt ../my-skill",
       "skill promote my-skill",
-      "skill rename ruby-dev ruby"
+      "skill rename ruby-dev ruby",
+      "skill config init"
     ].freeze
 
     def self.run(argv = ARGV)
@@ -81,7 +84,10 @@ module Skill
       puts <<~USAGE
         Usage: skill [--project PATH] <command> [args]
 
-        Manage symlinked Codex skills for a project using dotfiles as the canonical store.
+        Manage project skill links using dotfiles as the canonical store.
+
+        Central config: #{Skill::Config.central_config_path}
+        Project config: <project>/.skill.yml
 
         Commands:
           list                         List skills available in #{paths.store_dir}
@@ -92,8 +98,9 @@ module Skill
           clean                        Remove broken symlinks from the project
           doctor                       Diagnose project skill links and local copies
           adopt <path> [name]          Move a local skill directory into dotfiles and link it here
-          promote <name>               Move project .codex/skills/<name> into dotfiles and relink it
+          promote <name>               Move the project-local skill into dotfiles and relink it
           rename <old> <new>           Rename a stored skill and update this project's symlink if needed
+          config init                  Initialize ~/.config/skill/config.yml from the bundled template
           help                         Show this help
 
         Options:
@@ -160,6 +167,14 @@ module Skill
     def run_help(args)
       ui.reject_extra_args("help", args)
       usage
+    end
+
+    def run_config(args)
+      raise ExitError, "config requires a subcommand" if args.empty?
+      raise ExitError, "unknown config subcommand: #{args.first}" unless args.first == "init"
+      raise ExitError, "config init does not accept extra arguments" unless args.length == 1
+
+      operations.init_config
     end
 
     def parse_args(argv)

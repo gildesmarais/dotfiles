@@ -4,19 +4,27 @@ require "fileutils"
 require "open3"
 
 require_relative "error"
+require_relative "config"
 
 module Skill
   class Paths
-    attr_writer :project_root
-
     def initialize(dotfiles_root:, project_root: nil)
       @dotfiles_root = dotfiles_root
       @project_root = project_root
-      @project_skills_dir = nil
+      @config = nil
+    end
+
+    def project_root=(value)
+      @project_root = value
+      @config = nil
+    end
+
+    def config
+      @config ||= Config.load(project_root, @dotfiles_root)
     end
 
     def store_dir
-      File.join(@dotfiles_root, "skills")
+      config.store_dir
     end
 
     def project_root
@@ -31,7 +39,11 @@ module Skill
     end
 
     def project_skills_dir
-      @project_skills_dir = File.join(project_root, ".codex", "skills")
+      resolve_project_destination(config.authoring_destination)
+    end
+
+    def project_skills_dirs
+      config.destinations.map { |dest| resolve_project_destination(dest) }
     end
 
     def ensure_store!
@@ -40,16 +52,24 @@ module Skill
       raise ExitError, "skill store not found: #{store_dir}"
     end
 
-    def ensure_project_skills_dir!
-      FileUtils.mkdir_p(project_skills_dir)
+    def ensure_project_skills_dirs!
+      project_skills_dirs.each { |dir| FileUtils.mkdir_p(dir) }
     end
 
     def store_skill_path(name)
       File.join(store_dir, name)
     end
 
+    def config_template_path
+      File.join(@dotfiles_root, "skill", "config", "default-config.yml")
+    end
+
     def project_skill_path(name)
       File.join(project_skills_dir, name)
+    end
+
+    def project_skill_paths(name)
+      project_skills_dirs.map { |dir| File.join(dir, name) }
     end
 
     def store_skill_names
@@ -57,18 +77,23 @@ module Skill
 
       Dir.children(store_dir).sort.select do |name|
         next false if name.start_with?(".")
+        next false if config.ignored?(name)
 
         File.directory?(store_skill_path(name))
       end
     end
 
-    def project_entries
-      return [] unless Dir.exist?(project_skills_dir)
+    def project_entries(dir)
+      return [] unless Dir.exist?(dir)
 
-      Dir.entries(project_skills_dir).reject { |name| [".", ".."].include?(name) }.sort
+      Dir.entries(dir).reject { |name| [".", ".."].include?(name) }.sort
     end
 
     private
+
+    def resolve_project_destination(destination)
+      File.expand_path(destination, project_root)
+    end
 
     def capture_command(*command)
       output, status = Open3.capture2(*command, err: File::NULL)
