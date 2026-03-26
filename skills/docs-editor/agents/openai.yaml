@@ -1,0 +1,4 @@
+interface:
+  display_name: "Docs Editor"
+  short_description: "Rewrite and tighten existing docs"
+  default_prompt: "Use $docs-editor to improve existing documentation in this repo by verifying it against the current codebase."
