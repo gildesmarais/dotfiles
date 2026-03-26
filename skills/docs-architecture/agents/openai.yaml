@@ -1,0 +1,4 @@
+interface:
+  display_name: "Docs Architecture"
+  short_description: "Verify architecture docs against reality"
+  default_prompt: "Use $docs-architecture when this task requires verifying architecture against the implemented system, especially for ADRs, design docs, architecture diagrams, system overviews, or stale mental models. Verify the real boundaries, flows, constraints, and failure modes first, then refine the document or report gaps if core behavior cannot be verified."
