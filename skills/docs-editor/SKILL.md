@@ -28,6 +28,7 @@ Do not:
 
 - Inspect relevant code and support files before editing docs.
 - Verify commands, paths, flags, config keys, defaults, and outputs against the repo.
+- Do not write absolute filesystem paths in published docs; prefer repo-relative paths or user-generic paths so documentation does not reveal local identity details.
 - Prefer sources closest to runtime behavior (code, tests) over indirect sources (scripts, config, prose).
 - Describe selection logic, fallback behavior, and precedence exactly as implemented.
 - Remove stale, speculative, historical, or duplicate content unless it still changes a reader decision.
@@ -75,6 +76,7 @@ Use effort proportional to that classification.
 4. Rewrite for action.
    - Use short sections, explicit labels, and examples that match the repo.
    - Make working directory, path, and environment assumptions explicit when they matter.
+   - When an example needs multiple shell steps, format chained commands for human scanning: use `&&`, `;`, and line continuations `\` deliberately, and align the trailing `\` into a readable vertical rail.
    - Keep examples self-contained, or state their dependencies directly.
 5. Validate the rewritten document.
    - Re-check every technical claim against the repo.

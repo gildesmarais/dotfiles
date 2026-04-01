@@ -1,0 +1,4 @@
+interface:
+  display_name: "Findings To GH Review"
+  short_description: "Post verified findings as pending PR review comments"
+  default_prompt: "Use $findings-to-gh-pr-review to verify findings against the PR diff and post them as pending inline review comments."

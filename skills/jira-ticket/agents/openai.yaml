@@ -1,0 +1,14 @@
+interface:
+  display_name: "Jira Ticket"
+  short_description: "Implement Jira tickets with MCP-backed repo workflow"
+  default_prompt: "Use $jira-ticket to investigate and implement ABC-123 in this repository."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "atlassian"
+      description: "Required for Jira and Confluence ticket context"
+    - type: "mcp"
+      value: "datadog"
+      description: "Required when the Jira issue references Datadog artifacts"
+policy:
+  allow_implicit_invocation: true

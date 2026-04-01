@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ruby on Rails Dev"
+  short_description: "Rails overlay: API, authz, tenancy, observability, and testing."
+  default_prompt: "Use $ruby-on-rails-dev with $ruby-dev to implement or review Rails changes with thin controllers, service boundaries, policy checks, and Docker-first validation."
