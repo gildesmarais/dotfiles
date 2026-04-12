@@ -25,7 +25,7 @@ This repository contains config files to set up my systems and keep them in sync
 | `./scripts/wiki`                 | `fzf`-powered browser for the local wiki directory that opens files in your preferred editor.                               | `fzf`, `git`, `rg`, optional `VISUAL`/`EDITOR` or `WIKI_*` overrides. |
 | `./scripts/download-audio`       | Fetches remote audio (e.g., YouTube URLs) and normalises them via the `process-audio` pipeline for library-ready files.     | `aria2`, `ffmpeg`, `yt-dlp`; installs live in the Brewfile.           |
 | `./scripts/skill`                | Links project `.codex/skills` entries to the canonical `~/.dotfiles/skills` store and can promote local skills.             | Ruby 2.6+, optional `git` for auto-detecting the project root.        |
-| `./scripts/playground`           | Picks or creates playground projects for `pg`; interactive mode supports `Ctrl-O` to open the highlighted folder in Finder. | `fzf`; macOS `open` for Finder shortcut.                              |
+| `./scripts/playground`           | Picks or creates playground projects for `pg`; interactive mode supports `O` to open the highlighted folder in Finder.      | `fzf`, `rg`; macOS `open` for Finder shortcut.                        |
 
 ## Codex Skills
 
