@@ -107,10 +107,10 @@ pick_project_path() {
       fzf --reverse \
         --height=70% \
         --prompt='playground > ' \
-        --header='[Enter=open in shell, Ctrl-O=open in Finder, Esc=cancel]' \
+        --header='[Enter=open in shell, Alt-O=open in Finder, Esc=cancel]' \
         --delimiter=$'\t' \
         --with-nth=1 \
-        --bind='ctrl-o:execute-silent(open -- {2:q})+refresh-preview' \
+        --bind='alt-o:execute-silent(open -- {2:q})+refresh-preview' \
         --preview "$0 --preview {2:q}" \
         --preview-window='right:55%:wrap' |
       cut -f2
