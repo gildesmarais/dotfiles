@@ -1,0 +1,153 @@
+#!/usr/bin/env bash
+#
+# playground
+#
+# Prints a target directory for shell wrappers to `cd` into.
+# - playground <name> => current UTC month project path
+# - playground        => interactive fzf picker (latest first)
+# - playground --help => usage
+
+set -euo pipefail
+
+root="${HOME}/versioned/playground"
+month="$(date -u +'%Y-%m')"
+month_dir="${root}/${month}"
+
+usage() {
+  cat <<'EOF'
+Usage:
+  playground             Interactive picker for existing projects
+  playground <name>      Create/select project in current UTC month
+  playground --help      Show this help
+EOF
+}
+
+validate_project_name() {
+  name="$1"
+  case "$name" in
+    ""|.|..|*/*|*..*)
+      echo "pg: invalid project name '$name'" >&2
+      return 1
+      ;;
+  esac
+}
+
+render_preview() {
+  dir="$1"
+  badges_line=""
+
+  add_badge() {
+    candidate="$1"
+    case " $badges_line " in
+      *"[$candidate]"*) return 0 ;;
+    esac
+    badges_line="${badges_line} [${candidate}]"
+  }
+
+  while IFS= read -r path; do
+    base_name="${path##*/}"
+
+    case "$path" in
+      "$dir/Gemfile"|Gemfile) add_badge "ruby" ;;
+      "$dir/package.json"|package.json) add_badge "node" ;;
+      "$dir/pyproject.toml"|"$dir/requirements.txt"|pyproject.toml|requirements.txt) add_badge "python" ;;
+      "$dir/Cargo.toml"|Cargo.toml) add_badge "rust" ;;
+      "$dir/go.mod"|go.mod) add_badge "go" ;;
+      "$dir/Dockerfile"|"$dir/docker-compose.yml"|"$dir/compose.yml"|Dockerfile|docker-compose.yml|compose.yml) add_badge "docker" ;;
+    esac
+
+    case "$base_name" in
+      *.md) add_badge "markdown" ;;
+      *.png|*.jpg|*.jpeg|*.gif|*.webp|*.svg) add_badge "images" ;;
+      *.mp3|*.m4a|*.wav|*.flac|*.opus) add_badge "audio" ;;
+      *.mp4|*.mov|*.mkv|*.webm|*.avi) add_badge "video" ;;
+    esac
+  done < <(rg --files --hidden --glob '!**/.git/**' "$dir" 2>/dev/null)
+
+  if [ -e "$dir/.git" ]; then
+    add_badge "git"
+  fi
+
+  if [ -z "$badges_line" ]; then
+    echo "tags: [unknown]"
+    return 0
+  fi
+
+  printf 'tags:%s\n' "$badges_line"
+}
+
+list_projects() {
+  if [ ! -d "$root" ]; then
+    return 0
+  fi
+
+  find "$root" -mindepth 2 -maxdepth 2 -type d -print0 | while IFS= read -r -d '' dir; do
+    mtime="$(stat -f '%m' "$dir" 2>/dev/null || stat -c '%Y' "$dir" 2>/dev/null || echo 0)"
+    rel="${dir#"$root"/}"
+    printf '%s\t%s\t%s\n' "$mtime" "$rel" "$dir"
+  done | sort -t$'\t' -k1,1nr | cut -f2-3
+}
+
+pick_project_path() {
+  if ! command -v fzf >/dev/null 2>&1; then
+    echo "pg: fzf is required for interactive mode" >&2
+    return 127
+  fi
+
+  projects="$(list_projects)"
+
+  if [ -z "$projects" ]; then
+    mkdir -p "$month_dir"
+    printf '%s\n' "$month_dir"
+    return 0
+  fi
+
+  selection="$(
+    printf '%s\n' "$projects" |
+      fzf --reverse \
+        --height=70% \
+        --prompt='playground > ' \
+        --header='[Enter=open in shell, Ctrl-O=open in Finder, Esc=cancel]' \
+        --delimiter=$'\t' \
+        --with-nth=1 \
+        --bind='ctrl-o:execute-silent(open -- {2:q})+refresh-preview' \
+        --preview "$0 --preview {2:q}" \
+        --preview-window='right:55%:wrap' |
+      cut -f2
+  )" || return 1
+
+  if [ -z "$selection" ]; then
+    return 1
+  fi
+
+  printf '%s\n' "$selection"
+}
+
+if [ "${1-}" = "--preview" ]; then
+  if [ $# -ne 2 ]; then
+    usage >&2
+    exit 2
+  fi
+  render_preview "$2"
+  exit 0
+fi
+
+if [ "${1-}" = "--help" ] || [ "${1-}" = "-h" ]; then
+  usage
+  exit 0
+fi
+
+if [ $# -gt 1 ]; then
+  usage >&2
+  exit 2
+fi
+
+if [ "${1-}" = "" ]; then
+  pick_project_path
+  exit $?
+fi
+
+validate_project_name "$1" || exit 2
+target="${month_dir}/${1}"
+mkdir -p "$target"
+printf '%s\n' "$target"

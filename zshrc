@@ -297,17 +297,5 @@ bindkey "^[^[[C" forward-word
 bindkey "^[^[[D" backward-word
 #endregion
 
-#region Setup PKM tools
-export PKM_NOTES_ROOT="$HOME/versioned/gildesmarais/wiki"
-export PKM_TODO_AUTO_GIT_SYNC=true
-
-alias note="cd $PKM_NOTES_ROOT && pkm day && popd"
-alias wiki="pkm search --interactive"
-#endregion
-
-export VISUAL=code
-
-[[ $- == *i* ]] && pkm todo motd
-
 #region Completions
 autoload -U compinit && compinit

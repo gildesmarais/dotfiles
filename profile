@@ -1,11 +1,14 @@
 # vim:fileencoding=utf-8:ft=conf:foldmethod=marker
 
 #: Helper functions {{{
-function playground {
-  dir="$HOME/playground/$(date -u +'%Y-%m')"
+playground() {
+  local target
+  target="$(command playground "$@")" || return $?
 
-  [ ! -d "$dir" ] && mkdir -p "$dir"
-  cd "$dir" || echo "Playground: unable to change directory to $dir"
+  cd "$target" || {
+    echo "playground: unable to change directory to $target" >&2
+    return 1
+  }
 }
 
 function command_exists {
