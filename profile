@@ -1,11 +1,23 @@
 # vim:fileencoding=utf-8:ft=conf:foldmethod=marker
 
 #: Helper functions {{{
-function playground {
-  dir="$HOME/playground/$(date -u +'%Y-%m')"
+function pg {
+  playground_path_cmd="$HOME/.dotfiles/scripts/playground-path"
 
-  [ ! -d "$dir" ] && mkdir -p "$dir"
-  cd "$dir" || echo "Playground: unable to change directory to $dir"
+  if [ ! -x "$playground_path_cmd" ]; then
+    echo "pg: expected executable at $playground_path_cmd" >&2
+    return 127
+  fi
+
+  dir="$("$playground_path_cmd" "$@")" || return $?
+  cd "$dir" || {
+    echo "pg: unable to change directory to $dir" >&2
+    return 1
+  }
+}
+
+function playground {
+  pg "$@"
 }
 
 function command_exists {

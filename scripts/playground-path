@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+#
+# playground-path
+#
+# Prints the playground target directory for the current UTC month.
+# If a project name is provided, appends it as a subdirectory.
+
+set -euo pipefail
+
+root="${HOME}/playground"
+month="$(date -u +'%Y-%m')"
+target="${root}/${month}"
+
+if [ "${1-}" != "" ]; then
+  target="${target}/${1}"
+fi
+
+mkdir -p "$target"
+printf '%s\n' "$target"

@@ -219,7 +219,7 @@ alias .....="cd ../../../.."
 #endregion
 
 #region# magic folder commands
-alias pg="playground"
+# pg is a shell function from ~/.profile so it can change the current shell directory.
 #endregion
 
 #region# better cat and "imagec" (icat)
