@@ -22,6 +22,16 @@ Usage:
 EOF
 }
 
+validate_project_name() {
+  name="$1"
+  case "$name" in
+    ""|.|..|*/*|*..*)
+      echo "pg: invalid project name '$name'" >&2
+      return 1
+      ;;
+  esac
+}
+
 render_preview() {
   dir="$1"
   badges_line=""
@@ -54,7 +64,7 @@ render_preview() {
     esac
   done < <(rg --files --hidden --glob '!**/.git/**' "$dir" 2>/dev/null)
 
-  if rg --files --hidden --glob '**/.git' --glob '**/.git/HEAD' "$dir" 2>/dev/null | IFS= read -r _; then
+  if [ -e "$dir/.git" ]; then
     add_badge "git"
   fi
 
@@ -100,8 +110,8 @@ pick_project_path() {
         --header='[Enter=open in shell, Ctrl-O=open in Finder, Esc=cancel]' \
         --delimiter=$'\t' \
         --with-nth=1 \
-        --bind='ctrl-o:execute-silent(open -- {2})+refresh-preview' \
-        --preview "$0 --preview {2}" \
+        --bind='ctrl-o:execute-silent(open -- {2:q})+refresh-preview' \
+        --preview "$0 --preview {2:q}" \
         --preview-window='right:55%:wrap' |
       cut -f2
   )" || return 1
@@ -137,6 +147,7 @@ if [ "${1-}" = "" ]; then
   exit $?
 fi
 
+validate_project_name "$1" || exit 2
 target="${month_dir}/${1}"
 mkdir -p "$target"
 printf '%s\n' "$target"

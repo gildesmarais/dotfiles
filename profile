@@ -1,6 +1,16 @@
 # vim:fileencoding=utf-8:ft=conf:foldmethod=marker
 
 #: Helper functions {{{
+playground() {
+  local target
+  target="$(command playground "$@")" || return $?
+
+  cd "$target" || {
+    echo "playground: unable to change directory to $target" >&2
+    return 1
+  }
+}
+
 function command_exists {
   type "$1" >/dev/null 2>&1;
 }
