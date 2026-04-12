@@ -10,9 +10,9 @@
 # - Output lossless FLAC, preserve metadata/cover art where possible.
 #
 # Key Features:
-# - Two-pass approach: measure with ffmpeg's loudnorm (JSON), then apply gain.
+# - Two-pass approach: measure with ffmpeg's ebur128 filter, then apply gain.
 # - True-Peak guard: caps gain if input_tp + gain would exceed a TP ceiling.
-# - Robust parsing: uses `print_format=json` instead of brittle regex.
+# - Accurate metrics: uses ebur128 for industry-standard R128 measurement.
 # - Stream mapping: `-map 0` + copy non-audio streams (cover/chapters) when possible.
 # - Parallel processing with progress bar and structured logging.
 #
@@ -54,16 +54,19 @@ end
 # --- Configuration ---
 module Config
   # Loudness target (integrated) in LUFS. Typical techno: -10..-8
-  DEFAULT_LUFS_TARGET = -8.0
+  DEFAULT_LUFS_TARGET = -7.0
 
   # True-Peak ceiling in dBTP (recommended: -1.0)
-  DEFAULT_TP_CEIL = -1.0
+  DEFAULT_TP_CEIL = -0.05
 
-  # Small safety margin to avoid inter-sample peak excursions (0.10..0.30)
-  DEFAULT_TP_SAFETY = 0.10
+  # Small safety margin to avoid inter-sample peak excursions (0.00..0.20)
+  DEFAULT_TP_SAFETY = 0.05
+
+  # Loudness bias (calibration offset) to compensate for meter differences
+  DEFAULT_BIAS = -0.5
 
   # Accept "close enough" (skip processing if |gain| <= tolerance)
-  DEFAULT_TOLERANCE = 0.10
+  DEFAULT_TOLERANCE = 0.05
 
   # Degree of parallelism (defaults to number of logical CPUs)
   DEFAULT_JOBS = Etc.nprocessors
@@ -101,7 +104,9 @@ module Config
     '-metadata', 'DESCRIPTION=',
     '-metadata', 'LONGDESCRIPTION=',
     '-metadata', 'iTunMOVI=',
-    '-metadata', 'iTunes_CDDB_TrackNumber='
+    '-metadata', 'iTunes_CDDB_TrackNumber=',
+    '-metadata', 'ACCOUNT=',
+    '-metadata', 'ACCOUNT_ID=',
   ].freeze
 end
 
@@ -115,6 +120,7 @@ options = {
   tp_ceil: Config::DEFAULT_TP_CEIL,
   tp_safety: Config::DEFAULT_TP_SAFETY,
   tolerance: Config::DEFAULT_TOLERANCE,
+  lufs_bias: Config::DEFAULT_BIAS,
   jobs: Config::DEFAULT_JOBS
 }
 
@@ -131,6 +137,10 @@ opt_parser = OptionParser.new do |opts|
 
   opts.on('--target-lufs N', Float, "Target LUFS (default: #{Config::DEFAULT_LUFS_TARGET})") do |v|
     options[:lufs_target] = v
+  end
+
+  opts.on('--bias N', Float, "Loudness bias dB (default: #{Config::DEFAULT_BIAS})") do |v|
+    options[:lufs_bias] = v
   end
 
   opts.on('--tp-ceil N', Float, "True-Peak ceiling dBTP (default: #{Config::DEFAULT_TP_CEIL})") do |v|
@@ -196,26 +206,12 @@ def scan_files(base)
   end
 end
 
-# Extract the final JSON object printed by loudnorm (print_format=json)
-def extract_trailing_json(text)
-  # Find the last JSON block from a line that starts with '{' to a matching '}'
-  # This is a simple heuristic that works well with ffmpeg's loudnorm output.
-  start_idx = text.rindex(/\{\s*"?input_i"?\s*:/)
-  return nil unless start_idx
-
-  json_str = text[start_idx..]
-  # Trim trailing non-json noise
-  if (end_match = json_str.rindex(/\}\s*$/))
-    json_str = json_str[0..end_match]
-  end
-  json_str
-end
-
-def detect_metrics(file, logger)
+def detect_metrics(file, opts, logger)
   cmd = [
     'ffmpeg', '-nostats', '-hide_banner', '-i', file,
-    # Use measurement settings recommended by EBU R128 for analysis
-    '-af', 'loudnorm=I=-23:TP=-2:LRA=11:print_format=json',
+    # Use ebur128 for scientific accuracy (avoids loudnorm's measurement bias)
+    # We use the user-provided target to improve the gating consistency
+    '-af', "ebur128=peak=true:target=#{opts[:lufs_target]}",
     '-f', 'null', '-'
   ]
   out, status = Open3.capture2e(*cmd)
@@ -224,19 +220,36 @@ def detect_metrics(file, logger)
     return nil
   end
 
-  json_str = extract_trailing_json(out)
-  unless json_str
-    logger.error("Could not extract loudnorm JSON for #{file}")
+  # Isolate the final Summary block to avoid matching per-frame updates
+  # We look for the last "Summary:" and ensure we only parse what follows it.
+  summary_index = out.rindex(/Summary:/i)
+  if summary_index.nil?
+    logger.error("Could not find ebur128 summary in ffmpeg output for #{file}")
     return nil
   end
+  summary_part = out[summary_index..]
 
-  data = JSON.parse(json_str)
-  {
-    input_i: data['input_i'].to_f,  # Integrated loudness (LUFS)
-    input_tp: data['input_tp'].to_f # True-peak level (dBTP)
-  }
-rescue JSON::ParserError => e
-  logger.error("JSON parse failed for #{file}: #{e.message}")
+  # Robust float regex: handles .5, 5., 5.0, and +/- inf
+  float_re = /[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?|[-+]?inf/i
+
+  # Match Integrated Loudness
+  i_match = summary_part.match(/I:\s+(#{float_re})\s+LUFS/i)
+
+  # Match Peak (True Peak). ffmpeg may use dBFS or dBTP depending on version/config
+  # We collect all "Peak:" matches in the summary to handle multi-channel outputs
+  tp_values = summary_part.scan(/Peak:\s+(#{float_re})\s+dB(?:FS|TP)/i).flatten
+
+  if i_match && !tp_values.empty?
+    return {
+      input_i: i_match[1].to_f,
+      input_tp: tp_values.map(&:to_f).max
+    }
+  end
+
+  logger.error("Could not parse ebur128 metrics from summary for #{file}")
+  nil
+rescue StandardError => e
+  logger.error("Metric detection failed for #{file}: #{e.message}")
   nil
 end
 
@@ -300,13 +313,15 @@ def process_file(infile, opts, logger)
   outfile = ffmpeg_output_path(opts[:input_dir], opts[:output_dir], infile)
   return "⏩ Already exists: #{infile}" if File.exist?(outfile) && !opts[:dry_run]
 
-  m = detect_metrics(infile, logger)
+  m = detect_metrics(infile, opts, logger)
   return "⚠️ Could not detect metrics: #{infile}" unless m
 
+  # Apply bias to the measured integrated loudness for calibration
   in_i  = m[:input_i]
   in_tp = m[:input_tp]
+  biased_i = in_i + opts[:lufs_bias]
 
-  gain_needed = opts[:lufs_target] - in_i
+  gain_needed = opts[:lufs_target] - biased_i
   max_gain    = opts[:tp_ceil] - in_tp - opts[:tp_safety]
   applied     = [gain_needed, max_gain].min
   tp_limited  = applied < gain_needed
@@ -319,7 +334,8 @@ def process_file(infile, opts, logger)
   msg = execute_command(build_ffmpeg_command_normalize(infile, applied, outfile), opts[:dry_run], logger)
   return msg if msg.is_a?(String)
 
-  "🎧 gain #{applied.round(2)} dB (in_i=#{in_i.round(2)} LUFS, tp=#{in_tp.round(2)} dBTP, tp_limited=#{tp_limited}) → #{outfile}"
+  bias_str = opts[:lufs_bias] == 0 ? "" : format(" (bias applied: %.1f)", opts[:lufs_bias])
+  "🎧 gain #{applied.round(2)} dB (in_i=#{in_i.round(2)} LUFS#{bias_str}, tp=#{in_tp.round(2)} dBTP, tp_limited=#{tp_limited}) → #{outfile}"
 end
 
 # --- Main execution ---
