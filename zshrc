@@ -219,15 +219,7 @@ alias .....="cd ../../../.."
 #endregion
 
 #region# magic folder commands
-pg() {
-  local target
-  target="$(playground "$@")" || return $?
-
-  cd "$target" || {
-    echo "pg: unable to change directory to $target" >&2
-    return 1
-  }
-}
+alias pg="playground"
 #endregion
 
 #region# better cat and "imagec" (icat)
