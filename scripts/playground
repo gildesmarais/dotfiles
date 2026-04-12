@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-# playground-path
+# playground
 #
 # Prints a target directory for shell wrappers to `cd` into.
-# - playground-path <name>      => current UTC month project path
-# - playground-path             => interactive fzf picker (latest first)
-# - playground-path --preview <absolute_project_path>
+# - playground <name> => current UTC month project path
+# - playground        => interactive fzf picker (latest first)
+# - playground --help => usage
 
 set -euo pipefail
 
@@ -14,13 +14,18 @@ month="$(date -u +'%Y-%m')"
 month_dir="${root}/${month}"
 
 usage() {
-  echo "usage: playground-path [project_name]" >&2
+  cat <<'EOF'
+Usage:
+  playground             Interactive picker for existing projects
+  playground <name>      Create/select project in current UTC month
+  playground --help      Show this help
+EOF
 }
 
 exists_matching_file() {
   dir="$1"
   shift
-  find "$dir" -maxdepth 3 -type f \( "$@" \) -print -quit 2>/dev/null | grep -q .
+  find "$dir" -maxdepth 3 -type f \( "$@" \) -print -quit 2>/dev/null | IFS= read -r _
 }
 
 render_preview() {
@@ -102,9 +107,10 @@ pick_project_path() {
       fzf --reverse \
         --height=70% \
         --prompt='playground > ' \
-        --header='[Enter=open, Esc=cancel]' \
+        --header='[Enter=open in shell, O=open in Finder, Esc=cancel]' \
         --delimiter=$'\t' \
         --with-nth=1 \
+        --bind='O:execute-silent(open -- {2})+refresh-preview' \
         --preview "$0 --preview {2}" \
         --preview-window='right:55%:wrap' |
       cut -f2
@@ -119,15 +125,20 @@ pick_project_path() {
 
 if [ "${1-}" = "--preview" ]; then
   if [ $# -ne 2 ]; then
-    usage
+    usage >&2
     exit 2
   fi
   render_preview "$2"
   exit 0
 fi
 
-if [ $# -gt 1 ]; then
+if [ "${1-}" = "--help" ] || [ "${1-}" = "-h" ]; then
   usage
+  exit 0
+fi
+
+if [ $# -gt 1 ]; then
+  usage >&2
   exit 2
 fi
 

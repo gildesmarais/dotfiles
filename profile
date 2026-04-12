@@ -2,14 +2,14 @@
 
 #: Helper functions {{{
 function pg {
-  playground_path_cmd="$HOME/.dotfiles/scripts/playground-path"
+  playground_cmd="$HOME/.dotfiles/scripts/playground"
 
-  if [ ! -x "$playground_path_cmd" ]; then
-    echo "pg: expected executable at $playground_path_cmd" >&2
+  if [ ! -x "$playground_cmd" ]; then
+    echo "pg: expected executable at $playground_cmd" >&2
     return 127
   fi
 
-  dir="$("$playground_path_cmd" "$@")" || return $?
+  dir="$("$playground_cmd" "$@")" || return $?
   cd "$dir" || {
     echo "pg: unable to change directory to $dir" >&2
     return 1
