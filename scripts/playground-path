@@ -2,18 +2,140 @@
 #
 # playground-path
 #
-# Prints the playground target directory for the current UTC month.
-# If a project name is provided, appends it as a subdirectory.
+# Prints a target directory for shell wrappers to `cd` into.
+# - playground-path <name>      => current UTC month project path
+# - playground-path             => interactive fzf picker (latest first)
+# - playground-path --preview <absolute_project_path>
 
 set -euo pipefail
 
-root="${HOME}/playground"
+root="${HOME}/versioned/playground"
 month="$(date -u +'%Y-%m')"
-target="${root}/${month}"
+month_dir="${root}/${month}"
 
-if [ "${1-}" != "" ]; then
-  target="${target}/${1}"
+usage() {
+  echo "usage: playground-path [project_name]" >&2
+}
+
+exists_matching_file() {
+  dir="$1"
+  shift
+  find "$dir" -maxdepth 3 -type f \( "$@" \) -print -quit 2>/dev/null | grep -q .
+}
+
+render_preview() {
+  dir="$1"
+  badges_line=""
+
+  add_badge() {
+    candidate="$1"
+    case " $badges_line " in
+      *"[$candidate]"*) return 0 ;;
+    esac
+    badges_line="${badges_line} [${candidate}]"
+  }
+
+  [ -f "$dir/Gemfile" ] && add_badge "ruby"
+  [ -f "$dir/package.json" ] && add_badge "node"
+  [ -f "$dir/pyproject.toml" ] && add_badge "python"
+  [ -f "$dir/requirements.txt" ] && add_badge "python"
+  [ -f "$dir/Cargo.toml" ] && add_badge "rust"
+  [ -f "$dir/go.mod" ] && add_badge "go"
+  [ -f "$dir/Dockerfile" ] && add_badge "docker"
+  [ -f "$dir/docker-compose.yml" ] && add_badge "docker"
+  [ -f "$dir/compose.yml" ] && add_badge "docker"
+  [ -d "$dir/.git" ] && add_badge "git"
+  [ -f "$dir/.git" ] && add_badge "git"
+
+  if exists_matching_file "$dir" -iname '*.md'; then
+    add_badge "markdown"
+  fi
+
+  if exists_matching_file "$dir" -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.gif' -o -iname '*.webp' -o -iname '*.svg'; then
+    add_badge "images"
+  fi
+
+  if exists_matching_file "$dir" -iname '*.mp3' -o -iname '*.m4a' -o -iname '*.wav' -o -iname '*.flac' -o -iname '*.opus'; then
+    add_badge "audio"
+  fi
+
+  if exists_matching_file "$dir" -iname '*.mp4' -o -iname '*.mov' -o -iname '*.mkv' -o -iname '*.webm' -o -iname '*.avi'; then
+    add_badge "video"
+  fi
+
+  if [ -z "$badges_line" ]; then
+    echo "tags: [unknown]"
+    return 0
+  fi
+
+  printf 'tags:%s\n' "$badges_line"
+}
+
+list_projects() {
+  if [ ! -d "$root" ]; then
+    return 0
+  fi
+
+  find "$root" -mindepth 2 -maxdepth 2 -type d -print0 | while IFS= read -r -d '' dir; do
+    mtime="$(stat -f '%m' "$dir" 2>/dev/null || stat -c '%Y' "$dir" 2>/dev/null || echo 0)"
+    rel="${dir#"$root"/}"
+    printf '%s\t%s\t%s\n' "$mtime" "$rel" "$dir"
+  done | sort -t$'\t' -k1,1nr | cut -f2-3
+}
+
+pick_project_path() {
+  if ! command -v fzf >/dev/null 2>&1; then
+    echo "pg: fzf is required for interactive mode" >&2
+    return 127
+  fi
+
+  projects="$(list_projects)"
+
+  if [ -z "$projects" ]; then
+    mkdir -p "$month_dir"
+    printf '%s\n' "$month_dir"
+    return 0
+  fi
+
+  selection="$(
+    printf '%s\n' "$projects" |
+      fzf --reverse \
+        --height=70% \
+        --prompt='playground > ' \
+        --header='[Enter=open, Esc=cancel]' \
+        --delimiter=$'\t' \
+        --with-nth=1 \
+        --preview "$0 --preview {2}" \
+        --preview-window='right:55%:wrap' |
+      cut -f2
+  )" || return 1
+
+  if [ -z "$selection" ]; then
+    return 1
+  fi
+
+  printf '%s\n' "$selection"
+}
+
+if [ "${1-}" = "--preview" ]; then
+  if [ $# -ne 2 ]; then
+    usage
+    exit 2
+  fi
+  render_preview "$2"
+  exit 0
 fi
 
+if [ $# -gt 1 ]; then
+  usage
+  exit 2
+fi
+
+if [ "${1-}" = "" ]; then
+  pick_project_path
+  exit $?
+fi
+
+target="${month_dir}/${1}"
 mkdir -p "$target"
 printf '%s\n' "$target"
