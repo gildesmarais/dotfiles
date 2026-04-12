@@ -34,27 +34,28 @@ render_preview() {
     badges_line="${badges_line} [${candidate}]"
   }
 
-  [ -f "$dir/Gemfile" ] && add_badge "ruby"
-  [ -f "$dir/package.json" ] && add_badge "node"
-  [ -f "$dir/pyproject.toml" ] && add_badge "python"
-  [ -f "$dir/requirements.txt" ] && add_badge "python"
-  [ -f "$dir/Cargo.toml" ] && add_badge "rust"
-  [ -f "$dir/go.mod" ] && add_badge "go"
-  [ -f "$dir/Dockerfile" ] && add_badge "docker"
-  [ -f "$dir/docker-compose.yml" ] && add_badge "docker"
-  [ -f "$dir/compose.yml" ] && add_badge "docker"
-  [ -d "$dir/.git" ] && add_badge "git"
-  [ -f "$dir/.git" ] && add_badge "git"
+  while IFS= read -r path; do
+    base_name="${path##*/}"
 
-  if command -v rg >/dev/null 2>&1; then
-    while IFS= read -r path; do
-      case "$path" in
-        *.md) add_badge "markdown" ;;
-        *.png|*.jpg|*.jpeg|*.gif|*.webp|*.svg) add_badge "images" ;;
-        *.mp3|*.m4a|*.wav|*.flac|*.opus) add_badge "audio" ;;
-        *.mp4|*.mov|*.mkv|*.webm|*.avi) add_badge "video" ;;
-      esac
-    done < <(rg --files --hidden --glob '!**/.git/**' "$dir" 2>/dev/null)
+    case "$path" in
+      "$dir/Gemfile"|Gemfile) add_badge "ruby" ;;
+      "$dir/package.json"|package.json) add_badge "node" ;;
+      "$dir/pyproject.toml"|"$dir/requirements.txt"|pyproject.toml|requirements.txt) add_badge "python" ;;
+      "$dir/Cargo.toml"|Cargo.toml) add_badge "rust" ;;
+      "$dir/go.mod"|go.mod) add_badge "go" ;;
+      "$dir/Dockerfile"|"$dir/docker-compose.yml"|"$dir/compose.yml"|Dockerfile|docker-compose.yml|compose.yml) add_badge "docker" ;;
+    esac
+
+    case "$base_name" in
+      *.md) add_badge "markdown" ;;
+      *.png|*.jpg|*.jpeg|*.gif|*.webp|*.svg) add_badge "images" ;;
+      *.mp3|*.m4a|*.wav|*.flac|*.opus) add_badge "audio" ;;
+      *.mp4|*.mov|*.mkv|*.webm|*.avi) add_badge "video" ;;
+    esac
+  done < <(rg --files --hidden --glob '!**/.git/**' "$dir" 2>/dev/null)
+
+  if rg --files --hidden --glob '**/.git' --glob '**/.git/HEAD' "$dir" 2>/dev/null | IFS= read -r _; then
+    add_badge "git"
   fi
 
   if [ -z "$badges_line" ]; then
