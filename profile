@@ -1,25 +1,6 @@
 # vim:fileencoding=utf-8:ft=conf:foldmethod=marker
 
 #: Helper functions {{{
-function pg {
-  playground_cmd="$HOME/.dotfiles/scripts/playground"
-
-  if [ ! -x "$playground_cmd" ]; then
-    echo "pg: expected executable at $playground_cmd" >&2
-    return 127
-  fi
-
-  dir="$("$playground_cmd" "$@")" || return $?
-  cd "$dir" || {
-    echo "pg: unable to change directory to $dir" >&2
-    return 1
-  }
-}
-
-function playground {
-  pg "$@"
-}
-
 function command_exists {
   type "$1" >/dev/null 2>&1;
 }
