@@ -218,10 +218,6 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 #endregion
 
-#region# magic folder commands
-# pg is a shell function from ~/.profile so it can change the current shell directory.
-#endregion
-
 #region# better cat and "imagec" (icat)
 if command_exists bat; then
   # use bat for cat, and let it behave like cat
