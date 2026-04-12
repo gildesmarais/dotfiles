@@ -22,12 +22,6 @@ Usage:
 EOF
 }
 
-exists_matching_file() {
-  dir="$1"
-  shift
-  find "$dir" -maxdepth 3 -type f \( "$@" \) -print -quit 2>/dev/null | IFS= read -r _
-}
-
 render_preview() {
   dir="$1"
   badges_line=""
@@ -52,20 +46,15 @@ render_preview() {
   [ -d "$dir/.git" ] && add_badge "git"
   [ -f "$dir/.git" ] && add_badge "git"
 
-  if exists_matching_file "$dir" -iname '*.md'; then
-    add_badge "markdown"
-  fi
-
-  if exists_matching_file "$dir" -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.gif' -o -iname '*.webp' -o -iname '*.svg'; then
-    add_badge "images"
-  fi
-
-  if exists_matching_file "$dir" -iname '*.mp3' -o -iname '*.m4a' -o -iname '*.wav' -o -iname '*.flac' -o -iname '*.opus'; then
-    add_badge "audio"
-  fi
-
-  if exists_matching_file "$dir" -iname '*.mp4' -o -iname '*.mov' -o -iname '*.mkv' -o -iname '*.webm' -o -iname '*.avi'; then
-    add_badge "video"
+  if command -v rg >/dev/null 2>&1; then
+    while IFS= read -r path; do
+      case "$path" in
+        *.md) add_badge "markdown" ;;
+        *.png|*.jpg|*.jpeg|*.gif|*.webp|*.svg) add_badge "images" ;;
+        *.mp3|*.m4a|*.wav|*.flac|*.opus) add_badge "audio" ;;
+        *.mp4|*.mov|*.mkv|*.webm|*.avi) add_badge "video" ;;
+      esac
+    done < <(rg --files --hidden --glob '!**/.git/**' "$dir" 2>/dev/null)
   fi
 
   if [ -z "$badges_line" ]; then
