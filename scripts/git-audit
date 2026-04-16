@@ -1,0 +1,204 @@
+#!/usr/bin/env bash
+
+set -u
+
+readonly GIT_AUDIT_DEFAULT_SINCE="1 year ago"
+readonly GIT_AUDIT_DEFAULT_TOP="20"
+readonly GIT_AUDIT_DEFAULT_BUG_PATTERN="fix|bug|broken|regression|hotfix"
+readonly GIT_AUDIT_DEFAULT_FIRE_PATTERN="revert|hotfix|emergency|rollback"
+readonly GIT_AUDIT_RECENT_AUTHORS_WINDOW="6 months ago"
+
+git_audit_churn() {
+  local since="${1:-$GIT_AUDIT_DEFAULT_SINCE}"
+  local top="${2:-$GIT_AUDIT_DEFAULT_TOP}"
+  git log --format=format: --name-only --since="$since" \
+    | sed '/^$/d' \
+    | sort \
+    | uniq -c \
+    | sort -nr \
+    | head -"${top}"
+}
+
+git_audit_bugs() {
+  local since="${1:-$GIT_AUDIT_DEFAULT_SINCE}"
+  local top="${2:-$GIT_AUDIT_DEFAULT_TOP}"
+  local pattern="${3:-$GIT_AUDIT_DEFAULT_BUG_PATTERN}"
+  git log -i -E --grep="$pattern" --name-only --format='' --since="$since" \
+    | sed '/^$/d' \
+    | sort \
+    | uniq -c \
+    | sort -nr \
+    | head -"${top}"
+}
+
+git_audit_authors() {
+  local since_recent="${1:-$GIT_AUDIT_RECENT_AUTHORS_WINDOW}"
+  echo "== All-time contributors =="
+  git shortlog -sn --no-merges
+  echo
+  echo "== Active since $since_recent =="
+  git shortlog -sn --no-merges --since="$since_recent"
+}
+
+git_audit_velocity() {
+  git log --format='%ad' --date=format:'%Y-%m' | sort | uniq -c
+}
+
+git_audit_firefighting() {
+  local since="${1:-$GIT_AUDIT_DEFAULT_SINCE}"
+  local pattern="${2:-$GIT_AUDIT_DEFAULT_FIRE_PATTERN}"
+  git log --oneline --since="$since" | grep -Ei "$pattern" || true
+}
+
+git_audit_report_text() {
+  local since="${1:-$GIT_AUDIT_DEFAULT_SINCE}"
+  echo "== Churn hotspots (since $since) =="
+  git_audit_churn "$since" "$GIT_AUDIT_DEFAULT_TOP"
+  echo
+  echo "== Bug hotspots (since $since) =="
+  git_audit_bugs "$since" "$GIT_AUDIT_DEFAULT_TOP"
+  echo
+  echo "== Contributors (all-time + recent) =="
+  git_audit_authors "$GIT_AUDIT_RECENT_AUTHORS_WINDOW"
+  echo
+  echo "== Commit velocity by month =="
+  git_audit_velocity
+  echo
+  echo "== Firefighting markers (since $since) =="
+  git_audit_firefighting "$since"
+}
+
+git_audit_markdown_block() {
+  local output
+  output="$("$@" 2>/dev/null || true)"
+  echo '```text'
+  if [ -n "$output" ]; then
+    printf '%s\n' "$output"
+  else
+    echo "(none)"
+  fi
+  echo '```'
+}
+
+git_audit_write_markdown() {
+  local since="${1:-$GIT_AUDIT_DEFAULT_SINCE}"
+  local output_path="$2"
+  local branch repo
+
+  branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "N/A")"
+  repo="$(basename "$(git rev-parse --show-toplevel 2>/dev/null || pwd)")"
+
+  {
+    echo "# Git Project Health"
+    echo
+    echo "- Repo: \`$repo\`"
+    echo "- Branch: \`$branch\`"
+    echo "- Since: \`$since\`"
+    echo
+    echo "## Churn Hotspots"
+    git_audit_markdown_block git_audit_churn "$since" "$GIT_AUDIT_DEFAULT_TOP"
+    echo
+    echo "## Bug Hotspots"
+    git_audit_markdown_block git_audit_bugs "$since" "$GIT_AUDIT_DEFAULT_TOP"
+    echo
+    echo "## Contributors"
+    git_audit_markdown_block git_audit_authors "$GIT_AUDIT_RECENT_AUTHORS_WINDOW"
+    echo
+    echo "## Commit Velocity"
+    git_audit_markdown_block git_audit_velocity
+    echo
+    echo "## Firefighting Markers"
+    git_audit_markdown_block git_audit_firefighting "$since"
+  } >"$output_path"
+}
+
+git_audit_report_markdown() {
+  local since="${1:-$GIT_AUDIT_DEFAULT_SINCE}"
+  local tmp
+  tmp="$(mktemp "/tmp/git-audit.XXXXXX")" || return 1
+
+  git_audit_write_markdown "$since" "$tmp" || return 1
+  cat "$tmp"
+  rm -f "$tmp"
+}
+
+git_audit_view_markdown() {
+  local since="${1:-$GIT_AUDIT_DEFAULT_SINCE}"
+  local tmp glow_bin
+  tmp="$(mktemp "/tmp/git-audit.XXXXXX")" || return 1
+
+  git_audit_write_markdown "$since" "$tmp" || return 1
+  glow_bin="$(command -v glow 2>/dev/null || true)"
+  if [ -n "$glow_bin" ]; then
+    "$glow_bin" "$tmp" || cat "$tmp"
+  else
+    cat "$tmp"
+  fi
+
+  rm -f "$tmp"
+}
+
+git_audit_help() {
+  cat <<'EOF'
+Usage:
+  git-audit                         # rendered markdown report (uses glow when available)
+  git-audit "6 months ago"          # rendered markdown report for custom window
+  git-audit info [since]
+  git-audit view [since]
+  git-audit audit [since]
+  git-audit churn [since] [top]
+  git-audit bugs [since] [top] [pattern]
+  git-audit authors [since_recent]
+  git-audit velocity
+  git-audit fire [since] [pattern]
+  git-audit help
+EOF
+}
+
+git_audit_main() {
+  local cmd="${1:-view}"
+
+  case "$cmd" in
+    help|-h|--help)
+      git_audit_help
+      ;;
+    info)
+      shift
+      git_audit_report_markdown "$@"
+      ;;
+    view)
+      shift
+      git_audit_view_markdown "$@"
+      ;;
+    audit)
+      shift
+      git_audit_report_text "$@"
+      ;;
+    churn)
+      shift
+      git_audit_churn "$@"
+      ;;
+    bugs)
+      shift
+      git_audit_bugs "$@"
+      ;;
+    authors)
+      shift
+      git_audit_authors "$@"
+      ;;
+    velocity)
+      shift
+      git_audit_velocity "$@"
+      ;;
+    fire)
+      shift
+      git_audit_firefighting "$@"
+      ;;
+    *)
+      # Backward-compatible shorthand: treat first arg as "since" for rendered markdown.
+      git_audit_view_markdown "$@"
+      ;;
+  esac
+}
+
+git_audit_main "$@"
