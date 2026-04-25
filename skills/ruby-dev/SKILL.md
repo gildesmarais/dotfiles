@@ -23,9 +23,14 @@ description: "Ruby workflow for bug fixes, refactors, incidents, and targeted co
 4. For behavior changes, prefer TDD:
    - Add or update a focused failing test first when the failure can be expressed cheaply.
    - Then implement the smallest safe fix.
-5. For refactors, preserve behavior with characterization or boundary coverage before moving code.
-6. Validate with the repo's native commands, starting with the narrowest relevant scope and broadening when practical.
-7. Handoff with the commands run, result, residual risk, and any follow-up that remains intentionally out of scope.
+5. Modern Refactoring & Efficiency:
+   - LOC Reduction: Aggressively reduce boilerplate. Target a high signal-to-noise ratio.
+   - Data-Driven Patterns: Use constants/maps for metadata instead of repetitive `if/case` branches.
+   - Modern Idioms: Leverage Ruby 3.x+ features (`match?`, `Enumerable` refinements, pattern matching) to keep logic dense and expressive.
+   - Surgical Edits: Favor small, unified methods over fragmented helper-hell.
+6. For refactors, preserve behavior with characterization or boundary coverage before moving code.
+7. Validate with the repo's native commands, starting with the narrowest relevant scope and broadening when practical.
+8. Handoff with the commands run, result, residual risk, and any follow-up that remains intentionally out of scope.
 
 ## Validation Defaults
 
@@ -45,6 +50,7 @@ description: "Ruby workflow for bug fixes, refactors, incidents, and targeted co
 
 ## Review Focus
 
+- Prioritize Logic Density: Flag over-engineered or excessively branchy code that could be simplified via data-driven patterns.
 - Prioritize correctness, failure modes, boundary handling, and maintainability.
 - For review-style requests, report findings first with file references and concrete bug risk.
 - If the diff is test-heavy, use `review-tests` for the test-quality pass instead of duplicating that guidance here.
