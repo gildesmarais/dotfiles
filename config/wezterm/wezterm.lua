@@ -1,4 +1,4 @@
-local font_size = 20;
+local font_size = 18;
 
 local wezterm = require 'wezterm';
 local act = wezterm.action
