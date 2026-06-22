@@ -24,6 +24,7 @@ Prefer `finish-review` when the user wants an end-of-branch production-readiness
 Enable correct decisions and safe system changes.
 
 Write or revise architecture documents so a reader can:
+
 - understand system boundaries
 - reason about data and control flow
 - identify constraints and invariants
@@ -90,6 +91,7 @@ Match effort to the classification.
 Keep only content that helps a reader understand how the system works and reason about changes safely.
 
 Remove or compress:
+
 - historical context unless it explains a current constraint
 - unused or removed components
 - speculative or future architecture
@@ -98,6 +100,7 @@ Remove or compress:
 ### 5. Rewrite For Clarity
 
 Prefer this structure:
+
 - system overview
 - components and boundaries
 - data flow and control flow

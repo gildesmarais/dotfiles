@@ -1,0 +1,7 @@
+interface:
+  display_name: "Slack Message Refinement"
+  short_description: "Refine internal tech Slack messages"
+  default_prompt: "Use $message-refinement-tech-orga to turn these rough notes into a clear internal Slack message for a technology organization, including sensitive stakeholder communication when needed."
+
+policy:
+  allow_implicit_invocation: true

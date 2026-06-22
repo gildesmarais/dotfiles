@@ -75,6 +75,7 @@ type(scope): [ABC-123] summary
 Prefill a concise, useful description that helps reviewers immediately understand the change.
 
 Include:
+
 - `Summary`
 - `Root Cause` for bug fixes
 - `Fix`
@@ -107,6 +108,7 @@ Use the actual commands already run for validation when available. If validation
 ## Output
 
 Report:
+
 - branch name
 - derived ticket
 - commit hash and title

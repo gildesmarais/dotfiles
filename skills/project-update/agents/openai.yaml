@@ -1,0 +1,7 @@
+interface:
+  display_name: "Project Update Distiller"
+  short_description: "Distill concise stakeholder updates"
+  default_prompt: "Use $project-update to turn these project notes into a concise stakeholder update."
+
+policy:
+  allow_implicit_invocation: true
