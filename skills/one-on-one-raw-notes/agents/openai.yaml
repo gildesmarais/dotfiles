@@ -1,0 +1,7 @@
+interface:
+  display_name: "1:1 Raw Notes Summary"
+  short_description: "Summarize raw one-on-one notes"
+  default_prompt: "Use $one-on-one-raw-notes to turn these raw 1:1 markdown notes into a small speaker-aware bullet summary."
+
+policy:
+  allow_implicit_invocation: true
