@@ -4,7 +4,7 @@ gui:
   showRandomTip: false
   showCommandLog: false
   showFileTree: true
-  sidePanelWidth: 0.33
+  sidePanelWidth: 0.4
   confirmOnQuit: true
   theme:
     lightTheme: false
