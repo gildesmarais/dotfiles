@@ -1,0 +1,66 @@
+# tig config tuned for staging-first workflows
+# Generated for tig 2.6+
+
+# Main view density and readability
+set main-view-author = abbreviated
+set main-view-date = custom
+set main-view-date-format = "%Y-%m-%d %H:%M"
+set main-view-commit-title-graph = no
+set main-view-commit-title-refs = no
+
+# Diff defaults (tighter by default; use toggles below for wider context/whitespace ignore)
+set diff-context = 3
+set diff-options =
+set diff-highlight = /opt/homebrew/opt/git/share/git-core/contrib/diff-highlight/diff-highlight
+set diff-view = line-number:yes,interval=1 text
+set stage-view = line-number:yes,interval=1 text
+
+# Rich terminal rendering
+set line-graphics = auto
+set mouse = yes
+set truncation-delimiter = "..."
+set wrap-lines = yes
+
+# Commit ordering (prefer default visual/logical behavior)
+set commit-order = default
+
+# Core staging keys (status and stage views)
+bind status s status-update
+bind status u status-update
+bind stage 1 stage-update-line
+bind stage ! stage-update-part
+bind stage S stage-split-chunk
+
+# Mnemonic aliases for staging actions
+bind stage l stage-update-line
+bind stage p stage-update-part
+bind stage s stage-split-chunk
+
+# Diff/stage view toggles
+bind diff W :toggle diff-options -w
+bind stage W :toggle diff-options -w
+bind diff c :set diff-context = 3
+bind diff C :set diff-context = 8
+bind stage c :set diff-context = 3
+bind stage C :set diff-context = 8
+bind diff D :toggle diff-highlight
+bind stage D :toggle diff-highlight
+
+# Syntax-highlighted file preview from current hunk/file (bat must be installed)
+bind diff P !sh -c 'bat --paging=always --style=numbers,changes --color=always "%(file)"'
+bind stage P !sh -c 'bat --paging=always --style=numbers,changes --color=always "%(file)"'
+
+
+# Per-view key hints (temporary status-bar reminders)
+bind stage H +printf "stage: l=line p=part s=split W=whitespace c/C=context D=diff-highlight P=code-preview"
+bind diff H +printf "diff: W=whitespace c=ctx3 C=ctx8 D=diff-highlight P=code-preview"
+bind status H +printf "status: s/u=stage file Enter=open R=revert"
+
+# Convenience keys
+# b: show selected commit with git show
+bind main b !git --no-pager show %(commit)
+# d: open selected file in your editor (works in file-oriented views)
+bind generic d !sh -c '${EDITOR:-vi} "%(file)"'
+
+# Safety-first destructive action
+bind status R ?status-revert

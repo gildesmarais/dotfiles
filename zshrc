@@ -123,7 +123,7 @@ alias gmain='gco $(git_default_branch)'
 alias gpf='git push --force-with-lease'
 alias gpu='git push -u origin HEAD'
 alias gria='git rebase -i --autostash --autosquash'
-alias gs='git status -sb'
+alias gs='tig status -sb'
 alias gup="git pull --rebase --autostash"
 alias gundo="git reset --soft HEAD~1"
 
