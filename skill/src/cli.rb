@@ -2,7 +2,6 @@
 
 require "optparse"
 
-require_relative "skill/doctor"
 require_relative "skill/error"
 require_relative "skill/operations"
 require_relative "skill/paths"
@@ -12,12 +11,6 @@ module Skill
   class CLI
     COMMANDS = {
       "list" => :run_list,
-      "status" => :run_status,
-      "link" => :run_link,
-      "unlink" => :run_unlink,
-      "clean" => :run_clean,
-      "doctor" => :run_doctor,
-      "adopt" => :run_adopt,
       "promote" => :run_promote,
       "rename" => :run_rename,
       "help" => :run_help
@@ -25,13 +18,6 @@ module Skill
 
     USAGE_EXAMPLES = [
       "skill list",
-      "skill status",
-      "skill link ruby-dev",
-      "skill link --all",
-      "skill unlink ruby-dev",
-      "skill clean",
-      "skill doctor",
-      "skill adopt ../my-skill",
       "skill promote my-skill",
       "skill rename ruby-dev ruby"
     ].freeze
@@ -73,27 +59,16 @@ module Skill
       @operations ||= Operations.new(paths: paths, shell_ui: ui)
     end
 
-    def doctor
-      @doctor ||= Doctor.new(paths: paths, shell_ui: ui)
-    end
-
     def usage
       puts <<~USAGE
         Usage: skill [--project PATH] <command> [args]
 
-        Manage symlinked Codex skills for a project using dotfiles as the canonical store.
+        Manage the dotfiles skill store (~/.dotfiles/skills). Install skills into agents with npx skills.
 
         Commands:
           list                         List skills available in #{paths.store_dir}
-          status                       Show skills linked in the project
-          link <name> [name ...]       Link one or more stored skills into the project
-          link --all                   Link every non-hidden skill from the store
-          unlink <name> [name ...]     Remove one or more project skill symlinks
-          clean                        Remove broken symlinks from the project
-          doctor                       Diagnose project skill links and local copies
-          adopt <path> [name]          Move a local skill directory into dotfiles and link it here
-          promote <name>               Move project .codex/skills/<name> into dotfiles and relink it
-          rename <old> <new>           Rename a stored skill and update this project's symlink if needed
+          promote <name>               Move .agents/skills/<name> into dotfiles
+          rename <old> <new>           Rename a stored skill
           help                         Show this help
 
         Options:
@@ -107,42 +82,6 @@ module Skill
     def run_list(args)
       ui.reject_extra_args("list", args)
       operations.list_store_skills
-    end
-
-    def run_status(args)
-      ui.reject_extra_args("status", args)
-      operations.show_status
-    end
-
-    def run_link(args)
-      return operations.link_all if args == ["--all"]
-
-      raise ExitError, "link requires at least one skill name or --all" if args.empty?
-
-      args.each { |name| operations.link_one(name) }
-    end
-
-    def run_unlink(args)
-      raise ExitError, "unlink requires at least one skill name" if args.empty?
-
-      args.each { |name| operations.unlink_one(name) }
-    end
-
-    def run_clean(args)
-      ui.reject_extra_args("clean", args)
-      operations.clean_links
-    end
-
-    def run_doctor(args)
-      ui.reject_extra_args("doctor", args)
-      doctor.run
-    end
-
-    def run_adopt(args)
-      raise ExitError, "adopt requires a source path" if args.empty?
-      raise ExitError, "adopt accepts a source path and optional name" if args.length > 2
-
-      operations.adopt_skill(*args)
     end
 
     def run_promote(args)

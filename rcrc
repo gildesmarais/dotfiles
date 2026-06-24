@@ -1,1 +1,1 @@
-EXCLUDES="README.md dotfiles:scripts*"
+EXCLUDES="README.md skills-lock.json dotfiles:scripts*"

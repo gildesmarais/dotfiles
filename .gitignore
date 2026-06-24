@@ -16,3 +16,4 @@ vim/undo/*
 vim/viminfo
 zsh/local_aliases
 skill/.cache/
+.agents/skills/

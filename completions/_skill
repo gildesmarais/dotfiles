@@ -16,7 +16,7 @@ _skill_project_root() {
 _skill_project_names() {
   local project_root project_dir
   project_root="$(_skill_project_root)"
-  project_dir="${project_root}/.codex/skills"
+  project_dir="${project_root}/.agents/skills"
   local -a skills
   skills=(${(f)"$(command ls -1 "$project_dir" 2>/dev/null)"})
   skills=(${skills:#.*})
@@ -27,13 +27,7 @@ _skill_commands() {
   local -a commands
   commands=(
     'list:list stored skills'
-    'status:show project skill status'
-    'link:link stored skills into the project'
-    'unlink:remove project skill symlinks'
-    'clean:remove broken project skill symlinks'
-    'doctor:diagnose project skill links and local copies'
-    'adopt:move a local skill directory into dotfiles and link it here'
-    'promote:move a project skill into dotfiles and relink it'
+    'promote:move a project skill from .agents/skills into dotfiles'
     'rename:rename a stored skill'
     'help:show usage'
   )
@@ -51,23 +45,8 @@ _arguments -C \
 case "$state" in
   args)
     case "${line[1]:-${words[2]:-}}" in
-      link)
-        _alternative \
-          'options:option:((--all\:"link all stored skills"))' \
-          'skills:stored skill:_skill_store_names'
-        ;;
-      unlink)
-        _describe -t skills 'project skill' "$(_skill_project_names)"
-        ;;
       promote)
         _describe -t skills 'project skill' "$(_skill_project_names)"
-        ;;
-      adopt)
-        if (( CURRENT == 3 )); then
-          _files -/
-        elif (( CURRENT == 4 )); then
-          _message 'new skill name'
-        fi
         ;;
       rename)
         if (( CURRENT == 3 )); then

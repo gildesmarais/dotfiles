@@ -1,6 +1,8 @@
 # dotfiles
 
-This repository contains config files to set up my systems and keep them in sync.
+Config files to set up my macOS systems and keep them in sync — Homebrew, editor configs, guided defaults, workflow scripts, and [Agent Skills](#agent-skills) for Codex and Cursor.
+
+Maintained by [Gil Desmarais](https://gil.desmarais.de) (Berlin). Profile, projects, and links: [gildesmarais/gildesmarais](https://github.com/gildesmarais/gildesmarais).
 
 ## Getting started
 
@@ -19,37 +21,76 @@ This repository contains config files to set up my systems and keep them in sync
 
 ### Quick-start tools
 
-| Script                           | What it does                                                                                                                | Prerequisites                                                         |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `./scripts/macos-defaults-apply` | Guided wizard that applies my preferred macOS defaults and prompts for the manual tweaks listed below.                      | macOS, `sudo` access for protected settings.                          |
-| `./scripts/wiki`                 | `fzf`-powered browser for the local wiki directory that opens files in your preferred editor.                               | `fzf`, `git`, `rg`, optional `VISUAL`/`EDITOR` or `WIKI_*` overrides. |
-| `./scripts/download-audio`       | Fetches remote audio (e.g., YouTube URLs) and normalises them via the `process-audio` pipeline for library-ready files.     | `aria2`, `ffmpeg`, `yt-dlp`; installs live in the Brewfile.           |
-| `./scripts/skill`                | Links project `.codex/skills` entries to the canonical `~/.dotfiles/skills` store and can promote local skills.             | Ruby 2.6+, optional `git` for auto-detecting the project root.        |
-| `./scripts/playground`           | Picks or creates playground projects for `pg`; interactive mode supports `Ctrl-O` to open the highlighted folder in Finder. | `fzf`, `rg`; macOS `open` for Finder shortcut.                        |
+| Script                           | What it does                                                                                                                                 | Prerequisites                                                         |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `./scripts/macos-defaults-apply` | Guided wizard that applies my preferred macOS defaults and prompts for the manual tweaks listed below.                                       | macOS, `sudo` access for protected settings.                          |
+| `./scripts/wiki`                 | `fzf`-powered browser for the local wiki directory that opens files in your preferred editor.                                                | `fzf`, `git`, `rg`, optional `VISUAL`/`EDITOR` or `WIKI_*` overrides. |
+| `./scripts/download-audio`       | Fetches remote audio (e.g., YouTube URLs) and normalises them via the `process-audio` pipeline for library-ready files.                      | `aria2`, `ffmpeg`, `yt-dlp`; installs live in the Brewfile.           |
+| `./scripts/skill`                | Manages the `~/.dotfiles/skills` store (`promote`, `rename`, `list`). Restore agent installs with `skills-restore` (see `skills/README.md`). | Ruby 2.6+, optional `git` for auto-detecting the project root.        |
+| `./scripts/playground`           | Picks or creates playground projects for `pg`; interactive mode supports `Ctrl-O` to open the highlighted folder in Finder.                  | `fzf`, `rg`; macOS `open` for Finder shortcut.                        |
 
-## Codex Skills
+## Agent Skills
 
-`./scripts/skill` manages per-project `.codex/skills` symlinks backed by `~/.dotfiles/skills`.
+Personal and custom [Agent Skills](https://agentskills.io/) live in [`skills/`](skills/). Two tools, split by job:
 
-Examples:
+| Tool                                                  | Role                                                                            |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------- |
+| [`npx skills`](https://github.com/vercel-labs/skills) | Install, update, and remove skills in agents (Cursor, Codex, and others)        |
+| [`./scripts/skill`](scripts/skill)                    | Dotfiles store hygiene — `promote`, `rename`, `list`                            |
+| [`skills-restore`](scripts/skills-restore)            | Restore `.agents/skills/` from committed [`skills-lock.json`](skills-lock.json) |
+
+### Workflow (model B)
+
+1. **Experiment** in any repo: `npx skills add` → `.agents/skills/` (optional per-repo lock).
+2. **Promote** proven skills: `skill promote <name>` → `~/.dotfiles/skills/` (git).
+3. **Restore** dotfiles installs after clone/pull: `cd ~/.dotfiles && skills-restore` (also runs via `topgrade` after `rcup`).
+
+Run `npx skills add` / `remove` from `~/.dotfiles` (no `-g`) so `skills-lock.json` stays in sync — commit lock changes with the repo.
+
+### Install
+
+From this repo (discovery walks `skills/`):
+
+```sh
+cd ~/.dotfiles
+npx skills add gildesmarais/dotfiles --skill ruby-dev -a cursor -a codex -y
+npx skills add gildesmarais/dotfiles --skill '*' -a cursor -a codex -y   # all dotfiles skills
+skills-restore   # or: npx skills experimental_install -y
+```
+
+From external registries ([skills.sh](https://skills.sh/), [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills), and others):
+
+```sh
+cd ~/.dotfiles
+npx skills add vercel-labs/agent-skills --skill vercel-react-best-practices -a cursor -a codex -y
+```
+
+Use **project scope** from `~/.dotfiles` for lock-driven installs. Omit `-g` unless you need a global install outside the lock workflow.
+
+### Day-to-day
+
+```sh
+npx skills list
+npx skills find rust
+npx skills update
+npx skills remove <name>
+```
+
+### Store hygiene
 
 ```sh
 skill list
-skill status
-skill link ruby-dev
-skill link --all
-skill unlink ruby-dev
-skill clean
-skill doctor
-skill adopt ../my-skill
 skill promote my-skill
 skill rename ruby-dev ruby
 ```
 
+`promote` moves a project skill from `.agents/skills/` into the store. `rename` renames a stored skill and prints a reminder to refresh agent installs via `npx skills`.
+
 Use `skill --project /path/to/project ...` to target a project other than the current git root or working directory.
 
-`adopt` moves an arbitrary local skill directory into `~/.dotfiles/skills` and links it into the current project. `rename` renames the canonical stored skill and updates this project's symlink when it points to the old name.
-`doctor` reports broken links, mismatched targets, local copies still sitting in `.codex/skills`, and stored skills not linked into the current project.
+The store currently covers Ruby/Rails development, Rust (including Microsoft's pragmatic guidelines), PR and review workflows, documentation, and domain-specific tooling (e.g. music-information retrieval). Run `skill list` for the full set.
+
+Full paths, authoring notes, and migration from the deprecated `skill link` / `.codex/skills` workflow: [skills/README.md](skills/README.md).
 
 Implementation lives in `skill/src`, with characterization tests in `skill/test`, and `scripts/skill` stays as the thin executable entrypoint.
 

@@ -2,9 +2,9 @@
 
 ## Purpose
 
-`skill/` owns the implementation and tests for the `skill` command used to manage project-local Codex skills from this dotfiles repo.
+`skill/` owns the implementation and tests for the `skill` command used to manage the dotfiles skill store (`~/.dotfiles/skills`).
 
-The tool exists to make `~/.dotfiles/skills` the canonical skill store and `.codex/skills` inside a target project the linked working set.
+Install skills into agents with [`npx skills`](https://github.com/vercel-labs/skills). This CLI handles store hygiene only: `promote` and `rename`.
 
 ## Key Decision
 
@@ -20,7 +20,7 @@ Do not move business logic back into the shell wrapper unless there is a hard po
 
 ## Vision
 
-This tool should remain a small, dependable local utility for skill linking and hygiene.
+This tool should remain a small, dependable local utility for dotfiles skill store management.
 
 Optimize for:
 
@@ -35,23 +35,26 @@ Do not optimize for:
 - external services
 - non-stdlib Ruby dependencies
 - broad cross-platform abstractions unless they are required by an actual use case
+- symlink-based agent install management (use `npx skills` instead)
 
 ## Operating Constraints
 
 - Ruby must stay compatible with macOS system Ruby 2.6.
 - Prefer stdlib only.
 - `scripts/skill` must remain a tiny launcher.
-- Hidden directories in the store are not user skills and must stay excluded from `list`, `link --all`, and related workflows.
-- The tool manages symlinks and local directories; it should fail closed rather than overwrite unexpected paths.
+- Hidden directories in the store are not user skills and must stay excluded from `list` and related workflows.
+- The tool manages local directories in the dotfiles store; it should fail closed rather than overwrite unexpected paths.
 - Behavior should remain understandable from CLI output alone. Errors should be explicit and actionable.
+- Do not create project symlinks. Print `npx skills add gildesmarais/dotfiles` hints after promote.
 
 ## Canonical Paths
 
 - Store: `skills/` at the dotfiles root
-- Project links: `<project>/.codex/skills/`
+- Project promote source: `<project>/.agents/skills/` only (`.codex/skills/` is deprecated and rejected)
 - Main implementation: `skill/src/cli.rb`
 - Tests: `skill/test/cli_test.rb`
 - Lint config: `skill/.rubocop.yml`
+- User guide: `skills/README.md`
 
 ## Change Rules
 
@@ -78,7 +81,7 @@ Quality gate: `make lint test` must pass before handoff.
 When reviewing changes here, prioritize:
 
 - accidental overwrites or unsafe path handling
-- symlink correctness
 - hidden-file handling regressions
 - argument parsing regressions
 - drift between README, tests, and executable behavior
+- accidental reintroduction of symlink or `.codex/skills` workflows
