@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#
+# skills-restore
+#
+# Restore dotfiles-managed agent skill installs from skills-lock.json.
+# Run from ~/.dotfiles (or via topgrade after rcup).
+
+set -euo pipefail
+
+DOTFILES_ROOT="${DOTFILES_ROOT:-$HOME/.dotfiles}"
+LOCK_FILE="${DOTFILES_ROOT}/skills-lock.json"
+
+if [[ ! -f "$LOCK_FILE" ]]; then
+  echo "skills-restore: missing lock file: $LOCK_FILE" >&2
+  echo "skills-restore: generate with: npx skills add gildesmarais/dotfiles --skill '*' -a cursor -a codex -y" >&2
+  exit 1
+fi
+
+cd "$DOTFILES_ROOT"
+exec npx skills experimental_install -y

@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "skills": {
+    "docs-architecture": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/docs-architecture/SKILL.md",
+      "computedHash": "bbb79cf6132506a5f44b4be778cdc7a416cddce69191ad34f8c5cf784554b9e3"
+    },
+    "docs-editor": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/docs-editor/SKILL.md",
+      "computedHash": "bd2663df0d8edc918a8e648fde26df9cb89f2539d4cbe2757e4ea6ea6f0ca10a"
+    },
+    "findings-to-gh-pr-review": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/findings-to-gh-pr-review/SKILL.md",
+      "computedHash": "05413b36daa4eb24bb54d4a3ee730430eeb0bf6ac2ec6fef2060f7e62c8096d4"
+    },
+    "finish-review": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/finish-review/SKILL.md",
+      "computedHash": "7e61bbdd913ed2747b3aa748f2a4d269554cd24128907e1a0d92345e6ec0b441"
+    },
+    "gh-pr-review": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/gh-pr-review/SKILL.md",
+      "computedHash": "9afd9fa2ee08863944a7609e5e659570e51cab72dfe3e2950faa2f4f22756754"
+    },
+    "gh-review-resolve": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/gh-review-resolve/SKILL.md",
+      "computedHash": "93b4daa53ac9133f69a2e7ad52130bc64225d277f6ca8d3ab2ba133e55617d97"
+    },
+    "jira-ticket": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/jira-ticket/SKILL.md",
+      "computedHash": "d06ff9917e2a472b1ff1aa88a39a89e13eecc39bae6f1c4eb0fc8b0340ab0063"
+    },
+    "message-refinement-tech-orga": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/message-refinement-tech-orga/SKILL.md",
+      "computedHash": "d4335b72f54890d29cf007bd7e13b5d5a646b5332678fb0dbe01f9fdf13d6d6e"
+    },
+    "one-on-one-raw-notes": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/one-on-one-raw-notes/SKILL.md",
+      "computedHash": "9a696a94f429790133aa5d9b36d9affc41085599b1d426233cee5367549963b0"
+    },
+    "pr-opener": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/pr-opener/SKILL.md",
+      "computedHash": "246b0b7c314d244c43d29836f30b6db9f21f9fd062f25a9ade780641894ecf86"
+    },
+    "pr-slicer": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/pr-slicer/SKILL.md",
+      "computedHash": "32b7d47666861fe4eeae4f0bbabfde0a476191531242a3a1290779fee23b7851"
+    },
+    "project-update": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/project-update/SKILL.md",
+      "computedHash": "7935c560ea036131df3547dcdee52c922da3d0f6b6c11e13c9e0efc9ae70cb8f"
+    },
+    "review-perf-ruby": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/review-perf-ruby/SKILL.md",
+      "computedHash": "bb8ab6a40253d998a22d63f8bd4a11970dd1ca07b2ff7c683ab21bf58af574b4"
+    },
+    "review-security-compliance": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/review-security-compliance/SKILL.md",
+      "computedHash": "a09c7ae93ad1e88202d3d165ba1ca6ad4a02515f8bf8103af014ffb01ef4cfc2"
+    },
+    "review-tests": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/review-tests/SKILL.md",
+      "computedHash": "20175e9c1af3db3325215eb0cee5fd9064f7cebc02eda61a2836baf272ede924"
+    },
+    "ruby-dev": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/ruby-dev/SKILL.md",
+      "computedHash": "1067e6cfd82b3f655fff0d74d18a26c0aa730ce4fbed1597a90c138ef3a9ed04"
+    },
+    "ruby-on-rails-dev": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/ruby-on-rails-dev/SKILL.md",
+      "computedHash": "e2c93d735a52450343be5afc784acda8f070c0afac123cc3c7fbefe0c11c1459"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "computedHash": "ca7b0c0c6e5f2750043f7f0cd72d16ac4e2abc48f9b5500d047a4b77a2506212"
+    }
+  }
+}

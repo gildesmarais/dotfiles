@@ -31,17 +31,21 @@ module Skill
     end
 
     def project_skills_dir
-      @project_skills_dir = File.join(project_root, ".codex", "skills")
+      @project_skills_dir = File.join(project_root, ".agents", "skills")
+    end
+
+    def legacy_codex_skills_dir
+      File.join(project_root, ".codex", "skills")
+    end
+
+    def legacy_codex_skill_path(name)
+      File.join(legacy_codex_skills_dir, name)
     end
 
     def ensure_store!
       return if File.directory?(store_dir)
 
       raise ExitError, "skill store not found: #{store_dir}"
-    end
-
-    def ensure_project_skills_dir!
-      FileUtils.mkdir_p(project_skills_dir)
     end
 
     def store_skill_path(name)
@@ -60,12 +64,6 @@ module Skill
 
         File.directory?(store_skill_path(name))
       end
-    end
-
-    def project_entries
-      return [] unless Dir.exist?(project_skills_dir)
-
-      Dir.entries(project_skills_dir).reject { |name| [".", ".."].include?(name) }.sort
     end
 
     private
