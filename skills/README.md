@@ -8,11 +8,11 @@ Install and manage agent skills with the official [vercel-labs/skills](https://g
 
 Dotfiles-managed agent installs are tracked in [`skills-lock.json`](../skills-lock.json) at the repo root. Run `npx skills add` / `remove` **from `~/.dotfiles`** (project scope, no `-g`) so the CLI updates the lock and wires `.agents/skills/`.
 
-| Command | What it does |
-|---------|--------------|
-| `skills-restore` | Restore installs from the lock (`npx skills experimental_install -y`); runs via `topgrade` after `rcup` |
-| `npx skills experimental_install` | Same as restore when run from `~/.dotfiles` |
-| `npx skills add …` | Add a skill and update the lock — **commit the lock** afterward |
+| Command                           | What it does                                                                                            |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `skills-restore`                  | Restore installs from the lock (`npx skills experimental_install -y`); runs via `topgrade` after `rcup` |
+| `npx skills experimental_install` | Same as restore when run from `~/.dotfiles`                                                             |
+| `npx skills add …`                | Add a skill and update the lock — **commit the lock** afterward                                         |
 
 After cloning or pulling lock changes:
 
@@ -23,10 +23,10 @@ cd ~/.dotfiles && skills-restore
 
 **Promote vs install:**
 
-| Command | Source | Destination |
-|---------|--------|-------------|
-| `skill promote <name>` | `<project>/.agents/skills/<name>` | `~/.dotfiles/skills/` (git) |
-| `npx skills add` / `install` | lock / remote / dotfiles repo | `~/.dotfiles/.agents/skills/` + lock update |
+| Command                      | Source                            | Destination                                 |
+| ---------------------------- | --------------------------------- | ------------------------------------------- |
+| `skill promote <name>`       | `<project>/.agents/skills/<name>` | `~/.dotfiles/skills/` (git)                 |
+| `npx skills add` / `install` | lock / remote / dotfiles repo     | `~/.dotfiles/.agents/skills/` + lock update |
 
 The `.agents/skills/` tree is gitignored; regenerate it from the lock. `skills-lock.json` is excluded from RCM (`rcrc`) so it stays at `~/.dotfiles/skills-lock.json` only.
 
@@ -40,11 +40,11 @@ npx skills add vercel-labs/agent-skills --skill frontend-design -a cursor -a cod
 
 Common flags:
 
-| Flag | Purpose |
-|------|---------|
-| `-a cursor -a codex` | Target specific agents |
-| `-y` | Non-interactive (skip prompts) |
-| `-g` | Global install (`~/.codex/skills/`, `~/.cursor/skills/`) — optional for edge cases; dotfiles uses project scope |
+| Flag                 | Purpose                                                                                                         |
+| -------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `-a cursor -a codex` | Target specific agents                                                                                          |
+| `-y`                 | Non-interactive (skip prompts)                                                                                  |
+| `-g`                 | Global install (`~/.codex/skills/`, `~/.cursor/skills/`) — optional for edge cases; dotfiles uses project scope |
 
 ## Install dotfiles skills
 
@@ -79,11 +79,11 @@ See [agentskills.io](https://agentskills.io/) for the full spec.
 
 Use the Ruby helper when moving skills into or within the dotfiles store:
 
-| Command | When to use |
-|---------|-------------|
-| `skill promote <name>` | Move a project-local skill from `.agents/skills/<name>` into the store |
-| `skill rename <old> <new>` | Rename a skill in the store |
-| `skill list` | List skills in the dotfiles store |
+| Command                    | When to use                                                            |
+| -------------------------- | ---------------------------------------------------------------------- |
+| `skill promote <name>`     | Move a project-local skill from `.agents/skills/<name>` into the store |
+| `skill rename <old> <new>` | Rename a skill in the store                                            |
+| `skill list`               | List skills in the dotfiles store                                      |
 
 On success, `promote` prints a suggested `npx skills add` command. After `rename`, refresh agent installs with `npx skills remove` and `npx skills add`.
 
@@ -103,12 +103,12 @@ Use `npx skills list` instead of the removed `skill doctor` and `skill status` c
 
 ## Paths reference
 
-| Scope | Path | Notes |
-|-------|------|-------|
-| Dotfiles store | `~/.dotfiles/skills/<name>/` | Canonical git-tracked source |
-| Dotfiles installs | `~/.dotfiles/.agents/skills/<name>/` | Restored from `skills-lock.json` |
-| Project (shared) | `<repo>/.agents/skills/<name>/` | Per-repo skills (optional `skills-lock.json` in that repo) |
-| Global Codex | `~/.codex/skills/<name>/` | Managed by `npx skills add -g` |
-| Global Cursor | `~/.cursor/skills/<name>/` | Managed by `npx skills add -g` |
+| Scope             | Path                                 | Notes                                                      |
+| ----------------- | ------------------------------------ | ---------------------------------------------------------- |
+| Dotfiles store    | `~/.dotfiles/skills/<name>/`         | Canonical git-tracked source                               |
+| Dotfiles installs | `~/.dotfiles/.agents/skills/<name>/` | Restored from `skills-lock.json`                           |
+| Project (shared)  | `<repo>/.agents/skills/<name>/`      | Per-repo skills (optional `skills-lock.json` in that repo) |
+| Global Codex      | `~/.codex/skills/<name>/`            | Managed by `npx skills add -g`                             |
+| Global Cursor     | `~/.cursor/skills/<name>/`           | Managed by `npx skills add -g`                             |
 
 **Deprecated:** `<repo>/.codex/skills/`, `<repo>/.cursor/skills/`, and other per-agent project directories. Delete legacy installs and reinstall with `npx skills`.
