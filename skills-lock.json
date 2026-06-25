@@ -23,13 +23,13 @@
       "source": "gildesmarais/dotfiles",
       "sourceType": "github",
       "skillPath": "skills/gh-pr/SKILL.md",
-      "computedHash": "85c698e53da0fdf693ed1de57e51e6cbf727d0df6a8e9c37d12fef72a8be6fba"
+      "computedHash": "4bc80bd7303130a5cf6f6329e0b72c9278db898f4fd50d725d670afe37210b22"
     },
     "gh-review-specific-pr": {
       "source": "gildesmarais/dotfiles",
       "sourceType": "github",
       "skillPath": "skills/gh-review-specific-pr/SKILL.md",
-      "computedHash": "a69e0667ee425c379a246339ca8e45f08859e8231c4e5cbe9a10421445702083"
+      "computedHash": "13014baaf8c5a5e46d557dc37117408f3f92c66683636775524c8594c2bfdadf"
     },
     "jira-ticket": {
       "source": "gildesmarais/dotfiles",
