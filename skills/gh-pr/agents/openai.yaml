@@ -1,0 +1,4 @@
+interface:
+  display_name: "GH PR Resolve"
+  short_description: "Assess, plan, fix, push, and resolve PR review threads"
+  default_prompt: "Use $gh-pr to fetch unresolved review comments, assess them, create an implementation plan, then implement, push, and resolve."

@@ -1,5 +1,5 @@
 ---
-name: pr-opener
+name: open-pr
 description: "Prepare git commit history and open a GitHub pull request in the browser. Use when the user wants Codex to commit the current session's work, derive a ticket like ABC-123 from the branch name, craft a conventional commit and PR title in the form scope: [TICKET-NR] summary, push the branch, and open `gh pr create --web` with a helpful prefilled description."
 ---
 

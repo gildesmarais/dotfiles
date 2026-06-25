@@ -13,29 +13,23 @@
       "skillPath": "skills/docs-editor/SKILL.md",
       "computedHash": "bd2663df0d8edc918a8e648fde26df9cb89f2539d4cbe2757e4ea6ea6f0ca10a"
     },
-    "findings-to-gh-pr-review": {
-      "source": "gildesmarais/dotfiles",
-      "sourceType": "github",
-      "skillPath": "skills/findings-to-gh-pr-review/SKILL.md",
-      "computedHash": "05413b36daa4eb24bb54d4a3ee730430eeb0bf6ac2ec6fef2060f7e62c8096d4"
-    },
     "finish-review": {
       "source": "gildesmarais/dotfiles",
       "sourceType": "github",
       "skillPath": "skills/finish-review/SKILL.md",
       "computedHash": "7e61bbdd913ed2747b3aa748f2a4d269554cd24128907e1a0d92345e6ec0b441"
     },
-    "gh-pr-review": {
+    "gh-pr": {
       "source": "gildesmarais/dotfiles",
       "sourceType": "github",
-      "skillPath": "skills/gh-pr-review/SKILL.md",
-      "computedHash": "9afd9fa2ee08863944a7609e5e659570e51cab72dfe3e2950faa2f4f22756754"
+      "skillPath": "skills/gh-pr/SKILL.md",
+      "computedHash": "85c698e53da0fdf693ed1de57e51e6cbf727d0df6a8e9c37d12fef72a8be6fba"
     },
-    "gh-review-resolve": {
+    "gh-review-specific-pr": {
       "source": "gildesmarais/dotfiles",
       "sourceType": "github",
-      "skillPath": "skills/gh-review-resolve/SKILL.md",
-      "computedHash": "93b4daa53ac9133f69a2e7ad52130bc64225d277f6ca8d3ab2ba133e55617d97"
+      "skillPath": "skills/gh-review-specific-pr/SKILL.md",
+      "computedHash": "a69e0667ee425c379a246339ca8e45f08859e8231c4e5cbe9a10421445702083"
     },
     "jira-ticket": {
       "source": "gildesmarais/dotfiles",
@@ -55,17 +49,11 @@
       "skillPath": "skills/one-on-one-raw-notes/SKILL.md",
       "computedHash": "9a696a94f429790133aa5d9b36d9affc41085599b1d426233cee5367549963b0"
     },
-    "pr-opener": {
+    "open-pr": {
       "source": "gildesmarais/dotfiles",
       "sourceType": "github",
-      "skillPath": "skills/pr-opener/SKILL.md",
-      "computedHash": "246b0b7c314d244c43d29836f30b6db9f21f9fd062f25a9ade780641894ecf86"
-    },
-    "pr-slicer": {
-      "source": "gildesmarais/dotfiles",
-      "sourceType": "github",
-      "skillPath": "skills/pr-slicer/SKILL.md",
-      "computedHash": "32b7d47666861fe4eeae4f0bbabfde0a476191531242a3a1290779fee23b7851"
+      "skillPath": "skills/open-pr/SKILL.md",
+      "computedHash": "6aa9db76424e0eae8a293d81701b0ac068883a935009e01be0fa6f114f2e0c18"
     },
     "project-update": {
       "source": "gildesmarais/dotfiles",
@@ -103,11 +91,17 @@
       "skillPath": "skills/ruby-on-rails-dev/SKILL.md",
       "computedHash": "e2c93d735a52450343be5afc784acda8f070c0afac123cc3c7fbefe0c11c1459"
     },
+    "slice-pr": {
+      "source": "gildesmarais/dotfiles",
+      "sourceType": "github",
+      "skillPath": "skills/slice-pr/SKILL.md",
+      "computedHash": "88f672ff298ca578189a783e6849440b632c72107cdae2d2ea03b7a379a596f6"
+    },
     "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
       "skillPath": "skills/react-best-practices/SKILL.md",
-      "computedHash": "ca7b0c0c6e5f2750043f7f0cd72d16ac4e2abc48f9b5500d047a4b77a2506212"
+      "computedHash": "3219a1944e404ffc14d1d9d6aef6dd2e3855b81387ee0a044ccbfe14d34c2357"
     }
   }
 }

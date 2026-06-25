@@ -1,0 +1,4 @@
+interface:
+  display_name: "GH Review Specific PR"
+  short_description: "Review a PR and post inline or pending comments"
+  default_prompt: "Use $gh-review-specific-pr to inspect a pull request, verify findings in code, and post review comments with gh."

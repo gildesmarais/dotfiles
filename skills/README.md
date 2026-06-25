@@ -101,6 +101,17 @@ cd ~/.dotfiles && skills-restore
 
 Use `npx skills list` instead of the removed `skill doctor` and `skill status` commands.
 
+## Retired skills
+
+| Retired skill            | Successor                       |
+| ------------------------ | ------------------------------- |
+| gh-review-resolve        | gh-pr                           |
+| gh-address-comments      | gh-pr (assess + reply sub-path) |
+| gh-pr-review             | gh-review-specific-pr           |
+| findings-to-gh-pr-review | gh-review-specific-pr           |
+| pr-opener                | open-pr                         |
+| pr-slicer                | slice-pr                        |
+
 ## Paths reference
 
 | Scope             | Path                                 | Notes                                                      |

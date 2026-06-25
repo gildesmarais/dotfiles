@@ -1,5 +1,5 @@
 ---
-name: pr-slicer
+name: slice-pr
 description: Rebuild a large, messy git branch into small reviewable PRs by mapping the current diff into final intent-based commits and recreating branches from the default branch. Use when a user wants to split one branch into multiple PRs, drop preparatory or unrelated changes, replace development chronology with cleaner history, or run a sequential branch-to-PR-to-merge workflow.
 ---
 
