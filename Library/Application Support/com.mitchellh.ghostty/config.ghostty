@@ -1,0 +1,11 @@
+font-size = 18
+theme = Tomorrow Night Eighties
+foreground = 1cd468
+background = 192129
+
+# --- Keybindings ---
+keybind = super+p=scroll_page_up
+keybind = super+d=scroll_page_down
+keybind = shift+up=scroll_page_up
+keybind = shift+down=scroll_page_down
+keybind = super+k=clear_screen
