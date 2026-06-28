@@ -75,9 +75,6 @@ zstyle ':completion:*' cache-path ~/.zsh/cache
 # zstyle ':completion:*' menu select
 # zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
-# setup docker completions
-fpath=($HOME/.docker/completions $fpath)
-
 # setup carapace
 if command_exists carapace; then
   export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
@@ -238,9 +235,8 @@ alias less="less -R"
 
 if command_exists lsd; then
   alias ls='lsd'
-  alias ll='lsd -l'
+  alias ll='lsd -la'
   alias la='lsd -a'
-  alias lla='lsd -la'
 fi
 
 if [ "$(uname)" = "Darwin" ]; then
