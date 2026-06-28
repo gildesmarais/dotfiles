@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# setup-gemini-agents-links
+#
+# Setup symbolic links from ~/.agents/ to ~/.gemini/config/ for global rules and skills.
+#
+
+set -euo pipefail
+
+GEMINI_CONFIG_DIR="$HOME/.gemini/config"
+AGENTS_DIR="$HOME/.agents"
+
+# Ensure target configuration directory exists
+mkdir -p "$GEMINI_CONFIG_DIR"
+
+echo "Setting up Google Antigravity links..."
+
+# Link rules.mdc to AGENTS.md
+if [[ -f "${AGENTS_DIR}/rules/global/rules.mdc" ]]; then
+  echo "Linking rules.mdc to ${GEMINI_CONFIG_DIR}/AGENTS.md..."
+  ln -sf "${AGENTS_DIR}/rules/global/rules.mdc" "${GEMINI_CONFIG_DIR}/AGENTS.md"
+else
+  echo "Warning: ${AGENTS_DIR}/rules/global/rules.mdc not found. Skipping rule linking."
+fi
+
+# Link skills directory
+if [[ -d "${AGENTS_DIR}/skills" ]]; then
+  echo "Linking skills directory to ${GEMINI_CONFIG_DIR}/skills..."
+  if [[ -e "${GEMINI_CONFIG_DIR}/skills" && ! -L "${GEMINI_CONFIG_DIR}/skills" ]]; then
+    echo "Backing up existing ${GEMINI_CONFIG_DIR}/skills directory..."
+    mv "${GEMINI_CONFIG_DIR}/skills" "${GEMINI_CONFIG_DIR}/skills.bak"
+  fi
+  rm -f "${GEMINI_CONFIG_DIR}/skills"
+  ln -sf "${AGENTS_DIR}/skills" "${GEMINI_CONFIG_DIR}/skills"
+else
+  echo "Warning: ${AGENTS_DIR}/skills directory not found. Skipping skills linking."
+fi
+
+echo "Google Antigravity links setup complete."
