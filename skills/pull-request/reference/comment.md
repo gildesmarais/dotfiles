@@ -1,15 +1,6 @@
----
-name: gh-review-specific-pr
-description: >
-  Review a specific GitHub pull request: verify findings in the diff and surrounding
-  code, post inline review comments or thread replies with gh, and keep reviews pending
-  unless the user asks to submit. Use when reviewing a PR, posting review comments,
-  pending review comments, or validating findings before posting on a PR.
----
+# Comment
 
-# GH Review Specific PR
-
-Review a specific GitHub pull request. Verify findings against the actual diff and surrounding code, then post precise inline review comments or thread replies with `gh`. Keep reviews pending unless the user asks to submit.
+Post verified findings as new GitHub review comments on a specific pull request. Verify every finding in the diff and surrounding code before posting.
 
 ## Overview
 
@@ -89,7 +80,7 @@ gh pr view --json number,headRefName,baseRefName,headRefOid,title,url
 - If you already have a pending review, append new threads to that existing review instead of trying to create a second pending review.
 - Do not fall back to standalone review comments if the user asked for draft review comments.
 
-See `reference/gh-api.md` for the pending review state machine, `addPullRequestReviewThread`, and 422 recovery.
+See [`gh-api.md`](gh-api.md) for the pending review state machine, `addPullRequestReviewThread`, and 422 recovery.
 
 ### 8. Verify the comments landed
 
@@ -130,4 +121,4 @@ See `reference/gh-api.md` for the pending review state machine, `addPullRequestR
 - Do not submit the review unless the user explicitly asks.
 - Do not duplicate an existing thread on the same issue.
 - Do not create a second pending review when one already exists for the same user.
-- When the skill says "draft review comments", preserve that distinction all the way through. A regular PR comment or standalone inline comment is not equivalent.
+- When the user asked for draft review comments, preserve that distinction all the way through. A regular PR comment or standalone inline comment is not equivalent.

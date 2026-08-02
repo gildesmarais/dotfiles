@@ -1,13 +1,6 @@
----
-name: slice-pr
-description: Rebuild a large, messy git branch into small reviewable PRs by mapping the current diff into final intent-based commits and recreating branches from the default branch. Use when a user wants to split one branch into multiple PRs, drop preparatory or unrelated changes, replace development chronology with cleaner history, or run a sequential branch-to-PR-to-merge workflow.
----
+# Slice
 
-# PR Slicer
-
-## Overview
-
-Use this skill to turn an oversized branch into a sequence of focused PRs with clean history. Optimize for final reviewable intent, not for preserving how the work was originally developed.
+Turn an oversized branch into a sequence of focused PRs with clean history. Optimize for final reviewable intent, not for preserving how the work was originally developed.
 
 ## Workflow
 
@@ -132,3 +125,13 @@ Never commit or validate from the backup or source branch when the active PR has
 - Provide a descriptive PR title and body text when handing it back.
 - Prefer `gh pr create --web --title ... --body ...` and open it automatically once the branch is pushed and verified, unless the user has asked for a different PR flow.
 - After the last slice, explicitly ask whether to remove dedicated PR worktrees and run `git worktree prune`.
+
+## Premature-completion shield
+
+Do not start **open** or **resolve** for a slice until:
+
+- the slice ledger row for that PR exists with branch, commits, and validation result
+- the push is verified on the remote
+- the user has merged the prior slice when the plan is sequential
+
+If the ledger says a PR is deferred or not ready, report that state instead of opening or resolving.

@@ -1,37 +1,6 @@
----
-name: gh-pr
-description: >
-  Close out GitHub pull request review feedback on the current branch: fetch unresolved
-  review threads with gh, assess each in code, decide validity, create an implementation
-  plan, implement fixes, run quality gates, push, and resolve addressed threads with
-  commit-hash references. Use when addressing PR comments, fixing review feedback,
-  resolving review threads, or closing out PR review. For reply-only, use when user
-  asks to respond without code changes. Not for reviewing others' PRs (use
-  gh-review-specific-pr) or opening/splitting PRs (use open-pr / slice-pr).
----
-
-# GH PR
+# Resolve
 
 Close out GitHub PR review feedback on the current branch. Own the full resolve loop: discover the PR, fetch unresolved threads, assess validity in code, plan fixes, implement, run quality gates, push, and resolve addressed threads with commit-hash references.
-
-## Ambiguity routing
-
-| User says                                                        | Route to                                   |
-| ---------------------------------------------------------------- | ------------------------------------------ |
-| "address PR comments", "fix review feedback", "resolve comments" | **Full resolve loop** (includes plan step) |
-| "reply to comments", "respond on GitHub", "draft replies"        | **Reply-only sub-path**                    |
-| "review this PR", "post review comments"                         | `gh-review-specific-pr`                    |
-| "open a PR", "commit and create PR"                              | `open-pr`                                  |
-| "split into PRs", "slice branch"                                 | `slice-pr`                                 |
-
-Default ambiguous "address comments" → full resolve loop, not reply-only.
-
-## Execution contract
-
-- Required tools: `git`, `gh`, `jq`.
-- Use non-interactive commands and explicit flags by default.
-- Escalate permission for networked `gh` commands when sandboxing blocks them.
-- Do not ask the user to manually fetch PR or review-comment data unless automated discovery fails.
 
 ## Support files
 
@@ -43,7 +12,7 @@ Default ambiguous "address comments" → full resolve loop, not reply-only.
 - Expect a top-level JSON object with `pr` metadata and `threads`.
 - Expect each thread entry to include `thread_id`, `resolved`, `path`, `line`, `html_url`, and `comments`.
 - If `gh pr view` already returned a PR URL or number, pass that explicit identifier into the helper instead of relying on helper-side rediscovery.
-- If the helper cannot run, fall back to direct `gh` queries per `reference/gh-api.md` rather than asking the user to fetch review data manually.
+- If the helper cannot run, fall back to direct `gh` queries per [`gh-api.md`](gh-api.md) rather than asking the user to fetch review data manually.
 
 ## Canonical sequence (mandatory order)
 
@@ -145,7 +114,7 @@ Addressed in <hash>: <precise change summary>.
 
 If a comment is only partly addressed, leave it unresolved and explain why in your user-facing summary instead of force-resolving it.
 
-See `reference/gh-api.md` for thread fetch, resolve mutations, and verification.
+See [`gh-api.md`](gh-api.md) for thread fetch, resolve mutations, and verification.
 
 ### 10. Summary
 
@@ -156,43 +125,8 @@ Report:
 - commit hash(es)
 - which comments were accepted vs. challenged
 
-## Reply-only sub-path
-
-When the user explicitly says "just reply" / "draft responses" / "respond on GitHub":
-
-1. Discover PR and fetch unresolved threads (steps 1–2).
-2. Assess and classify each thread (steps 3–4).
-3. Draft replies in Conventional Comments style when it fits.
-4. Post replies with `gh` on the exact review thread.
-5. Return a short execution summary — do **not** implement, commit, push, or resolve unless the user asks.
-
-**Conventional Comments reply style:**
-
-Prefer concise labels such as `note:`, `issue:`, `suggestion:`, or `question:` only when they make the reply clearer. Do not force labels into every reply. Keep the tone direct, factual, and grounded in verified code behavior.
-
-When the reviewer is correct:
-
-```text
-issue: Good catch. This path still uses the legacy behavior because ... I will update it to ... so the Cognito and OIDC flows stay aligned.
-```
-
-When the reviewer is partly right but the current change should stay:
-
-```text
-note: I agree with the cleanup direction, but I am keeping the current guard for now because ... During the migration this still protects the proxy-backed path. I would treat the tighter invariant as follow-up work.
-```
-
-When the reviewer is wrong:
-
-```text
-note: This is already covered by ... The behavior differs at runtime because ... so removing this branch would break parity for ...
-```
-
-When the user asks only for draft text, do not post.
-
 ## Boundaries
 
-- Do not resolve threads in reply-only mode unless the user asks.
 - Do not make code changes just because a reviewer suggested them without verification.
 - Do not claim parity, coverage, or correctness without reading the relevant code.
 - Do not post a reply that hides uncertainty. If verification is incomplete, say what is still unverified.

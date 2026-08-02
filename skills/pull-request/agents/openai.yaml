@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pull Request"
+  short_description: "Open, slice, comment, resolve, or reply on GitHub PRs"
+  default_prompt: "Use $pull-request to open a pull request, slice a branch into smaller PRs, post verified review comments, resolve review feedback, or reply on existing threads."
