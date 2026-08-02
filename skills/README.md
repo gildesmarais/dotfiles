@@ -103,14 +103,23 @@ Use `npx skills list` instead of the removed `skill doctor` and `skill status` c
 
 ## Retired skills
 
-| Retired skill            | Successor                       |
-| ------------------------ | ------------------------------- |
-| gh-review-resolve        | gh-pr                           |
-| gh-address-comments      | gh-pr (assess + reply sub-path) |
-| gh-pr-review             | gh-review-specific-pr           |
-| findings-to-gh-pr-review | gh-review-specific-pr           |
-| pr-opener                | open-pr                         |
-| pr-slicer                | slice-pr                        |
+| Retired skill              | Successor                                                    |
+| -------------------------- | ------------------------------------------------------------ |
+| gh-review-resolve          | `pull-request` **`resolve`**                                 |
+| gh-address-comments        | `pull-request` **`resolve`** or **`reply`**                  |
+| gh-pr-review               | `pull-request` **`comment`**                                 |
+| findings-to-gh-pr-review   | `pull-request` **`comment`**                                 |
+| pr-opener                  | `pull-request` **`open`**                                    |
+| pr-slicer                  | `pull-request` **`slice`**                                   |
+| open-pr                    | `pull-request` **`open`**                                    |
+| slice-pr                   | `pull-request` **`slice`**                                   |
+| gh-pr                      | `pull-request` (**`comment`** / **`resolve`** / **`reply`**) |
+| gh-review-specific-pr      | `pull-request` **`comment`**                                 |
+| finish-review              | `review` **`finish`**                                        |
+| review-tests               | `review` **`tests`**                                         |
+| review-perf-ruby           | `review` **`perf`**                                          |
+| review-security-compliance | `review` **`security`**                                      |
+| quality-loop               | `review` **`quality`**                                       |
 
 ## Paths reference
 

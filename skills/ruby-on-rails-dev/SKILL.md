@@ -10,7 +10,7 @@ description: "Rails overlay for API/controller/service/policy/serializer/worker 
 - Use as a Rails overlay with `$ruby-dev`; keep Ruby-general workflow in `$ruby-dev`.
 - Apply to controllers, routes, models, services, policies, serializers, workers, and migrations.
 - Follow `AGENTS.md` routing and precedence.
-- Require `$review-security-compliance` when changes match the `AGENTS.md` `Security Trigger Matrix`.
+- Require `$review` **`security`** when changes match the `AGENTS.md` `Security Trigger Matrix`.
 
 ## Implementation Rules
 

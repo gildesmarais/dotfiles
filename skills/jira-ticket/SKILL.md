@@ -72,7 +72,7 @@ Start from the ticket, gather evidence with Atlassian MCP, verify the codebase l
 
 - Always invoke `$ruby-dev` for implementation discipline.
 - Add `$ruby-on-rails-dev` when Rails or API layers are in scope.
-- Add `$review-security-compliance` whenever the work matches the `AGENTS.md` security trigger matrix. Default to invoking it when authn/authz, tenancy, PII/PHI, exports, webhooks, raw SQL, external fetches, or sensitive Sidekiq behavior may change.
+- Add `$review` **`security`** whenever the work matches the `AGENTS.md` security trigger matrix. Default to invoking it when authn/authz, tenancy, PII/PHI, exports, webhooks, raw SQL, external fetches, or sensitive Sidekiq behavior may change.
 - Follow `AGENTS.md` precedence if guidance overlaps.
 - If a referenced skill is unavailable in the current environment, say so explicitly and continue with the closest applicable local workflow instead of blocking.
 
@@ -82,7 +82,7 @@ Before creating a branch or editing code, provide a concise checkpoint covering:
 
 - `Ticket facts`: verified Jira facts that define scope.
 - `Files read`: the code areas you actually inspected.
-- `Skills required`: whether `$ruby-on-rails-dev` and `$review-security-compliance` are required, plus why.
+- `Skills required`: whether `$ruby-on-rails-dev` and `$review` **`security`** are required, plus why.
 - `Branch name`: the proposed branch name.
 - `Implementation plan`: a short plan for the code change.
 - `Assumptions`: key assumptions or open questions.

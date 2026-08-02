@@ -1,6 +1,6 @@
 ---
 name: ruby-dev
-description: "Ruby workflow for bug fixes, refactors, incidents, and targeted code review. Use when work needs disciplined Ruby investigation, small safe changes, repo-native validation, TDD-oriented fixes, and clear routing to test review or finish-review when the request is narrower or later-stage."
+description: "Ruby workflow for bug fixes, refactors, incidents, and targeted code review. Use when work needs disciplined Ruby investigation, small safe changes, repo-native validation, TDD-oriented fixes, and clear routing to review tests or finish branches when the request is narrower or later-stage."
 ---
 
 # Ruby Dev
@@ -9,8 +9,8 @@ description: "Ruby workflow for bug fixes, refactors, incidents, and targeted co
 
 - Use for Ruby implementation work: bug fixes, refactors, incidents, and small feature adjustments.
 - Read `AGENTS.md` first when present and follow repo-specific conventions over defaults here.
-- Prefer `review-tests` when the user mainly wants test/spec review quality.
-- Prefer `finish-review` when the user wants end-of-branch production-readiness review.
+- Prefer `review` **`tests`** when the user mainly wants test/spec review quality.
+- Prefer `review` **`finish`** when the user wants end-of-branch production-readiness review.
 
 ## Workflow
 
@@ -53,7 +53,7 @@ description: "Ruby workflow for bug fixes, refactors, incidents, and targeted co
 - Prioritize Logic Density: Flag over-engineered or excessively branchy code that could be simplified via data-driven patterns.
 - Prioritize correctness, failure modes, boundary handling, and maintainability.
 - For review-style requests, report findings first with file references and concrete bug risk.
-- If the diff is test-heavy, use `review-tests` for the test-quality pass instead of duplicating that guidance here.
+- If the diff is test-heavy, use `review` **`tests`** for the test-quality pass instead of duplicating that guidance here.
 - If no critical implementation defects are found, say `No critical implementation defects detected` and note residual risks or validation gaps.
 
 ## Handoff Checklist

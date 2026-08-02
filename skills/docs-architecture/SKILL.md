@@ -17,7 +17,7 @@ Treat runtime behavior, system boundaries, and enforced constraints as the sourc
 
 Prefer `docs-editor` when the task is mainly about public-facing or operational documentation such as README, contributor docs, feature docs, or runbooks and the main goal is clarity of usage rather than architectural accuracy.
 
-Prefer `finish-review` when the user wants an end-of-branch production-readiness review rather than architecture-document verification.
+Prefer `review` **`finish`** when the user wants an end-of-branch production-readiness review rather than architecture-document verification.
 
 ## Objective
 
