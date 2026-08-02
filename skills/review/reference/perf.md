@@ -1,11 +1,8 @@
----
-name: review-perf-ruby
-description: Review Ruby code, branches, or PRs for performance risks and optimization opportunities. Use when the user asks for a performance review, wants explicit big-O analysis, requests fewer iterations or fewer allocations, asks whether Set/Hash/Array are the right data structures, wants better Enumerable usage, or wants architectural rearrangements for hot paths in Ruby code.
----
+# Perf (Ruby)
 
-# Review Ruby Performance
+Ruby performance lens for changed code, branches, or commit ranges.
 
-Review the actual changed code before making recommendations. Prefer diff-first review against the default branch when the request is about a branch or PR.
+Review the actual changed code before making recommendations. Use shared prep (SKILL.md) for diff-first scope against the default branch.
 
 Focus on findings, not generic advice. For each finding, cite file and line, explain the performance impact, and give concrete improvement options.
 

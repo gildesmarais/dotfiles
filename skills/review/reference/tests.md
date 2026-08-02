@@ -1,13 +1,8 @@
----
-name: review-tests
-description: Review changed test files and spec diffs for over-mocking, hidden regressions, contract gaps, assertion weakness, fixture dishonesty, flaky test seams, and brittle architecture. Use when Codex is asked to review specs, tests, or test-related changes in Ruby, JavaScript, or similar codebases, especially when the user suspects mocks are covering bugs, wants stronger regression detection, or wants architectural advice to make tests more precise.
----
+# Tests
 
-# Review Tests
+Review changed test files and spec diffs for over-mocking, hidden regressions, contract gaps, assertion weakness, fixture dishonesty, flaky test seams, and brittle architecture.
 
-## Overview
-
-Review tests with a code-review mindset, but focus on whether the tests prove the behavior that matters. Prefer findings about mocked-away regressions, weak assertions, dishonest fixtures, missing behavior coverage, and seams that make the code hard to test precisely.
+After shared prep (SKILL.md), continue here.
 
 ## Workflow
 

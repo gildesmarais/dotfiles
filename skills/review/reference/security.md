@@ -1,16 +1,15 @@
----
-name: review-security-compliance
-description: "Security and compliance-focused code review workflow for changes that may impact confidentiality, integrity, availability, privacy, auditability, or regulatory controls. Use for threat-driven review, control-gap assessment, and remediation guidance."
----
+# Security
 
-# Review Security Compliance
+Security and compliance-focused review for changes that may impact confidentiality, integrity, availability, privacy, auditability, or regulatory controls.
+
+After shared prep (SKILL.md), continue here.
 
 ## Purpose
 
 Review code and configuration changes for security and compliance risk with findings-first output.
 Focus on practical risk reduction, auditable evidence, and concise reporting.
 
-Use this skill when a change may affect:
+Use this branch when a change may affect:
 
 - authentication or authorization boundaries
 - tenant isolation or sensitive data handling
@@ -18,8 +17,8 @@ Use this skill when a change may affect:
 - privileged operations, auditability, or operational resilience
 - regulated workflows or evidence relevant to certification controls
 
-When another project guide exists, follow it in addition to this skill.
-If no project-specific guidance exists, this skill is self-sufficient.
+When another project guide exists, follow it in addition to this reference.
+If no project-specific guidance exists, this reference is self-sufficient.
 
 ## Reusable Review Scope
 
@@ -31,7 +30,7 @@ Run this review when at least one is true:
 - the change alters logging, audit trails, export/report behavior, or resilience controls
 - the change could plausibly affect compliance posture or incident evidence quality
 
-If none apply, do not force this skill into the review.
+If none apply, do not force this lens into the review.
 
 ## Threat Context
 
