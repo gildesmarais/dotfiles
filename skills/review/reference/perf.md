@@ -1,8 +1,8 @@
 # Perf (Ruby)
 
-Ruby performance lens for changed code, branches, or commit ranges.
+Ruby performance lens for changed code, branches, commit ranges, or pull requests.
 
-Review the actual changed code before making recommendations. Use shared prep (SKILL.md) for diff-first scope against the default branch.
+Review the actual changed code before making recommendations. Use scope prep in `SKILL.md`; for a pull request, use the PR patch and surrounding code at its recorded head SHA rather than a local default-branch diff.
 
 Focus on findings, not generic advice. For each finding, cite file and line, explain the performance impact, and give concrete improvement options.
 
@@ -99,6 +99,7 @@ Use these when they materially reduce work:
 ## Output Format
 
 Start with findings ordered by severity.
+When contributing to a generic review, use Critical / Important / Nice-to-Have and fold findings into the single `finish` report.
 
 For each finding include:
 

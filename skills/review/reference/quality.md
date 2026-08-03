@@ -4,9 +4,9 @@ Merge-prep execution: audit touched files and neighbors for duplication, boundar
 
 Every pass answers: **what got worse or duplicated while shipping, and what tests prove it still works?**
 
-This branch is **merge-prep**, not feature delivery: post-shipping hardening plus final verification on the current branch.
+This execution is **merge-prep**, not feature delivery: post-shipping hardening plus final verification on the current git branch.
 
-**Phase 0 supersedes shared prep** (SKILL.md) — do not run `scripts/compare_default_branch.sh` before Phase 0.
+**Phase 0 supersedes scope prep** (`SKILL.md`) — do not run `scripts/compare_default_branch.sh` before Phase 0.
 
 ## Phase 0 — Repo bootstrap (read-only)
 

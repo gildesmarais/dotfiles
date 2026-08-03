@@ -2,14 +2,14 @@
 
 Security and compliance-focused review for changes that may impact confidentiality, integrity, availability, privacy, auditability, or regulatory controls.
 
-After shared prep (SKILL.md), continue here.
+After scope prep in `SKILL.md`, continue here.
 
 ## Purpose
 
 Review code and configuration changes for security and compliance risk with findings-first output.
 Focus on practical risk reduction, auditable evidence, and concise reporting.
 
-Use this branch when a change may affect:
+Use this lens when a change may affect:
 
 - authentication or authorization boundaries
 - tenant isolation or sensitive data handling
@@ -121,14 +121,13 @@ If the repository context indicates a non-EU regulatory scope, say so explicitly
 ## Severity Model
 
 - `Critical`: likely exploit leading to data breach, auth bypass, major integrity loss, or regulated-data compromise
-- `High`: meaningful exploitation path with material impact
-- `Medium`: weakness requiring additional conditions or with bounded impact
-- `Low`: hardening or defense-in-depth issue
+- `Important`: meaningful exploitation path, material control gap, or bounded weakness requiring remediation
+- `Nice-to-Have`: hardening or defense-in-depth improvement without a concrete current failure
 
 Severity anchors:
 
 - `Critical`: cross-tenant exposure, auth bypass, secrets leakage, integrity compromise of regulated data
-- `High`: tenant-bound privilege escalation, PII leakage in logs or exports, replayable webhook causing state corruption, ambiguous tenant boundary enforcement
+- `Important`: tenant-bound privilege escalation, PII leakage in logs or exports, replayable webhook causing state corruption, ambiguous tenant boundary enforcement
 
 ## Output Format
 
@@ -149,7 +148,7 @@ For each finding, include:
 
 If no findings:
 
-- State `No critical/high findings detected`
+- State `No Critical or Important findings detected`
 - List residual risks or verification gaps in 1 to 3 bullets
 
 Always include a short `Assumptions / Gaps` section when any context, exploitability, or applicability decision depends on incomplete evidence:
@@ -189,7 +188,7 @@ Useful overlays include:
 
 If no overlay exists, do not block the review.
 
-## Low-Impact Path
+## Compact Output Path
 
 Use compact format only when all are true:
 
@@ -203,7 +202,7 @@ Use compact format only when all are true:
 Compact format still requires:
 
 - threat context
-- `No critical/high findings detected` if applicable
+- `No Critical or Important findings detected` if applicable
 - `Assumptions / Gaps`
 - compliance coverage summary
 

@@ -1,8 +1,8 @@
 # Finish
 
-Production-readiness assessment for a git branch. Findings report only — no boy-scout edits.
+Production-readiness baseline for a local change, branch, commit range, or pull request. Findings report only — no boy-scout edits.
 
-After shared prep (SKILL.md), continue here.
+After scope prep in `SKILL.md`, continue here. For a pull request, review the PR patch and surrounding code at the recorded head SHA; never substitute the local working tree or local `HEAD`.
 
 ## Workflow
 

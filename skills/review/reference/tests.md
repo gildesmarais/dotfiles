@@ -2,7 +2,7 @@
 
 Review changed test files and spec diffs for over-mocking, hidden regressions, contract gaps, assertion weakness, fixture dishonesty, flaky test seams, and brittle architecture.
 
-After shared prep (SKILL.md), continue here.
+After scope prep in `SKILL.md`, continue here.
 
 ## Workflow
 
@@ -69,6 +69,7 @@ Ask these questions while reviewing:
 ## Review Output
 
 Report findings first, ordered by severity.
+When contributing to a generic review, use Critical / Important / Nice-to-Have and fold findings into the single `finish` report.
 
 For each finding, include:
 
