@@ -1,0 +1,7 @@
+interface:
+  display_name: "Communication"
+  short_description: "Summarize notes, draft messages, distill status updates"
+  default_prompt: "Use $communication to summarize 1:1 notes, draft an internal or external message, or distill a project status update."
+
+policy:
+  allow_implicit_invocation: true

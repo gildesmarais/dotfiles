@@ -1,29 +1,16 @@
----
-name: message-refinement-tech-orga
-description: Use when refining rough notes, draft Slack messages, bullet points, or internal announcements into an internal Slack message for engineering, product, technology, or cross-functional stakeholders in a tech organization.
----
-
-# Message Refinement Tech Orga
+# Slack Message
 
 Refine rough internal communication into Slack-ready messages for a technology organization.
 
 ## When to Use
 
-Use this skill when the user wants to turn notes, bullets, or a rough draft into a clearer message for:
+Use this branch when the user wants to turn notes, bullets, or a rough draft into a clearer message for:
 
 - engineering teams
 - product owners or product managers
 - technology leadership
 - cross-functional stakeholders
 - chapters, guilds, or department-wide audiences
-
-Do not use it for:
-
-- external marketing copy
-- public PR statements
-- long-form documentation
-- a fixed-format project status line that should be comparable across projects
-- summarizing a topic without drafting the actual message
 
 ## Output Rules
 

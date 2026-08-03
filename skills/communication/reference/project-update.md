@@ -1,15 +1,10 @@
----
-name: project-update
-description: Use when converting project notes, meeting outcomes, Jira updates, status reports, or bullet points into a concise project status update that is comparable across projects.
----
-
-# Message Project Update Distiller
+# Project Update
 
 Turn project notes into a short, comparable stakeholder update.
 
 ## When to Use
 
-Use this skill when the user wants a project update distilled from:
+Use this branch when the user wants a project update distilled from:
 
 - project notes
 - status reports
@@ -18,14 +13,6 @@ Use this skill when the user wants a project update distilled from:
 - bullet points
 
 Assume the audience includes executives, managers, product owners, and engineers.
-
-Do not use it for:
-
-- drafting a Slack message or announcement
-- writing a persuasive escalation or decision request
-- summarizing a non-project topic
-- producing a multi-paragraph update
-- softening or tailoring a message for a sensitive stakeholder audience
 
 ## Output Rules
 

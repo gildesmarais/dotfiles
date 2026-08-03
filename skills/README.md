@@ -73,6 +73,10 @@ npx skills init              # scaffold a new skill directory
 
 Each skill is a directory with a `SKILL.md` file. Frontmatter should include `name` and `description`. Optional subdirectories: `scripts/`, `agents/`, and other supporting files.
 
+Router-style `SKILL.md` files use unnumbered `##` section headers (e.g. `## Pick branch`, `## Completion criteria`) — no leading numbers.
+
+`allow_implicit_invocation: true` is only for skills whose output is a report/draft the user reviews before anything ships; skills that directly implement, rewrite, or publish must omit it.
+
 See [agentskills.io](https://agentskills.io/) for the full spec.
 
 ## Store hygiene (`./scripts/skill`)
@@ -103,23 +107,26 @@ Use `npx skills list` instead of the removed `skill doctor` and `skill status` c
 
 ## Retired skills
 
-| Retired skill              | Successor                                                    |
-| -------------------------- | ------------------------------------------------------------ |
-| gh-review-resolve          | `pull-request` **`resolve`**                                 |
-| gh-address-comments        | `pull-request` **`resolve`** or **`reply`**                  |
-| gh-pr-review               | `pull-request` **`comment`**                                 |
-| findings-to-gh-pr-review   | `pull-request` **`comment`**                                 |
-| pr-opener                  | `pull-request` **`open`**                                    |
-| pr-slicer                  | `pull-request` **`slice`**                                   |
-| open-pr                    | `pull-request` **`open`**                                    |
-| slice-pr                   | `pull-request` **`slice`**                                   |
-| gh-pr                      | `pull-request` (**`comment`** / **`resolve`** / **`reply`**) |
-| gh-review-specific-pr      | `pull-request` **`comment`**                                 |
-| finish-review              | `review` **`finish`**                                        |
-| review-tests               | `review` **`tests`**                                         |
-| review-perf-ruby           | `review` **`perf`**                                          |
-| review-security-compliance | `review` **`security`**                                      |
-| quality-loop               | `review` **`quality`**                                       |
+| Retired skill                | Successor                                                    |
+| ---------------------------- | ------------------------------------------------------------ |
+| gh-review-resolve            | `pull-request` **`resolve`**                                 |
+| gh-address-comments          | `pull-request` **`resolve`** or **`reply`**                  |
+| gh-pr-review                 | `pull-request` **`comment`**                                 |
+| findings-to-gh-pr-review     | `pull-request` **`comment`**                                 |
+| pr-opener                    | `pull-request` **`open`**                                    |
+| pr-slicer                    | `pull-request` **`slice`**                                   |
+| open-pr                      | `pull-request` **`open`**                                    |
+| slice-pr                     | `pull-request` **`slice`**                                   |
+| gh-pr                        | `pull-request` (**`comment`** / **`resolve`** / **`reply`**) |
+| gh-review-specific-pr        | `pull-request` **`comment`**                                 |
+| finish-review                | `review` **`finish`**                                        |
+| review-tests                 | `review` **`tests`**                                         |
+| review-perf-ruby             | `review` **`perf`**                                          |
+| review-security-compliance   | `review` **`security`**                                      |
+| quality-loop                 | `review` **`quality`**                                       |
+| one-on-one-raw-notes         | `communication` **`one-on-one`**                             |
+| message-refinement-tech-orga | `communication` **`slack-message`**                          |
+| project-update               | `communication` **`project-update`**                         |
 
 ## Paths reference
 

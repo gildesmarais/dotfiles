@@ -10,5 +10,3 @@ dependencies:
     - type: "mcp"
       value: "datadog"
       description: "Required when the Jira issue references Datadog artifacts"
-policy:
-  allow_implicit_invocation: true

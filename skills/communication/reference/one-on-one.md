@@ -1,29 +1,16 @@
----
-name: one-on-one-raw-notes
-description: Use when summarizing raw one-on-one markdown notes, especially when they include speaker direction, blockquotes, Q/A markers, shorthand, or fragmented note-taking syntax.
----
-
-# One-on-One Raw Notes
+# One-on-One
 
 Turn raw 1:1 notes into a small, speaker-aware summary that is easy to scan later.
 
 ## When to Use
 
-Use this skill when the user wants a compact summary distilled from:
+Use this branch when the user wants a compact summary distilled from:
 
 - raw one-on-one notes
 - markdown notes with blockquotes
 - shorthand or fragmented note-taking
 - `Q:` / `A:` markers
 - speaker-directed notes where who said what matters
-
-Do not use it for:
-
-- project status updates meant to be comparable across projects
-- drafting a Slack message or announcement
-- long-form meeting minutes
-- retrospective summaries across many participants
-- polished stakeholder communication
 
 ## Output Rules
 

@@ -11,7 +11,7 @@ description: >
 
 GitHub pull request lifecycle on a remote PR or branch destined to become one.
 
-## 1. Pick branch
+## Pick branch
 
 Map the user prompt to exactly one branch:
 
@@ -39,7 +39,7 @@ Ambiguous routing:
 
 Default ambiguous "address comments" → **resolve**, not **reply**.
 
-## 2. Shared contract
+## Shared contract
 
 - Required tools: `git`, `gh`, `jq`.
 - Use non-interactive commands and explicit flags.
@@ -48,7 +48,7 @@ Default ambiguous "address comments" → **resolve**, not **reply**.
 - Prefer `./scripts/gh-review-comments --filter unresolved --format json <pr-url>` for structured thread data on **resolve** and **reply**.
 - Do not ask the user to manually fetch PR or review-comment data unless automated discovery fails.
 
-## 3. Context pointers
+## Context pointers
 
 Load only the matched branch reference:
 
@@ -58,7 +58,7 @@ Load only the matched branch reference:
 - **resolve** — follow [`reference/resolve.md`](skills/pull-request/reference/resolve.md). Load [`reference/gh-api.md`](skills/pull-request/reference/gh-api.md) when resolving threads.
 - **reply** — follow [`reference/reply.md`](skills/pull-request/reference/reply.md). Load [`reference/gh-api.md`](skills/pull-request/reference/gh-api.md) when posting replies.
 
-## 4. Completion criteria
+## Completion criteria
 
 | Branch      | Done when                                                                                                                                 |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------- |

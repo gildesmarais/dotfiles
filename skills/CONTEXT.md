@@ -44,3 +44,31 @@ _Avoid_: dedicated skill per lens
 
 **Handoff**:
 `review` may end with “post these findings” → agent continues into `pull-request` `comment`. Never reverse: GitHub posting does not live under `review`.
+
+# Communication Skills Domain
+
+## Language
+
+**Communication** (skill noun: `communication`):
+Drafting or distilling a written communication artifact for a specific audience and format.
+_Avoid_: comms, messaging (too vague)
+
+**One-on-one** (`communication` branch):
+Summarize raw 1:1 notes into a compact, speaker-aware bullet list.
+_Avoid_: notes, minutes (minutes implies a formal multi-participant meeting — different scope, not covered)
+
+**Slack-message** (`communication` branch):
+Refine rough notes into an internal Slack-ready message for a tech organization, including sensitive/escalation framing.
+_Avoid_: message (collides with the skill-level artifact), announcement
+
+**Project-update** (`communication` branch):
+Distill project notes into a single comparable status line.
+_Avoid_: status-report, update (too vague)
+
+**External-message** (`communication` branch):
+Draft a customer, partner, or public-facing message with no internal jargon, no unconfirmed commitments, legal-safe tone.
+Marketing copy / public PR-press statements are out of scope (persuasive/brand-voice vs legal-safe support tone).
+_Avoid_: customer-message, support-reply (too narrow — also covers partners and public)
+
+**Handoff**:
+`communication` hands off to `docs-editor` when the ask is actually a README, runbook, or product doc rather than a message. Never reverse.
