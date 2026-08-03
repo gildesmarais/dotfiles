@@ -2,6 +2,10 @@
 
 Single reference for **comment**, **resolve**, and **reply** branches. Prefer the bundled `scripts/gh-review-comments` helper for structured thread data; use these patterns when the helper cannot run or for mutations the helper does not cover.
 
+End-to-end PR review + publish (retrieve → review → reconcile drafts → submit) is owned by the **`review` skill `publish`** execution and its `reference/github-state.md`. This file remains the API helper for posting already-verified findings and for resolve/reply.
+
+**Submission policy:** “post/submit” creates one review with `event: COMMENT`. “Draft/pending” omits `event` and uses the pending-review flow below. Never submit `APPROVE` or `REQUEST_CHANGES`.
+
 ## Identify the PR
 
 ```bash
@@ -50,7 +54,7 @@ gh api graphql -f query='query($owner:String!, $repo:String!, $number:Int!){ rep
 
 Paginate with `after` cursor when `pageInfo.hasNextPage` is true.
 
-## Pending review state machine
+## Explicit pending-review state machine
 
 GitHub allows **one pending review per user per PR**.
 
@@ -73,7 +77,7 @@ GitHub allows **one pending review per user per PR**.
 ┌─────────────────────────────────────────────────────────────┐
 │  Submit review                                              │
 │    → POST .../reviews/{id}/events with event: COMMENT       │
-│      (or APPROVE / REQUEST_CHANGES)                         │
+│      (never APPROVE or REQUEST_CHANGES)                      │
 └─────────────────────────────────────────────────────────────┘
 ```
 

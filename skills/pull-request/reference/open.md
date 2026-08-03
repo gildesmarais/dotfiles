@@ -55,29 +55,14 @@ type(scope): [ABC-123] summary
 - When the repository has local commit conventions, satisfy them too.
 - If the repo requires commit body sections, include them.
 
-## PR Title Rules
+## PR Title And Body
 
-- Default the PR title to the same pattern as the commit title:
+Write title and body per [`pr-narrative.md`](pr-narrative.md) (shared with **retitle**).
 
-```text
-type(scope): [ABC-123] summary
-```
-
-- Keep the title aligned with the actual diff, not the branch name typo or temporary wording.
-
-## PR Body Rules
-
-Prefill a concise, useful description that helps reviewers immediately understand the change.
-
-Include:
-
-- `Summary`
-- `Root Cause` for bug fixes
-- `Fix`
-- `Validation`
-- `Ticket`
-
-Use the actual commands already run for validation when available. If validation is missing, say so plainly instead of inventing it.
+- Prefer the conventional commit shape when it still matches the diff: `type(scope): [ABC-123] summary`.
+- Rebuild narrative from full `base...HEAD`, not the latest commit alone.
+- Reuse the derived ticket in the PR title and body when the branch encodes one.
+- Use validation commands actually run; if missing, say so plainly.
 
 ## Browser PR Flow
 

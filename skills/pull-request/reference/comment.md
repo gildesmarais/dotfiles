@@ -1,12 +1,16 @@
 # Comment
 
-Post verified findings as new GitHub review comments on a specific pull request. Verify every finding in the diff and surrounding code before posting.
+Post **already-verified** findings as new GitHub review comments on a specific pull request.
+
+For end-to-end “retrieve PR → review → reconcile drafts → publish”, stop and use the **`review` skill `publish`** execution instead. The `comment` branch is for findings the user or another workflow already verified.
 
 ## Overview
 
-Review the code before commenting. Treat every finding as a claim to verify in the diff and relevant implementation, tests, or shared helpers.
+Treat every finding as a claim to re-verify in the diff and relevant implementation, tests, or shared helpers before posting.
 
 Use `gh` to anchor comments on the exact PR line or reply on an existing thread. Prefer one strong, specific comment per issue over broad summaries.
+
+**Submission policy:** “post” or “submit” means one `event: "COMMENT"` review. “Draft” or “pending” means create/append without an event and do not submit. Never submit `APPROVE` or `REQUEST_CHANGES`.
 
 ## Workflow
 
@@ -24,7 +28,7 @@ gh pr view --json number,headRefName,baseRefName,headRefOid,title,url
 
 - Inspect the changed files and the implementation they exercise.
 - Read enough surrounding code to understand the real runtime path, not just the changed test or helper in isolation.
-- When a finding touches cross-system behavior, trace the full flow across caller, Cognito/Lambda, shared helpers, and backend/API boundaries.
+- When a finding touches cross-system behavior, trace the full flow across callers, external services, shared helpers, and backend/API boundaries.
 - Treat every finding as a claim to verify. Do not post findings from a review summary alone.
 
 ### 3. Check whether the issue is already covered
@@ -35,10 +39,10 @@ gh pr view --json number,headRefName,baseRefName,headRefOid,title,url
 
 ### 4. Classify the action
 
-- `new-comment`: The issue is not already covered by an open review thread.
-- `thread-reply`: There is already an open thread on the same issue and you should add verified context instead of duplicating it.
-- `no-comment`: The finding is not valid, is too weak, or is already sufficiently covered.
-- `discussion-reply`: The thread is primarily a design thought, question, or idea rather than a concrete bug, and should receive an explicit disposition or follow-up stance instead of being silently dropped.
+- `publish-inline`: The issue is not already covered by an open review thread.
+- `reply-existing`: An open thread already covers the issue; add verified context or a clear disposition instead of duplicating it.
+- `review-body-only`: The point belongs in the review summary but has no precise inline anchor.
+- `drop`: The finding is invalid, weak, duplicate, or already answered.
 
 ### 5. Match findings to diff lines
 
@@ -53,7 +57,9 @@ gh pr view --json number,headRefName,baseRefName,headRefOid,title,url
 - Explain why the current code can fail in production.
 - Tie test findings to the concrete regression they would miss.
 - Keep the tone direct and factual.
-- Use labels like `issue:` or `note:` only when they improve scanability.
+- Format every new inline finding as `label [(decorations)]: subject`, followed by one blank line and concise evidence/impact. Use lowercase `issue`, `suggestion`, `question`, `note`, `nitpick`, or `praise`; optional decorations are `security`, `test`, `performance`, or `non-blocking`. Never use `blocking`.
+- Validate each first line against `^[a-z][a-z-]*( \([a-z-]+(, [a-z-]+)*\))?: .+`.
+- Existing-thread replies may remain conversational when a label would add no clarity.
 - Post only findings that are already well-formed and high confidence.
 - Prefer one comment per distinct issue.
 
@@ -72,9 +78,10 @@ gh pr view --json number,headRefName,baseRefName,headRefOid,title,url
 **Pending review rules:**
 
 - Creating a review with `"event": "COMMENT"` submits it immediately.
-- If the user wants a pending review, create the review without an `event`.
+- For “post” or “submit,” create one review with `"event": "COMMENT"` and all verified inline comments.
+- Only when the user explicitly wants a pending/draft review, create the review without an `event`.
 - Add inline comments as part of that review payload.
-- Submit it later only if the user explicitly asks.
+- Submit a pending review later only if the user explicitly asks.
 - GitHub only allows one pending review per user per PR.
 - If you do not already have a pending review, create one pending review with all new inline comments.
 - If you already have a pending review, append new threads to that existing review instead of trying to create a second pending review.
@@ -118,7 +125,7 @@ See [`gh-api.md`](gh-api.md) for the pending review state machine, `addPullReque
 ## Boundaries
 
 - Do not post a finding you have not re-verified in code.
-- Do not submit the review unless the user explicitly asks.
+- Do not submit when the user explicitly asks for draft/pending state.
 - Do not duplicate an existing thread on the same issue.
 - Do not create a second pending review when one already exists for the same user.
 - When the user asked for draft review comments, preserve that distinction all the way through. A regular PR comment or standalone inline comment is not equivalent.

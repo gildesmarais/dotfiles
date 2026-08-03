@@ -42,7 +42,7 @@ Prefer concise labels such as `note:`, `issue:`, `suggestion:`, or `question:` o
 When the reviewer is correct:
 
 ```text
-issue: Good catch. This path still uses the legacy behavior because ... I will update it to ... so the Cognito and OIDC flows stay aligned.
+issue: Good catch. This path still uses the legacy behavior because ... I will update it to ... so both identity-provider flows stay aligned.
 ```
 
 When the reviewer is partly right but the current change should stay:
