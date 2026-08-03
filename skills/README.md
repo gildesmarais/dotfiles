@@ -8,11 +8,21 @@ Install and manage agent skills with the official [vercel-labs/skills](https://g
 
 Dotfiles-managed agent installs are tracked in [`skills-lock.json`](../skills-lock.json) at the repo root. Run `npx skills add` / `remove` **from `~/.dotfiles`** (project scope, no `-g`) so the CLI updates the lock and wires `.agents/skills/`.
 
-| Command                           | What it does                                                                                            |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `skills-restore`                  | Restore installs from the lock (`npx skills experimental_install -y`); runs via `topgrade` after `rcup` |
-| `npx skills experimental_install` | Same as restore when run from `~/.dotfiles`                                                             |
-| `npx skills add …`                | Add a skill and update the lock — **commit the lock** afterward                                         |
+| Command                           | What it does                                                        |
+| --------------------------------- | ------------------------------------------------------------------- |
+| `skills-restore`                  | Install from the lock, then prune; runs via `topgrade` after `rcup` |
+| `skills-restore --prune-only`     | Prune without installing                                            |
+| `npx skills experimental_install` | Install only — **does not** remove installs the lock dropped        |
+| `npx skills add …`                | Add a skill and update the lock — **commit the lock** afterward     |
+
+`npx skills experimental_install` only adds, so retired skills keep being advertised to agents until they are pruned. `skills-restore` converges instead:
+
+| Location                             | Prune rule                                                                  |
+| ------------------------------------ | --------------------------------------------------------------------------- |
+| `~/.dotfiles/.agents/skills/`        | Remove anything absent from `skills-lock.json` (the tree is generated)      |
+| `~/.agents`, `~/.codex`, `~/.cursor` | Remove dangling symlinks only; real directories from other sources are kept |
+
+Run it after retiring or renaming a skill, not just after a clone.
 
 After cloning or pulling lock changes:
 
@@ -73,9 +83,26 @@ npx skills init              # scaffold a new skill directory
 
 Each skill is a directory with a `SKILL.md` file. Frontmatter should include `name` and `description`. Optional subdirectories: `scripts/`, `agents/`, and other supporting files.
 
-Router-style `SKILL.md` files use unnumbered `##` section headers (e.g. `## Pick branch`, `## Completion criteria`) — no leading numbers.
+### Router skills
 
-`allow_implicit_invocation: true` is only for skills whose output is a report/draft the user reviews before anything ships; skills that directly implement, rewrite, or publish must omit it.
+A router `SKILL.md` picks one branch and hands off to a reference file. `pull-request`, `review`, `communication`, and `docs` follow this template; keep new routers consistent with it:
+
+| Section                  | Contents                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------- |
+| `## Pick branch`         | Branch table, plus a routing-signals table when phrasing is ambiguous           |
+| `## Shared prep`         | Steps and rules every branch runs (name it `Shared contract` for tooling rules) |
+| `## Branch reference`    | One link per branch into `reference/<branch>.md` — load exactly one             |
+| `## Handoff`             | Which skill continues the work, and in which direction only                     |
+| `## Completion criteria` | One row per branch, stating done-ness observably                                |
+
+Rules:
+
+- Use unnumbered `##` headers (e.g. `## Pick branch`) — no leading numbers.
+- Write reference links relative to the skill directory (`reference/open.md`), never repo-rooted, because skills run from their install path.
+- Put branch-specific detail in the reference file; keep only what all branches share in the router body.
+- Refer to other skills by plain name in `SKILL.md` (`the ruby-dev skill`). Agent-specific invocation syntax such as `$ruby-dev` belongs in `agents/*.yaml`.
+
+`allow_implicit_invocation: true` is only for skills whose output is a report/draft the user reviews before anything ships; skills that directly implement, rewrite, or publish must omit it. The policy is per skill, not per branch, so a router must omit it as soon as **one** branch changes code — that is why `review` omits it (`quality` refactors and runs gates) while `communication` keeps it.
 
 See [agentskills.io](https://agentskills.io/) for the full spec.
 
@@ -127,6 +154,10 @@ Use `npx skills list` instead of the removed `skill doctor` and `skill status` c
 | one-on-one-raw-notes         | `communication` **`one-on-one`**                             |
 | message-refinement-tech-orga | `communication` **`slack-message`**                          |
 | project-update               | `communication` **`project-update`**                         |
+| docs-editor                  | `docs` **`editor`**                                          |
+| docs-architecture            | `docs` **`architecture`**                                    |
+
+Never committed to the store, but still found as leftover symlinks from the deprecated `skill link` era: `message-project-update-distiller` (→ `communication` **`project-update`**) and `idea-to-story-in-jira` (no successor). `skills-restore` removes such dangling links.
 
 ## Paths reference
 

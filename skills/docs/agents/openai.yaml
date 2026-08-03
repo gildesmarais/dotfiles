@@ -1,0 +1,4 @@
+interface:
+  display_name: "Docs"
+  short_description: "Verify and rewrite docs against the repo — editor or architecture"
+  default_prompt: "Use $docs to improve documentation in this repo by verifying it against the codebase. Pick editor for README, contributor, operator, or feature docs; pick architecture for ADRs, design notes, diagrams, and system overviews."

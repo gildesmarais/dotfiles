@@ -7,17 +7,10 @@
       "skillPath": "skills/communication/SKILL.md",
       "computedHash": "e49355410a9b5b0b33e15d1576ecc41055348eb8832ebe26326f85e6c77d034f"
     },
-    "docs-architecture": {
+    "docs": {
       "source": "gildesmarais/dotfiles",
       "sourceType": "github",
-      "skillPath": "skills/docs-architecture/SKILL.md",
-      "computedHash": "de819d3a9419bbb664e89fc04270c4f53bf46cbdf95b9c4c888802e6ac95f836"
-    },
-    "docs-editor": {
-      "source": "gildesmarais/dotfiles",
-      "sourceType": "github",
-      "skillPath": "skills/docs-editor/SKILL.md",
-      "computedHash": "bd2663df0d8edc918a8e648fde26df9cb89f2539d4cbe2757e4ea6ea6f0ca10a"
+      "skillPath": "skills/docs/SKILL.md"
     },
     "jira-ticket": {
       "source": "gildesmarais/dotfiles",

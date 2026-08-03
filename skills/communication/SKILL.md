@@ -23,7 +23,7 @@ Map the user prompt to exactly one branch:
 | Draft a customer, partner, or public-facing message (email, support reply) | `external-message`                        |
 | Draft marketing copy or public PR/press statement                          | out of scope — no branch handles this yet |
 
-When the ask is actually a README, runbook, or product doc rather than a message, use the `docs-editor` skill instead.
+When the ask is actually a README, runbook, or product doc rather than a message, use the `docs` skill instead.
 
 ## Branch reference
 
@@ -36,7 +36,7 @@ Load exactly one disclosed reference file and follow it through completion:
 
 ## Handoff
 
-When the ask is a README, runbook, or product doc rather than a message, stop and continue with the `docs-editor` skill. Do not draft long-form documentation from this skill.
+When the ask is a README, runbook, or product doc rather than a message, stop and continue with the `docs` skill **`editor`** branch. Do not draft long-form documentation from this skill.
 
 ## Completion criteria
 

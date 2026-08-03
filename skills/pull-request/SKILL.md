@@ -52,11 +52,11 @@ Default ambiguous "address comments" → **resolve**, not **reply**.
 
 Load only the matched branch reference:
 
-- **open** — follow [`reference/open.md`](skills/pull-request/reference/open.md) until `gh pr view` confirms a PR (or browser flow confirmed created).
-- **slice** — follow [`reference/slice.md`](skills/pull-request/reference/slice.md). Do not start open or resolve until the slice ledger marks that PR ready.
-- **comment** — follow [`reference/comment.md`](skills/pull-request/reference/comment.md). Load [`reference/gh-api.md`](skills/pull-request/reference/gh-api.md) when posting.
-- **resolve** — follow [`reference/resolve.md`](skills/pull-request/reference/resolve.md). Load [`reference/gh-api.md`](skills/pull-request/reference/gh-api.md) when resolving threads.
-- **reply** — follow [`reference/reply.md`](skills/pull-request/reference/reply.md). Load [`reference/gh-api.md`](skills/pull-request/reference/gh-api.md) when posting replies.
+- **open** — follow [`reference/open.md`](reference/open.md) until `gh pr view` confirms a PR (or browser flow confirmed created).
+- **slice** — follow [`reference/slice.md`](reference/slice.md). Do not start open or resolve until the slice ledger marks that PR ready.
+- **comment** — follow [`reference/comment.md`](reference/comment.md). Load [`reference/gh-api.md`](reference/gh-api.md) when posting.
+- **resolve** — follow [`reference/resolve.md`](reference/resolve.md). Load [`reference/gh-api.md`](reference/gh-api.md) when resolving threads.
+- **reply** — follow [`reference/reply.md`](reference/reply.md). Load [`reference/gh-api.md`](reference/gh-api.md) when posting replies.
 
 ## Completion criteria
 

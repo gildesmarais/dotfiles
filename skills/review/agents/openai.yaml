@@ -2,6 +2,3 @@ interface:
   display_name: "Review"
   short_description: "Local change review — finish, tests, Ruby perf, security, or quality merge-prep."
   default_prompt: "Use $review to review this branch or change. Pick finish, tests, perf, security, or quality based on the request."
-
-policy:
-  allow_implicit_invocation: true

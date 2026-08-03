@@ -33,17 +33,17 @@ Maintained by [Gil Desmarais](https://gil.desmarais.de) (Berlin). Profile, proje
 
 Personal and custom [Agent Skills](https://agentskills.io/) live in [`skills/`](skills/). Two tools, split by job:
 
-| Tool                                                  | Role                                                                            |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------- |
-| [`npx skills`](https://github.com/vercel-labs/skills) | Install, update, and remove skills in agents (Cursor, Codex, and others)        |
-| [`./scripts/skill`](scripts/skill)                    | Dotfiles store hygiene — `promote`, `rename`, `list`                            |
-| [`skills-restore`](scripts/skills-restore)            | Restore `.agents/skills/` from committed [`skills-lock.json`](skills-lock.json) |
+| Tool                                                  | Role                                                                                                                     |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [`npx skills`](https://github.com/vercel-labs/skills) | Install, update, and remove skills in agents (Cursor, Codex, and others)                                                 |
+| [`./scripts/skill`](scripts/skill)                    | Dotfiles store hygiene — `promote`, `rename`, `list`                                                                     |
+| [`skills-restore`](scripts/skills-restore)            | Sync `.agents/skills/` to committed [`skills-lock.json`](skills-lock.json) — installs, then prunes what the lock dropped |
 
 ### Workflow (model B)
 
 1. **Experiment** in any repo: `npx skills add` → `.agents/skills/` (optional per-repo lock).
 2. **Promote** proven skills: `skill promote <name>` → `~/.dotfiles/skills/` (git).
-3. **Restore** dotfiles installs after clone/pull: `cd ~/.dotfiles && skills-restore` (also runs via `topgrade` after `rcup`).
+3. **Restore** dotfiles installs after clone/pull, and after retiring or renaming a skill: `cd ~/.dotfiles && skills-restore` (also runs via `topgrade` after `rcup`).
 
 Run `npx skills add` / `remove` from `~/.dotfiles` (no `-g`) so `skills-lock.json` stays in sync — commit lock changes with the repo.
 
