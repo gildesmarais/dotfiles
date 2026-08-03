@@ -25,13 +25,13 @@ Map the user prompt to exactly one branch:
 
 Routing signals:
 
-| User says                                                                 | Branch                                            |
-| ------------------------------------------------------------------------- | ------------------------------------------------- |
-| "refresh the README", "these docs are stale", "trim this doc"             | `editor`                                          |
-| "clarity of usage", "a new reader can't follow this"                      | `editor`                                          |
-| "is this ADR still true", "document the real data flow", "update diagram" | `architecture`                                    |
-| "verify the architecture before we change it"                             | `architecture`                                    |
-| "is this branch ready to ship"                                            | stop — use the `review` skill **`finish`** branch |
+| User says                                                                 | Branch                        |
+| ------------------------------------------------------------------------- | ----------------------------- |
+| "refresh the README", "these docs are stale", "trim this doc"             | `editor`                      |
+| "clarity of usage", "a new reader can't follow this"                      | `editor`                      |
+| "is this ADR still true", "document the real data flow", "update diagram" | `architecture`                |
+| "verify the architecture before we change it"                             | `architecture`                |
+| "is this branch ready to ship"                                            | stop — use the `review` skill |
 
 Use `architecture` when a task requires verifying real architecture before a decision or change, even if the user did not ask for a document rewrite.
 

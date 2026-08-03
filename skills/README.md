@@ -85,21 +85,24 @@ Each skill is a directory with a `SKILL.md` file. Frontmatter should include `na
 
 ### Router skills
 
-A router `SKILL.md` picks one branch and hands off to a reference file. `pull-request`, `review`, `communication`, and `docs` follow this template; keep new routers consistent with it:
+A router `SKILL.md` normally picks one branch and hands off to a reference file. `pull-request`, `communication`, and `docs` follow that shape. `review` first chooses execution, then progressively loads only the review lenses warranted by the scoped diff.
 
-| Section                  | Contents                                                                        |
-| ------------------------ | ------------------------------------------------------------------------------- |
-| `## Pick branch`         | Branch table, plus a routing-signals table when phrasing is ambiguous           |
-| `## Shared prep`         | Steps and rules every branch runs (name it `Shared contract` for tooling rules) |
-| `## Branch reference`    | One link per branch into `reference/<branch>.md` — load exactly one             |
-| `## Handoff`             | Which skill continues the work, and in which direction only                     |
-| `## Completion criteria` | One row per branch, stating done-ness observably                                |
+Branch-router template:
+
+| Section                  | Contents                                                                         |
+| ------------------------ | -------------------------------------------------------------------------------- |
+| `## Pick branch`         | Branch table, plus a routing-signals table when phrasing is ambiguous            |
+| `## Shared prep`         | Steps and rules every branch runs (name it `Shared contract` for tooling rules)  |
+| `## Branch reference`    | One link per branch into `reference/<branch>.md`; orchestrators state lens gates |
+| `## Handoff`             | Which skill continues the work, and in which direction only                      |
+| `## Completion criteria` | One row per branch, stating done-ness observably                                 |
 
 Rules:
 
 - Use unnumbered `##` headers (e.g. `## Pick branch`) — no leading numbers.
 - Write reference links relative to the skill directory (`reference/open.md`), never repo-rooted, because skills run from their install path.
 - Put branch-specific detail in the reference file; keep only what all branches share in the router body.
+- For an orchestrated review, scope the diff before loading specialized lenses; never ask the user to choose a lens the diff can select.
 - Refer to other skills by plain name in `SKILL.md` (`the ruby-dev skill`). Agent-specific invocation syntax such as `$ruby-dev` belongs in `agents/*.yaml`.
 
 `allow_implicit_invocation: true` is only for skills whose output is a report/draft the user reviews before anything ships; skills that directly implement, rewrite, or publish must omit it. The policy is per skill, not per branch, so a router must omit it as soon as **one** branch changes code — that is why `review` omits it (`quality` refactors and runs gates) while `communication` keeps it.
@@ -138,18 +141,18 @@ Use `npx skills list` instead of the removed `skill doctor` and `skill status` c
 | ---------------------------- | ------------------------------------------------------------ |
 | gh-review-resolve            | `pull-request` **`resolve`**                                 |
 | gh-address-comments          | `pull-request` **`resolve`** or **`reply`**                  |
-| gh-pr-review                 | `pull-request` **`comment`**                                 |
+| gh-pr-review                 | `review` **`publish`** (end-to-end)                          |
 | findings-to-gh-pr-review     | `pull-request` **`comment`**                                 |
 | pr-opener                    | `pull-request` **`open`**                                    |
 | pr-slicer                    | `pull-request` **`slice`**                                   |
 | open-pr                      | `pull-request` **`open`**                                    |
 | slice-pr                     | `pull-request` **`slice`**                                   |
 | gh-pr                        | `pull-request` (**`comment`** / **`resolve`** / **`reply`**) |
-| gh-review-specific-pr        | `pull-request` **`comment`**                                 |
-| finish-review                | `review` **`finish`**                                        |
-| review-tests                 | `review` **`tests`**                                         |
-| review-perf-ruby             | `review` **`perf`**                                          |
-| review-security-compliance   | `review` **`security`**                                      |
+| gh-review-specific-pr        | `review` **`publish`**                                       |
+| finish-review                | generic `review` workflow                                    |
+| review-tests                 | `review` with explicit tests focus                           |
+| review-perf-ruby             | `review` with explicit Ruby performance focus                |
+| review-security-compliance   | `review` with explicit security/compliance focus             |
 | quality-loop                 | `review` **`quality`**                                       |
 | one-on-one-raw-notes         | `communication` **`one-on-one`**                             |
 | message-refinement-tech-orga | `communication` **`slack-message`**                          |
