@@ -1,14 +1,35 @@
 #!/usr/bin/env bash
 #
-# skills-restore
+# skills-restore [--prune-only]
 #
-# Restore dotfiles-managed agent skill installs from skills-lock.json.
-# Run from ~/.dotfiles (or via topgrade after rcup).
+# Restore dotfiles-managed agent skill installs from skills-lock.json, then
+# prune installs the lock no longer knows about. Run from ~/.dotfiles (or via
+# topgrade after rcup).
 
 set -euo pipefail
 
 DOTFILES_ROOT="${DOTFILES_ROOT:-$HOME/.dotfiles}"
 LOCK_FILE="${DOTFILES_ROOT}/skills-lock.json"
+LOCK_INSTALL_DIR="${DOTFILES_ROOT}/.agents/skills"
+
+# Global install dirs hold skills from other sources too, so only dangling
+# symlinks are pruned there — never real directories.
+GLOBAL_INSTALL_DIRS=(
+  "$HOME/.agents/skills"
+  "$HOME/.codex/skills"
+  "$HOME/.cursor/skills"
+)
+
+prune_only=false
+case "${1:-}" in
+  --prune-only) prune_only=true ;;
+  "") ;;
+  *)
+    echo "skills-restore: unknown argument: $1" >&2
+    echo "usage: skills-restore [--prune-only]" >&2
+    exit 1
+    ;;
+esac
 
 if [[ ! -f "$LOCK_FILE" ]]; then
   echo "skills-restore: missing lock file: $LOCK_FILE" >&2
@@ -16,5 +37,51 @@ if [[ ! -f "$LOCK_FILE" ]]; then
   exit 1
 fi
 
+lock_skill_names() {
+  ruby -rjson -e 'puts JSON.parse(File.read(ARGV[0])).fetch("skills", {}).keys' "$LOCK_FILE"
+}
+
+# The lock-managed tree is generated, so anything absent from the lock is stale.
+prune_stale_installs() {
+  [[ -d "$LOCK_INSTALL_DIR" ]] || return 0
+
+  local lock_names entry name
+  lock_names="$(lock_skill_names)"
+
+  # An empty list means a corrupt or truncated lock, not "prune everything".
+  if [[ -z "$lock_names" ]]; then
+    echo "skills-restore: lock lists no skills; skipping prune of $LOCK_INSTALL_DIR" >&2
+    return 0
+  fi
+
+  for entry in "$LOCK_INSTALL_DIR"/*; do
+    [[ -e "$entry" || -L "$entry" ]] || continue
+    name="$(basename "$entry")"
+    grep -qxF "$name" <<<"$lock_names" && continue
+
+    echo "skills-restore: pruning stale install: $entry"
+    rm -rf "$entry"
+  done
+}
+
+prune_dangling_symlinks() {
+  local dir link
+  for dir in "${GLOBAL_INSTALL_DIRS[@]}"; do
+    [[ -d "$dir" ]] || continue
+
+    while IFS= read -r link; do
+      [[ -n "$link" ]] || continue
+      echo "skills-restore: removing dangling symlink: $link"
+      rm -f "$link"
+    done < <(find -L "$dir" -maxdepth 1 -type l 2>/dev/null)
+  done
+}
+
 cd "$DOTFILES_ROOT"
-exec npx skills experimental_install -y
+
+if [[ "$prune_only" == false ]]; then
+  npx skills experimental_install -y
+fi
+
+prune_stale_installs
+prune_dangling_symlinks
