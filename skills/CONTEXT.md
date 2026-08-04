@@ -73,6 +73,33 @@ _Avoid_: customer-message, support-reply (too narrow — also covers partners an
 **Handoff**:
 `communication` hands off to `docs` **`editor`** when the ask is actually a README, runbook, or product doc rather than a message. Never reverse.
 
+# Docs Skills Domain
+
+## Language
+
+**Docs** (skill noun: `docs`):
+Verifying and rewriting an existing document against the repository.
+_Avoid_: documentation, writing (too vague), docs-editor / docs-architecture (old names)
+
+**Editor** (`docs` branch):
+Public-facing and operational docs — README, contributor, operator, feature docs, runbooks. Optimizes for reader action.
+_Avoid_: readme (too narrow), writer (implies net-new docs)
+
+**Architecture** (`docs` branch):
+Architecture-facing docs — ADRs, design notes, diagrams, system overviews. Optimizes for safe decisions against verified runtime behavior.
+_Avoid_: adr (too narrow), design (ambiguous with product design)
+
+**Triage** (shared):
+Four-way document classification (`accurate`, `partial`, `misleading`, `obsolete`) that sets effort before rewriting. Shared by both branches.
+_Avoid_: per-branch classification vocabularies
+
+**Evidence ladder** (branch-local):
+The ordered source list a branch trusts. Deliberately different per branch: `editor` starts at code and tests, `architecture` starts at live runtime behavior.
+_Avoid_: one flattened ordering for both branches
+
+**Handoff**:
+`docs` **`architecture`** may precede implementation work when a mental model needs verifying first. When the user wants end-of-branch production readiness instead, use the generic `review` workflow.
+
 # Product Skills Domain
 
 ## Language
