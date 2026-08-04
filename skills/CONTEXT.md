@@ -86,8 +86,8 @@ Public-facing and operational docs — README, contributor, operator, feature do
 _Avoid_: readme (too narrow), writer (implies net-new docs)
 
 **Architecture** (`docs` branch):
-Architecture-facing docs — ADRs, design notes, diagrams, system overviews. Optimizes for safe decisions against verified runtime behavior.
-_Avoid_: adr (too narrow), design (ambiguous with product design)
+Architecture-facing docs — ADRs, design notes, diagrams, system overviews. **Verify/rewrite only** (Solution-adjacent). Does not author net-new HLD/ADR; that author path is deferred.
+_Avoid_: adr (too narrow), design (ambiguous with product design), authoring greenfield HLD from this branch
 
 **Triage** (shared):
 Four-way document classification (`accurate`, `partial`, `misleading`, `obsolete`) that sets effort before rewriting. Shared by both branches.
@@ -98,7 +98,7 @@ The ordered source list a branch trusts. Deliberately different per branch: `edi
 _Avoid_: one flattened ordering for both branches
 
 **Handoff**:
-`docs` **`architecture`** may precede implementation work when a mental model needs verifying first. When the user wants end-of-branch production readiness instead, use the generic `review` workflow.
+`docs` **`architecture`** may precede craft when a mental model needs verifying first (Solution-adjacent). When the user wants end-of-branch production readiness instead, use the generic `review` workflow. HLD/ADR **author** remains deferred — do not invent an author branch here.
 
 # Intent Skills Domain
 
@@ -117,7 +117,7 @@ _Avoid_: general branch; Role/Context/Task/Deliverable templates
 _Avoid_: Role/persona, SynthesisLog, naming OS skills in the emitted brief
 
 **Handoff**:
-Stops at the paste-ready brief. Does not hand off into Build / Assure / Ship. Intent entrypoints that start from Jira still use `jira-ticket` (and `product-owner` **`gate`** when scope is non-trivial).
+Stops at the paste-ready brief. Does not hand off into Build / Assure / Ship. Intent entrypoints that start from Jira still use `jira-ticket` (and `product-owner` **`gate`** when scope is non-trivial). Spec/PRD router is **deferred** — no first-party `spec` skill.
 
 # Product Skills Domain
 
@@ -129,7 +129,7 @@ _Avoid_: product (no parallel skill), product-gate, po
 
 **Gate** (`product-owner` branch, default):
 Admission before non-trivial user-facing scope: Build Now / Build Later / Research Further / Reject.
-_Avoid_: prioritize, story-slice, experiment (stub branches — not authored)
+_Avoid_: prioritize, story-slice, experiment (stub branches — not authored this pass; stay stubs)
 
 **Decision vocabulary** (`gate`):
 **Build Now** | **Build Later** | **Research Further** | **Reject** — plus Confidence and Forced Challenge. Cite repo product docs or mark `unknown`.
@@ -140,7 +140,7 @@ Product constraints cited from repo docs (`AGENTS.md`, `ROADMAP.md`, or equivale
 _Avoid_: inventing budgets or paths when docs are silent → Research Further
 
 **Handoff**:
-Before non-trivial product scope, Intent entrypoints (`jira-ticket`, feature asks) load `product-owner` **`gate`**. Continue impl only on **Build Now** → `architecture` and/or `{lang}-dev` / overlay. Never let `architecture` / `*-dev` / `review` answer “should we build X?”. `grilling` is Decide-only stress-test; product-owner keeps doctrine when the topic is scope.
+Before non-trivial product scope, Intent entrypoints (`jira-ticket`, feature asks) load `product-owner` **`gate`**. Continue impl only on **Build Now** → `architecture` and/or `{lang}-dev` / overlay. Never let `architecture` / `*-dev` / `review` answer “should we build X?”. `grilling` is Decide-only stress-test (third-party install); product-owner keeps doctrine when the topic is scope.
 
 # Dev Skills Domain
 
@@ -151,7 +151,7 @@ Language-free Solution craft: structure, types, measured performance. Exactly on
 _Avoid_: deep-modules / refactor-types as top-level skills; docs `architecture` (that is documentation verify/rewrite)
 
 **Deep-modules** / **refactor-types** / **performance** / **refactor-boundaries** (`architecture` branches):
-Module depth & seams | type hygiene | measure→optimize | wire/adapter contracts (`refactor-boundaries` is stub until earned).
+Module depth & seams | type hygiene | measure→optimize | wire/adapter contracts.
 _Avoid_: bare branch name `refactor`; language-named branches (`refactor-rust`)
 
 **`refactor-<concern>`**:
@@ -184,5 +184,49 @@ Seven rules in `architecture` Shared prep before adding a branch. Prefer harvest
 **Third-party packs**:
 Optional agent installs (`ms-rust`, `rust-performance`, vendor React packs). Not first-party kinds; never source of truth for the OS.
 
+**Conventional Commits** (format — single SoT):
+
+```text
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+- `fix:` PATCH · `feat:` MINOR · `BREAKING CHANGE:` / `!` → MAJOR
+- Other types: `build:`, `chore:`, `ci:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`, …
+- Footers: git-trailer style
+
+**Phase commit** (when to commit — not at release):
+After each Solution/Build plan phase (architecture phase, surgical milestone, or user-named plan step): validate → ≥1 Conventional Commit; body = rationale / intent / why. Dirty tree at PR open: `pull-request` **`open`** applies the same format once if needed. `release` **`notes`** consumes merged history only — never invents commits.
+
 **Handoff**:
-`*-dev` `design` → `architecture` (branch pick inside). `architecture` / `*-dev` → `review` / `pull-request` for assure/ship. No reverse: craft does not own Product gate.
+`*-dev` `design` → `architecture` (branch pick inside). `architecture` / `*-dev` → `review` / `pull-request` for assure/ship. No reverse: craft does not own Product gate. Changelog after merge → `release` **`notes`**.
+
+# Ship Skills Domain
+
+## Language
+
+**Release** (skill noun: `release`):
+Changelog / release notes derived from Conventional Commits in a merged ship range. Notes-only — no flag, promote, or rollback.
+_Avoid_: release-ops, ship-notes (use `notes`), absorbing `pull-request` lifecycle
+
+**Notes** (`release` branch):
+Group Breaking → Features → Fixes → other from `git log` in the ship range. Consumer of history authored during Solution/Build phases.
+_Avoid_: inventing commits; waiting until notes to write history
+
+**Handoff**:
+Compose with `pull-request` — never absorb PR open/slice/resolve. Phase CC authoring lives in `architecture` / `*-dev`; `open` is leftover applicator only.
+
+# Decide Skills Domain
+
+## Language
+
+**Grilling** (third-party skill noun: `grilling`):
+Stress-test interview — one hard question at a time. Not first-party in this store.
+Install: `npx skills add https://github.com/mattpocock/skills --skill grilling`
+_Avoid_: promoting a forked `skills/grilling/`; using grilling to answer “should we build X?” (that stays `product-owner` **`gate`**)
+
+**Handoff**:
+Decide-only. May stress Intent briefs, Product gate proposals, or Solution craft choices. Product doctrine and evidence rules stay with `product-owner` when the topic is scope.

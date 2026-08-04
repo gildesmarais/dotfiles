@@ -23,30 +23,34 @@ flowchart LR
 
 ## Domain map
 
-| Domain       | Job                              | Skill(s)                                                              | Primary branches                                                                | Status                                      |
-| ------------ | -------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------- |
-| **Intent**   | Fuzzy need → actionable work     | `prompt-synthesis`; `jira-ticket`                                     | `code` \| `architecture` \| `product` (default: Shared prep)                    | active — Spec/PRD router still **gap**      |
-| **Product**  | What to build; admit/defer scope | `product-owner`                                                       | `gate` (default); stubs: prioritize, story-slice, experiment                    | active gate; other Product branches **gap** |
-| **Solution** | How the system should work       | `architecture`; `docs` **`architecture`** (docs only)                 | `deep-modules` \| `refactor-types` \| `performance`; stub `refactor-boundaries` | active; HLD/ADR author **gap**              |
-| **Build**    | Change the codebase              | `ruby-dev`, `rust-dev`; overlays `ruby-on-rails-dev`, `mir-architect` | classify: surgical \| design \| review-hand-off                                 | active                                      |
-| **Assure**   | Safe to merge?                   | `review`                                                              | finish, quality, tests, perf, security, publish                                 | active — test-design author **gap**         |
-| **Ship**     | Land on mainline                 | `pull-request`                                                        | open, slice, comment, reply, resolve                                            | active — Release router **gap**             |
-| **Run**      | Production health                | thin (e.g. jira → Datadog)                                            | —                                                                               | **gap** (Incident)                          |
-| **Explain**  | Humans understand state          | `communication`; `docs`                                               | see skill branches                                                              | active                                      |
-| **Decide**   | Stress-test choices              | `grilling` (agent-local); `product-owner` Forced Challenge            | —                                                                               | grilling not first-party store skill        |
+| Domain       | Job                              | Skill(s)                                                              | Primary branches                                                             | Status                                               |
+| ------------ | -------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **Intent**   | Fuzzy need → actionable work     | `prompt-synthesis`; `jira-ticket`                                     | `code` \| `architecture` \| `product` (default: Shared prep)                 | active — Spec/PRD **deferred**                       |
+| **Product**  | What to build; admit/defer scope | `product-owner`                                                       | `gate` (default); stubs: prioritize, story-slice, experiment                 | active gate; stub bodies **sequenced** (KISS)        |
+| **Solution** | How the system should work       | `architecture`; `docs` **`architecture`** (verify-only)               | `deep-modules` \| `refactor-types` \| `refactor-boundaries` \| `performance` | active; HLD/ADR author **deferred**                  |
+| **Build**    | Change the codebase              | `ruby-dev`, `rust-dev`; overlays `ruby-on-rails-dev`, `mir-architect` | classify: surgical \| design \| review-hand-off                              | active — phase CC during plans                       |
+| **Assure**   | Safe to merge?                   | `review`                                                              | finish, quality, tests, perf, security, publish                              | active — test-design author **gap**                  |
+| **Ship**     | Land on mainline                 | `pull-request`; `release`                                             | PR: open, slice, comment, reply, resolve; release: `notes`                   | active — release ops (flag/promote/rollback) **gap** |
+| **Run**      | Production health                | thin (e.g. jira → Datadog)                                            | —                                                                            | **gap** (Incident postponed)                         |
+| **Explain**  | Humans understand state          | `communication`; `docs`                                               | see skill branches                                                           | active                                               |
+| **Decide**   | Stress-test choices              | `grilling` (third-party); `product-owner` Forced Challenge            | —                                                                            | grilling external — not first-party store skill      |
 
 Third-party packs under `skills/` (`ms-rust`, `rust-performance`, …) are optional spice — never OS source of truth. External registries exist; this README’s examples stay on **this** store.
+
+`grilling` install (Decide): `npx skills add https://github.com/mattpocock/skills --skill grilling`
 
 ## Compose / handoffs
 
 One-way rules (prevent domain collisions):
 
-1. **Product before non-trivial scope** — `jira-ticket` / feature asks load `product-owner` **`gate`**. Impl continues only on **Build Now**. Skip for pure bugfix, refactor, infra.
+1. **Product before non-trivial scope** — `jira-ticket` / feature asks load `product-owner` **`gate`**. Impl continues only on **Build Now**. Skip for pure bugfix, refactor, infra. Product is gate-only this pass (stubs unauthored).
 2. **Craft ≠ product** — `architecture` / `*-dev` / `review` never answer “should we build X?”
 3. **Build → Solution** — `*-dev` class `design` loads `architecture` (branch pick inside); do not inline craft in `*-dev`.
-4. **Assure → Ship** — `review` may hand off to `pull-request` **`comment`**. Never reverse: GitHub posting does not live under `review`.
-5. **Explain → docs** — `communication` → `docs` **`editor`** when the artifact is a README/runbook, not a message. Never reverse.
-6. **Overlay → runtime** — `ruby-on-rails-dev` / `mir-architect` compose with the matching `*-dev`.
+4. **Phase CC → merge → notes** — Solution/Build plan phases author Conventional Commits (validate → ≥1 CC + rationale). After merge, `release` **`notes`** consumes history. `pull-request` **`open`** is leftover applicator only. Format SoT: [`CONTEXT.md`](CONTEXT.md).
+5. **Assure → Ship** — `review` may hand off to `pull-request` **`comment`**. Never reverse: GitHub posting does not live under `review`.
+6. **Explain → docs** — `communication` → `docs` **`editor`** when the artifact is a README/runbook, not a message. Never reverse. `docs` **`architecture`** is Solution-adjacent verify-only (no HLD/ADR author).
+7. **Overlay → runtime** — `ruby-on-rails-dev` / `mir-architect` compose with the matching `*-dev`.
+8. **Decide** — `grilling` (third-party) stress-tests Intent / Product / Solution; product doctrine stays with `product-owner` when the topic is scope.
 
 ## Skill index
 
@@ -57,8 +61,9 @@ One-way rules (prevent domain collisions):
 | Solution | [`architecture`](architecture/), [`docs`](docs/)                                                                               |
 | Build    | [`ruby-dev`](ruby-dev/), [`rust-dev`](rust-dev/), [`ruby-on-rails-dev`](ruby-on-rails-dev/), [`mir-architect`](mir-architect/) |
 | Assure   | [`review`](review/)                                                                                                            |
-| Ship     | [`pull-request`](pull-request/)                                                                                                |
+| Ship     | [`pull-request`](pull-request/), [`release`](release/)                                                                         |
 | Explain  | [`communication`](communication/), [`docs`](docs/)                                                                             |
+| Decide   | `grilling` (third-party — see install above)                                                                                   |
 
 ## Authoring laws
 
@@ -104,6 +109,7 @@ cd ~/.dotfiles
 npx skills add gildesmarais/dotfiles --skill review -a cursor -a codex -y
 npx skills add gildesmarais/dotfiles --skill architecture -a cursor -a codex -y
 npx skills add . --skill product-owner -a cursor -a codex -y   # local tree when ahead of remote
+npx skills add . --skill release -a cursor -a codex -y
 skills-restore
 ```
 

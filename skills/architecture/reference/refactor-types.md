@@ -26,7 +26,7 @@ Primitive obsession across modules, stringly closed sets, magic ints, parallel l
    - Map raw wire/DB/CSV into domain types at the edge (inbound).
    - Serialize domain types back to primitives outbound.
    - Keep application logic out of serialization shells.
-   - Heavy adapter-contract redesign co-loads `refactor-boundaries` when that branch is authored; until then, keep maps thin and local.
+   - Heavy adapter-contract redesign co-loads `refactor-boundaries`; keep maps thin and local when only types move.
 
 5. **Clean consumers**
    - Rewrite call sites to the typed API.

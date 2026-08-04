@@ -42,8 +42,9 @@ Keep the workflow autonomous by default. Only stop to ask the user when a requir
 
 ## Commit Message Rules
 
-- Use a conventional commit title.
-- Put the ticket immediately after the scope in square brackets.
+- Use Conventional Commits. Format SoT: [`CONTEXT.md`](../../CONTEXT.md) — do not paste a second copy here.
+- Prefer history already authored per phase during Solution/Build. If the tree is still dirty at PR open, apply the same format once for session-touched files (leftover applicator — not the authoring home).
+- Put the ticket immediately after the scope in square brackets when the branch encodes one.
 - Format the title as:
 
 ```text
@@ -51,7 +52,7 @@ type(scope): [ABC-123] summary
 ```
 
 - Prefer `fix` for bug fixes, `feat` for user-visible additions, `refactor` for behavior-preserving internal changes, `docs` for documentation-only changes, and `chore` for maintenance work.
-- Keep the summary short and concrete.
+- Keep the summary short and concrete; body = rationale / intent when useful.
 - When the repository has local commit conventions, satisfy them too.
 - If the repo requires commit body sections, include them.
 

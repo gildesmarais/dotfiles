@@ -45,8 +45,6 @@ Earn `design` when any of: dual ownership / shallow modules / primitive obsessio
    - **Review-hand-off:** stop and continue with `review`.
 4. Handoff: commands run, residual risk, whether `architecture` learning-log should grow (harvest there, not here).
 
-Commit policy follows the user and repo. Prefer small phases with validation after each.
-
 ## Surgical path
 
 - Change only what the bug or ask requires.
@@ -66,6 +64,7 @@ Commit policy follows the user and repo. Prefer small phases with validation aft
 - Preserve existing repo conventions for contracts and docs.
 - Do not invent a new global docs regime.
 - If a touched public API already has docs or contract comments, keep them accurate in scope.
+- **Phase commits:** after each plan phase or surgical milestone, validate → ≥1 Conventional Commit with rationale/intent body before the next phase. Format: [`CONTEXT.md`](../CONTEXT.md). Inspect `git log` / `git show` when needed. `release` **`notes`** consumes history later — do not defer authoring to notes.
 
 ## Handoff Checklist
 

@@ -71,6 +71,7 @@ Earn `design` when any of: dual ownership / shallow modules / primitive obsessio
 - Do not introduce a new global YARD requirement into a repo that does not already use it.
 - If a touched public API already has YARD, RBS, Sorbet, or equivalent contract docs, keep them accurate in scope.
 - For service objects, jobs, CLI commands, and library-style code, make input/output expectations easy to discover either in code or tests.
+- **Phase commits:** after each plan phase or surgical milestone, validate → ≥1 Conventional Commit with rationale/intent body before the next phase. Format: [`CONTEXT.md`](../CONTEXT.md). Inspect `git log` / `git show` when needed. `release` **`notes`** consumes history later — do not defer authoring to notes.
 
 ## Handoff Checklist
 

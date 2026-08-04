@@ -19,7 +19,7 @@ Never ask the user to pick a template when signals are clear. Load one or more b
 | --------------------- | ------------------------------------------------------------------ | ------ |
 | `deep-modules`        | Module/interface/depth/seam/adapter/locality/deletion test         | active |
 | `refactor-types`      | Primitives/strings → domain types; logic on types; type hygiene    | active |
-| `refactor-boundaries` | Wire/API/adapter contract maps; keep domain out of boundary shells | stub   |
+| `refactor-boundaries` | Wire/API/adapter contract maps; keep domain out of boundary shells | active |
 | `performance`         | Measure → baseline → optimize; language-free stop rules            | active |
 
 | Signal                                                    | Branch                |
@@ -37,8 +37,8 @@ If the ask is “should we build X?”, stop — use `product-owner`. If the ask
 2. Evidence before claims: call sites, ownership, existing tests. Label Strong / Worth / Speculative when surveying.
 3. Apply the glossary in [`reference/glossary.md`](reference/glossary.md) on every loaded branch.
 4. Multi-load OK when signals combine; one handoff covering all loaded branches.
-5. Do not invent content for stub branches. If only `refactor-boundaries` signals fire and the stub is empty of guidance, state the gap and work the nearest authored branch or stop for user direction.
-6. Keep craft language-free. Language recipes belong in `*-dev`, overlays, third-party packs, or project `AGENTS.md` — not here.
+5. Keep craft language-free. Language recipes belong in `*-dev`, overlays, third-party packs, or project `AGENTS.md` — not here.
+6. **Phase → validate → commit:** after each craft phase (architecture phase, surgical milestone, or user-named plan step), validate, then create ≥1 Conventional Commit with a rationale/intent body before the next phase. Format and phase law: [`CONTEXT.md`](../CONTEXT.md). Inspect `git log` / `git show` when deepening history. Do not wait until `release` **`notes`** or PR open to author history.
 
 ### Branch expansion law
 
@@ -59,7 +59,7 @@ Load each selected branch’s reference and follow it through completion. Always
 - Glossary → [`reference/glossary.md`](reference/glossary.md)
 - **`deep-modules`** → [`reference/deep-modules.md`](reference/deep-modules.md)
 - **`refactor-types`** → [`reference/refactor-types.md`](reference/refactor-types.md)
-- **`refactor-boundaries`** → [`reference/refactor-boundaries.md`](reference/refactor-boundaries.md) (stub)
+- **`refactor-boundaries`** → [`reference/refactor-boundaries.md`](reference/refactor-boundaries.md)
 - **`performance`** → [`reference/performance.md`](reference/performance.md)
 - Learning log → [`reference/learning-log.md`](reference/learning-log.md) (consult when a loaded branch has tagged gems)
 
@@ -68,7 +68,7 @@ Load each selected branch’s reference and follow it through completion. Always
 - Implementation and language validation continue in the relevant `*-dev` / overlay after craft decisions are clear.
 - Assure / ship continues with `review` / `pull-request` — never reverse.
 - Product scope questions go to `product-owner`, not this skill.
-- Stub gap: do not invent `refactor-boundaries` body; report and stop or fall back as in Shared prep.
+- Changelog from merged history → `release` **`notes`** (consumer only).
 
 ## Growing reference
 
@@ -83,10 +83,10 @@ Grow `reference/learning-log.md` when a large design left a reusable, product-fr
 
 ## Completion criteria
 
-| Branch                | Done when                                                                                                     |
-| --------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `deep-modules`        | Deletion test / ownership / seams addressed; phases validated; residual dual ownership called out             |
-| `refactor-types`      | Primitive obsession at target cleared or scoped; logic on types; consumers cleaned; boundaries mapped         |
-| `refactor-boundaries` | Stub only — gap stated; no invented contract-map playbook                                                     |
-| `performance`         | Baseline or hot path identified before changes; stop rules applied; no language-specific recipe invented here |
-| multi-load            | Each loaded branch’s done-when met or explicitly N/A with reason; one combined handoff                        |
+| Branch                | Done when                                                                                                          |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `deep-modules`        | Deletion test / ownership / seams addressed; phases validated; residual dual ownership called out                  |
+| `refactor-types`      | Primitive obsession at target cleared or scoped; logic on types; consumers cleaned; boundaries mapped              |
+| `refactor-boundaries` | Contract map for targeted edges; domain out of shells; serialize ownership clear; phases committed per Shared prep |
+| `performance`         | Baseline or hot path identified before changes; stop rules applied; no language-specific recipe invented here      |
+| multi-load            | Each loaded branch’s done-when met or explicitly N/A with reason; one combined handoff                             |

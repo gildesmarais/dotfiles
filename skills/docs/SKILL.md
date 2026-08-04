@@ -33,7 +33,7 @@ Routing signals:
 | "verify the architecture before we change it"                             | `architecture`                |
 | "is this branch ready to ship"                                            | stop — use the `review` skill |
 
-Use `architecture` when a task requires verifying real architecture before a decision or change, even if the user did not ask for a document rewrite.
+Use `architecture` when a task requires verifying real architecture before a decision or change, even if the user did not ask for a document rewrite. This branch is Solution-adjacent **verify/rewrite only** — it does not author net-new HLD/ADR (author path deferred).
 
 ## Shared prep
 
