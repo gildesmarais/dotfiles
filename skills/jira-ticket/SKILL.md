@@ -30,10 +30,11 @@ Start from the ticket, gather evidence with Atlassian MCP, verify the codebase l
 3. Fetch and assess Jira details with Atlassian MCP.
 4. Fetch Datadog evidence when the Jira issue references Datadog artifacts.
 5. Read the code and determine the affected surface area.
-6. Invoke the required implementation/review skills.
-7. Present a concise implementation assessment and proposed branch name, then wait for user agreement.
-8. After agreement, create a fresh branch from the default branch and implement autonomously.
-9. Run quality gates, summarize validation evidence, and stop when the work is ready to push and open a PR.
+6. If scope is non-trivial user-facing product work, run `product-owner` `gate` before planning impl; stop on Build Later / Research Further / Reject.
+7. Invoke the required implementation/review skills.
+8. Present a concise implementation assessment and proposed branch name, then wait for user agreement.
+9. After agreement, create a fresh branch from the default branch and implement autonomously.
+10. Run quality gates, summarize validation evidence, and stop when the work is ready to push and open a PR.
 
 ## Repository Verification
 
@@ -70,6 +71,7 @@ Start from the ticket, gather evidence with Atlassian MCP, verify the codebase l
 
 ## Skill Routing
 
+- **Product gate:** Before non-trivial user-facing scope (new feature, UI/API surface, parity ask, UAT-driven expansion), load `product-owner` branch `gate`. Continue implementation only on **Build Now**. Skip the Product gate for pure bug fix, refactor, or infra with no user-facing concept or step change. Never let `architecture` / `*-dev` / `review` answer “should we build X?”
 - Invoke the `ruby-dev` skill when Ruby code present for implementation discipline.
 - Add the `ruby-on-rails-dev` skill when Rails or API layers are in scope.
 - Add the `review` skill with explicit security focus whenever the work matches the `AGENTS.md` security trigger matrix. Default to invoking it when authn/authz, tenancy, PII/PHI, exports, webhooks, raw SQL, external fetches, or sensitive Sidekiq behavior may change.
@@ -82,7 +84,7 @@ Before creating a branch or editing code, provide a concise checkpoint covering:
 
 - `Ticket facts`: verified Jira facts that define scope.
 - `Files read`: the code areas you actually inspected.
-- `Skills required`: whether `ruby-on-rails-dev` and security-focused `review` are required, plus why.
+- `Skills required`: whether `product-owner` gate ran (or was skipped and why), whether `ruby-on-rails-dev` and security-focused `review` are required, plus why.
 - `Branch name`: the proposed branch name.
 - `Implementation plan`: a short plan for the code change.
 - `Assumptions`: key assumptions or open questions.

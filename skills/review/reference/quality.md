@@ -198,6 +198,6 @@ If P0/P1 findings remain, **re-invoke** this skill on the branch with branch **`
 
 ## Related skills
 
-- `refactor-type-driven` — type/domain refactors; quality may _follow_ that work
+- `architecture` **`refactor-types`** — type/domain refactors; quality may _follow_ that work
 - `css-cleaner` — CSS/token DRY only; defer CSS-wide cleanup there
 - Stack-specific skills (e.g. React Native perf) — consult when bootstrap detects that stack

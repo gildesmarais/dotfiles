@@ -71,4 +71,72 @@ Marketing copy / public PR-press statements are out of scope (persuasive/brand-v
 _Avoid_: customer-message, support-reply (too narrow — also covers partners and public)
 
 **Handoff**:
-`communication` hands off to `docs-editor` when the ask is actually a README, runbook, or product doc rather than a message. Never reverse.
+`communication` hands off to `docs` **`editor`** when the ask is actually a README, runbook, or product doc rather than a message. Never reverse.
+
+# Product Skills Domain
+
+## Language
+
+**Product-owner** (skill noun: `product-owner`):
+Product domain router — admit/defer/reject scope and protect golden paths. Exactly one Product skill; grow branches here.
+_Avoid_: product (no parallel skill), product-gate, po
+
+**Gate** (`product-owner` branch, default):
+Admission before non-trivial user-facing scope: Build Now / Build Later / Research Further / Reject.
+_Avoid_: prioritize, story-slice, experiment (stub branches — not authored)
+
+**Decision vocabulary** (`gate`):
+**Build Now** | **Build Later** | **Research Further** | **Reject** — plus Confidence and Forced Challenge. Cite repo product docs or mark `unknown`.
+_Avoid_: ship-it, defer, maybe (use the four decisions only)
+
+**Golden path** / **click budget** / **mental model**:
+Product constraints cited from repo docs (`AGENTS.md`, `ROADMAP.md`, or equivalents) — never invented.
+_Avoid_: inventing budgets or paths when docs are silent → Research Further
+
+**Handoff**:
+Before non-trivial product scope, Intent entrypoints (`jira-ticket`, feature asks) load `product-owner` **`gate`**. Continue impl only on **Build Now** → `architecture` and/or `{lang}-dev` / overlay. Never let `architecture` / `*-dev` / `review` answer “should we build X?”. `grilling` is Decide-only stress-test; product-owner keeps doctrine when the topic is scope.
+
+# Dev Skills Domain
+
+## Language
+
+**Architecture** (skill noun: `architecture`):
+Language-free Solution craft: structure, types, measured performance. Exactly one architecture router.
+_Avoid_: deep-modules / refactor-types as top-level skills; docs `architecture` (that is documentation verify/rewrite)
+
+**Deep-modules** / **refactor-types** / **performance** / **refactor-boundaries** (`architecture` branches):
+Module depth & seams | type hygiene | measure→optimize | wire/adapter contracts (`refactor-boundaries` is stub until earned).
+_Avoid_: bare branch name `refactor`; language-named branches (`refactor-rust`)
+
+**`refactor-<concern>`**:
+Only legal form for refactor branches under `architecture`. New concerns use the expansion law in `architecture` Shared prep — never a top-level `refactor-*` skill.
+_Avoid_: `refactor`, `refactor-misc`, `cleanup` as skill or branch names
+
+**Language-runtime** / **`*-dev`**:
+Thin language adapter (`ruby-dev`, `rust-dev`). Classify `surgical` | `design` | `review-hand-off`; on `design`, load `architecture`.
+_Avoid_: inlining module/type/perf craft inside `*-dev`
+
+**Overlay**:
+Framework or domain delta composed with one `*-dev` (`ruby-on-rails-dev`, `mir-architect`).
+_Avoid_: standalone mega-router that picks languages
+
+**Design** (classification, not a skill):
+`*-dev` class meaning structural/type/perf craft is earned — hand off to `architecture`.
+_Avoid_: treating “design” as a skill noun
+
+**Deepen**:
+Signal that selects `architecture` **`deep-modules`** — not a skill name.
+_Avoid_: deepen-modules skill
+
+**Harvest**:
+Append learning-log bullets tagged by branch under `architecture/reference/learning-log.md` (or language-only harvest in optional `*-dev` `reference.md`).
+_Avoid_: growing frozen router checklists for every lesson
+
+**Expansion law**:
+Seven rules in `architecture` Shared prep before adding a branch. Prefer harvest over new branches; never invent a top-level craft skill when a `refactor-<concern>` branch fits.
+
+**Third-party packs**:
+Optional agent installs (`ms-rust`, `rust-performance`, vendor React packs). Not first-party kinds; never source of truth for the OS.
+
+**Handoff**:
+`*-dev` `design` → `architecture` (branch pick inside). `architecture` / `*-dev` → `review` / `pull-request` for assure/ship. No reverse: craft does not own Product gate.

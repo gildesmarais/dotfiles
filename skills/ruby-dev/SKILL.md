@@ -1,36 +1,59 @@
 ---
 name: ruby-dev
-description: "Ruby workflow for bug fixes, refactors, incidents, and targeted code review. Use when work needs disciplined Ruby investigation, small safe changes, repo-native validation, TDD-oriented fixes, and clear routing to review tests or finish branches when the request is narrower or later-stage."
+description: >-
+  Ruby workflow for surgical fixes and design handoffs. Use when work needs
+  disciplined Ruby investigation, small safe changes, repo-native validation,
+  TDD-oriented fixes, and clear routing to architecture on design or to review
+  on assure/ship asks.
 ---
 
 # Ruby Dev
 
+Language-runtime adapter for Ruby. Craft (modules, types, measured perf) lives in `architecture` — do not inline it here.
+
 ## When to use
 
-- Use for Ruby implementation work: bug fixes, refactors, incidents, and small feature adjustments.
+- Use for Ruby implementation work: surgical fixes, incidents, and small feature adjustments.
 - Read `AGENTS.md` first when present and follow repo-specific conventions over defaults here.
 - Prefer `review` **`tests`** when the user mainly wants test/spec review quality.
 - Prefer `review` **`finish`** when the user wants end-of-branch production-readiness review.
+- Prefer `architecture` when design/structure/types/measured perf is the job (or when classification is `design`).
+- Use with `ruby-on-rails-dev` when the change is Rails-shaped (controllers, policies, serializers, workers).
+
+## Classify
+
+| Class             | Action                                                        |
+| ----------------- | ------------------------------------------------------------- |
+| `surgical`        | Stay here; smallest safe change; language validation          |
+| `design`          | Load `architecture`; do not inline craft advice in this skill |
+| `review-hand-off` | Route to `review`                                             |
+
+Earn `design` when any of: dual ownership / shallow modules / primitive obsession across boundaries / user asks for structural cleanup / measured perf work / type-driven refactor.
+
+## Stance
+
+- Evidence before claims. Prefer `rg`, file reads, and in-tree call sites over guesswork.
+- Reproduce the bug or current behavior when possible. If reproduction is not possible, state what was checked instead.
+- Prefer TDD for behavior changes: focused failing test first when cheap, then smallest safe fix.
+- Prefer simple, forward, clean diffs. Default to surgical unless design is earned.
+- LOC reduction and modern idioms (`match?`, `Enumerable`, pattern matching) are fine on the surgical path; do not treat them as a substitute for `architecture` when design is earned.
 
 ## Workflow
 
-1. Classify the task: `bug fix`, `refactor`, `incident`, `feature adjustment`, or `review`.
-2. Gather context before proposing changes:
-   - Read the touched Ruby files and nearby tests.
-   - Inspect call sites, entrypoints, and public contracts.
-   - Use YARD, RBS, Sorbet, or inline docs if the repo already relies on them.
-3. Reproduce the bug or current behavior when possible. If reproduction is not possible, state what was checked instead.
-4. For behavior changes, prefer TDD:
-   - Add or update a focused failing test first when the failure can be expressed cheaply.
-   - Then implement the smallest safe fix.
-5. Modern Refactoring & Efficiency:
-   - LOC Reduction: Aggressively reduce boilerplate. Target a high signal-to-noise ratio.
-   - Data-Driven Patterns: Use constants/maps for metadata instead of repetitive `if/case` branches.
-   - Modern Idioms: Leverage Ruby 3.x+ features (`match?`, `Enumerable` refinements, pattern matching) to keep logic dense and expressive.
-   - Surgical Edits: Favor small, unified methods over fragmented helper-hell.
-6. For refactors, preserve behavior with characterization or boundary coverage before moving code.
-7. Validate with the repo's native commands, starting with the narrowest relevant scope and broadening when practical.
-8. Handoff with the commands run, result, residual risk, and any follow-up that remains intentionally out of scope.
+1. Classify: `surgical` | `design` | `review-hand-off`.
+2. Evidence first: touched Ruby files, nearby tests, call sites, entrypoints, public contracts; use YARD/RBS/Sorbet only if the repo already relies on them.
+3. Branch:
+   - **Surgical:** smallest safe change (TDD when behavior changes) → validate → handoff.
+   - **Design:** load `architecture` (branch pick inside) → implement decisions here with Ruby validation → handoff.
+   - **Review-hand-off:** stop and continue with `review`.
+4. Handoff: commands run, residual risk, whether `architecture` learning-log should grow (harvest there, not here).
+
+## Surgical path
+
+- Change only what the bug or ask requires.
+- Preserve behavior unless the ask is an intentional break.
+- For behavior-preserving moves without design signals, keep characterization or boundary coverage before moving code.
+- Favor small, unified methods over fragmented helper-hell; data-driven constants/maps over repetitive branches when that is the whole ask.
 
 ## Validation Defaults
 
@@ -39,6 +62,7 @@ description: "Ruby workflow for bug fixes, refactors, incidents, and targeted co
 - Run lint for changed Ruby files when the repo has a standard lint command.
 - Run broader validation when the change crosses boundaries or when targeted validation leaves material risk.
 - Do not claim broader validation passed unless the command exit status was actually zero.
+- For design phases: validate after each phase before starting the next.
 
 ## Contracts and Documentation
 
@@ -48,19 +72,13 @@ description: "Ruby workflow for bug fixes, refactors, incidents, and targeted co
 - If a touched public API already has YARD, RBS, Sorbet, or equivalent contract docs, keep them accurate in scope.
 - For service objects, jobs, CLI commands, and library-style code, make input/output expectations easy to discover either in code or tests.
 
-## Review Focus
-
-- Prioritize Logic Density: Flag over-engineered or excessively branchy code that could be simplified via data-driven patterns.
-- Prioritize correctness, failure modes, boundary handling, and maintainability.
-- For review-style requests, report findings first with file references and concrete bug risk.
-- If the diff is test-heavy, use `review` **`tests`** for the test-quality pass instead of duplicating that guidance here.
-- If no critical implementation defects are found, say `No critical implementation defects detected` and note residual risks or validation gaps.
-
 ## Handoff Checklist
 
 Before handoff, confirm:
 
-- Targeted tests pass and lint passes for changed files.
-- Commands run are listed with scope and pass/fail.
-- Root cause or motivation for the change is stated briefly.
-- Residual risk, rollback notes, or unverified paths are called out when relevant.
+- Classification stated (`surgical` / `design` / `review-hand-off`).
+- For `design`: which `architecture` branches were loaded.
+- Targeted tests pass and lint passes for changed files when those commands were in scope.
+- Commands run listed with scope and pass/fail.
+- Root cause or motivation stated briefly.
+- Residual risk, rollback notes, or unverified paths called out when relevant.

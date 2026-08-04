@@ -1,0 +1,92 @@
+---
+name: architecture
+description: >
+  Language-free solution craft for module depth, type-driven refactors, and
+  measured performance. Use when design or structural cleanup is earned, when
+  a *-dev skill classifies design, or when the user asks to deepen modules,
+  replace primitives with domain types, or optimize with a baseline.
+---
+
+# Architecture
+
+Change how the codebase is structured, typed, or measured for performance — not whether to build a feature, and not language-runtime validation.
+
+## Pick branch
+
+Never ask the user to pick a template when signals are clear. Load one or more branches when signals combine (same as review lenses).
+
+| Branch                | Job                                                                | Status |
+| --------------------- | ------------------------------------------------------------------ | ------ |
+| `deep-modules`        | Module/interface/depth/seam/adapter/locality/deletion test         | active |
+| `refactor-types`      | Primitives/strings → domain types; logic on types; type hygiene    | active |
+| `refactor-boundaries` | Wire/API/adapter contract maps; keep domain out of boundary shells | stub   |
+| `performance`         | Measure → baseline → optimize; language-free stop rules            | active |
+
+| Signal                                                    | Branch                |
+| --------------------------------------------------------- | --------------------- |
+| deepen, shallow modules, seams, locality, dual ownership  | `deep-modules`        |
+| primitive obsession, stringly enums, logic-on-types       | `refactor-types`      |
+| wire/API maps, adapter contract shape, boundary serialize | `refactor-boundaries` |
+| slow, hot path, allocate, profile, benchmark              | `performance`         |
+
+If the ask is “should we build X?”, stop — use `product-owner`. If the ask is surgical language work only, stay in the relevant `*-dev` skill.
+
+## Shared prep
+
+1. Read `AGENTS.md` when present; prefer repo law over defaults here.
+2. Evidence before claims: call sites, ownership, existing tests. Label Strong / Worth / Speculative when surveying.
+3. Apply the glossary in [`reference/glossary.md`](reference/glossary.md) on every loaded branch.
+4. Multi-load OK when signals combine; one handoff covering all loaded branches.
+5. Do not invent content for stub branches. If only `refactor-boundaries` signals fire and the stub is empty of guidance, state the gap and work the nearest authored branch or stop for user direction.
+6. Keep craft language-free. Language recipes belong in `*-dev`, overlays, third-party packs, or project `AGENTS.md` — not here.
+
+### Branch expansion law
+
+Agents must follow these before adding any architecture branch:
+
+1. **Never** add a branch named `refactor`. Use `refactor-<concern>` (e.g. `refactor-types`, `refactor-boundaries`).
+2. **New branch only if** all hold: (a) distinct signals from existing branches; (b) cannot be a section inside an existing `reference/*.md`; (c) reusable ≥2 times; (d) language-free.
+3. **Add a branch:** one row in `## Pick branch` + signals table + `reference/<branch>.md` + completion row. Do not invent a top-level skill.
+4. **Overlap rules:** module ownership/depth → `deep-modules`; closed sets / newtypes / logic-on-types → `refactor-types`; serialize/deserialize and adapter contract shape → `refactor-boundaries`; speed/allocations with measure → `performance`.
+5. **Multi-load OK** when signals combine (same as review lenses).
+6. **Growth default:** harvest bullet tagged with branch name → `reference/learning-log.md`. Edit branch checklist only when the contract is wrong.
+7. **Reject:** `refactor-misc`, `cleanup`, language-named branches (`refactor-rust`), third-party recipe dumps.
+
+## Branch reference
+
+Load each selected branch’s reference and follow it through completion. Always load the glossary with any branch.
+
+- Glossary → [`reference/glossary.md`](reference/glossary.md)
+- **`deep-modules`** → [`reference/deep-modules.md`](reference/deep-modules.md)
+- **`refactor-types`** → [`reference/refactor-types.md`](reference/refactor-types.md)
+- **`refactor-boundaries`** → [`reference/refactor-boundaries.md`](reference/refactor-boundaries.md) (stub)
+- **`performance`** → [`reference/performance.md`](reference/performance.md)
+- Learning log → [`reference/learning-log.md`](reference/learning-log.md) (consult when a loaded branch has tagged gems)
+
+## Handoff
+
+- Implementation and language validation continue in the relevant `*-dev` / overlay after craft decisions are clear.
+- Assure / ship continues with `review` / `pull-request` — never reverse.
+- Product scope questions go to `product-owner`, not this skill.
+- Stub gap: do not invent `refactor-boundaries` body; report and stop or fall back as in Shared prep.
+
+## Growing reference
+
+Grow `reference/learning-log.md` when a large design left a reusable, product-free lesson; guidance was missing/wrong; or the user asks for a learning capture.
+
+1. Scope corpus to structural cuts (ownership, seams, types, measured perf) — not feature dumps.
+2. Abstract: one imperative sentence an expert agent can apply in any language. Strip product nouns, paths, schemas.
+3. Filter: reject dependency bumps, fixture moves, and bullets that only restate an existing branch checklist.
+4. Tag each kept gem with branch name(s): `deep-modules` | `refactor-types` | `refactor-boundaries` | `performance`.
+5. Cap ~10 new bullets unless the user asks for more. Noise-pass for product leakage and overlap.
+6. Do not grow branch checklists unless the contract itself is wrong (expansion law rule 6).
+
+## Completion criteria
+
+| Branch                | Done when                                                                                                     |
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `deep-modules`        | Deletion test / ownership / seams addressed; phases validated; residual dual ownership called out             |
+| `refactor-types`      | Primitive obsession at target cleared or scoped; logic on types; consumers cleaned; boundaries mapped         |
+| `refactor-boundaries` | Stub only — gap stated; no invented contract-map playbook                                                     |
+| `performance`         | Baseline or hot path identified before changes; stop rules applied; no language-specific recipe invented here |
+| multi-load            | Each loaded branch’s done-when met or explicitly N/A with reason; one combined handoff                        |

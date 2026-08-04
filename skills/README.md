@@ -1,175 +1,141 @@
 # Skills
 
-`~/.dotfiles/skills/` is the git-tracked store for **personal and custom** skills. External skills come from registries like [skills.sh](https://skills.sh/) and upstream repos such as [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills).
+Personal skill store for a **product + engineering AI skill OS**: domain routers plus thin language adapters. Canonical source: `~/.dotfiles/skills/`. Vocabulary lives in [`CONTEXT.md`](CONTEXT.md).
 
-Install and manage agent skills with the official [vercel-labs/skills](https://github.com/vercel-labs/skills) CLI (`npx skills`). Use `./scripts/skill` only for dotfiles store hygiene (`promote`, `rename`, `list`).
+Install agents with [`npx skills`](https://github.com/vercel-labs/skills). Use `./scripts/skill` only for store hygiene (`promote`, `rename`, `list`).
 
-## Lock file (`skills-lock.json`)
+## Pipeline
 
-Dotfiles-managed agent installs are tracked in [`skills-lock.json`](../skills-lock.json) at the repo root. Run `npx skills add` / `remove` **from `~/.dotfiles`** (project scope, no `-g`) so the CLI updates the lock and wires `.agents/skills/`.
+```mermaid
+flowchart LR
+  Intent[Intent] --> Product[Product]
+  Product --> Solution[Solution]
+  Solution --> Build[Build]
+  Build --> Assure[Assure]
+  Assure --> Ship[Ship]
+  Ship --> Run[Run]
+  Run --> Explain[Explain]
+  Explain --> Intent
+  Decide[Decide] -.-> Intent
+  Decide -.-> Product
+  Decide -.-> Solution
+```
 
-| Command                           | What it does                                                        |
-| --------------------------------- | ------------------------------------------------------------------- |
-| `skills-restore`                  | Install from the lock, then prune; runs via `topgrade` after `rcup` |
-| `skills-restore --prune-only`     | Prune without installing                                            |
-| `npx skills experimental_install` | Install only — **does not** remove installs the lock dropped        |
-| `npx skills add …`                | Add a skill and update the lock — **commit the lock** afterward     |
+## Domain map
 
-`npx skills experimental_install` only adds, so retired skills keep being advertised to agents until they are pruned. `skills-restore` converges instead:
+| Domain       | Job                              | Skill(s)                                                              | Primary branches                                                                | Status                                      |
+| ------------ | -------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------- |
+| **Intent**   | Fuzzy need → actionable work     | `prompt-synthesis`; `jira-ticket`                                     | (entry workflows)                                                               | active — Spec/PRD router still **gap**      |
+| **Product**  | What to build; admit/defer scope | `product-owner`                                                       | `gate` (default); stubs: prioritize, story-slice, experiment                    | active gate; other Product branches **gap** |
+| **Solution** | How the system should work       | `architecture`; `docs` **`architecture`** (docs only)                 | `deep-modules` \| `refactor-types` \| `performance`; stub `refactor-boundaries` | active; HLD/ADR author **gap**              |
+| **Build**    | Change the codebase              | `ruby-dev`, `rust-dev`; overlays `ruby-on-rails-dev`, `mir-architect` | classify: surgical \| design \| review-hand-off                                 | active                                      |
+| **Assure**   | Safe to merge?                   | `review`                                                              | finish, quality, tests, perf, security, publish                                 | active — test-design author **gap**         |
+| **Ship**     | Land on mainline                 | `pull-request`                                                        | open, slice, comment, reply, resolve                                            | active — Release router **gap**             |
+| **Run**      | Production health                | thin (e.g. jira → Datadog)                                            | —                                                                               | **gap** (Incident)                          |
+| **Explain**  | Humans understand state          | `communication`; `docs`                                               | see skill branches                                                              | active                                      |
+| **Decide**   | Stress-test choices              | `grilling` (agent-local); `product-owner` Forced Challenge            | —                                                                               | grilling not first-party store skill        |
 
-| Location                             | Prune rule                                                                  |
-| ------------------------------------ | --------------------------------------------------------------------------- |
-| `~/.dotfiles/.agents/skills/`        | Remove anything absent from `skills-lock.json` (the tree is generated)      |
-| `~/.agents`, `~/.codex`, `~/.cursor` | Remove dangling symlinks only; real directories from other sources are kept |
+Third-party packs under `skills/` (`ms-rust`, `rust-performance`, …) are optional spice — never OS source of truth. External registries exist; this README’s examples stay on **this** store.
 
-Run it after retiring or renaming a skill, not just after a clone.
+## Compose / handoffs
 
-After cloning or pulling lock changes:
+One-way rules (prevent domain collisions):
+
+1. **Product before non-trivial scope** — `jira-ticket` / feature asks load `product-owner` **`gate`**. Impl continues only on **Build Now**. Skip for pure bugfix, refactor, infra.
+2. **Craft ≠ product** — `architecture` / `*-dev` / `review` never answer “should we build X?”
+3. **Build → Solution** — `*-dev` class `design` loads `architecture` (branch pick inside); do not inline craft in `*-dev`.
+4. **Assure → Ship** — `review` may hand off to `pull-request` **`comment`**. Never reverse: GitHub posting does not live under `review`.
+5. **Explain → docs** — `communication` → `docs` **`editor`** when the artifact is a README/runbook, not a message. Never reverse.
+6. **Overlay → runtime** — `ruby-on-rails-dev` / `mir-architect` compose with the matching `*-dev`.
+
+## Skill index
+
+| Domain   | Skills                                                                                                                         |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Intent   | [`prompt-synthesis`](prompt-synthesis/), [`jira-ticket`](jira-ticket/)                                                         |
+| Product  | [`product-owner`](product-owner/)                                                                                              |
+| Solution | [`architecture`](architecture/), [`docs`](docs/)                                                                               |
+| Build    | [`ruby-dev`](ruby-dev/), [`rust-dev`](rust-dev/), [`ruby-on-rails-dev`](ruby-on-rails-dev/), [`mir-architect`](mir-architect/) |
+| Assure   | [`review`](review/)                                                                                                            |
+| Ship     | [`pull-request`](pull-request/)                                                                                                |
+| Explain  | [`communication`](communication/), [`docs`](docs/)                                                                             |
+
+## Authoring laws
+
+- **One router per domain** — branches for verb-paths; progressive load.
+- **Freeze the router** — harvest lessons into `reference/` (tag branch); edit `SKILL.md` only when the contract is wrong.
+- **Compose across domains** with one-way handoffs (above).
+- **Thin `*-dev`** — craft stays in `architecture`; overlays are deltas only.
+- **Proliferation guard** — new top-level skill only if it cannot be a branch of an existing router (for refactor concerns: `refactor-<concern>` under `architecture`, never bare `refactor` or a parallel `product` skill).
+
+Router shape: `## Pick branch` → `## Shared prep` → `## Branch reference` → `## Handoff` → `## Completion criteria`. Relative `reference/*.md` links; unnumbered `##` headers. Terms: [`CONTEXT.md`](CONTEXT.md). Spec: [agentskills.io](https://agentskills.io/).
+
+---
+
+## Operate the store
+
+Dotfiles-managed installs: [`skills-lock.json`](../skills-lock.json) at the repo root. Run `npx skills add` / `remove` from `~/.dotfiles` (project scope, no `-g`) so the lock updates and `.agents/skills/` is wired. `skills-lock.json` is RCM-excluded (`rcrc`) and stays only under `~/.dotfiles`.
+
+| Command                             | Role                                                                               |
+| ----------------------------------- | ---------------------------------------------------------------------------------- |
+| `skills-restore`                    | `npx skills experimental_install -y`, then prune; also via `topgrade` after `rcup` |
+| `skills-restore --prune-only`       | Prune only                                                                         |
+| `npx skills experimental_install`   | Install from lock — **does not** remove dropped skills                             |
+| `npx skills add` / `remove`         | Mutate lock + installs — **commit the lock** afterward                             |
+| `skill promote` / `rename` / `list` | Store hygiene only ([`skill/AGENTS.md`](../skill/AGENTS.md))                       |
+
+**Prune rules** (`skills-restore`):
+
+| Location                             | Rule                                                  |
+| ------------------------------------ | ----------------------------------------------------- |
+| `~/.dotfiles/.agents/skills/`        | Remove anything absent from the lock (generated tree) |
+| `~/.agents`, `~/.codex`, `~/.cursor` | Remove dangling symlinks only                         |
 
 ```sh
 cd ~/.dotfiles && skills-restore
-# or: npx skills experimental_install -y
 ```
 
-**Promote vs install:**
+**Promote vs install:** `skill promote <name>` moves `<project>/.agents/skills/<name>` → `~/.dotfiles/skills/` (git). `npx skills add` / restore fills `~/.dotfiles/.agents/skills/` from the lock.
 
-| Command                      | Source                            | Destination                                 |
-| ---------------------------- | --------------------------------- | ------------------------------------------- |
-| `skill promote <name>`       | `<project>/.agents/skills/<name>` | `~/.dotfiles/skills/` (git)                 |
-| `npx skills add` / `install` | lock / remote / dotfiles repo     | `~/.dotfiles/.agents/skills/` + lock update |
-
-The `.agents/skills/` tree is gitignored; regenerate it from the lock. `skills-lock.json` is excluded from RCM (`rcrc`) so it stays at `~/.dotfiles/skills-lock.json` only.
-
-## Install external skills
-
-```sh
-npx skills add https://github.com/vercel-labs/agent-skills --skill vercel-react-best-practices
-npx skills add vercel-labs/agent-skills --list
-npx skills add vercel-labs/agent-skills --skill frontend-design -a cursor -a codex -y   # from ~/.dotfiles to update lock
-```
-
-Common flags:
-
-| Flag                 | Purpose                                                                                                         |
-| -------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `-a cursor -a codex` | Target specific agents                                                                                          |
-| `-y`                 | Non-interactive (skip prompts)                                                                                  |
-| `-g`                 | Global install (`~/.codex/skills/`, `~/.cursor/skills/`) — optional for edge cases; dotfiles uses project scope |
-
-## Install dotfiles skills
-
-Install from [gildesmarais/dotfiles](https://github.com/gildesmarais/dotfiles) (discovery walks `skills/`):
+### Install (this store)
 
 ```sh
 cd ~/.dotfiles
-npx skills add gildesmarais/dotfiles --skill ruby-dev -a cursor -a codex -y
-npx skills add gildesmarais/dotfiles --skill '*' -a cursor -a codex -y   # all custom skills
+npx skills add gildesmarais/dotfiles --skill review -a cursor -a codex -y
+npx skills add gildesmarais/dotfiles --skill architecture -a cursor -a codex -y
+npx skills add . --skill product-owner -a cursor -a codex -y   # local tree when ahead of remote
+skills-restore
 ```
 
-For dotfiles-managed skills, prefer **project scope** (run from `~/.dotfiles`, no `-g`) so installs land in `.agents/skills/` and `skills-lock.json` stays in sync. Use **global** (`-g`) only when you want a skill outside the dotfiles lock workflow.
+Day-to-day: `npx skills list` · `find` · `update` · `remove` · `init`. Prefer project scope from `~/.dotfiles`; `-g` only outside the lock workflow. External registries exist; do not treat them as this OS’s source of truth.
 
-## Day-to-day commands
+### Paths
 
-```sh
-npx skills list              # list installed skills
-npx skills find <query>      # search available skills
-npx skills update            # update installed skills
-npx skills update <name>     # update one skill
-npx skills remove <name>     # remove an installed skill
-npx skills init              # scaffold a new skill directory
-```
+| Scope             | Path                                                            |
+| ----------------- | --------------------------------------------------------------- |
+| Store (git)       | `~/.dotfiles/skills/<name>/`                                    |
+| Lock installs     | `~/.dotfiles/.agents/skills/<name>/`                            |
+| Other project     | `<repo>/.agents/skills/<name>/`                                 |
+| Global (optional) | `~/.codex/skills/`, `~/.cursor/skills/` via `npx skills add -g` |
 
-## Authoring
+**Deprecated:** `skill link` and per-agent project dirs (`.codex/skills/`, …). Cleanup: remove legacy links, then `cd ~/.dotfiles && skills-restore`.
 
-Each skill is a directory with a `SKILL.md` file. Frontmatter should include `name` and `description`. Optional subdirectories: `scripts/`, `agents/`, and other supporting files.
+### Retired
 
-### Router skills
+| Retired                                                                   | Successor                                  |
+| ------------------------------------------------------------------------- | ------------------------------------------ |
+| `refactor-type-driven`                                                    | `architecture` **`refactor-types`**        |
+| gh-review-resolve, gh-address-comments                                    | `pull-request` **`resolve`** / **`reply`** |
+| findings-to-gh-pr-review                                                  | `pull-request` **`comment`**               |
+| pr-opener, open-pr                                                        | `pull-request` **`open`**                  |
+| pr-slicer, slice-pr                                                       | `pull-request` **`slice`**                 |
+| gh-pr, gh-pr-review, gh-review-specific-pr                                | `pull-request` / `review` **`publish`**    |
+| finish-review, review-tests, review-perf-ruby, review-security-compliance | `review` (+ lenses)                        |
+| quality-loop                                                              | `review` **`quality`**                     |
+| one-on-one-raw-notes                                                      | `communication` **`one-on-one`**           |
+| message-refinement-tech-orga                                              | `communication` **`slack-message`**        |
+| project-update                                                            | `communication` **`project-update`**       |
+| docs-editor                                                               | `docs` **`editor`**                        |
+| docs-architecture                                                         | `docs` **`architecture`**                  |
 
-A router `SKILL.md` normally picks one branch and hands off to a reference file. `pull-request`, `communication`, and `docs` follow that shape. `review` first chooses execution, then progressively loads only the review lenses warranted by the scoped diff.
-
-Branch-router template:
-
-| Section                  | Contents                                                                         |
-| ------------------------ | -------------------------------------------------------------------------------- |
-| `## Pick branch`         | Branch table, plus a routing-signals table when phrasing is ambiguous            |
-| `## Shared prep`         | Steps and rules every branch runs (name it `Shared contract` for tooling rules)  |
-| `## Branch reference`    | One link per branch into `reference/<branch>.md`; orchestrators state lens gates |
-| `## Handoff`             | Which skill continues the work, and in which direction only                      |
-| `## Completion criteria` | One row per branch, stating done-ness observably                                 |
-
-Rules:
-
-- Use unnumbered `##` headers (e.g. `## Pick branch`) — no leading numbers.
-- Write reference links relative to the skill directory (`reference/open.md`), never repo-rooted, because skills run from their install path.
-- Put branch-specific detail in the reference file; keep only what all branches share in the router body.
-- For an orchestrated review, scope the diff before loading specialized lenses; never ask the user to choose a lens the diff can select.
-- Refer to other skills by plain name in `SKILL.md` (`the ruby-dev skill`). Agent-specific invocation syntax such as `$ruby-dev` belongs in `agents/*.yaml`.
-
-`allow_implicit_invocation: true` is only for skills whose output is a report/draft the user reviews before anything ships; skills that directly implement, rewrite, or publish must omit it. The policy is per skill, not per branch, so a router must omit it as soon as **one** branch changes code — that is why `review` omits it (`quality` refactors and runs gates) while `communication` keeps it.
-
-See [agentskills.io](https://agentskills.io/) for the full spec.
-
-## Store hygiene (`./scripts/skill`)
-
-Use the Ruby helper when moving skills into or within the dotfiles store:
-
-| Command                    | When to use                                                            |
-| -------------------------- | ---------------------------------------------------------------------- |
-| `skill promote <name>`     | Move a project-local skill from `.agents/skills/<name>` into the store |
-| `skill rename <old> <new>` | Rename a skill in the store                                            |
-| `skill list`               | List skills in the dotfiles store                                      |
-
-On success, `promote` prints a suggested `npx skills add` command. After `rename`, refresh agent installs with `npx skills remove` and `npx skills add`.
-
-## Migration from `skill link`
-
-The old `skill link` workflow symlinked `.codex/skills/` into the dotfiles store. That path is **deprecated** — do not recreate it.
-
-One-time cleanup:
-
-```sh
-rm -rf .codex/skills
-# remove manual symlinks under ~/.agents/skills or agent-specific dirs if present
-cd ~/.dotfiles && skills-restore
-```
-
-Use `npx skills list` instead of the removed `skill doctor` and `skill status` commands.
-
-## Retired skills
-
-| Retired skill                | Successor                                                    |
-| ---------------------------- | ------------------------------------------------------------ |
-| gh-review-resolve            | `pull-request` **`resolve`**                                 |
-| gh-address-comments          | `pull-request` **`resolve`** or **`reply`**                  |
-| gh-pr-review                 | `review` **`publish`** (end-to-end)                          |
-| findings-to-gh-pr-review     | `pull-request` **`comment`**                                 |
-| pr-opener                    | `pull-request` **`open`**                                    |
-| pr-slicer                    | `pull-request` **`slice`**                                   |
-| open-pr                      | `pull-request` **`open`**                                    |
-| slice-pr                     | `pull-request` **`slice`**                                   |
-| gh-pr                        | `pull-request` (**`comment`** / **`resolve`** / **`reply`**) |
-| gh-review-specific-pr        | `review` **`publish`**                                       |
-| finish-review                | generic `review` workflow                                    |
-| review-tests                 | `review` with explicit tests focus                           |
-| review-perf-ruby             | `review` with explicit Ruby performance focus                |
-| review-security-compliance   | `review` with explicit security/compliance focus             |
-| quality-loop                 | `review` **`quality`**                                       |
-| one-on-one-raw-notes         | `communication` **`one-on-one`**                             |
-| message-refinement-tech-orga | `communication` **`slack-message`**                          |
-| project-update               | `communication` **`project-update`**                         |
-| docs-editor                  | `docs` **`editor`**                                          |
-| docs-architecture            | `docs` **`architecture`**                                    |
-
-Never committed to the store, but still found as leftover symlinks from the deprecated `skill link` era: `message-project-update-distiller` (→ `communication` **`project-update`**) and `idea-to-story-in-jira` (no successor). `skills-restore` removes such dangling links.
-
-## Paths reference
-
-| Scope             | Path                                 | Notes                                                      |
-| ----------------- | ------------------------------------ | ---------------------------------------------------------- |
-| Dotfiles store    | `~/.dotfiles/skills/<name>/`         | Canonical git-tracked source                               |
-| Dotfiles installs | `~/.dotfiles/.agents/skills/<name>/` | Restored from `skills-lock.json`                           |
-| Project (shared)  | `<repo>/.agents/skills/<name>/`      | Per-repo skills (optional `skills-lock.json` in that repo) |
-| Global Codex      | `~/.codex/skills/<name>/`            | Managed by `npx skills add -g`                             |
-| Global Cursor     | `~/.cursor/skills/<name>/`           | Managed by `npx skills add -g`                             |
-
-**Deprecated:** `<repo>/.codex/skills/`, `<repo>/.cursor/skills/`, and other per-agent project directories. Delete legacy installs and reinstall with `npx skills`.
+Leftover dangling symlinks from the `skill link` era are removed by `skills-restore`.
