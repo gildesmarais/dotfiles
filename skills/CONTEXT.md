@@ -100,6 +100,25 @@ _Avoid_: one flattened ordering for both branches
 **Handoff**:
 `docs` **`architecture`** may precede implementation work when a mental model needs verifying first. When the user wants end-of-branch production readiness instead, use the generic `review` workflow.
 
+# Intent Skills Domain
+
+## Language
+
+**Prompt-synthesis** (skill noun: `prompt-synthesis`):
+Transforms rough notes into a dense paste-ready agent brief. Grills material gaps before emit; never executes the underlying task.
+_Avoid_: prompt-engineer, refine-prompt (triggers only — not skill nouns)
+
+**Code** / **architecture** / **product** (`prompt-synthesis` branches):
+Class rubrics that enrich Context / Constraints / Verify. Default path is Shared prep only when no class fits.
+_Avoid_: general branch; Role/Context/Task/Deliverable templates
+
+**Brief fields** (`prompt-synthesis` emit):
+**Goal** · **Context** · **Success** · **Constraints** (omit if empty) · **Verify**. Success = done-when; Verify = proof steps.
+_Avoid_: Role/persona, SynthesisLog, naming OS skills in the emitted brief
+
+**Handoff**:
+Stops at the paste-ready brief. Does not hand off into Build / Assure / Ship. Intent entrypoints that start from Jira still use `jira-ticket` (and `product-owner` **`gate`** when scope is non-trivial).
+
 # Product Skills Domain
 
 ## Language
