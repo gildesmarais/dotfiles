@@ -118,6 +118,7 @@ Skip if you are not on that MIR stack.
 - **Freeze the router** — harvest lessons into `reference/` (tag branch); edit `SKILL.md` only when the contract is wrong.
 - **Compose across domains** with one-way handoffs (above).
 - **Thin `*-dev`** — craft stays in `architecture`; overlays are deltas only.
+- **Phase commits on Build** — every new `{lang}-dev` includes the Contracts Phase commits bullet (same wording as `rust-dev`); overlays never copy it. Solution/Build plans encode validate→commit per phase via [`CONTEXT.md`](CONTEXT.md).
 - **Local-only overlays** — may live under `skills/` (e.g. `mir-architect`) without lock entries; document when/how/scope, and install with `npx skills add . --skill …`.
 - **Proliferation guard** — new top-level skill only if it cannot be a branch of an existing router (for refactor concerns: `refactor-<concern>` under `architecture`, never bare `refactor` or a parallel `product` skill).
 

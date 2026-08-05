@@ -200,6 +200,7 @@ Optional agent installs (`grilling`, `ms-rust`, `rust-performance`, `swift-*`, v
 
 **Phase commit** (when to commit — not at release):
 After each Solution/Build plan phase (architecture phase, surgical milestone, or user-named plan step): validate → ≥1 Conventional Commit; body = rationale / intent / why. Dirty tree at PR open: `pull-request` **`open`** applies the same format once if needed. `release` **`notes`** consumes merged history only — never invents commits.
+Carriers: `architecture` Shared prep (Solution) and every language-runtime `*-dev` Contracts section (Build). Overlays must not duplicate. Solution/Build implementation plans end each phase with validate → commit (cite this entry; do not fork the format).
 
 **Handoff**:
 `*-dev` `design` → `architecture` (branch pick inside). `architecture` / `*-dev` → `review` / `pull-request` for assure/ship. No reverse: craft does not own Product gate. Changelog after merge → `release` **`notes`**.
