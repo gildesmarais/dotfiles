@@ -92,11 +92,11 @@ One-way rules (prevent domain collisions):
 
 MIR / rhythmic-analysis overlay for `rust-dev` (club music grids, downbeat, tempo).
 
-|           |                                                          |
-| --------- | -------------------------------------------------------- |
+|           |                                                           |
+| --------- | --------------------------------------------------------- |
 | **When**  | `agents/skills/mir-architect/` is present on this machine |
-| **How**   | `rcup` (same as other store skills)                      |
-| **Scope** | Local-only; omit from public install examples            |
+| **How**   | `rcup` (same as other store skills)                       |
+| **Scope** | Local-only; omit from public install examples             |
 
 Skip if you are not on that MIR stack.
 
@@ -118,12 +118,12 @@ Router shape: `## Pick branch` → `## Shared prep` → `## Branch reference` �
 
 Model: git-tracked trees under `agents/skills/<name>/` are the source of truth. `rcup` installs them into `~/.agents/skills/<name>/` (file-level links). Do **not** set `SYMLINK_DIRS` for `agents`/`agents/skills` — that would own all of `~/.agents/skills` and fight third-party real dirs from `npx skills`. After clone/pull or promote/rename, run `rcup` (or wait for topgrade `RCM: rcup`). Optional note: an old generated tree at `~/.dotfiles/.agents/skills` or a leftover `~/.skills` tree is unused now and safe to delete locally.
 
-| Command                    | Role                                                    |
-| -------------------------- | ------------------------------------------------------- |
-| `skill list`               | List non-hidden skills in the store                     |
-| `skill promote <name>`     | Move `<project>/.agents/skills/<name>` into the store   |
-| `skill rename <old> <new>` | Rename in the store                                     |
-| `rcup`                     | Install store skills into `~/.agents/skills`            |
+| Command                    | Role                                                  |
+| -------------------------- | ----------------------------------------------------- |
+| `skill list`               | List non-hidden skills in the store                   |
+| `skill promote <name>`     | Move `<project>/.agents/skills/<name>` into the store |
+| `skill rename <old> <new>` | Rename in the store                                   |
+| `rcup`                     | Install store skills into `~/.agents/skills`          |
 
 ### Paths
 

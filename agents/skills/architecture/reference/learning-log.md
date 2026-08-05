@@ -40,3 +40,17 @@ Corpus: structural lessons from a year of fix and revert commits. Signal is reve
 24. **Presence is not permission, and one bag is not two audiences.** Existence without an active set, and self-only fields on shared payloads, are the same disclosure class. _(refactor-types, deep-modules)_
 25. **A surgical fix stays on one surface.** Drive-by edits on a second surface travel with the revert when the primary fix is wrong. _(deep-modules)_
 26. **Derive; do not re-ledger.** When components already own the truth, a second full pass is dual ownership of the same fact. _(deep-modules, performance)_
+
+### 2026-08-05 — measured-perf commits harvest
+
+Corpus: structural lessons from encoder/hot-path performance commits (stage benches, portable-vs-accelerated seams, baseline republish). Signal is measured-perf failure classes — not SIMD/allocator recipes.
+
+27. **Refresh published baselines only through a harness that actually updates them.** A broken publish path leaves stale numbers that look like evidence. _(performance)_
+28. **Instrument the stage you intend to change before tuning it.** End-to-end alone hides which stage moved and invites drive-by micro-tweaks elsewhere. _(performance)_
+29. **Default the portable path; accelerate behind an explicit opt-in and compare both.** Unstable acceleration as the ship-default conflates buildability with speed claims. _(performance)_
+30. **Republish the baseline when the host or harness changes.** Cross-machine or cross-harness deltas are not wins. _(performance)_
+31. **Keep one algorithm surface over swappable acceleration backends.** Forked scalar and accelerated copies are dual ownership of the hot path. _(deep-modules, performance)_
+32. **Keep telemetry off the critical path you measure.** Observability on the hot path both slows and contaminates the baseline. _(performance)_
+33. **Separate exploratory slower algorithms from the production speed path.** Exploration and ship-default must not share one gate. _(performance, deep-modules)_
+34. **Decouple input feeding from hot-path accumulators.** Shared bags for source context and working frames couple unrelated lifetimes and block layout changes. _(deep-modules, performance)_
+35. **Match iteration nesting to storage order on the measured stage.** Wrong nesting burns bandwidth without changing the algorithm. _(performance)_
