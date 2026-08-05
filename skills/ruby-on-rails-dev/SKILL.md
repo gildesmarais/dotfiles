@@ -8,9 +8,11 @@ description: "Rails overlay for API/controller/service/policy/serializer/worker 
 ## Purpose and Routing
 
 - Use as a Rails overlay with `$ruby-dev`; keep Ruby-general workflow in `$ruby-dev`.
-- Apply to controllers, routes, models, services, policies, serializers, workers, and migrations.
+- Apply to controllers, routes, models, services, policies, serializers, workers/mailers/jobs, migrations, framework config loaders, cache-key composition, and encryption cutovers.
 - Follow `AGENTS.md` routing and precedence.
 - Require `$review` **`security`** when changes match the `AGENTS.md` `Security Trigger Matrix`.
+- Incident/fix postures in this overlay; one-surface and wrong-owner classify stay in `$ruby-dev`.
+- Design or private-seam cases → `$ruby-dev` → `architecture`. Do not invent adapter or regex craft here.
 
 ## Implementation Rules
 
@@ -23,6 +25,10 @@ description: "Rails overlay for API/controller/service/policy/serializer/worker 
 - Avoid interpolated SQL; use parameter binding/Arel.
 - Use auditable `after_party` tasks for backfills or behavior-affecting data migrations.
 - If structured logging changes, verify redaction behavior and `LOG_LEVEL` semantics.
+- Name invisible lifecycle contracts (config variants, reload dependencies, cache identity) instead of silent skip.
+- Complete cutovers: replacement seam before removal.
+- Prefer closed-set access and audience-split payloads over presence and one-bag disclosure.
+- Validation, execution, and the published API contract must see the same normalized input and accepted closed set.
 
 ## Rails Testing
 
