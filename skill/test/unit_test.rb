@@ -4,6 +4,7 @@ require "fileutils"
 require "minitest/autorun"
 require "tmpdir"
 
+require_relative "../src/skill/classifier"
 require_relative "../src/skill/error"
 require_relative "../src/skill/filesystem"
 require_relative "../src/skill/operations"
@@ -104,9 +105,138 @@ class SkillUnitTest < Minitest::Test
     assert_equal(File.join(@home_dir, ".agents", "skills"), @paths.agents_skills_dir)
   end
 
+  def test_agents_skill_names_returns_empty_when_agents_dir_missing
+    assert_equal([], @paths.agents_skill_names)
+  end
+
+  def test_agents_skill_names_includes_broken_dirlinks
+    FileUtils.mkdir_p(@paths.agents_skills_dir)
+    create_store_skill("live")
+    FileUtils.ln_s("missing-target", @paths.agents_skill_path("broken-link"))
+    FileUtils.ln_s(@paths.store_skill_path("live"), @paths.agents_skill_path("live"))
+    FileUtils.mkdir_p(File.join(@paths.agents_skills_dir, ".hidden"))
+
+    assert_equal(%w[broken-link live], @paths.agents_skill_names)
+  end
+
+  def test_classifier_statuses_are_frozen_closed_set
+    assert_equal(%w[ok drift home-only broken], Skill::Classifier::STATUSES)
+    assert(Skill::Classifier::STATUSES.frozen?)
+  end
+
+  def test_classifier_status_broken_when_agent_symlink_dangling
+    create_store_skill("skill-a")
+    FileUtils.mkdir_p(@paths.agents_skills_dir)
+    FileUtils.ln_s("missing", @paths.agents_skill_path("skill-a"))
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal("broken", classifier.status_for("skill-a"))
+    assert_equal([], classifier.drift_paths("skill-a"))
+  end
+
+  def test_classifier_status_home_only_when_store_absent
+    FileUtils.mkdir_p(@paths.agents_skill_path("third-party"))
+    File.write(File.join(@paths.agents_skill_path("third-party"), "SKILL.md"), "# Home\n")
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal("home-only", classifier.status_for("third-party"))
+    assert_equal([], classifier.drift_paths("third-party"))
+  end
+
+  def test_classifier_status_ok_for_store_only
+    create_store_skill("store-only")
+    File.write(File.join(@paths.store_skill_path("store-only"), "SKILL.md"), "# Store\n")
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal("ok", classifier.status_for("store-only"))
+    assert_equal([], classifier.drift_paths("store-only"))
+  end
+
+  def test_classifier_status_ok_when_files_identical
+    create_paired_skill("paired", store_body: "# Same\n", agent_body: "# Same\n")
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal("ok", classifier.status_for("paired"))
+    assert_equal([], classifier.drift_paths("paired"))
+  end
+
+  def test_classifier_status_ok_when_agent_files_are_symlinks
+    create_store_skill("linked")
+    store_file = File.join(@paths.store_skill_path("linked"), "SKILL.md")
+    File.write(store_file, "# Linked\n")
+    FileUtils.mkdir_p(@paths.agents_skill_path("linked"))
+    FileUtils.ln_s(store_file, File.join(@paths.agents_skill_path("linked"), "SKILL.md"))
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal("ok", classifier.status_for("linked"))
+    assert_equal([], classifier.drift_paths("linked"))
+  end
+
+  def test_classifier_drift_paths_detects_content_diff_and_new_file
+    create_paired_skill("drifted", store_body: "# Store\n", agent_body: "# Agent\n")
+    File.write(File.join(@paths.agents_skill_path("drifted"), "extra.md"), "new\n")
+    File.write(File.join(@paths.store_skill_path("drifted"), "store-only.md"), "keep\n")
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal("drift", classifier.status_for("drifted"))
+    assert_equal(%w[SKILL.md extra.md], classifier.drift_paths("drifted"))
+  end
+
+  def test_classifier_drift_paths_skips_symlinks_and_hidden_components
+    create_paired_skill("noisy", store_body: "# Store\n", agent_body: "# Agent\n")
+    agent = @paths.agents_skill_path("noisy")
+    FileUtils.ln_s(
+      File.join(@paths.store_skill_path("noisy"), "SKILL.md"),
+      File.join(agent, "linked.md")
+    )
+    FileUtils.mkdir_p(File.join(agent, ".git"))
+    File.write(File.join(agent, ".git", "config"), "secret\n")
+    File.write(File.join(agent, ".DS_Store"), "noise\n")
+    FileUtils.mkdir_p(File.join(agent, "nested", ".cache"))
+    File.write(File.join(agent, "nested", ".cache", "x"), "hidden\n")
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal(%w[SKILL.md], classifier.drift_paths("noisy"))
+    assert_equal("drift", classifier.status_for("noisy"))
+  end
+
+  def test_classifier_report_entries_sorted_union
+    create_store_skill("alpha")
+    FileUtils.mkdir_p(@paths.agents_skill_path("beta"))
+    FileUtils.mkdir_p(@paths.agents_skills_dir)
+    FileUtils.ln_s("missing", @paths.agents_skill_path("gamma"))
+    create_paired_skill("delta", store_body: "# A\n", agent_body: "# B\n")
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal(
+      [
+        %w[alpha ok],
+        %w[beta home-only],
+        %w[delta drift],
+        %w[gamma broken]
+      ],
+      classifier.report_entries
+    )
+  end
+
   private
 
   def create_store_skill(name)
     FileUtils.mkdir_p(File.join(@skills_dir, name))
+  end
+
+  def create_paired_skill(name, store_body:, agent_body:)
+    create_store_skill(name)
+    File.write(File.join(@paths.store_skill_path(name), "SKILL.md"), store_body)
+    FileUtils.mkdir_p(@paths.agents_skill_path(name))
+    File.write(File.join(@paths.agents_skill_path(name), "SKILL.md"), agent_body)
   end
 end

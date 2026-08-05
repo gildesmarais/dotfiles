@@ -74,14 +74,25 @@ module Skill
     def store_skill_names
       ensure_store!
 
-      Dir.children(store_dir).sort.select do |name|
-        next false if name.start_with?(".")
+      skill_entry_names(store_dir)
+    end
 
-        File.directory?(store_skill_path(name))
-      end
+    def agents_skill_names
+      return [] unless File.directory?(agents_skills_dir)
+
+      skill_entry_names(agents_skills_dir)
     end
 
     private
+
+    def skill_entry_names(dir)
+      Dir.children(dir).sort.select do |name|
+        next false if name.start_with?(".")
+
+        path = File.join(dir, name)
+        File.directory?(path) || File.symlink?(path)
+      end
+    end
 
     def capture_command(*command)
       output, status = Open3.capture2(*command, err: File::NULL)
