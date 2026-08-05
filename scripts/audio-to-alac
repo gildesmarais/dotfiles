@@ -1,0 +1,204 @@
+#!/usr/bin/env bash
+#
+# audio-to-alac
+#
+# Converts audio files to lossless ALAC in an .m4a container. Preserves source
+# metadata and embedded cover art when present. Accepts files and directories;
+# directories are scanned recursively for .flac files.
+
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: audio-to-alac [OPTIONS] <file-or-directory> [...]
+
+Convert audio files to lossless ALAC (.m4a), preserving metadata and embedded
+artwork. Files are written next to the source by default. Directories are
+scanned recursively for .flac files.
+
+Options:
+  -o, --out-dir DIR      Write output under DIR instead of beside source files
+  -f, --overwrite        Overwrite existing output files
+      --delete-source    Delete source files after successful conversion
+  -n, --dry-run          Print what would run without converting
+  -h, --help             Show this help
+
+Examples:
+  audio-to-alac album.flac
+  audio-to-alac Music/
+  audio-to-alac --out-dir ./alac --overwrite ~/Downloads ~/Music/Album
+EOF
+}
+
+require_command() {
+  local command_name="$1"
+
+  if ! command -v "$command_name" >/dev/null 2>&1; then
+    printf 'Error: required command not found: %s\n' "$command_name" >&2
+    exit 1
+  fi
+}
+
+is_flac_file() {
+  local path="$1"
+
+  [[ "$path" == *.flac || "$path" == *.FLAC ]]
+}
+
+has_video_stream() {
+  local input_file="$1"
+  local probe_output
+
+  probe_output="$(ffprobe -v error -select_streams v -show_entries stream=index -of csv=p=0 "$input_file" 2>/dev/null || true)"
+  [[ -n "$probe_output" ]]
+}
+
+delete_source=false
+dry_run=false
+overwrite=false
+out_dir=""
+declare -a inputs=()
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -o|--out-dir)
+      if [[ $# -lt 2 ]]; then
+        printf 'Error: missing value for %s\n' "$1" >&2
+        exit 1
+      fi
+      out_dir="$2"
+      shift 2
+      ;;
+    -f|--overwrite)
+      overwrite=true
+      shift
+      ;;
+    --delete-source)
+      delete_source=true
+      shift
+      ;;
+    -n|--dry-run)
+      dry_run=true
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      while [[ $# -gt 0 ]]; do
+        inputs+=("$1")
+        shift
+      done
+      ;;
+    -*)
+      printf 'Error: unknown option: %s\n' "$1" >&2
+      exit 1
+      ;;
+    *)
+      inputs+=("$1")
+      shift
+      ;;
+  esac
+done
+
+if [[ ${#inputs[@]} -eq 0 ]]; then
+  usage >&2
+  exit 1
+fi
+
+require_command ffmpeg
+require_command ffprobe
+
+if [[ -n "$out_dir" ]]; then
+  mkdir -p "$out_dir"
+fi
+
+ffmpeg_overwrite=(-n)
+if [[ "$overwrite" == true ]]; then
+  ffmpeg_overwrite=(-y)
+fi
+
+# convert_file <input_file> <relative_stem>
+# relative_stem is used only with --out-dir (path under out_dir, no extension).
+convert_file() {
+  local input_file="$1"
+  local relative_stem="$2"
+  local output_file
+  local output_dirname
+  local -a ffmpeg_cmd
+
+  if [[ -n "$out_dir" ]]; then
+    output_file="$out_dir/${relative_stem}.m4a"
+  else
+    output_file="${input_file%.*}.m4a"
+  fi
+
+  output_dirname="$(dirname "$output_file")"
+  mkdir -p "$output_dirname"
+
+  ffmpeg_cmd=(
+    ffmpeg
+    "${ffmpeg_overwrite[@]}"
+    -nostdin
+    -i "$input_file"
+    -map 0:a
+    -map_metadata 0
+    -c:a alac
+  )
+
+  if has_video_stream "$input_file"; then
+    ffmpeg_cmd+=(-map 0:v -c:v copy -disposition:v:0 attached_pic)
+  fi
+
+  ffmpeg_cmd+=("$output_file")
+
+  if [[ "$dry_run" == true ]]; then
+    printf 'Would convert: %s -> %s\n' "$input_file" "$output_file"
+    printf '  '
+    printf '%q ' "${ffmpeg_cmd[@]}"
+    printf '\n'
+    return 0
+  fi
+
+  printf 'Converting: %s -> %s\n' "$input_file" "$output_file"
+  "${ffmpeg_cmd[@]}"
+
+  if [[ "$delete_source" == true ]]; then
+    rm -f "$input_file"
+  fi
+}
+
+handle_input() {
+  local path="$1"
+  local file
+  local relative_under_root
+  local relative_stem
+  local base_name
+
+  if [[ -f "$path" ]]; then
+    base_name="$(basename "$path")"
+    relative_stem="${base_name%.*}"
+    convert_file "$path" "$relative_stem"
+    return
+  fi
+
+  if [[ -d "$path" ]]; then
+    while IFS= read -r -d '' file; do
+      relative_under_root="${file#"$path"/}"
+      relative_stem="${relative_under_root%.*}"
+      convert_file "$file" "$relative_stem"
+    done < <(find "$path" -type f \( -iname '*.flac' -o -iname '*.FLAC' \) -print0)
+    return
+  fi
+
+  printf 'Warning: skipping missing path: %s\n' "$path" >&2
+}
+
+for input_path in "${inputs[@]}"; do
+  if [[ -f "$input_path" ]] && ! is_flac_file "$input_path"; then
+    printf 'Warning: file is not .flac, converting anyway: %s\n' "$input_path" >&2
+  fi
+  handle_input "$input_path"
+done
