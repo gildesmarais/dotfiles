@@ -13,12 +13,13 @@ Language-runtime adapter for Ruby. Craft (modules, types, measured perf) lives i
 
 ## When to use
 
+- Default for plain Ruby gems, libraries, CLI, and adapters; load `ruby-on-rails-dev` **with** this skill when the change is Rails-shaped.
 - Use for Ruby implementation work: surgical fixes, incidents, and small feature adjustments.
 - Read `AGENTS.md` first when present and follow repo-specific conventions over defaults here.
 - Prefer `review` **`tests`** when the user mainly wants test/spec review quality.
 - Prefer `review` **`finish`** when the user wants end-of-branch production-readiness review.
 - Prefer `architecture` when design/structure/types/measured perf is the job (or when classification is `design`).
-- Use with `ruby-on-rails-dev` when the change is Rails-shaped (controllers, policies, serializers, workers).
+- Use with `ruby-on-rails-dev` when the change is Rails-shaped (controllers, policies, serializers, workers, mailers/jobs, migrations, framework config loaders, cache-key composition, encryption cutovers). Do not invent Rails recipes in this skill.
 
 ## Classify
 
@@ -28,7 +29,7 @@ Language-runtime adapter for Ruby. Craft (modules, types, measured perf) lives i
 | `design`          | Load `architecture`; do not inline craft advice in this skill |
 | `review-hand-off` | Route to `review`                                             |
 
-Earn `design` when any of: dual ownership / shallow modules / primitive obsession across boundaries / user asks for structural cleanup / measured perf work / type-driven refactor.
+Earn `design` when any of: dual ownership / shallow modules / primitive obsession across boundaries / user asks for structural cleanup / measured perf work / type-driven refactor / wrong-owner boundary absorb (serialize/cache/encode bent into a neighbor) / re-ledgering an already-owned aggregate / validate vs runtime expansion diverge / shared deadline or conflated meters across attempts / guard or policy owned in more than one place / published contract vs runtime acceptance drift / specs need private reach to assert behavior.
 
 ## Stance
 
@@ -46,7 +47,7 @@ Earn `design` when any of: dual ownership / shallow modules / primitive obsessio
    - **Surgical:** smallest safe change (TDD when behavior changes) → validate → handoff.
    - **Design:** load `architecture` (branch pick inside) → implement decisions here with Ruby validation → handoff.
    - **Review-hand-off:** stop and continue with `review`.
-4. Handoff: commands run, residual risk, whether `architecture` learning-log should grow (harvest there, not here).
+4. Handoff: commands run, residual risk, whether `architecture` learning-log should grow (harvest there per architecture ingress — append only; never delete log gems to “save space”).
 
 ## Surgical path
 
@@ -54,6 +55,9 @@ Earn `design` when any of: dual ownership / shallow modules / primitive obsessio
 - Preserve behavior unless the ask is an intentional break.
 - For behavior-preserving moves without design signals, keep characterization or boundary coverage before moving code.
 - Favor small, unified methods over fragmented helper-hell; data-driven constants/maps over repetitive branches when that is the whole ask.
+- Keep the incident diff on **one surface**; drive-by edits on a second surface travel with the revert when the primary fix is wrong.
+- Local correctness (immutability honesty, adapter honesty, safe handling of untrusted text) stays surgical until dual ownership appears.
+- If the failing path is framework-lifecycle shaped, load `ruby-on-rails-dev` and apply its postures in the same change rather than inventing a language-only clamp.
 
 ## Validation Defaults
 
