@@ -227,6 +227,50 @@ class SkillUnitTest < Minitest::Test
     )
   end
 
+  def test_doctor_skills_silent_when_empty
+    @operations.doctor_skills
+
+    assert_equal([], @ui.notes)
+  end
+
+  def test_backfill_skill_copies_and_notes_rcup
+    create_paired_skill("drifted", store_body: "# Store\n", agent_body: "# Agent\n")
+    File.write(File.join(@paths.agents_skill_path("drifted"), "extra.md"), "new\n")
+
+    @operations.backfill_skill("drifted")
+
+    assert_equal("# Agent\n", File.read(File.join(@paths.store_skill_path("drifted"), "SKILL.md")))
+    assert_equal("new\n", File.read(File.join(@paths.store_skill_path("drifted"), "extra.md")))
+    assert_includes(@ui.notes, "backfilled drifted (2 files)")
+    assert_includes(@ui.notes, Skill::Operations::RCUP_HINT)
+  end
+
+  def test_backfill_skill_refuses_home_only
+    FileUtils.mkdir_p(@paths.agents_skill_path("third-party"))
+
+    error = assert_raises(Skill::ExitError) do
+      @operations.backfill_skill("third-party")
+    end
+
+    assert_equal(1, error.status)
+    assert_equal(format(Skill::Operations::HOME_ONLY_BACKFILL_ERROR, name: "third-party"), error.message)
+  end
+
+  def test_backfill_skill_refuses_type_clash
+    create_store_skill("clash")
+    FileUtils.mkdir_p(File.join(@paths.store_skill_path("clash"), "nested"))
+    FileUtils.mkdir_p(@paths.agents_skill_path("clash"))
+    File.write(File.join(@paths.agents_skill_path("clash"), "nested"), "file\n")
+
+    error = assert_raises(Skill::ExitError) do
+      @operations.backfill_skill("clash")
+    end
+
+    dest = File.join(@paths.store_skill_path("clash"), "nested")
+    assert_equal(format(Skill::Operations::TYPE_CLASH_BACKFILL_ERROR, path: dest), error.message)
+    assert(File.directory?(dest))
+  end
+
   private
 
   def create_store_skill(name)

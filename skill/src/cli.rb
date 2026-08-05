@@ -11,6 +11,8 @@ module Skill
   class CLI
     COMMANDS = {
       "list" => :run_list,
+      "doctor" => :run_doctor,
+      "backfill" => :run_backfill,
       "promote" => :run_promote,
       "rename" => :run_rename,
       "help" => :run_help
@@ -18,6 +20,8 @@ module Skill
 
     USAGE_EXAMPLES = [
       "skill list",
+      "skill doctor",
+      "skill backfill my-skill",
       "skill promote my-skill",
       "skill rename ruby-dev ruby"
     ].freeze
@@ -68,6 +72,8 @@ module Skill
 
         Commands:
           list                         List skills available in #{paths.store_dir}
+          doctor                       Report store vs ~/.agents/skills status
+          backfill <name>              Copy drifted agent files into the store
           promote <name>               Move .agents/skills/<name> into the store
           rename <old> <new>           Rename a stored skill
           help                         Show this help
@@ -83,6 +89,17 @@ module Skill
     def run_list(args)
       ui.reject_extra_args("list", args)
       operations.list_store_skills
+    end
+
+    def run_doctor(args)
+      ui.reject_extra_args("doctor", args)
+      operations.doctor_skills
+    end
+
+    def run_backfill(args)
+      raise ExitError, "backfill requires exactly one skill name" unless args.length == 1
+
+      operations.backfill_skill(args.first)
     end
 
     def run_promote(args)

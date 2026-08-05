@@ -141,7 +141,147 @@ class SkillCliTest < Minitest::Test
     assert_includes(output, "Usage: skill")
     refute_includes(output, "sync")
     refute_match(/^\s+link\s/m, output)
-    refute_includes(output, "doctor")
+    assert_includes(output, "doctor")
+    assert_includes(output, "backfill")
+  end
+
+  def test_doctor_all_ok_exits_zero
+    create_store_skill("linked")
+    store_file = File.join(@skills_dir, "linked", "SKILL.md")
+    File.write(store_file, "# Linked\n")
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "linked"))
+    FileUtils.ln_s(store_file, File.join(@agents_skills_dir, "linked", "SKILL.md"))
+
+    result = run_skill("doctor")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "linked ok")
+  end
+
+  def test_doctor_mixed_union_exits_one
+    create_store_skill("alpha")
+    File.write(File.join(@skills_dir, "alpha", "SKILL.md"), "# A\n")
+
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "beta"))
+    File.write(File.join(@agents_skills_dir, "beta", "SKILL.md"), "# Home\n")
+
+    create_store_skill("delta")
+    File.write(File.join(@skills_dir, "delta", "SKILL.md"), "# Store\n")
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "delta"))
+    File.write(File.join(@agents_skills_dir, "delta", "SKILL.md"), "# Agent\n")
+
+    FileUtils.mkdir_p(@agents_skills_dir)
+    FileUtils.ln_s("missing", File.join(@agents_skills_dir, "gamma"))
+
+    result = run_skill("doctor")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "alpha ok")
+    assert_includes(result.output, "beta home-only")
+    assert_includes(result.output, "delta drift")
+    assert_includes(result.output, "gamma broken")
+  end
+
+  def test_doctor_identical_real_files_ok
+    create_store_skill("paired")
+    File.write(File.join(@skills_dir, "paired", "SKILL.md"), "# Same\n")
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "paired"))
+    File.write(File.join(@agents_skills_dir, "paired", "SKILL.md"), "# Same\n")
+
+    result = run_skill("doctor")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "paired ok")
+  end
+
+  def test_doctor_empty_store_is_silent
+    result = run_skill("doctor")
+
+    assert_equal(0, result.exitstatus)
+    assert_equal("", result.output)
+  end
+
+  def test_backfill_copies_drifted_files_and_preserves_store_only
+    create_store_skill("drifted")
+    File.write(File.join(@skills_dir, "drifted", "SKILL.md"), "# Store\n")
+    File.write(File.join(@skills_dir, "drifted", "keep.md"), "keep\n")
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "drifted"))
+    File.write(File.join(@agents_skills_dir, "drifted", "SKILL.md"), "# Agent\n")
+    File.write(File.join(@agents_skills_dir, "drifted", "extra.md"), "new\n")
+    agent_skill_before = File.read(File.join(@agents_skills_dir, "drifted", "SKILL.md"))
+
+    result = run_skill("backfill", "drifted")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "SKILL.md")
+    assert_includes(result.output, "extra.md")
+    assert_includes(result.output, "run rcup")
+    assert_equal("# Agent\n", File.read(File.join(@skills_dir, "drifted", "SKILL.md")))
+    assert_equal("new\n", File.read(File.join(@skills_dir, "drifted", "extra.md")))
+    assert_equal("keep\n", File.read(File.join(@skills_dir, "drifted", "keep.md")))
+    assert_equal(agent_skill_before, File.read(File.join(@agents_skills_dir, "drifted", "SKILL.md")))
+  end
+
+  def test_backfill_refuses_home_only
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "third-party"))
+    File.write(File.join(@agents_skills_dir, "third-party", "SKILL.md"), "# Home\n")
+
+    result = run_skill("backfill", "third-party")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "refusing to backfill home-only skill: third-party")
+  end
+
+  def test_backfill_refuses_broken
+    create_store_skill("broken")
+    FileUtils.mkdir_p(@agents_skills_dir)
+    FileUtils.ln_s("missing", File.join(@agents_skills_dir, "broken"))
+
+    result = run_skill("backfill", "broken")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "refusing to backfill broken agent path: broken")
+  end
+
+  def test_backfill_refuses_when_no_drift
+    create_store_skill("paired")
+    File.write(File.join(@skills_dir, "paired", "SKILL.md"), "# Same\n")
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "paired"))
+    File.write(File.join(@agents_skills_dir, "paired", "SKILL.md"), "# Same\n")
+
+    result = run_skill("backfill", "paired")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "no real-file drift for paired")
+  end
+
+  def test_backfill_refuses_missing_store_skill
+    result = run_skill("backfill", "missing")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "stored skill not found:")
+  end
+
+  def test_backfill_refuses_type_clash
+    create_store_skill("clash")
+    FileUtils.mkdir_p(File.join(@skills_dir, "clash", "nested"))
+    File.write(File.join(@skills_dir, "clash", "nested", "keep.md"), "dir\n")
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "clash"))
+    File.write(File.join(@agents_skills_dir, "clash", "nested"), "file\n")
+
+    result = run_skill("backfill", "clash")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "refusing to backfill over non-file store path:")
+    assert(File.directory?(File.join(@skills_dir, "clash", "nested")))
+    assert_equal("dir\n", File.read(File.join(@skills_dir, "clash", "nested", "keep.md")))
+  end
+
+  def test_backfill_requires_exactly_one_name
+    result = run_skill("backfill")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "backfill requires exactly one skill name")
   end
 
   private

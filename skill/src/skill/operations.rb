@@ -2,6 +2,7 @@
 
 require "fileutils"
 
+require_relative "classifier"
 require_relative "error"
 require_relative "filesystem"
 
@@ -9,6 +10,10 @@ module Skill
   class Operations
     LEGACY_CODEX_ERROR = "refusing to promote from deprecated .codex/skills/%<name>s; " \
                          "move skills to .agents/skills/"
+    HOME_ONLY_BACKFILL_ERROR = "refusing to backfill home-only skill: %<name>s"
+    BROKEN_BACKFILL_ERROR = "refusing to backfill broken agent path: %<name>s"
+    NO_DRIFT_BACKFILL_ERROR = "no real-file drift for %<name>s"
+    TYPE_CLASH_BACKFILL_ERROR = "refusing to backfill over non-file store path: %<path>s"
     RCUP_HINT = "run rcup (or wait for topgrade) to install into ~/.agents/skills"
 
     def initialize(paths:, shell_ui:)
@@ -25,6 +30,55 @@ module Skill
       end
 
       names.each { |name| puts(name) }
+    end
+
+    def doctor_skills
+      @paths.ensure_store!
+      entries = classifier.report_entries
+      return if entries.empty?
+
+      drifted = false
+      entries.each do |name, status|
+        puts("#{name} #{status}")
+        drifted = true if status == "drift"
+      end
+
+      raise ExitError.new(status: 1) if drifted
+    end
+
+    def backfill_skill(name)
+      @paths.ensure_store!
+      Filesystem.assert_skill_name!(name)
+
+      status = classifier.status_for(name)
+      case status
+      when "home-only"
+        raise ExitError, format(HOME_ONLY_BACKFILL_ERROR, name: name)
+      when "broken"
+        raise ExitError, format(BROKEN_BACKFILL_ERROR, name: name)
+      end
+
+      store = @paths.store_skill_path(name)
+      raise ExitError, "stored skill not found: #{store}" unless File.directory?(store)
+
+      drifted = classifier.drift_paths(name)
+      raise ExitError, format(NO_DRIFT_BACKFILL_ERROR, name: name) if drifted.empty?
+
+      agent = @paths.agents_skill_path(name)
+      drifted.each do |relative|
+        source = File.join(agent, relative)
+        destination = File.join(store, relative)
+        if File.exist?(destination) && !File.file?(destination)
+          raise ExitError, format(TYPE_CLASH_BACKFILL_ERROR, path: destination)
+        end
+
+        FileUtils.mkdir_p(File.dirname(destination))
+        FileUtils.cp(source, destination)
+        puts(relative)
+      end
+
+      @shell_ui.note("backfilled #{name} (#{drifted.length} files)")
+      @shell_ui.note(RCUP_HINT)
     end
 
     def promote_skill(name)
@@ -66,6 +120,12 @@ module Skill
       FileUtils.mv(old_target, new_target)
       @shell_ui.note("renamed #{old_name} -> #{new_name}")
       @shell_ui.note(RCUP_HINT)
+    end
+
+    private
+
+    def classifier
+      @classifier ||= Classifier.new(paths: @paths)
     end
   end
 end
