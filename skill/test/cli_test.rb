@@ -145,6 +145,25 @@ class SkillCliTest < Minitest::Test
     assert_includes(output, "backfill")
   end
 
+  def test_doctor_help_after_command_exits_zero
+    result = run_skill("doctor", "--help")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "Usage: skill")
+    refute_includes(result.output, "does not accept extra arguments")
+    refute_includes(result.output, "Skill::ExitError")
+  end
+
+  def test_backfill_help_after_command_exits_zero
+    result = run_skill("backfill", "-h")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "Usage: skill")
+    refute_includes(result.output, "stored skill not found")
+    refute_includes(result.output, "backfill requires exactly one skill name")
+    refute_includes(result.output, "Skill::ExitError")
+  end
+
   def test_doctor_all_ok_exits_zero
     create_store_skill("linked")
     store_file = File.join(@skills_dir, "linked", "SKILL.md")
@@ -155,7 +174,7 @@ class SkillCliTest < Minitest::Test
     result = run_skill("doctor")
 
     assert_equal(0, result.exitstatus)
-    assert_includes(result.output, "linked ok")
+    assert_match(/^linked\s+ok$/m, result.output)
   end
 
   def test_doctor_mixed_union_exits_one
@@ -176,10 +195,15 @@ class SkillCliTest < Minitest::Test
     result = run_skill("doctor")
 
     assert_equal(1, result.exitstatus)
-    assert_includes(result.output, "alpha ok")
-    assert_includes(result.output, "beta home-only")
-    assert_includes(result.output, "delta drift")
-    assert_includes(result.output, "gamma broken")
+    lines = result.output.lines.map(&:chomp).reject(&:empty?)
+    assert_equal(4, lines.length)
+    lines.each { |line| assert_match(/^\S+\s+\S+$/, line) }
+    status_offsets = lines.map { |line| line.index(/\S+\z/) }
+    assert_equal([status_offsets.first], status_offsets.uniq, "status column should be aligned")
+    assert_match(/^alpha\s+ok$/m, result.output)
+    assert_match(/^beta\s+home-only$/m, result.output)
+    assert_match(/^delta\s+drift$/m, result.output)
+    assert_match(/^gamma\s+broken$/m, result.output)
   end
 
   def test_doctor_identical_real_files_ok
@@ -191,7 +215,25 @@ class SkillCliTest < Minitest::Test
     result = run_skill("doctor")
 
     assert_equal(0, result.exitstatus)
-    assert_includes(result.output, "paired ok")
+    assert_match(/^paired\s+ok$/m, result.output)
+  end
+
+  def test_doctor_pads_to_longest_name
+    long_name = "improve-codebase-architecture"
+    create_store_skill("grilling")
+    File.write(File.join(@skills_dir, "grilling", "SKILL.md"), "# G\n")
+    create_store_skill(long_name)
+    File.write(File.join(@skills_dir, long_name, "SKILL.md"), "# L\n")
+
+    result = run_skill("doctor")
+
+    assert_equal(0, result.exitstatus)
+    lines = result.output.lines.map(&:chomp).reject(&:empty?)
+    status_offsets = lines.map { |line| line.index(/\S+\z/) }
+    assert_equal([status_offsets.first], status_offsets.uniq, "status column should be aligned")
+    assert_operator(status_offsets.first, :>=, long_name.length + 2)
+    assert_match(/^grilling\s+ok$/m, result.output)
+    assert_match(/^improve-codebase-architecture\s+ok$/m, result.output)
   end
 
   def test_doctor_empty_store_is_silent

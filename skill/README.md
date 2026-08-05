@@ -47,7 +47,7 @@ Run the CLI entrypoint:
 
 Expected results:
 
-- `doctor` prints `name status` lines (`ok`, `drift`, `home-only`, `broken`); exits `0` when no `drift`, else `1`
+- `doctor` prints aligned columns (padded name, then status: `ok`, `drift`, `home-only`, `broken`); exits `0` when no `drift`, else `1`
 - `backfill <name>` prints each copied relative path, notes an `rcup` hint, and refuses home-only / broken / no-drift / missing store skills
 - After `backfill`, run `rcup` (or wait for topgrade) so `~/.agents/skills` matches the store again
 

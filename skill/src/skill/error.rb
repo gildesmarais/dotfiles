@@ -5,7 +5,7 @@ module Skill
     attr_reader :status
 
     def initialize(message = nil, status: 1)
-      super(message)
+      super(message.nil? ? "" : message)
       @status = status
     end
   end

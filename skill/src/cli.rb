@@ -40,6 +40,11 @@ module Skill
 
     def run
       command, command_args = parse_args(@argv)
+      if command_args.any? { |arg| %w[-h --help].include?(arg) }
+        usage
+        raise ExitError.new(status: 0)
+      end
+
       handler = COMMANDS[command]
       raise ExitError, "unknown command: #{command}" unless handler
 

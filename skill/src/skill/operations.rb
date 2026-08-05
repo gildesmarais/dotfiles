@@ -37,9 +37,10 @@ module Skill
       entries = classifier.report_entries
       return if entries.empty?
 
+      width = [entries.map { |name, _status| name.length }.max, 24].max
       drifted = false
       entries.each do |name, status|
-        puts("#{name} #{status}")
+        puts(format("%-#{width}s  %s", name, status))
         drifted = true if status == "drift"
       end
 
