@@ -60,7 +60,6 @@ repos = [
 # Custom commands
 [commands]
 "RCM: rcup" = "rcup -v"
-"Skills: sync" = "skill sync"
 #"Python Environment" = "~/dev/.env/bin/pip install -i https://pypi.python.org/simple -U --upgrade-strategy eager jupyter"
 
 [brew]

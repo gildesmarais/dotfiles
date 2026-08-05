@@ -1,8 +1,8 @@
 # Skills
 
-Personal skill store for a **product + engineering AI skill OS**: domain routers plus thin language adapters. Lives at `skills/` in this repo. Vocabulary: [`CONTEXT.md`](CONTEXT.md).
+Personal skill store for a **product + engineering AI skill OS**: domain routers plus thin language adapters. Lives at `agents/skills/` in this repo. Vocabulary: [`CONTEXT.md`](CONTEXT.md).
 
-First-party skills install via `skill sync` (symlinks into `~/.agents/skills`). Optional third-party packs use manual `npx skills` (below).
+First-party skills install via `rcup` into `~/.agents/skills`. Optional third-party packs use manual `npx skills` (below).
 
 ## Pipeline
 
@@ -39,7 +39,7 @@ Published Build overlay: `ruby-on-rails-dev`. Local-only overlay: `mir-architect
 
 ## Optional packs (not OS SoT)
 
-Decide helpers and upstream language packs sit outside the domain routers. They are never OS source of truth. Install manually (not via `skill sync`):
+Decide helpers and upstream language packs sit outside the domain routers. They are never OS source of truth. Install manually (not via `rcup` store trees):
 
 ```sh
 # Decide
@@ -51,12 +51,12 @@ npx skills add https://github.com/twostraws/swift-testing-agent-skill --skill sw
 # Catalog: https://github.com/twostraws/Swift-Agent-Skills
 ```
 
-Store-local spice (`ms-rust`, `rust-performance`) lands with `skill sync` when present under `skills/`.
+Store-local spice (`ms-rust`, `rust-performance`) lands with `rcup` when present under `agents/skills/`.
 
 | Pack               | When you want it                                   | Role                                                   |
 | ------------------ | -------------------------------------------------- | ------------------------------------------------------ |
 | `grilling`         | Stress-test a plan or decision                     | Upstream Decide skill                                  |
-| `ms-rust`          | Microsoft-style Rust guidelines before `.rs` edits | Compose with `rust-dev` (store → `skill sync`)         |
+| `ms-rust`          | Microsoft-style Rust guidelines before `.rs` edits | Compose with `rust-dev` (store → `rcup`)               |
 | `rust-performance` | Measure-before-optimize Rust work                  | Craft ownership stays `architecture` **`performance`** |
 | `swift-*`          | SwiftUI / Swift Testing / Apple packs              | Upstream or `<repo>/.agents/skills/` specialists       |
 
@@ -92,11 +92,11 @@ One-way rules (prevent domain collisions):
 
 MIR / rhythmic-analysis overlay for `rust-dev` (club music grids, downbeat, tempo).
 
-|           |                                                    |
-| --------- | -------------------------------------------------- |
-| **When**  | `skills/mir-architect/` is present on this machine |
-| **How**   | `skill sync` (same as other store skills)          |
-| **Scope** | Local-only; omit from public install examples      |
+|           |                                                          |
+| --------- | -------------------------------------------------------- |
+| **When**  | `agents/skills/mir-architect/` is present on this machine |
+| **How**   | `rcup` (same as other store skills)                      |
+| **Scope** | Local-only; omit from public install examples            |
 
 Skip if you are not on that MIR stack.
 
@@ -107,7 +107,7 @@ Skip if you are not on that MIR stack.
 - **Compose across domains** with one-way handoffs (above).
 - **Thin `*-dev`** — craft stays in `architecture`; overlays are deltas only.
 - **Phase commits on Build** — every new `{lang}-dev` includes the Contracts Phase commits bullet (same wording as `rust-dev`); overlays never copy it. Solution/Build plans encode validate→commit per phase via [`CONTEXT.md`](CONTEXT.md).
-- **Local-only overlays** — may live under `skills/` (e.g. `mir-architect`); document when/how/scope; they link via `skill sync`.
+- **Local-only overlays** — may live under `agents/skills/` (e.g. `mir-architect`); document when/how/scope; they install via `rcup`.
 - **Proliferation guard** — new top-level skill only if it cannot be a branch of an existing router (for refactor concerns: `refactor-<concern>` under `architecture`, never bare `refactor` or a parallel `product` skill).
 
 Router shape: `## Pick branch` → `## Shared prep` → `## Branch reference` → `## Handoff` → `## Completion criteria`. Relative `reference/*.md` links; unnumbered `##` headers. Terms: [`CONTEXT.md`](CONTEXT.md). Spec: [agentskills.io](https://agentskills.io/).
@@ -116,21 +116,19 @@ Router shape: `## Pick branch` → `## Shared prep` → `## Branch reference` �
 
 ## Operate the store
 
-Model: git-tracked trees under `skills/<name>/` are the source of truth. `skill sync` (and `promote`) ensure `~/.agents/skills/<name>` is a symlink into the store. Real directories under `~/.agents/skills` are left alone (fail closed — remove conflicting copies once, then re-sync). Stale store-owned symlinks are pruned on sync. Optional note: an old generated tree at `~/.dotfiles/.agents/skills` is unused now and safe to delete locally.
+Model: git-tracked trees under `agents/skills/<name>/` are the source of truth. `rcup` installs them into `~/.agents/skills/<name>/` (file-level links). Do **not** set `SYMLINK_DIRS` for `agents`/`agents/skills` — that would own all of `~/.agents/skills` and fight third-party real dirs from `npx skills`. After clone/pull or promote/rename, run `rcup` (or wait for topgrade `RCM: rcup`). Optional note: an old generated tree at `~/.dotfiles/.agents/skills` or a leftover `~/.skills` tree is unused now and safe to delete locally.
 
-| Command                    | Role                                                              |
-| -------------------------- | ----------------------------------------------------------------- |
-| `skill list`               | List non-hidden skills in the store                               |
-| `skill sync`               | Symlink store skills into `~/.agents/skills`; prune stale links   |
-| `skill promote <name>`     | Move `<project>/.agents/skills/<name>` into the store and link it |
-| `skill rename <old> <new>` | Rename in the store and retarget the agent symlink                |
-
-Also runs via `topgrade` after `rcup` (`Skills: sync`).
+| Command                    | Role                                                    |
+| -------------------------- | ------------------------------------------------------- |
+| `skill list`               | List non-hidden skills in the store                     |
+| `skill promote <name>`     | Move `<project>/.agents/skills/<name>` into the store   |
+| `skill rename <old> <new>` | Rename in the store                                     |
+| `rcup`                     | Install store skills into `~/.agents/skills`            |
 
 ### Paths
 
 | Scope         | Path                                             |
 | ------------- | ------------------------------------------------ |
-| Store         | `skills/<name>/` in this repo                    |
-| Agent install | `~/.agents/skills/<name>` → symlink to store     |
+| Store         | `agents/skills/<name>/` in this repo             |
+| Agent install | `~/.agents/skills/<name>/` via `rcup`            |
 | Project draft | `<repo>/.agents/skills/<name>/` (promote source) |

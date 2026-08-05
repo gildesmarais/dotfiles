@@ -1,2 +1,2 @@
-EXCLUDES="README.md dotfiles:scripts*"
+EXCLUDES="README.md CONTEXT.md dotfiles:scripts*"
 UNDOTTED="Library"

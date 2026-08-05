@@ -17,7 +17,7 @@ module Skill
     end
 
     def store_dir
-      File.join(@dotfiles_root, "skills")
+      File.join(@dotfiles_root, "agents", "skills")
     end
 
     def home_dir
