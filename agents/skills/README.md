@@ -104,21 +104,22 @@ Decide helpers and upstream language packs sit outside the domain routers. They 
 npx skills add https://github.com/mattpocock/skills --skill grilling -a cursor -a codex -y
 
 # Swift / Apple (pick what you need)
-npx skills add https://github.com/twostraws/swiftui-agent-skill --skill swiftui-pro -a cursor -a codex -y
-npx skills add https://github.com/twostraws/swift-testing-agent-skill --skill swift-testing-pro -a cursor -a codex -y
+npx skills add https://github.com/twostraws/swiftui-agent-skill --skill swiftui-pro -g -a cursor -a codex -y
+npx skills add https://github.com/twostraws/swift-testing-agent-skill --skill swift-testing-pro -g -a cursor -a codex -y
+npx skills add https://github.com/arjitj2/swiftui-design-principles --skill swiftui-design-principles -g -a cursor -a codex -y
 # Catalog: https://github.com/twostraws/Swift-Agent-Skills
 ```
 
 Store-local spice (`ms-rust`, `rust-performance`) installs the same way as other store skills when those trees are on the default branch (`npx skills` downstream, or `rcup` on this machine).
 
-| Pack                | When you want it                                   | Role                                                                           |
-| ------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `grilling`          | Stress-test a plan or decision                     | Upstream Decide skill                                                          |
-| `ms-rust`           | Microsoft-style Rust guidelines before `.rs` edits | Compose with `rust-dev`                                                        |
-| `rust-performance`  | Measure-before-optimize Rust work                  | Craft ownership stays `architecture` **`performance`**                         |
-| `swiftui-pro`       | SwiftUI review depth                               | Compose with `swiftui-dev` (and `swift-dev`); depth pack, not Build entrypoint |
-| `swift-testing-pro` | Swift Testing depth                                | Compose with `swift-dev`; depth pack, not Build entrypoint                     |
-| `swift-*` (other)   | Design / Apple packs                               | Same compose-with rule; may also live under a repo’s `.agents/skills/`         |
+| Pack                         | When you want it                                   | Role                                                                           |
+| ---------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `grilling`                   | Stress-test a plan or decision                     | Upstream Decide skill                                                          |
+| `ms-rust`                    | Microsoft-style Rust guidelines before `.rs` edits | Compose with `rust-dev`                                                        |
+| `rust-performance`           | Measure-before-optimize Rust work                  | Craft ownership stays `architecture` **`performance`**                         |
+| `swiftui-pro`                | SwiftUI review depth                               | Compose with `swiftui-dev` (and `swift-dev`); depth pack, not Build entrypoint |
+| `swift-testing-pro`          | Swift Testing depth                                | Compose with `swift-dev`; depth pack, not Build entrypoint                     |
+| `swiftui-design-principles`  | Spacing, typography, materials                     | Compose with `swiftui-dev`; depth pack, not Build entrypoint                     |
 
 Discover more on [skills.sh](https://skills.sh/).
 

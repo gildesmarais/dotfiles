@@ -16,7 +16,7 @@ description: >-
 - For review or design depth, compose optional packs by **name** when installed (do not inline their checklists):
   - `swiftui-pro` — SwiftUI review depth
   - `swiftui-design-principles` — spacing, typography, materials
-- Testing depth stays on `$swift-dev` (`swift-testing-pro` or the repo’s Testing pack).
+- Testing depth stays on `$swift-dev` (`swift-testing-pro`).
 
 ## Implementation Deltas
 

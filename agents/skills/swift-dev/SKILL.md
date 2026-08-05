@@ -75,7 +75,7 @@ Earn `design` when any of: dual ownership / shallow modules / primitive obsessio
 Pointers only — load when present; do not paste their bodies here:
 
 - UI-shaped work → `swiftui-dev` (with this skill).
-- Swift Testing depth → `swift-testing-pro` when installed; otherwise the repo’s Testing pack name (e.g. `swift-testing-expert`).
+- Swift Testing depth → `swift-testing-pro` when installed.
 - On-device AI → `apple-on-device-ai` when that pack exists.
 - Product overlays (e.g. `prestage-*`) when present in the repo.
 
