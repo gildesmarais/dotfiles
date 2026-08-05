@@ -63,11 +63,12 @@ module Skill
       puts <<~USAGE
         Usage: skill [--project PATH] <command> [args]
 
-        Manage the dotfiles skill store (~/.dotfiles/skills). Install skills into agents with npx skills.
+        Manage the dotfiles skill store (~/.dotfiles/agents/skills). First-party
+        skills install into ~/.agents/skills via rcup.
 
         Commands:
           list                         List skills available in #{paths.store_dir}
-          promote <name>               Move .agents/skills/<name> into dotfiles
+          promote <name>               Move .agents/skills/<name> into the store
           rename <old> <new>           Rename a stored skill
           help                         Show this help
 

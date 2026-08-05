@@ -2,9 +2,9 @@
 
 ## Purpose
 
-`skill/` owns the implementation and tests for the `skill` command used to manage the dotfiles skill store (`~/.dotfiles/skills`).
+`skill/` owns the implementation and tests for the `skill` command used to manage the dotfiles skill store (`~/.dotfiles/agents/skills`).
 
-Install skills into agents with [`npx skills`](https://github.com/vercel-labs/skills). This CLI handles store hygiene only: `promote` and `rename`.
+Install first-party skills into agents with [`rcup`](https://github.com/thoughtbot/rcm) (repo `agents/skills/<name>/` → `~/.agents/skills/<name>/`). This CLI handles store hygiene only: `list`, `promote`, and `rename`.
 
 ## Key Decision
 
@@ -35,7 +35,8 @@ Do not optimize for:
 - external services
 - non-stdlib Ruby dependencies
 - broad cross-platform abstractions unless they are required by an actual use case
-- symlink-based agent install management (use `npx skills` instead)
+- agent install management (use `rcup` / topgrade instead)
+- third-party skill install (use manual `npx skills` for optional packs)
 
 ## Operating Constraints
 
@@ -45,20 +46,21 @@ Do not optimize for:
 - Hidden directories in the store are not user skills and must stay excluded from `list` and related workflows.
 - The tool manages local directories in the dotfiles store; it should fail closed rather than overwrite unexpected paths.
 - Behavior should remain understandable from CLI output alone. Errors should be explicit and actionable.
-- Do not create project symlinks. Print `npx skills add gildesmarais/dotfiles` hints after promote.
+- Do not create agent install links. Print an `rcup` hint after promote/rename.
 
 ## Canonical Paths
 
-- Store: `skills/` at the dotfiles root
+- Store: `agents/skills/` at the dotfiles root
+- Agent install: `~/.agents/skills/<name>/` via `rcup` (file-level links from the store)
 - Project promote source: `<project>/.agents/skills/` only (`.codex/skills/` is deprecated and rejected)
 - Main implementation: `skill/src/cli.rb`
-- Tests: `skill/test/cli_test.rb`
+- Tests: `skill/test/cli_test.rb`, `skill/test/unit_test.rb`
 - Lint config: `skill/.rubocop.yml`
-- User guide: `skills/README.md`
+- User guide: `agents/skills/README.md`
 
 ## Change Rules
 
-- When changing command behavior, update tests in `skill/test/cli_test.rb`.
+- When changing command behavior, update tests in `skill/test/cli_test.rb` and/or `skill/test/unit_test.rb`.
 - Preserve current command names and semantics unless the user explicitly requests a CLI contract change.
 - Keep direct execution of `ruby skill/src/cli.rb ...` working.
 - Prefer targeted helper methods over introducing new layers or frameworks.
@@ -84,4 +86,4 @@ When reviewing changes here, prioritize:
 - hidden-file handling regressions
 - argument parsing regressions
 - drift between README, tests, and executable behavior
-- accidental reintroduction of symlink or `.codex/skills` workflows
+- accidental reintroduction of `skill sync` or `.codex/skills` promote workflows

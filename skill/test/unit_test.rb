@@ -5,6 +5,7 @@ require "minitest/autorun"
 require "tmpdir"
 
 require_relative "../src/skill/error"
+require_relative "../src/skill/filesystem"
 require_relative "../src/skill/operations"
 require_relative "../src/skill/paths"
 
@@ -19,13 +20,19 @@ class SkillUnitTest < Minitest::Test
     @tmpdir = Dir.mktmpdir("skill-unit-test")
     @dotfiles_root = File.join(@tmpdir, "dotfiles")
     @project_root = File.join(@tmpdir, "project")
-    @skills_dir = File.join(@dotfiles_root, "skills")
+    @home_dir = File.join(@tmpdir, "home")
+    @skills_dir = File.join(@dotfiles_root, "agents", "skills")
 
     FileUtils.mkdir_p(@skills_dir)
     FileUtils.mkdir_p(@project_root)
+    FileUtils.mkdir_p(@home_dir)
 
     @ui = FakeUI.new([])
-    @paths = Skill::Paths.new(dotfiles_root: @dotfiles_root, project_root: @project_root)
+    @paths = Skill::Paths.new(
+      dotfiles_root: @dotfiles_root,
+      project_root: @project_root,
+      home_dir: @home_dir
+    )
     @operations = Skill::Operations.new(paths: @paths, shell_ui: @ui)
   end
 
@@ -42,6 +49,9 @@ class SkillUnitTest < Minitest::Test
     assert(File.directory?(@paths.store_skill_path("my-skill")))
     refute(File.exist?(source))
     assert_includes(@ui.notes, "promoted my-skill -> #{@paths.store_skill_path('my-skill')}")
+    assert_includes(@ui.notes, Skill::Operations::RCUP_HINT)
+    refute(@ui.notes.any? { |note| note.start_with?("linked ") })
+    refute(File.exist?(@paths.agents_skill_path("my-skill")) || File.symlink?(@paths.agents_skill_path("my-skill")))
   end
 
   def test_promote_rejects_legacy_codex_skills_path
@@ -58,7 +68,7 @@ class SkillUnitTest < Minitest::Test
     refute(File.exist?(@paths.store_skill_path("my-skill")))
   end
 
-  def test_rename_moves_store_directory_only
+  def test_rename_updates_store_and_hints_rcup
     create_store_skill("old-name")
 
     @operations.rename_skill("old-name", "new-name")
@@ -66,7 +76,8 @@ class SkillUnitTest < Minitest::Test
     assert(File.directory?(@paths.store_skill_path("new-name")))
     refute(File.exist?(@paths.store_skill_path("old-name")))
     assert_includes(@ui.notes, "renamed old-name -> new-name")
-    assert_match(/npx skills remove old-name/, @ui.notes.join("\n"))
+    assert_includes(@ui.notes, Skill::Operations::RCUP_HINT)
+    refute(@ui.notes.any? { |note| note.start_with?("linked ") })
   end
 
   def test_rename_raises_when_destination_exists_in_store
@@ -81,8 +92,16 @@ class SkillUnitTest < Minitest::Test
     assert_equal("destination already exists in dotfiles: #{@paths.store_skill_path('new-name')}", error.message)
   end
 
+  def test_store_dir_uses_agents_skills
+    assert_equal(File.join(@dotfiles_root, "agents", "skills"), @paths.store_dir)
+  end
+
   def test_project_skills_dir_uses_agents_path
     assert_equal(File.join(@project_root, ".agents", "skills"), @paths.project_skills_dir)
+  end
+
+  def test_agents_skills_dir_uses_home
+    assert_equal(File.join(@home_dir, ".agents", "skills"), @paths.agents_skills_dir)
   end
 
   private

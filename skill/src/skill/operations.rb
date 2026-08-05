@@ -7,11 +7,9 @@ require_relative "filesystem"
 
 module Skill
   class Operations
-    INSTALL_HINT_TEMPLATE = "install: npx skills add gildesmarais/dotfiles --skill %<name>s -a cursor -a codex -y"
-    RENAME_HINT_TEMPLATE = "refresh agent installs: npx skills remove %<old>s && " \
-                           "npx skills add gildesmarais/dotfiles --skill %<new>s -a cursor -a codex -y"
     LEGACY_CODEX_ERROR = "refusing to promote from deprecated .codex/skills/%<name>s; " \
-                         "move skills to .agents/skills/ or reinstall with npx skills"
+                         "move skills to .agents/skills/"
+    RCUP_HINT = "run rcup (or wait for topgrade) to install into ~/.agents/skills"
 
     def initialize(paths:, shell_ui:)
       @paths = paths
@@ -48,7 +46,7 @@ module Skill
 
       FileUtils.mv(source, target)
       @shell_ui.note("promoted #{name} -> #{target}")
-      @shell_ui.note(install_hint(name))
+      @shell_ui.note(RCUP_HINT)
     end
 
     def rename_skill(old_name, new_name)
@@ -67,13 +65,7 @@ module Skill
 
       FileUtils.mv(old_target, new_target)
       @shell_ui.note("renamed #{old_name} -> #{new_name}")
-      @shell_ui.note(format(RENAME_HINT_TEMPLATE, old: old_name, new: new_name))
-    end
-
-    private
-
-    def install_hint(name)
-      format(INSTALL_HINT_TEMPLATE, name: name)
+      @shell_ui.note(RCUP_HINT)
     end
   end
 end

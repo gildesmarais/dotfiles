@@ -26,8 +26,24 @@ module Skill
       expanded_path == expanded_directory || expanded_path.start_with?("#{expanded_directory}/")
     end
 
+    # Resolve existing path segments so macOS /var → /private/var matches even for
+    # missing leaf paths (broken symlinks, prune targets).
     def normalized_path(path)
-      File.realpath(path)
+      expanded = File.expand_path(path)
+      return File.realpath(expanded) if File.exist?(expanded)
+
+      suffix = []
+      dirname = expanded
+      while dirname != "/" && !File.exist?(dirname)
+        suffix.unshift(File.basename(dirname))
+        parent = File.dirname(dirname)
+        break if parent == dirname
+
+        dirname = parent
+      end
+
+      base = File.exist?(dirname) ? File.realpath(dirname) : dirname
+      suffix.empty? ? base : File.join(base, *suffix)
     rescue StandardError
       File.expand_path(path)
     end

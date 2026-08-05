@@ -6,6 +6,8 @@ require "open3"
 require "rbconfig"
 require "tmpdir"
 
+require_relative "../src/skill/filesystem"
+
 class SkillCliTest < Minitest::Test
   Result = Struct.new(:output, :exitstatus)
 
@@ -13,14 +15,17 @@ class SkillCliTest < Minitest::Test
     @tmpdir = Dir.mktmpdir("skill-cli-test")
     @dotfiles_root = File.join(@tmpdir, "dotfiles")
     @project_root = File.join(@tmpdir, "project")
+    @home_dir = File.join(@tmpdir, "home")
+    @agents_skills_dir = File.join(@home_dir, ".agents", "skills")
     @script_path = File.join(@dotfiles_root, "scripts", "skill")
     @skill_root = File.join(@dotfiles_root, "skill")
-    @skills_dir = File.join(@dotfiles_root, "skills")
+    @skills_dir = File.join(@dotfiles_root, "agents", "skills")
     @cli_path = File.join(@skill_root, "src", "cli.rb")
 
     FileUtils.mkdir_p(File.dirname(@script_path))
     FileUtils.mkdir_p(@skills_dir)
     FileUtils.mkdir_p(@skill_root)
+    FileUtils.mkdir_p(@home_dir)
 
     FileUtils.cp(File.expand_path("../../scripts/skill", __dir__), @script_path)
     FileUtils.cp_r(File.expand_path("../src", __dir__), @skill_root)
@@ -54,7 +59,7 @@ class SkillCliTest < Minitest::Test
     refute_includes(result.output, ".hidden")
   end
 
-  def test_promote_moves_agents_skill_into_store_without_symlink
+  def test_promote_moves_agents_skill_into_store
     local_skill = File.join(@project_root, ".agents", "skills", "my-skill")
     FileUtils.mkdir_p(local_skill)
     File.write(File.join(local_skill, "SKILL.md"), "# My Skill\n")
@@ -62,10 +67,13 @@ class SkillCliTest < Minitest::Test
     result = run_skill("promote", "my-skill")
 
     assert_equal(0, result.exitstatus)
-    assert_match(%r{promoted my-skill -> .*/skills/my-skill}, result.output)
-    assert_includes(result.output, "npx skills add gildesmarais/dotfiles --skill my-skill -a cursor -a codex -y")
+    assert_match(%r{promoted my-skill -> .*/agents/skills/my-skill}, result.output)
+    assert_includes(result.output, "run rcup")
+    refute_includes(result.output, "linked ")
+    refute_includes(result.output, "npx skills")
     assert(File.directory?(File.join(@skills_dir, "my-skill")))
     refute_path_exists(local_skill)
+    refute_path_exists(File.join(@agents_skills_dir, "my-skill"))
   end
 
   def test_promote_rejects_legacy_codex_skills_path
@@ -91,17 +99,19 @@ class SkillCliTest < Minitest::Test
     assert_equal(0, result.exitstatus)
     assert(File.directory?(File.join(@skills_dir, "my-skill")))
     refute_path_exists(local_skill)
+    assert_includes(result.output, "run rcup")
   end
 
-  def test_rename_updates_store_only_and_prints_refresh_hint
+  def test_rename_updates_store_and_hints_rcup
     create_store_skill("old-name")
 
     result = run_skill("rename", "old-name", "new-name")
 
     assert_equal(0, result.exitstatus)
     assert_includes(result.output, "renamed old-name -> new-name")
-    assert_includes(result.output, "npx skills remove old-name")
-    assert_includes(result.output, "npx skills add gildesmarais/dotfiles --skill new-name -a cursor -a codex -y")
+    assert_includes(result.output, "run rcup")
+    refute_includes(result.output, "linked ")
+    refute_includes(result.output, "npx skills")
     assert(File.directory?(File.join(@skills_dir, "new-name")))
     refute_path_exists(File.join(@skills_dir, "old-name"))
   end
@@ -120,6 +130,7 @@ class SkillCliTest < Minitest::Test
 
   def test_cli_file_runs_when_executed_directly
     output, status = Open3.capture2e(
+      { "HOME" => @home_dir },
       RbConfig.ruby,
       @cli_path,
       "help",
@@ -128,7 +139,8 @@ class SkillCliTest < Minitest::Test
 
     assert_equal(0, status.exitstatus)
     assert_includes(output, "Usage: skill")
-    refute_includes(output, "link")
+    refute_includes(output, "sync")
+    refute_match(/^\s+link\s/m, output)
     refute_includes(output, "doctor")
   end
 
@@ -136,6 +148,7 @@ class SkillCliTest < Minitest::Test
 
   def run_skill(*args)
     output, status = Open3.capture2e(
+      { "HOME" => @home_dir },
       RbConfig.ruby,
       @script_path,
       *args,

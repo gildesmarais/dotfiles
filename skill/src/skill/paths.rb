@@ -9,14 +9,29 @@ module Skill
   class Paths
     attr_writer :project_root
 
-    def initialize(dotfiles_root:, project_root: nil)
+    def initialize(dotfiles_root:, project_root: nil, home_dir: nil)
       @dotfiles_root = dotfiles_root
       @project_root = project_root
+      @home_dir = home_dir
       @project_skills_dir = nil
     end
 
     def store_dir
-      File.join(@dotfiles_root, "skills")
+      File.join(@dotfiles_root, "agents", "skills")
+    end
+
+    def home_dir
+      return @home_dir unless @home_dir.nil? || @home_dir.empty?
+
+      ENV.fetch("HOME")
+    end
+
+    def agents_skills_dir
+      File.join(home_dir, ".agents", "skills")
+    end
+
+    def agents_skill_path(name)
+      File.join(agents_skills_dir, name)
     end
 
     def project_root

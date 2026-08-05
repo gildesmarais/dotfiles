@@ -22,7 +22,7 @@ skill/
 
 - `src/cli.rb`: command parsing, dispatch, and help output
 - `src/skill/paths.rb`: canonical store and project path resolution
-- `src/skill/filesystem.rb`: shared symlink and skill-name safety helpers
+- `src/skill/filesystem.rb`: shared skill-name safety helpers
 - `src/skill/error.rb`: shared CLI exit/error object used below the entrypoint
 - `src/skill/operations.rb`: skill list/promote/rename behavior
 - `src/skill/ui.rb`: CLI output and fatal error helpers
@@ -38,6 +38,7 @@ Run the CLI entrypoint:
 ./scripts/skill help
 ./scripts/skill list
 ./scripts/skill promote my-skill
+./scripts/skill rename ruby-dev ruby
 ```
 
 Run the implementation directly:
@@ -93,4 +94,4 @@ Run tests with the macOS system Ruby 2.6:
 - When changing command behavior, update or add tests in `skill/test/cli_test.rb` first when practical.
 - Preserve Ruby 2.6 compatibility.
 - Prefer stdlib-only dependencies unless there is a strong reason not to.
-- Skill installation into agents is handled by `npx skills`; this CLI only manages the dotfiles store.
+- First-party agent install is via `rcup` from `agents/skills/<name>/` into `~/.agents/skills/<name>/`. After `promote` / `rename`, run `rcup` (or wait for topgrade).
