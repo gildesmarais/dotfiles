@@ -21,23 +21,23 @@ Maintained by [Gil Desmarais](https://gil.desmarais.de) (Berlin). Profile, proje
 
 ### Quick-start tools
 
-| Script                           | What it does                                                                                                                          | Prerequisites                                                         |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `./scripts/macos-defaults-apply` | Guided wizard that applies my preferred macOS defaults and prompts for the manual tweaks listed below.                                | macOS, `sudo` access for protected settings.                          |
-| `./scripts/wiki`                 | `fzf`-powered browser for the local wiki directory that opens files in your preferred editor.                                         | `fzf`, `git`, `rg`, optional `VISUAL`/`EDITOR` or `WIKI_*` overrides. |
-| `./scripts/download-audio`       | Fetches remote audio (e.g., YouTube URLs) and normalises them via the `process-audio` pipeline for library-ready files.               | `aria2`, `ffmpeg`, `yt-dlp`; installs live in the Brewfile.           |
-| `./scripts/skill`                | Store hygiene for `~/.dotfiles/agents/skills` (`list`, `promote`, `rename`). First-party install is via `rcup`.                        | Ruby 2.6+, optional `git` for auto-detecting the project root.        |
-| `./scripts/playground`           | Picks or creates playground projects for `pg`; interactive mode supports `Ctrl-O` to open the highlighted folder in Finder.           | `fzf`, `rg`; macOS `open` for Finder shortcut.                        |
+| Script                           | What it does                                                                                                                | Prerequisites                                                         |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `./scripts/macos-defaults-apply` | Guided wizard that applies my preferred macOS defaults and prompts for the manual tweaks listed below.                      | macOS, `sudo` access for protected settings.                          |
+| `./scripts/wiki`                 | `fzf`-powered browser for the local wiki directory that opens files in your preferred editor.                               | `fzf`, `git`, `rg`, optional `VISUAL`/`EDITOR` or `WIKI_*` overrides. |
+| `./scripts/download-audio`       | Fetches remote audio (e.g., YouTube URLs) and normalises them via the `process-audio` pipeline for library-ready files.     | `aria2`, `ffmpeg`, `yt-dlp`; installs live in the Brewfile.           |
+| `./scripts/skill`                | Store hygiene for `~/.dotfiles/agents/skills` (`list`, `promote`, `rename`). First-party install is via `rcup`.             | Ruby 2.6+, optional `git` for auto-detecting the project root.        |
+| `./scripts/playground`           | Picks or creates playground projects for `pg`; interactive mode supports `Ctrl-O` to open the highlighted folder in Finder. | `fzf`, `rg`; macOS `open` for Finder shortcut.                        |
 
 ## Agent Skills
 
 Personal and custom [Agent Skills](https://agentskills.io/) live in [`agents/skills/`](agents/skills/). First-party installs land under `~/.agents/skills/` via `rcup` (also via topgrade `RCM: rcup`).
 
-| Tool                               | Role                                                                              |
-| ---------------------------------- | --------------------------------------------------------------------------------- |
-| [`rcup`](https://github.com/thoughtbot/rcm) / topgrade | Install store skills into `~/.agents/skills`                             |
-| [`./scripts/skill`](scripts/skill) | Store hygiene (`list`, `promote`, `rename`)                                       |
-| Manual `npx skills`                | Optional third-party packs only (see [agents/skills/README.md](agents/skills/README.md)) |
+| Tool                                                   | Role                                                                                     |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| [`rcup`](https://github.com/thoughtbot/rcm) / topgrade | Install store skills into `~/.agents/skills`                                             |
+| [`./scripts/skill`](scripts/skill)                     | Store hygiene (`list`, `promote`, `rename`)                                              |
+| Manual `npx skills`                                    | Optional third-party packs only (see [agents/skills/README.md](agents/skills/README.md)) |
 
 ### Workflow
 
