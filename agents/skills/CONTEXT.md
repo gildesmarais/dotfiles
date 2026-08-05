@@ -175,11 +175,11 @@ Signal that selects `architecture` **`deep-modules`** — not a skill name.
 _Avoid_: deepen-modules skill
 
 **Harvest**:
-Append learning-log bullets tagged by branch under `architecture/reference/learning-log.md` (or language-only harvest in optional `*-dev` `reference.md`).
-_Avoid_: growing frozen router checklists for every lesson
+Stage candidates in `architecture/reference/learning-log.md` → sparse-promote into matching `reference/<branch>.md` → drop noise (language-only harvest in optional `*-dev` `reference.md` unchanged in spirit).
+_Avoid_: append-only forever doctrine in the log; growing frozen router checklists for every lesson
 
 **Expansion law**:
-Seven rules in `architecture` Shared prep before adding a branch. Prefer harvest over new branches; never invent a top-level craft skill when a `refactor-<concern>` branch fits.
+Seven rules in `architecture` Shared prep before adding a branch. Prefer sparse harvest over new branches; never invent a top-level craft skill when a `refactor-<concern>` branch fits.
 
 **Third-party packs**:
 Optional agent installs (`grilling`, `swift-*`, vendor React packs). Not first-party kinds; not OS source of truth. Install with `npx skills add` — see `agents/skills/README.md` Optional packs. Store-local spice (`ms-rust`, `rust-performance`) installs via `rcup` when present under `agents/skills/`.

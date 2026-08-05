@@ -103,7 +103,7 @@ Skip if you are not on that MIR stack.
 ## Authoring laws
 
 - **One router per domain** — branches for verb-paths; progressive load.
-- **Freeze the router** — harvest lessons into `reference/` (tag branch); edit `SKILL.md` only when the contract is wrong.
+- **Freeze the router** — harvest via staging → sparse-promote onto `reference/<branch>.md`; edit `SKILL.md` only when the contract is wrong.
 - **Compose across domains** with one-way handoffs (above).
 - **Thin `*-dev`** — craft stays in `architecture`; overlays are deltas only.
 - **Phase commits on Build** — every new `{lang}-dev` includes the Contracts Phase commits bullet (same wording as `rust-dev`); overlays never copy it. Solution/Build plans encode validate→commit per phase via [`CONTEXT.md`](CONTEXT.md).

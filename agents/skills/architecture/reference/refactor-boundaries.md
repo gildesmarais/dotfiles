@@ -12,6 +12,7 @@ Wire/API contract redesign, adapter shells that grew domain branches, dual owner
    - List inbound and outbound edges: HTTP/RPC handlers, CLI parsers, DB/ORM mappers, queue/event codecs, file/CSV readers.
    - For each edge: raw shape in → domain types at the shell → domain work inward; reverse outbound.
    - Name the owner of each map (one module or type family per edge — no twin mappers).
+   - Keep published contract and runtime acceptance on one closed set — options accepted at runtime but absent from the published contract (or the reverse) are dual ownership of the contract.
 
 2. **Domain out of shells**
    - Boundary shells parse, validate shape, map to/from domain types, and forward.

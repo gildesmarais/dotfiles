@@ -13,6 +13,10 @@ Dual ownership of one fact, passthrough bags, shallow multi-call husks, or the u
 - Kill passthrough bags and dual ownership of the same fact.
 - Narrow stage and dependency interfaces; one fact, one home.
 - Introduce seams only where they buy phased moves or testability — not for ceremony.
+- Share one expansion path between validate and run — dual ownership of expansion greenlights configs that fail later.
+- Own one remaining wall-clock across fallbacks and pagination; pass it down.
+- Name every dependency the path relies on — invisible contracts fail closed in production.
+- Cut over only after the replacement seam exists; incomplete migrations invite revert.
 - Anti-patterns: dump modules of unrelated helpers; twin structs that must stay in sync; adapters that grow domain branches.
 
 ## Sequencing

@@ -32,6 +32,12 @@ Primitive obsession across modules, stringly closed sets, magic ints, parallel l
    - Rewrite call sites to the typed API.
    - Delete obsolete parsers, fallbacks, and parallel lookup tables.
 
+## Anti-patterns
+
+- Validate by structure, not by substring ban on identifiers.
+- Immutable holders take a defensive handoff the caller cannot mutate.
+- Presence is not permission; one bag is not two audiences.
+
 ## Thin examples (illustrative only)
 
 Value object shape (any language): wrap a scalar; reject out-of-range in the constructor; expose a read accessor.

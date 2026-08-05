@@ -20,3 +20,7 @@ User asks for speed/allocations, a clear hot path exists, or measured evidence s
 - Optimizing without a baseline.
 - Inventing language-specific recipe dumps in this skill.
 - Expanding scope to “while we’re here” cleanups that are not on the measured path (route those to other branches or surgical `*-dev` work).
+- Refreshing published baselines outside a harness that actually updates them.
+- Shipping unstable acceleration as the default — keep the portable path default; accelerate behind explicit opt-in and compare both.
+- Forking scalar and accelerated copies of one hot-path algorithm (cue `deep-modules`).
+- Telemetry on the critical path you measure.

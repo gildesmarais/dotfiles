@@ -49,7 +49,7 @@ Agents must follow these before adding any architecture branch:
 3. **Add a branch:** one row in `## Pick branch` + signals table + `reference/<branch>.md` + completion row. Do not invent a top-level skill.
 4. **Overlap rules:** module ownership/depth → `deep-modules`; closed sets / newtypes / logic-on-types → `refactor-types`; serialize/deserialize and adapter contract shape → `refactor-boundaries`; speed/allocations with measure → `performance`.
 5. **Multi-load OK** when signals combine (same as review lenses).
-6. **Growth default:** harvest bullet tagged with branch name → `reference/learning-log.md`. Edit branch checklist only when the contract is wrong.
+6. **Growth default:** staging candidates → `reference/learning-log.md`; **sparse promote** into matching `reference/<branch>.md` Checklist or Anti-patterns only when judgment changes and is not already covered by that file or [`glossary.md`](reference/glossary.md); **drop** the rest. Edit the router (`SKILL.md`) only when the contract is wrong.
 7. **Reject:** `refactor-misc`, `cleanup`, language-named branches (`refactor-rust`), third-party recipe dumps.
 
 ## Branch reference
@@ -61,7 +61,7 @@ Load each selected branch’s reference and follow it through completion. Always
 - **`refactor-types`** → [`reference/refactor-types.md`](reference/refactor-types.md)
 - **`refactor-boundaries`** → [`reference/refactor-boundaries.md`](reference/refactor-boundaries.md)
 - **`performance`** → [`reference/performance.md`](reference/performance.md)
-- Learning log → [`reference/learning-log.md`](reference/learning-log.md) (consult when a loaded branch has tagged gems)
+- Learning log → [`reference/learning-log.md`](reference/learning-log.md) (same-event staging only — not part of progressive load)
 
 ## Handoff
 
@@ -72,25 +72,24 @@ Load each selected branch’s reference and follow it through completion. Always
 
 ## Growing reference
 
-Grow `reference/learning-log.md` when a design or recurring failure class left a lesson that will prevent the next dual-ownership / shallow-seam / type / measured-perf mistake; guidance was missing/wrong; or the user asks for a learning capture.
+Stage candidates in `reference/learning-log.md` when a design or recurring failure class left a lesson that will prevent the next dual-ownership / shallow-seam / type / measured-perf mistake; guidance was missing/wrong; or the user asks for a learning capture.
 
 Gems are **preventive mantras** for failure _classes_ — reflective instruction an expert recalls before repeating the mistake — not incident write-ups, mining procedures, or technique recipes.
 
 1. Scope corpus to structural cuts (ownership, seams, types, measured perf) — classes over incidents; dependency bumps and fixture moves are not harvest.
 2. **Generalize before ingress.** Strip product nouns, paths, schemas, language APIs, and domain fingerprints; a stranger must not infer the source codebase.
 3. Abstract: one imperative sentence an expert agent can apply in any language.
-4. Filter: reject bullets that only restate an existing branch checklist **or any existing learning-log gem**. A narrower failure class may specialize; a clone may not.
-5. Tag each kept gem with branch name(s): `deep-modules` | `refactor-types` | `refactor-boundaries` | `performance`.
-6. Cap ~10 new bullets per harvest event unless the user asks for more. Noise-pass for product leakage and overlap.
-7. Do not grow branch checklists unless the contract itself is wrong (expansion law rule 6).
-8. **Scarce reverts:** repeated harden / review-follow-up chains can mean a missing principle (signal shape only — no corpus identity in the log).
+4. Filter: reject checklist / anti-pattern / glossary restatements and near-clones. A narrower failure class may specialize; a clone may not.
+5. Tag each kept candidate with branch name(s): `deep-modules` | `refactor-types` | `refactor-boundaries` | `performance`. Multi-tag keepers → **one primary branch** (overlap heuristic in expansion law §4); other tags as co-load cues in the bullet only — no duplicate copies.
+6. Cap ~10 new candidates per harvest event unless the user asks for more. Noise-pass for product leakage and overlap.
+7. **Sparse promote** into matching `reference/<branch>.md` Checklist or Anti-patterns only when judgment changes and is not already covered; **drop** the rest. Edit the router only when the contract is wrong (expansion law rule 6).
+8. **Scarce reverts:** repeated harden / review-follow-up chains can mean a missing principle (signal shape only — no corpus identity in staging).
 
 ### Ingress
 
-1. **Harvests accumulate; they do not replace.** A new corpus is a new dated section. Overwriting a peer section to “make room” destroys shared memory.
-2. **Write only from a fresh read.** The log is concurrent shared state; a stale snapshot is how harvests disappear.
-3. **One corpus, one section, one numbering continuum.** Name the _signal_ in the heading (e.g. deepen, fix/revert year)—never a product or repo name; continue global ids; filter against the entire log.
-4. **Pointers may thin; the corpus must not.** Folding into `*-dev` / review is optional posture thinner than the gem — cues that awaken judgment, not procedures or deletion. Restore missing harvests by append, never by rewriting unrelated sections. The learning-log remains the only full-gem store.
+1. **Propose in staging → filter → promote or drop.** Candidates land in `learning-log.md` for the same harvest event; sparse-promote into `reference/<branch>.md` or drop. Leave the log empty/thin. No permanent archive of rejects.
+2. **Write only from a fresh read.** Staging is concurrent shared state; a stale snapshot is how harvests collide or duplicate.
+3. **Dropping weak harvests is required.** Reject checklist / anti-pattern / glossary restatements and near-clones; do not keep noise “for later.”
 
 ## Completion criteria
 
