@@ -182,7 +182,7 @@ _Avoid_: growing frozen router checklists for every lesson
 Seven rules in `architecture` Shared prep before adding a branch. Prefer harvest over new branches; never invent a top-level craft skill when a `refactor-<concern>` branch fits.
 
 **Third-party packs**:
-Optional agent installs (`grilling`, `ms-rust`, `rust-performance`, `swift-*`, vendor React packs). Not first-party kinds; not OS source of truth. Install with `npx skills add` — see `skills/README.md` Optional packs.
+Optional agent installs (`grilling`, `swift-*`, vendor React packs). Not first-party kinds; not OS source of truth. Install with `npx skills add` — see `skills/README.md` Optional packs. Store-local spice (`ms-rust`, `rust-performance`) uses `skill sync`.
 
 **Conventional Commits** (format — single SoT):
 
@@ -227,7 +227,7 @@ Compose with `pull-request` — never absorb PR open/slice/resolve. Phase CC aut
 **Grilling** (third-party skill noun: `grilling`):
 Stress-test interview — one hard question at a time. Upstream Decide skill (not a first-party store router).
 Install (from dotfiles root): `npx skills add https://github.com/mattpocock/skills --skill grilling -a cursor -a codex -y`
-Sibling optional packs (`ms-rust`, `rust-performance`, `swift-*`): same `npx skills` pattern — see `skills/README.md` Optional packs.
+Sibling optional packs (`swift-*`): same `npx skills` pattern — see `skills/README.md` Optional packs. Store spice (`ms-rust`, `rust-performance`): `skill sync`.
 _Avoid_: using grilling to answer “should we build X?” (that stays `product-owner` **`gate`**)
 
 **Handoff**:

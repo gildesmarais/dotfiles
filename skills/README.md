@@ -2,7 +2,7 @@
 
 Personal skill store for a **product + engineering AI skill OS**: domain routers plus thin language adapters. Lives at `skills/` in this repo. Vocabulary: [`CONTEXT.md`](CONTEXT.md).
 
-Install into agents with [`npx skills`](https://github.com/vercel-labs/skills). Use `./scripts/skill` only for store hygiene (`promote`, `rename`, `list`).
+First-party skills install via `skill sync` (symlinks into `~/.agents/skills`). Optional third-party packs use manual `npx skills` (below).
 
 ## Pipeline
 
@@ -39,35 +39,28 @@ Published Build overlay: `ruby-on-rails-dev`. Local-only overlay: `mir-architect
 
 ## Optional packs (not OS SoT)
 
-Decide helpers and language spice sit outside the domain routers. They are never OS source of truth. From the dotfiles root (project scope, no `-g`):
+Decide helpers and upstream language packs sit outside the domain routers. They are never OS source of truth. Install manually (not via `skill sync`):
 
 ```sh
-cd ~/.dotfiles
-
 # Decide
 npx skills add https://github.com/mattpocock/skills --skill grilling -a cursor -a codex -y
-
-# Rust spice (local tree under skills/)
-npx skills add . --skill ms-rust -a cursor -a codex -y
-npx skills add . --skill rust-performance -a cursor -a codex -y
 
 # Swift / Apple (pick what you need)
 npx skills add https://github.com/twostraws/swiftui-agent-skill --skill swiftui-pro -a cursor -a codex -y
 npx skills add https://github.com/twostraws/swift-testing-agent-skill --skill swift-testing-pro -a cursor -a codex -y
 # Catalog: https://github.com/twostraws/Swift-Agent-Skills
-# App-repo specialists: cd <repo> && npx skills add . --skill <name> …
-
-skills-restore   # then commit skills-lock.json if it changed
 ```
+
+Store-local spice (`ms-rust`, `rust-performance`) lands with `skill sync` when present under `skills/`.
 
 | Pack               | When you want it                                   | Role                                                   |
 | ------------------ | -------------------------------------------------- | ------------------------------------------------------ |
 | `grilling`         | Stress-test a plan or decision                     | Upstream Decide skill                                  |
-| `ms-rust`          | Microsoft-style Rust guidelines before `.rs` edits | Compose with `rust-dev`                                |
+| `ms-rust`          | Microsoft-style Rust guidelines before `.rs` edits | Compose with `rust-dev` (store → `skill sync`)         |
 | `rust-performance` | Measure-before-optimize Rust work                  | Craft ownership stays `architecture` **`performance`** |
 | `swift-*`          | SwiftUI / Swift Testing / Apple packs              | Upstream or `<repo>/.agents/skills/` specialists       |
 
-Discover more on [skills.sh](https://skills.sh/). First-party OS installs: [below](#install-this-store).
+Discover more on [skills.sh](https://skills.sh/).
 
 ## Compose / handoffs
 
@@ -99,16 +92,11 @@ One-way rules (prevent domain collisions):
 
 MIR / rhythmic-analysis overlay for `rust-dev` (club music grids, downbeat, tempo).
 
-|           |                                                                 |
-| --------- | --------------------------------------------------------------- |
-| **When**  | `skills/mir-architect/` is present on this machine              |
-| **How**   | Wire agents from the local tree (below)                         |
-| **Scope** | Local-only; not lock-managed; omit from public install examples |
-
-```sh
-cd ~/.dotfiles
-npx skills add . --skill mir-architect -a cursor -a codex -y
-```
+|           |                                                    |
+| --------- | -------------------------------------------------- |
+| **When**  | `skills/mir-architect/` is present on this machine |
+| **How**   | `skill sync` (same as other store skills)          |
+| **Scope** | Local-only; omit from public install examples      |
 
 Skip if you are not on that MIR stack.
 
@@ -119,7 +107,7 @@ Skip if you are not on that MIR stack.
 - **Compose across domains** with one-way handoffs (above).
 - **Thin `*-dev`** — craft stays in `architecture`; overlays are deltas only.
 - **Phase commits on Build** — every new `{lang}-dev` includes the Contracts Phase commits bullet (same wording as `rust-dev`); overlays never copy it. Solution/Build plans encode validate→commit per phase via [`CONTEXT.md`](CONTEXT.md).
-- **Local-only overlays** — may live under `skills/` (e.g. `mir-architect`) without lock entries; document when/how/scope, and install with `npx skills add . --skill …`.
+- **Local-only overlays** — may live under `skills/` (e.g. `mir-architect`); document when/how/scope; they link via `skill sync`.
 - **Proliferation guard** — new top-level skill only if it cannot be a branch of an existing router (for refactor concerns: `refactor-<concern>` under `architecture`, never bare `refactor` or a parallel `product` skill).
 
 Router shape: `## Pick branch` → `## Shared prep` → `## Branch reference` → `## Handoff` → `## Completion criteria`. Relative `reference/*.md` links; unnumbered `##` headers. Terms: [`CONTEXT.md`](CONTEXT.md). Spec: [agentskills.io](https://agentskills.io/).
@@ -128,67 +116,21 @@ Router shape: `## Pick branch` → `## Shared prep` → `## Branch reference` �
 
 ## Operate the store
 
-Dotfiles-managed installs: [`skills-lock.json`](../skills-lock.json) at the repo root. Run `npx skills add` / `remove` from `~/.dotfiles` (project scope, no `-g`) so the lock updates and `.agents/skills/` is wired. `skills-lock.json` is RCM-excluded (`rcrc`) and stays only under `~/.dotfiles`.
+Model: git-tracked trees under `skills/<name>/` are the source of truth. `skill sync` (and `promote`) ensure `~/.agents/skills/<name>` is a symlink into the store. Real directories under `~/.agents/skills` are left alone (fail closed — remove conflicting copies once, then re-sync). Stale store-owned symlinks are pruned on sync. Optional note: an old generated tree at `~/.dotfiles/.agents/skills` is unused now and safe to delete locally.
 
-| Command                             | Role                                                                               |
-| ----------------------------------- | ---------------------------------------------------------------------------------- |
-| `skills-restore`                    | `npx skills experimental_install -y`, then prune; also via `topgrade` after `rcup` |
-| `skills-restore --prune-only`       | Prune only                                                                         |
-| `npx skills experimental_install`   | Install from lock — **does not** remove dropped skills                             |
-| `npx skills add` / `remove`         | Mutate lock + installs — **commit the lock** afterward                             |
-| `skill promote` / `rename` / `list` | Store hygiene only ([`skill/AGENTS.md`](../skill/AGENTS.md))                       |
+| Command                    | Role                                                              |
+| -------------------------- | ----------------------------------------------------------------- |
+| `skill list`               | List non-hidden skills in the store                               |
+| `skill sync`               | Symlink store skills into `~/.agents/skills`; prune stale links   |
+| `skill promote <name>`     | Move `<project>/.agents/skills/<name>` into the store and link it |
+| `skill rename <old> <new>` | Rename in the store and retarget the agent symlink                |
 
-**Prune rules** (`skills-restore`):
-
-| Location                             | Rule                                                  |
-| ------------------------------------ | ----------------------------------------------------- |
-| `~/.dotfiles/.agents/skills/`        | Remove anything absent from the lock (generated tree) |
-| `~/.agents`, `~/.codex`, `~/.cursor` | Remove dangling symlinks only                         |
-
-```sh
-cd ~/.dotfiles && skills-restore
-```
-
-**Promote vs install:** `skill promote <name>` moves `<project>/.agents/skills/<name>` → `~/.dotfiles/skills/` (git). `npx skills add` / restore fills `~/.dotfiles/.agents/skills/` from the lock.
-
-### Install (this store)
-
-```sh
-cd ~/.dotfiles
-npx skills add gildesmarais/dotfiles --skill review -a cursor -a codex -y
-npx skills add gildesmarais/dotfiles --skill architecture -a cursor -a codex -y
-npx skills add . --skill product-owner -a cursor -a codex -y   # local tree when ahead of remote
-npx skills add . --skill release -a cursor -a codex -y
-skills-restore
-```
-
-Day-to-day: `npx skills list` · `find` · `update` · `remove` · `init`. Prefer project scope from `~/.dotfiles`; `-g` only outside the lock workflow. Optional packs: [above](#optional-packs-not-os-sot). Local-only overlay: [`mir-architect`](#local-only-mir-architect).
+Also runs via `topgrade` after `rcup` (`Skills: sync`).
 
 ### Paths
 
-| Scope             | Path                                                 |
-| ----------------- | ---------------------------------------------------- |
-| Store             | `skills/<name>/` in this repo (git when published)   |
-| Lock installs     | `.agents/skills/<name>/` under this repo (from lock) |
-| Other project     | `<repo>/.agents/skills/<name>/`                      |
-| Global (optional) | user agent dirs via `npx skills add -g`              |
-
-### Name lookup
-
-If a prompt names an older skill label, route to the current skill:
-
-| Prompt name                                                               | Current skill                              |
-| ------------------------------------------------------------------------- | ------------------------------------------ |
-| `refactor-type-driven`                                                    | `architecture` **`refactor-types`**        |
-| gh-review-resolve, gh-address-comments                                    | `pull-request` **`resolve`** / **`reply`** |
-| findings-to-gh-pr-review                                                  | `pull-request` **`comment`**               |
-| pr-opener, open-pr                                                        | `pull-request` **`open`**                  |
-| pr-slicer, slice-pr                                                       | `pull-request` **`slice`**                 |
-| gh-pr, gh-pr-review, gh-review-specific-pr                                | `pull-request` / `review` **`publish`**    |
-| finish-review, review-tests, review-perf-ruby, review-security-compliance | `review` (+ lenses)                        |
-| quality-loop                                                              | `review` **`quality`**                     |
-| one-on-one-raw-notes                                                      | `communication` **`one-on-one`**           |
-| message-refinement-tech-orga                                              | `communication` **`slack-message`**        |
-| project-update                                                            | `communication` **`project-update`**       |
-| docs-editor                                                               | `docs` **`editor`**                        |
-| docs-architecture                                                         | `docs` **`architecture`**                  |
+| Scope         | Path                                             |
+| ------------- | ------------------------------------------------ |
+| Store         | `skills/<name>/` in this repo                    |
+| Agent install | `~/.agents/skills/<name>` → symlink to store     |
+| Project draft | `<repo>/.agents/skills/<name>/` (promote source) |

@@ -13,11 +13,13 @@ module Skill
       "list" => :run_list,
       "promote" => :run_promote,
       "rename" => :run_rename,
+      "sync" => :run_sync,
       "help" => :run_help
     }.freeze
 
     USAGE_EXAMPLES = [
       "skill list",
+      "skill sync",
       "skill promote my-skill",
       "skill rename ruby-dev ruby"
     ].freeze
@@ -63,12 +65,14 @@ module Skill
       puts <<~USAGE
         Usage: skill [--project PATH] <command> [args]
 
-        Manage the dotfiles skill store (~/.dotfiles/skills). Install skills into agents with npx skills.
+        Manage the dotfiles skill store (~/.dotfiles/skills) and symlink first-party
+        skills into ~/.agents/skills.
 
         Commands:
           list                         List skills available in #{paths.store_dir}
-          promote <name>               Move .agents/skills/<name> into dotfiles
-          rename <old> <new>           Rename a stored skill
+          sync                         Symlink store skills into ~/.agents/skills
+          promote <name>               Move .agents/skills/<name> into dotfiles and link it
+          rename <old> <new>           Rename a stored skill and retarget its agent link
           help                         Show this help
 
         Options:
@@ -82,6 +86,11 @@ module Skill
     def run_list(args)
       ui.reject_extra_args("list", args)
       operations.list_store_skills
+    end
+
+    def run_sync(args)
+      ui.reject_extra_args("sync", args)
+      operations.sync_skills
     end
 
     def run_promote(args)

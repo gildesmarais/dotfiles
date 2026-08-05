@@ -2,9 +2,7 @@
 
 ## Purpose
 
-`skill/` owns the implementation and tests for the `skill` command used to manage the dotfiles skill store (`~/.dotfiles/skills`).
-
-Install skills into agents with [`npx skills`](https://github.com/vercel-labs/skills). This CLI handles store hygiene only: `promote` and `rename`.
+`skill/` owns the implementation and tests for the `skill` command used to manage the dotfiles skill store (`~/.dotfiles/skills`) and symlink first-party skills into `~/.agents/skills`.
 
 ## Key Decision
 
@@ -20,7 +18,7 @@ Do not move business logic back into the shell wrapper unless there is a hard po
 
 ## Vision
 
-This tool should remain a small, dependable local utility for dotfiles skill store management.
+This tool should remain a small, dependable local utility for dotfiles skill store management and first-party agent install via symlinks.
 
 Optimize for:
 
@@ -28,6 +26,7 @@ Optimize for:
 - safe refusal on ambiguous or destructive states
 - compatibility with a bare macOS machine
 - low maintenance cost
+- symlink management of store skills into `~/.agents/skills`
 
 Do not optimize for:
 
@@ -35,7 +34,7 @@ Do not optimize for:
 - external services
 - non-stdlib Ruby dependencies
 - broad cross-platform abstractions unless they are required by an actual use case
-- symlink-based agent install management (use `npx skills` instead)
+- third-party skill install inside `skill sync` (use manual `npx skills` for optional packs)
 
 ## Operating Constraints
 
@@ -43,22 +42,24 @@ Do not optimize for:
 - Prefer stdlib only.
 - `scripts/skill` must remain a tiny launcher.
 - Hidden directories in the store are not user skills and must stay excluded from `list` and related workflows.
-- The tool manages local directories in the dotfiles store; it should fail closed rather than overwrite unexpected paths.
+- The tool manages local directories in the dotfiles store and agent symlink installs; it should fail closed rather than overwrite unexpected paths.
 - Behavior should remain understandable from CLI output alone. Errors should be explicit and actionable.
-- Do not create project symlinks. Print `npx skills add gildesmarais/dotfiles` hints after promote.
+- Collisions under `~/.agents/skills`: create or replace symlinks only; refuse real directories/files with a remove-then-re-run hint.
+- After promote, link that name into `~/.agents/skills`. After rename, remove the old store-owned agent symlink and ensure the new one.
 
 ## Canonical Paths
 
 - Store: `skills/` at the dotfiles root
+- Agent install: `~/.agents/skills/<name>` → symlink to store
 - Project promote source: `<project>/.agents/skills/` only (`.codex/skills/` is deprecated and rejected)
 - Main implementation: `skill/src/cli.rb`
-- Tests: `skill/test/cli_test.rb`
+- Tests: `skill/test/cli_test.rb`, `skill/test/unit_test.rb`
 - Lint config: `skill/.rubocop.yml`
 - User guide: `skills/README.md`
 
 ## Change Rules
 
-- When changing command behavior, update tests in `skill/test/cli_test.rb`.
+- When changing command behavior, update tests in `skill/test/cli_test.rb` and/or `skill/test/unit_test.rb`.
 - Preserve current command names and semantics unless the user explicitly requests a CLI contract change.
 - Keep direct execution of `ruby skill/src/cli.rb ...` working.
 - Prefer targeted helper methods over introducing new layers or frameworks.
@@ -81,7 +82,8 @@ Quality gate: `make lint test` must pass before handoff.
 When reviewing changes here, prioritize:
 
 - accidental overwrites or unsafe path handling
+- fail-closed collisions under `~/.agents/skills`
 - hidden-file handling regressions
 - argument parsing regressions
 - drift between README, tests, and executable behavior
-- accidental reintroduction of symlink or `.codex/skills` workflows
+- accidental reintroduction of lock/restore or `.codex/skills` promote workflows

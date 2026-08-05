@@ -7,11 +7,9 @@ require_relative "filesystem"
 
 module Skill
   class Operations
-    INSTALL_HINT_TEMPLATE = "install: npx skills add gildesmarais/dotfiles --skill %<name>s -a cursor -a codex -y"
-    RENAME_HINT_TEMPLATE = "refresh agent installs: npx skills remove %<old>s && " \
-                           "npx skills add gildesmarais/dotfiles --skill %<new>s -a cursor -a codex -y"
     LEGACY_CODEX_ERROR = "refusing to promote from deprecated .codex/skills/%<name>s; " \
-                         "move skills to .agents/skills/ or reinstall with npx skills"
+                         "move skills to .agents/skills/"
+    COLLISION_ERROR = "refusing to overwrite non-symlink at %<path>s; remove it then re-run skill sync"
 
     def initialize(paths:, shell_ui:)
       @paths = paths
@@ -27,6 +25,22 @@ module Skill
       end
 
       names.each { |name| puts(name) }
+    end
+
+    def sync_skills
+      @paths.ensure_store!
+      names = @paths.store_skill_names
+
+      names.each do |name|
+        case ensure_agent_symlink(name)
+        when :created
+          @shell_ui.note("linked #{name} -> #{@paths.agents_skill_path(name)}")
+        when :replaced
+          @shell_ui.note("relinked #{name} -> #{@paths.agents_skill_path(name)}")
+        end
+      end
+
+      prune_stale_agent_symlinks(names)
     end
 
     def promote_skill(name)
@@ -48,7 +62,8 @@ module Skill
 
       FileUtils.mv(source, target)
       @shell_ui.note("promoted #{name} -> #{target}")
-      @shell_ui.note(install_hint(name))
+      ensure_agent_symlink(name)
+      @shell_ui.note("linked #{name} -> #{@paths.agents_skill_path(name)}")
     end
 
     def rename_skill(old_name, new_name)
@@ -66,14 +81,67 @@ module Skill
       end
 
       FileUtils.mv(old_target, new_target)
+      remove_store_owned_agent_symlink(old_name)
+      ensure_agent_symlink(new_name)
       @shell_ui.note("renamed #{old_name} -> #{new_name}")
-      @shell_ui.note(format(RENAME_HINT_TEMPLATE, old: old_name, new: new_name))
+      @shell_ui.note("linked #{new_name} -> #{@paths.agents_skill_path(new_name)}")
     end
 
     private
 
-    def install_hint(name)
-      format(INSTALL_HINT_TEMPLATE, name: name)
+    def ensure_agent_symlink(name)
+      Filesystem.assert_skill_name!(name)
+      store_path = @paths.store_skill_path(name)
+      raise ExitError, "stored skill not found: #{store_path}" unless File.directory?(store_path)
+
+      FileUtils.mkdir_p(@paths.agents_skills_dir)
+      link_path = @paths.agents_skill_path(name)
+      absolute_store = Filesystem.normalized_path(store_path)
+
+      if File.symlink?(link_path)
+        return :ok if Filesystem.symlink_points_to?(link_path, absolute_store)
+
+        FileUtils.rm(link_path)
+        action = :replaced
+      elsif File.exist?(link_path)
+        raise ExitError, format(COLLISION_ERROR, path: link_path)
+      else
+        action = :created
+      end
+
+      FileUtils.ln_s(absolute_store, link_path)
+      action
+    end
+
+    def remove_store_owned_agent_symlink(name)
+      link_path = @paths.agents_skill_path(name)
+      return unless File.symlink?(link_path)
+
+      target = Filesystem.symlink_target_path(link_path)
+      return unless Filesystem.within_directory?(target, @paths.store_dir)
+
+      FileUtils.rm(link_path)
+    end
+
+    def prune_stale_agent_symlinks(store_names)
+      agents_dir = @paths.agents_skills_dir
+      return unless File.directory?(agents_dir)
+
+      store_name_set = store_names.each_with_object({}) { |name, set| set[name] = true }
+
+      Dir.children(agents_dir).sort.each do |name|
+        next if name.start_with?(".")
+        next if store_name_set[name]
+
+        link_path = @paths.agents_skill_path(name)
+        next unless File.symlink?(link_path)
+
+        target = Filesystem.symlink_target_path(link_path)
+        next unless Filesystem.within_directory?(target, @paths.store_dir)
+
+        FileUtils.rm(link_path)
+        @shell_ui.note("pruned stale symlink #{link_path}")
+      end
     end
   end
 end

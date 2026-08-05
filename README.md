@@ -21,76 +21,47 @@ Maintained by [Gil Desmarais](https://gil.desmarais.de) (Berlin). Profile, proje
 
 ### Quick-start tools
 
-| Script                           | What it does                                                                                                                                 | Prerequisites                                                         |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `./scripts/macos-defaults-apply` | Guided wizard that applies my preferred macOS defaults and prompts for the manual tweaks listed below.                                       | macOS, `sudo` access for protected settings.                          |
-| `./scripts/wiki`                 | `fzf`-powered browser for the local wiki directory that opens files in your preferred editor.                                                | `fzf`, `git`, `rg`, optional `VISUAL`/`EDITOR` or `WIKI_*` overrides. |
-| `./scripts/download-audio`       | Fetches remote audio (e.g., YouTube URLs) and normalises them via the `process-audio` pipeline for library-ready files.                      | `aria2`, `ffmpeg`, `yt-dlp`; installs live in the Brewfile.           |
-| `./scripts/skill`                | Manages the `~/.dotfiles/skills` store (`promote`, `rename`, `list`). Restore agent installs with `skills-restore` (see `skills/README.md`). | Ruby 2.6+, optional `git` for auto-detecting the project root.        |
-| `./scripts/playground`           | Picks or creates playground projects for `pg`; interactive mode supports `Ctrl-O` to open the highlighted folder in Finder.                  | `fzf`, `rg`; macOS `open` for Finder shortcut.                        |
+| Script                           | What it does                                                                                                                          | Prerequisites                                                         |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `./scripts/macos-defaults-apply` | Guided wizard that applies my preferred macOS defaults and prompts for the manual tweaks listed below.                                | macOS, `sudo` access for protected settings.                          |
+| `./scripts/wiki`                 | `fzf`-powered browser for the local wiki directory that opens files in your preferred editor.                                         | `fzf`, `git`, `rg`, optional `VISUAL`/`EDITOR` or `WIKI_*` overrides. |
+| `./scripts/download-audio`       | Fetches remote audio (e.g., YouTube URLs) and normalises them via the `process-audio` pipeline for library-ready files.               | `aria2`, `ffmpeg`, `yt-dlp`; installs live in the Brewfile.           |
+| `./scripts/skill`                | Manages the `~/.dotfiles/skills` store and symlinks first-party skills into `~/.agents/skills` (`list`, `sync`, `promote`, `rename`). | Ruby 2.6+, optional `git` for auto-detecting the project root.        |
+| `./scripts/playground`           | Picks or creates playground projects for `pg`; interactive mode supports `Ctrl-O` to open the highlighted folder in Finder.           | `fzf`, `rg`; macOS `open` for Finder shortcut.                        |
 
 ## Agent Skills
 
-Personal and custom [Agent Skills](https://agentskills.io/) live in [`skills/`](skills/). Two tools, split by job:
+Personal and custom [Agent Skills](https://agentskills.io/) live in [`skills/`](skills/). First-party installs are symlinks managed by `./scripts/skill`.
 
-| Tool                                                  | Role                                                                                                                     |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| [`npx skills`](https://github.com/vercel-labs/skills) | Install, update, and remove skills in agents (Cursor, Codex, and others)                                                 |
-| [`./scripts/skill`](scripts/skill)                    | Dotfiles store hygiene — `promote`, `rename`, `list`                                                                     |
-| [`skills-restore`](scripts/skills-restore)            | Sync `.agents/skills/` to committed [`skills-lock.json`](skills-lock.json) — installs, then prunes what the lock dropped |
+| Tool                               | Role                                                                       |
+| ---------------------------------- | -------------------------------------------------------------------------- |
+| [`./scripts/skill`](scripts/skill) | Store hygiene + `skill sync` into `~/.agents/skills`                       |
+| Manual `npx skills`                | Optional third-party packs only (see [skills/README.md](skills/README.md)) |
 
-### Workflow (model B)
+### Workflow
 
-1. **Experiment** in any repo: `npx skills add` → `.agents/skills/` (optional per-repo lock).
-2. **Promote** proven skills: `skill promote <name>` → `~/.dotfiles/skills/` (git).
-3. **Restore** dotfiles installs after clone/pull, and after retiring or renaming a skill: `cd ~/.dotfiles && skills-restore` (also runs via `topgrade` after `rcup`).
-
-Run `npx skills add` / `remove` from `~/.dotfiles` (no `-g`) so `skills-lock.json` stays in sync — commit lock changes with the repo.
-
-### Install
-
-From this repo (discovery walks `skills/`):
-
-```sh
-cd ~/.dotfiles
-npx skills add gildesmarais/dotfiles --skill ruby-dev -a cursor -a codex -y
-npx skills add gildesmarais/dotfiles --skill '*' -a cursor -a codex -y   # all dotfiles skills
-skills-restore   # or: npx skills experimental_install -y
-```
-
-From external registries ([skills.sh](https://skills.sh/), [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills), and others):
-
-```sh
-cd ~/.dotfiles
-npx skills add vercel-labs/agent-skills --skill vercel-react-best-practices -a cursor -a codex -y
-```
-
-Use **project scope** from `~/.dotfiles` for lock-driven installs. Omit `-g` unless you need a global install outside the lock workflow.
-
-### Day-to-day
-
-```sh
-npx skills list
-npx skills find rust
-npx skills update
-npx skills remove <name>
-```
+1. **Experiment** in any repo under `.agents/skills/`.
+2. **Promote** proven skills: `skill promote <name>` → moves into `~/.dotfiles/skills/` and links `~/.agents/skills/<name>`.
+3. **Sync** after clone/pull (or when store names change): `skill sync` (also via `topgrade` after `rcup`).
 
 ### Store hygiene
 
 ```sh
 skill list
+skill sync
 skill promote my-skill
 skill rename ruby-dev ruby
 ```
 
-`promote` moves a project skill from `.agents/skills/` into the store. `rename` renames a stored skill and prints a reminder to refresh agent installs via `npx skills`.
+`promote` moves a project skill from `.agents/skills/` into the store and links it. `rename` renames a stored skill and retargets its agent symlink. `sync` creates/replaces store-owned symlinks and prunes stale ones.
+
+If `skill sync` refuses a path, remove the conflicting real directory under `~/.agents/skills` once, then re-run.
 
 Use `skill --project /path/to/project ...` to target a project other than the current git root or working directory.
 
 The store currently covers Ruby/Rails development, Rust (including Microsoft's pragmatic guidelines), PR and review workflows, documentation, and domain-specific tooling (e.g. music-information retrieval). Run `skill list` for the full set.
 
-Full paths, authoring notes, and migration from the deprecated `skill link` / `.codex/skills` workflow: [skills/README.md](skills/README.md).
+Full paths, authoring notes, and optional packs: [skills/README.md](skills/README.md).
 
 Implementation lives in `skill/src`, with characterization tests in `skill/test`, and `scripts/skill` stays as the thin executable entrypoint.
 

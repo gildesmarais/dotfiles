@@ -1,2 +1,2 @@
-EXCLUDES="README.md skills-lock.json dotfiles:scripts*"
+EXCLUDES="README.md dotfiles:scripts*"
 UNDOTTED="Library"

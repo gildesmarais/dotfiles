@@ -21,10 +21,10 @@ skill/
 ```
 
 - `src/cli.rb`: command parsing, dispatch, and help output
-- `src/skill/paths.rb`: canonical store and project path resolution
+- `src/skill/paths.rb`: canonical store, project, and `~/.agents/skills` path resolution
 - `src/skill/filesystem.rb`: shared symlink and skill-name safety helpers
 - `src/skill/error.rb`: shared CLI exit/error object used below the entrypoint
-- `src/skill/operations.rb`: skill list/promote/rename behavior
+- `src/skill/operations.rb`: skill list/sync/promote/rename behavior
 - `src/skill/ui.rb`: CLI output and fatal error helpers
 - `test/cli_test.rb`: characterization tests for command parsing and filesystem behavior
 - `test/unit_test.rb`: direct object tests for operation edge cases
@@ -37,6 +37,7 @@ Run the CLI entrypoint:
 ```sh
 ./scripts/skill help
 ./scripts/skill list
+./scripts/skill sync
 ./scripts/skill promote my-skill
 ```
 
@@ -45,6 +46,7 @@ Run the implementation directly:
 ```sh
 ruby skill/src/cli.rb help
 ruby skill/src/cli.rb list
+ruby skill/src/cli.rb sync
 ```
 
 Lint:
@@ -93,4 +95,4 @@ Run tests with the macOS system Ruby 2.6:
 - When changing command behavior, update or add tests in `skill/test/cli_test.rb` first when practical.
 - Preserve Ruby 2.6 compatibility.
 - Prefer stdlib-only dependencies unless there is a strong reason not to.
-- Skill installation into agents is handled by `npx skills`; this CLI only manages the dotfiles store.
+- First-party agent install is symlink management: `skill sync` links `~/.dotfiles/skills/<name>` into `~/.agents/skills/<name>`.

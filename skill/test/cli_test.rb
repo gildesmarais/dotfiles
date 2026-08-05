@@ -6,6 +6,8 @@ require "open3"
 require "rbconfig"
 require "tmpdir"
 
+require_relative "../src/skill/filesystem"
+
 class SkillCliTest < Minitest::Test
   Result = Struct.new(:output, :exitstatus)
 
@@ -13,6 +15,8 @@ class SkillCliTest < Minitest::Test
     @tmpdir = Dir.mktmpdir("skill-cli-test")
     @dotfiles_root = File.join(@tmpdir, "dotfiles")
     @project_root = File.join(@tmpdir, "project")
+    @home_dir = File.join(@tmpdir, "home")
+    @agents_skills_dir = File.join(@home_dir, ".agents", "skills")
     @script_path = File.join(@dotfiles_root, "scripts", "skill")
     @skill_root = File.join(@dotfiles_root, "skill")
     @skills_dir = File.join(@dotfiles_root, "skills")
@@ -21,6 +25,7 @@ class SkillCliTest < Minitest::Test
     FileUtils.mkdir_p(File.dirname(@script_path))
     FileUtils.mkdir_p(@skills_dir)
     FileUtils.mkdir_p(@skill_root)
+    FileUtils.mkdir_p(@home_dir)
 
     FileUtils.cp(File.expand_path("../../scripts/skill", __dir__), @script_path)
     FileUtils.cp_r(File.expand_path("../src", __dir__), @skill_root)
@@ -54,7 +59,7 @@ class SkillCliTest < Minitest::Test
     refute_includes(result.output, ".hidden")
   end
 
-  def test_promote_moves_agents_skill_into_store_without_symlink
+  def test_promote_moves_agents_skill_into_store_and_links
     local_skill = File.join(@project_root, ".agents", "skills", "my-skill")
     FileUtils.mkdir_p(local_skill)
     File.write(File.join(local_skill, "SKILL.md"), "# My Skill\n")
@@ -63,9 +68,11 @@ class SkillCliTest < Minitest::Test
 
     assert_equal(0, result.exitstatus)
     assert_match(%r{promoted my-skill -> .*/skills/my-skill}, result.output)
-    assert_includes(result.output, "npx skills add gildesmarais/dotfiles --skill my-skill -a cursor -a codex -y")
+    assert_match(%r{linked my-skill -> .*/\.agents/skills/my-skill}, result.output)
+    refute_includes(result.output, "npx skills")
     assert(File.directory?(File.join(@skills_dir, "my-skill")))
     refute_path_exists(local_skill)
+    assert_agent_symlink("my-skill")
   end
 
   def test_promote_rejects_legacy_codex_skills_path
@@ -91,19 +98,24 @@ class SkillCliTest < Minitest::Test
     assert_equal(0, result.exitstatus)
     assert(File.directory?(File.join(@skills_dir, "my-skill")))
     refute_path_exists(local_skill)
+    assert_agent_symlink("my-skill")
   end
 
-  def test_rename_updates_store_only_and_prints_refresh_hint
+  def test_rename_retargets_agent_symlink
     create_store_skill("old-name")
+    FileUtils.mkdir_p(@agents_skills_dir)
+    FileUtils.ln_s(File.join(@skills_dir, "old-name"), File.join(@agents_skills_dir, "old-name"))
 
     result = run_skill("rename", "old-name", "new-name")
 
     assert_equal(0, result.exitstatus)
     assert_includes(result.output, "renamed old-name -> new-name")
-    assert_includes(result.output, "npx skills remove old-name")
-    assert_includes(result.output, "npx skills add gildesmarais/dotfiles --skill new-name -a cursor -a codex -y")
+    assert_match(%r{linked new-name -> .*/\.agents/skills/new-name}, result.output)
+    refute_includes(result.output, "npx skills")
     assert(File.directory?(File.join(@skills_dir, "new-name")))
     refute_path_exists(File.join(@skills_dir, "old-name"))
+    refute_path_exists(File.join(@agents_skills_dir, "old-name"))
+    assert_agent_symlink("new-name")
   end
 
   def test_rename_raises_when_destination_exists_in_store
@@ -118,8 +130,58 @@ class SkillCliTest < Minitest::Test
     assert(File.directory?(File.join(@skills_dir, "new-name")))
   end
 
+  def test_sync_creates_and_replaces_symlinks
+    create_store_skill("alpha")
+    create_store_skill("beta")
+    FileUtils.mkdir_p(@agents_skills_dir)
+    FileUtils.ln_s("/tmp/wrong-target", File.join(@agents_skills_dir, "beta"))
+
+    result = run_skill("sync")
+
+    assert_equal(0, result.exitstatus)
+    assert_match(%r{linked alpha -> .*/\.agents/skills/alpha}, result.output)
+    assert_match(%r{relinked beta -> .*/\.agents/skills/beta}, result.output)
+    assert_agent_symlink("alpha")
+    assert_agent_symlink("beta")
+  end
+
+  def test_sync_fail_closed_on_real_directory
+    create_store_skill("alpha")
+    collision = File.join(@agents_skills_dir, "alpha")
+    FileUtils.mkdir_p(collision)
+    File.write(File.join(collision, "SKILL.md"), "# real copy\n")
+
+    result = run_skill("sync")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "refusing to overwrite non-symlink at #{collision}")
+    assert_includes(result.output, "remove it then re-run skill sync")
+    assert(File.directory?(collision))
+    refute(File.symlink?(collision))
+  end
+
+  def test_sync_prunes_stale_store_owned_symlinks_only
+    create_store_skill("kept")
+    FileUtils.mkdir_p(@agents_skills_dir)
+    FileUtils.ln_s(File.join(@skills_dir, "kept"), File.join(@agents_skills_dir, "kept"))
+    FileUtils.ln_s(File.join(@skills_dir, "gone"), File.join(@agents_skills_dir, "gone"))
+    FileUtils.ln_s("/usr/bin", File.join(@agents_skills_dir, "vendor-link"))
+    vendor_dir = File.join(@agents_skills_dir, "vendor-real")
+    FileUtils.mkdir_p(vendor_dir)
+
+    result = run_skill("sync")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "pruned stale symlink #{File.join(@agents_skills_dir, 'gone')}")
+    assert_agent_symlink("kept")
+    refute_path_exists(File.join(@agents_skills_dir, "gone"))
+    assert(File.symlink?(File.join(@agents_skills_dir, "vendor-link")))
+    assert(File.directory?(vendor_dir))
+  end
+
   def test_cli_file_runs_when_executed_directly
     output, status = Open3.capture2e(
+      { "HOME" => @home_dir },
       RbConfig.ruby,
       @cli_path,
       "help",
@@ -128,7 +190,8 @@ class SkillCliTest < Minitest::Test
 
     assert_equal(0, status.exitstatus)
     assert_includes(output, "Usage: skill")
-    refute_includes(output, "link")
+    assert_includes(output, "sync")
+    refute_match(/^\s+link\s/m, output)
     refute_includes(output, "doctor")
   end
 
@@ -136,6 +199,7 @@ class SkillCliTest < Minitest::Test
 
   def run_skill(*args)
     output, status = Open3.capture2e(
+      { "HOME" => @home_dir },
       RbConfig.ruby,
       @script_path,
       *args,
@@ -147,6 +211,17 @@ class SkillCliTest < Minitest::Test
 
   def create_store_skill(name)
     FileUtils.mkdir_p(File.join(@skills_dir, name))
+  end
+
+  def assert_agent_symlink(name)
+    link_path = File.join(@agents_skills_dir, name)
+    store_path = File.join(@skills_dir, name)
+
+    assert(File.symlink?(link_path), "Expected symlink at #{link_path}")
+    assert(
+      Skill::Filesystem.symlink_points_to?(link_path, store_path),
+      "Expected #{link_path} to point at #{store_path}"
+    )
   end
 
   def refute_path_exists(path)
