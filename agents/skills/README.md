@@ -47,12 +47,13 @@ Equivalent sources: `gildesmarais/dotfiles`, `https://github.com/gildesmarais/do
 
 ### What to install
 
-| Intent               | Command shape                                                                 |
-| -------------------- | ----------------------------------------------------------------------------- |
-| Full published OS    | `npx skills add gildesmarais/dotfiles/agents/skills -g -a cursor -a codex -y` |
-| Assure + Ship        | `--skill review --skill pull-request` (add `release` for notes)               |
-| Build (Ruby / Rails) | `--skill ruby-dev` and/or `--skill ruby-on-rails-dev`                         |
-| Build (Rust)         | `--skill rust-dev`                                                            |
+| Intent                  | Command shape                                                                 |
+| ----------------------- | ----------------------------------------------------------------------------- |
+| Full published OS       | `npx skills add gildesmarais/dotfiles/agents/skills -g -a cursor -a codex -y` |
+| Assure + Ship           | `--skill review --skill pull-request` (add `release` for notes)               |
+| Build (Ruby / Rails)    | `--skill ruby-dev` and/or `--skill ruby-on-rails-dev`                         |
+| Build (Rust)            | `--skill rust-dev`                                                            |
+| Build (Swift / SwiftUI) | `--skill swift-dev` and/or `--skill swiftui-dev`                              |
 
 Compose rules still apply after install — see [Compose / handoffs](#compose--handoffs). Index: [Skill index](#skill-index).
 
@@ -81,18 +82,18 @@ flowchart LR
 
 ## Domain map
 
-| Domain       | Job                              | Skill(s)                                                   | Primary branches                                                             |
-| ------------ | -------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| **Intent**   | Fuzzy need → actionable work     | `prompt-synthesis`; `jira-ticket`                          | `code` \| `architecture` \| `product` (default: Shared prep)                 |
-| **Product**  | What to build; admit/defer scope | `product-owner`                                            | `gate` (default); stubs: prioritize, story-slice, experiment                 |
-| **Solution** | How the system should work       | `architecture`; `docs` **`architecture`** (verify-only)    | `deep-modules` \| `refactor-types` \| `refactor-boundaries` \| `performance` |
-| **Build**    | Change the codebase              | `ruby-dev`, `rust-dev`; overlay `ruby-on-rails-dev`        | classify: surgical \| design \| review-hand-off                              |
-| **Assure**   | Safe to merge?                   | `review`                                                   | finish, quality, tests, perf, security, publish                              |
-| **Ship**     | Land on mainline                 | `pull-request`; `release`                                  | PR: open, slice, comment, reply, resolve; release: `notes`                   |
-| **Explain**  | Humans understand state          | `communication`; `docs`                                    | see skill branches                                                           |
-| **Decide**   | Stress-test choices              | `grilling` (third-party); `product-owner` Forced Challenge | —                                                                            |
+| Domain       | Job                              | Skill(s)                                                                         | Primary branches                                                             |
+| ------------ | -------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Intent**   | Fuzzy need → actionable work     | `prompt-synthesis`; `jira-ticket`                                                | `code` \| `architecture` \| `product` (default: Shared prep)                 |
+| **Product**  | What to build; admit/defer scope | `product-owner`                                                                  | `gate` (default); stubs: prioritize, story-slice, experiment                 |
+| **Solution** | How the system should work       | `architecture`; `docs` **`architecture`** (verify-only)                          | `deep-modules` \| `refactor-types` \| `refactor-boundaries` \| `performance` |
+| **Build**    | Change the codebase              | `ruby-dev`, `rust-dev`, `swift-dev`; overlays `ruby-on-rails-dev`, `swiftui-dev` | classify: surgical \| design \| review-hand-off                              |
+| **Assure**   | Safe to merge?                   | `review`                                                                         | finish, quality, tests, perf, security, publish                              |
+| **Ship**     | Land on mainline                 | `pull-request`; `release`                                                        | PR: open, slice, comment, reply, resolve; release: `notes`                   |
+| **Explain**  | Humans understand state          | `communication`; `docs`                                                          | see skill branches                                                           |
+| **Decide**   | Stress-test choices              | `grilling` (third-party); `product-owner` Forced Challenge                       | —                                                                            |
 
-Published Build overlay: `ruby-on-rails-dev`. Local MIR overlay: `mir-architect` — [below](#local-overlay-mir-architect).
+Published Build overlays: `ruby-on-rails-dev`, `swiftui-dev`. Local MIR overlay: `mir-architect` — [below](#local-overlay-mir-architect).
 
 ## Optional packs (not OS SoT)
 
@@ -110,12 +111,14 @@ npx skills add https://github.com/twostraws/swift-testing-agent-skill --skill sw
 
 Store-local spice (`ms-rust`, `rust-performance`) installs the same way as other store skills when those trees are on the default branch (`npx skills` downstream, or `rcup` on this machine).
 
-| Pack               | When you want it                                   | Role                                                   |
-| ------------------ | -------------------------------------------------- | ------------------------------------------------------ |
-| `grilling`         | Stress-test a plan or decision                     | Upstream Decide skill                                  |
-| `ms-rust`          | Microsoft-style Rust guidelines before `.rs` edits | Compose with `rust-dev`                                |
-| `rust-performance` | Measure-before-optimize Rust work                  | Craft ownership stays `architecture` **`performance`** |
-| `swift-*`          | SwiftUI / Swift Testing / Apple packs              | Upstream or `<repo>/.agents/skills/` specialists       |
+| Pack                | When you want it                                   | Role                                                                           |
+| ------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `grilling`          | Stress-test a plan or decision                     | Upstream Decide skill                                                          |
+| `ms-rust`           | Microsoft-style Rust guidelines before `.rs` edits | Compose with `rust-dev`                                                        |
+| `rust-performance`  | Measure-before-optimize Rust work                  | Craft ownership stays `architecture` **`performance`**                         |
+| `swiftui-pro`       | SwiftUI review depth                               | Compose with `swiftui-dev` (and `swift-dev`); depth pack, not Build entrypoint |
+| `swift-testing-pro` | Swift Testing depth                                | Compose with `swift-dev`; depth pack, not Build entrypoint                     |
+| `swift-*` (other)   | Design / Apple packs                               | Same compose-with rule; may also live under a repo’s `.agents/skills/`         |
 
 Discover more on [skills.sh](https://skills.sh/).
 
@@ -129,21 +132,21 @@ One-way rules (prevent domain collisions):
 4. **Phase CC → merge → notes** — Solution/Build plan phases author Conventional Commits (validate → ≥1 CC + rationale). After merge, `release` **`notes`** consumes history. At PR open, `pull-request` **`open`** applies the same format only if the tree is still dirty. Format SoT: [`CONTEXT.md`](CONTEXT.md).
 5. **Assure → Ship** — `review` may hand off to `pull-request` **`comment`**. Never reverse: GitHub posting does not live under `review`.
 6. **Explain → docs** — `communication` → `docs` **`editor`** when the artifact is a README/runbook, not a message. Never reverse. `docs` **`architecture`** is Solution-adjacent verify-only (no HLD/ADR author).
-7. **Overlay → runtime** — Published: `ruby-on-rails-dev` with `ruby-dev`. Local: `mir-architect` with `rust-dev` ([below](#local-overlay-mir-architect)).
+7. **Overlay → runtime** — Published: `ruby-on-rails-dev` with `ruby-dev`; `swiftui-dev` with `swift-dev`. Local: `mir-architect` with `rust-dev` ([below](#local-overlay-mir-architect)).
 8. **Decide** — `grilling` stress-tests Intent / Product / Solution; product doctrine stays with `product-owner` when the topic is scope.
 
 ## Skill index
 
-| Domain   | Skills                                                                                      |
-| -------- | ------------------------------------------------------------------------------------------- |
-| Intent   | [`prompt-synthesis`](prompt-synthesis/), [`jira-ticket`](jira-ticket/)                      |
-| Product  | [`product-owner`](product-owner/)                                                           |
-| Solution | [`architecture`](architecture/), [`docs`](docs/)                                            |
-| Build    | [`ruby-dev`](ruby-dev/), [`rust-dev`](rust-dev/), [`ruby-on-rails-dev`](ruby-on-rails-dev/) |
-| Assure   | [`review`](review/)                                                                         |
-| Ship     | [`pull-request`](pull-request/), [`release`](release/)                                      |
-| Explain  | [`communication`](communication/), [`docs`](docs/)                                          |
-| Decide   | `grilling` (third-party — [Optional packs](#optional-packs-not-os-sot))                     |
+| Domain   | Skills                                                                                                                                                |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Intent   | [`prompt-synthesis`](prompt-synthesis/), [`jira-ticket`](jira-ticket/)                                                                                |
+| Product  | [`product-owner`](product-owner/)                                                                                                                     |
+| Solution | [`architecture`](architecture/), [`docs`](docs/)                                                                                                      |
+| Build    | [`ruby-dev`](ruby-dev/), [`rust-dev`](rust-dev/), [`swift-dev`](swift-dev/), [`ruby-on-rails-dev`](ruby-on-rails-dev/), [`swiftui-dev`](swiftui-dev/) |
+| Assure   | [`review`](review/)                                                                                                                                   |
+| Ship     | [`pull-request`](pull-request/), [`release`](release/)                                                                                                |
+| Explain  | [`communication`](communication/), [`docs`](docs/)                                                                                                    |
+| Decide   | `grilling` (third-party — [Optional packs](#optional-packs-not-os-sot))                                                                               |
 
 ### Local overlay: `mir-architect`
 
