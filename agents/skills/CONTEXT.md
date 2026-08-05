@@ -181,8 +181,11 @@ _Avoid_: append-only forever doctrine in the log; growing frozen router checklis
 **Expansion law**:
 Seven rules in `architecture` Shared prep before adding a branch. Prefer sparse harvest over new branches; never invent a top-level craft skill when a `refactor-<concern>` branch fits.
 
+**Install** (this store via [`npx skills`](https://github.com/vercel-labs/skills)):
+Published skills: `npx skills add gildesmarais/dotfiles/agents/skills` (browse with `--list`). This machine with `rcm`: `rcup` → `~/.agents/skills/`. Details: `agents/skills/README.md` Install.
+
 **Third-party packs**:
-Optional agent installs (`grilling`, `swift-*`, vendor React packs). Not first-party kinds; not OS source of truth. Install with `npx skills add` — see `agents/skills/README.md` Optional packs. Store-local spice (`ms-rust`, `rust-performance`) installs via `rcup` when present under `agents/skills/`.
+Optional agent installs (`grilling`, `swift-*`, vendor React packs). Not first-party kinds; not OS source of truth. Install with a separate `npx skills add` — see `agents/skills/README.md` Optional packs. Store-local spice (`ms-rust`, `rust-performance`) follows the same install paths as other store skills when present under `agents/skills/` on the default branch.
 
 **Conventional Commits** (format — single SoT):
 
@@ -218,7 +221,7 @@ Group Breaking → Features → Fixes → other from `git log` in the ship range
 _Avoid_: inventing commits; waiting until notes to write history
 
 **Handoff**:
-Compose with `pull-request` — never absorb PR open/slice/resolve. Phase CC authoring lives in `architecture` / `*-dev`; `open` is leftover applicator only.
+Compose with `pull-request` — never absorb PR open/slice/resolve. Phase CC authoring lives in `architecture` / `*-dev`; at PR open, `pull-request` **`open`** applies the format only if the tree is still dirty.
 
 # Decide Skills Domain
 
@@ -227,7 +230,7 @@ Compose with `pull-request` — never absorb PR open/slice/resolve. Phase CC aut
 **Grilling** (third-party skill noun: `grilling`):
 Stress-test interview — one hard question at a time. Upstream Decide skill (not a first-party store router).
 Install (from dotfiles root): `npx skills add https://github.com/mattpocock/skills --skill grilling -a cursor -a codex -y`
-Sibling optional packs (`swift-*`): same `npx skills` pattern — see `agents/skills/README.md` Optional packs. Store spice (`ms-rust`, `rust-performance`): `rcup`.
+Sibling optional packs (`swift-*`): same `npx skills` pattern — see `agents/skills/README.md` Optional packs. Store spice (`ms-rust`, `rust-performance`): same paths as other store skills when present (`npx skills` / `rcup`).
 _Avoid_: using grilling to answer “should we build X?” (that stays `product-owner` **`gate`**)
 
 **Handoff**:

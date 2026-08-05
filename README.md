@@ -21,31 +21,41 @@ Maintained by [Gil Desmarais](https://gil.desmarais.de) (Berlin). Profile, proje
 
 ### Quick-start tools
 
-| Script                           | What it does                                                                                                                | Prerequisites                                                         |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `./scripts/macos-defaults-apply` | Guided wizard that applies my preferred macOS defaults and prompts for the manual tweaks listed below.                      | macOS, `sudo` access for protected settings.                          |
-| `./scripts/wiki`                 | `fzf`-powered browser for the local wiki directory that opens files in your preferred editor.                               | `fzf`, `git`, `rg`, optional `VISUAL`/`EDITOR` or `WIKI_*` overrides. |
-| `./scripts/download-audio`       | Fetches remote audio (e.g., YouTube URLs) and normalises them via the `process-audio` pipeline for library-ready files.     | `aria2`, `ffmpeg`, `yt-dlp`; installs live in the Brewfile.           |
-| `./scripts/skill`                | Store hygiene for `~/.dotfiles/agents/skills` (`list`, `promote`, `rename`). First-party install is via `rcup`.             | Ruby 2.6+, optional `git` for auto-detecting the project root.        |
-| `./scripts/playground`           | Picks or creates playground projects for `pg`; interactive mode supports `Ctrl-O` to open the highlighted folder in Finder. | `fzf`, `rg`; macOS `open` for Finder shortcut.                        |
+| Script                           | What it does                                                                                                                                | Prerequisites                                                         |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `./scripts/macos-defaults-apply` | Guided wizard that applies my preferred macOS defaults and prompts for the manual tweaks listed below.                                      | macOS, `sudo` access for protected settings.                          |
+| `./scripts/wiki`                 | `fzf`-powered browser for the local wiki directory that opens files in your preferred editor.                                               | `fzf`, `git`, `rg`, optional `VISUAL`/`EDITOR` or `WIKI_*` overrides. |
+| `./scripts/download-audio`       | Fetches remote audio (e.g., YouTube URLs) and normalises them via the `process-audio` pipeline for library-ready files.                     | `aria2`, `ffmpeg`, `yt-dlp`; installs live in the Brewfile.           |
+| `./scripts/skill`                | Store hygiene for `agents/skills` (`list`, `promote`, `rename`). Agent install on this machine is `rcup`; any machine can use `npx skills`. | Ruby 2.6+, optional `git` for auto-detecting the project root.        |
+| `./scripts/playground`           | Picks or creates playground projects for `pg`; interactive mode supports `Ctrl-O` to open the highlighted folder in Finder.                 | `fzf`, `rg`; macOS `open` for Finder shortcut.                        |
 
 ## Agent Skills
 
-Personal and custom [Agent Skills](https://agentskills.io/) live in [`agents/skills/`](agents/skills/). First-party installs land under `~/.agents/skills/` via `rcup` (also via topgrade `RCM: rcup`).
+Personal and custom [Agent Skills](https://agentskills.io/) live in [`agents/skills/`](agents/skills/). Domain map, compose rules, and optional packs: [agents/skills/README.md](agents/skills/README.md).
 
-| Tool                                                   | Role                                                                                     |
-| ------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| [`rcup`](https://github.com/thoughtbot/rcm) / topgrade | Install store skills into `~/.agents/skills`                                             |
-| [`./scripts/skill`](scripts/skill)                     | Store hygiene (`list`, `promote`, `rename`)                                              |
-| Manual `npx skills`                                    | Optional third-party packs only (see [agents/skills/README.md](agents/skills/README.md)) |
+| Who                             | How to install                                                                                           |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Any machine (no clone / `rcup`) | [`npx skills`](https://github.com/vercel-labs/skills) — see below                                        |
+| This machine (dotfiles + `rcm`) | `rcup` → `~/.agents/skills/` (also via topgrade `RCM: rcup`)                                             |
+| Optional third-party packs      | Separate `npx skills add` — [agents/skills/README.md](agents/skills/README.md#optional-packs-not-os-sot) |
 
-### Workflow
+### Install skills (any machine)
+
+Requires Node.js / `npx`. Skills ship from GitHub path `agents/skills/`.
+
+```sh
+npx skills add gildesmarais/dotfiles/agents/skills --list
+npx skills add gildesmarais/dotfiles/agents/skills -g -a cursor -a codex -y
+npx skills add gildesmarais/dotfiles/agents/skills --skill review --skill docs -g -a cursor -y
+```
+
+Browse with `--list`, then install all (`-g` = user-level) or pick skills with `--skill`. Full options: [agents/skills/README.md](agents/skills/README.md#install).
+
+### This machine (store hygiene)
 
 1. **Experiment** in any repo under `.agents/skills/`.
-2. **Promote** proven skills: `skill promote <name>` → moves into `~/.dotfiles/agents/skills/`.
+2. **Promote** proven skills: `skill promote <name>` → moves into `agents/skills/` in this repo.
 3. **Install** with `rcup` (or wait for topgrade) so agents see `~/.agents/skills/<name>/`.
-
-### Store hygiene
 
 ```sh
 skill list
@@ -54,15 +64,9 @@ skill rename ruby-dev ruby
 rcup -v
 ```
 
-`promote` moves a project skill from `.agents/skills/` into the store. `rename` renames a stored skill. Neither creates agent install links — run `rcup` next.
+`promote` and `rename` update the store only — run `rcup` next. Use `skill --project /path/to/project ...` to target a project other than the current git root or working directory.
 
-Use `skill --project /path/to/project ...` to target a project other than the current git root or working directory.
-
-The store currently covers Ruby/Rails development, Rust (including Microsoft's pragmatic guidelines), PR and review workflows, documentation, and domain-specific tooling (e.g. music-information retrieval). Run `skill list` for the full set.
-
-Full paths, authoring notes, and optional packs: [agents/skills/README.md](agents/skills/README.md).
-
-Implementation lives in `skill/src`, with characterization tests in `skill/test`, and `scripts/skill` stays as the thin executable entrypoint.
+List the published set: `skill list` (this machine) or `npx skills add gildesmarais/dotfiles/agents/skills --list` (any machine).
 
 ## macOS System Configuration
 
