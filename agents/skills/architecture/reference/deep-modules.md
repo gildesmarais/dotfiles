@@ -11,12 +11,15 @@ Dual ownership of one fact, passthrough bags, shallow multi-call husks, or the u
 - Apply the deletion test to candidate modules and thin re-export bags.
 - Prefer deep modules: small interface, substantial private behavior.
 - Kill passthrough bags and dual ownership of the same fact.
+- Prefer ownership and seam failure signals when surveying deepen work; ignore metric smell counts that do not name dual ownership, passthrough, or deletion-test failure.
 - Narrow stage and dependency interfaces; one fact, one home.
 - Introduce seams only where they buy phased moves or testability — not for ceremony.
 - Share one expansion path between validate and run — dual ownership of expansion greenlights configs that fail later.
 - Own one remaining wall-clock across fallbacks and pagination; pass it down.
+- Give shared meters and policies one construction home; require them explicit at the pipeline boundary and prove omission fails with a discriminating test.
 - Name every dependency the path relies on — invisible contracts fail closed in production.
-- Cut over only after the replacement seam exists; incomplete migrations invite revert.
+- Cut over only after the replacement owns the implementation one-way — reverse calls into the old home are still dual ownership.
+- When relocating a predicate's ownership, verify each touched call site's argument shape still matches what the predicate inspects.
 - Anti-patterns: dump modules of unrelated helpers; twin structs that must stay in sync; adapters that grow domain branches.
 
 ## Sequencing
