@@ -32,6 +32,7 @@ Use the closest current source for each claim:
 - Keep every section useful for action or decision-making.
 - Keep sections scannable. Use bullets and short paragraphs when they reduce reading effort.
 - Make implicit assumptions explicit when they affect execution (cwd, environment, inputs).
+- **Write forward.** Document the current system: what it is, when to use it, how to run it, what success looks like. State present constraints as facts. Do not teach via retired workflows, migration narratives, publication history, or “expected failure” paths. Prefer positive instructions over stacks of “do not / never / avoid” that assume prior knowledge. Keep a past name only when it still changes a present decision (e.g. compact alias → current skill lookup); otherwise remove.
 
 ## Workflow
 
@@ -45,6 +46,7 @@ Use the closest current source for each claim:
    - Keep only content that helps the reader act or decide.
    - Remove history, speculation, duplicate explanation, deprecated flows, and unverifiable claims.
 4. Rewrite for action.
+   - Write forward: present system first; constraints as facts; no era/migration/expected-failure teaching.
    - Use short sections, explicit labels, and examples that match the repo.
    - Make working directory, path, and environment assumptions explicit when they matter.
    - When an example needs multiple shell steps, format chained commands for human scanning: use `&&`, `;`, and line continuations `\` deliberately, and align the trailing `\` into a readable vertical rail.
@@ -75,17 +77,21 @@ Use this order when it fits the document, and cut sections that do not serve its
 - explicit execution context when behavior depends on cwd, env vars, or invocation mode
 - expected outcomes
 - next actions
-- caveats that materially change usage or decisions
+- caveats that materially change usage or decisions (as present constraints, not failure stories)
+- alias → current name lookups only when they help route a prompt today
 
 ## What to remove or compress
 
 - history and origin stories
+- era / migration / “how we used to …” framing
+- “expected failure” or “will fail — that is expected” as teaching devices
 - vague motivation
 - duplicated explanations
-- deprecated or dead flows
+- deprecated or dead flows (unless a one-line present prune/cleanup fact remains)
 - speculative future plans
 - unverifiable claims
 - content that does not change reader action or decisions
+- negation stacks that only make sense if the reader already knows the past system
 
 ## Pattern guidance
 
@@ -141,3 +147,4 @@ Confirm:
 - the main path is obvious
 - outdated content is removed
 - the next action is explicit
+- prose is forward-facing (no era/migration/expected-failure teaching; constraints stated as present facts)

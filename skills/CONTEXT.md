@@ -163,7 +163,7 @@ Thin language adapter (`ruby-dev`, `rust-dev`). Classify `surgical` | `design` |
 _Avoid_: inlining module/type/perf craft inside `*-dev`
 
 **Overlay**:
-Framework or domain delta composed with one `*-dev` (`ruby-on-rails-dev`, `mir-architect`).
+Framework or domain delta composed with one `*-dev`. Published: `ruby-on-rails-dev` (+ `ruby-dev`). Local-only: `mir-architect` (+ `rust-dev`) — when/how/scope in `skills/README.md` Local-only.
 _Avoid_: standalone mega-router that picks languages
 
 **Design** (classification, not a skill):
@@ -182,7 +182,7 @@ _Avoid_: growing frozen router checklists for every lesson
 Seven rules in `architecture` Shared prep before adding a branch. Prefer harvest over new branches; never invent a top-level craft skill when a `refactor-<concern>` branch fits.
 
 **Third-party packs**:
-Optional agent installs (`ms-rust`, `rust-performance`, vendor React packs). Not first-party kinds; never source of truth for the OS.
+Optional agent installs (`grilling`, `ms-rust`, `rust-performance`, `swift-*`, vendor React packs). Not first-party kinds; not OS source of truth. Install with `npx skills add` — see `skills/README.md` Optional packs.
 
 **Conventional Commits** (format — single SoT):
 
@@ -224,9 +224,10 @@ Compose with `pull-request` — never absorb PR open/slice/resolve. Phase CC aut
 ## Language
 
 **Grilling** (third-party skill noun: `grilling`):
-Stress-test interview — one hard question at a time. Not first-party in this store.
-Install: `npx skills add https://github.com/mattpocock/skills --skill grilling`
-_Avoid_: promoting a forked `skills/grilling/`; using grilling to answer “should we build X?” (that stays `product-owner` **`gate`**)
+Stress-test interview — one hard question at a time. Upstream Decide skill (not a first-party store router).
+Install (from dotfiles root): `npx skills add https://github.com/mattpocock/skills --skill grilling -a cursor -a codex -y`
+Sibling optional packs (`ms-rust`, `rust-performance`, `swift-*`): same `npx skills` pattern — see `skills/README.md` Optional packs.
+_Avoid_: using grilling to answer “should we build X?” (that stays `product-owner` **`gate`**)
 
 **Handoff**:
 Decide-only. May stress Intent briefs, Product gate proposals, or Solution craft choices. Product doctrine and evidence rules stay with `product-owner` when the topic is scope.

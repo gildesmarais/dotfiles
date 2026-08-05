@@ -64,3 +64,18 @@ After scope prep in `SKILL.md`, continue here. For a pull request, review the PR
 - Optimize for clarity over novelty.
 - Treat undocumented behavior as a defect.
 - If deviating from standards, write explicit justification.
+
+## Incident / fix-diff postures
+
+When the target is a `fix`, `Revert`, or production-incident shaped diff, ask:
+
+1. Did this fix wander onto a second surface? → remediate via **ruby-dev** (one-surface).
+2. Is a neighboring layer absorbing a boundary failure? → **ruby-dev** → `architecture`.
+3. Does the path assume an invisible contract (shape, reload, cache identity, cutover successor)? → **ruby-on-rails-dev**.
+4. Is disclosure or access treated as mere presence? → **ruby-on-rails-dev** (+ **security** when sensitive).
+5. Did validate and execute see the same truth?
+6. Is each guard or policy owned at one lifecycle point?
+7. Does the published contract accept only what runtime accepts?
+8. Do repeated harden / review-follow-up commits hint a missing principle rather than noise?
+
+Fold answers into the single Findings report; do not invent a separate review lens.

@@ -65,7 +65,7 @@ Do not invent exploitability, framework applicability, or verification evidence.
    - privilege escalation
 2. Evaluate control coverage:
    - least privilege and deny-by-default authorization
-   - input validation and safe query construction
+   - input validation and safe query construction — prefer structure over substring panic; treat untrusted-text matching and follow-up request policy as abuse surface
    - data minimization and sensitive data redaction
    - auditability and incident forensics readiness
    - resilience boundaries such as retries, timeouts, and rate limits

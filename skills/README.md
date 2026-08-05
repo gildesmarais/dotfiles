@@ -1,8 +1,8 @@
 # Skills
 
-Personal skill store for a **product + engineering AI skill OS**: domain routers plus thin language adapters. Canonical source: `~/.dotfiles/skills/`. Vocabulary lives in [`CONTEXT.md`](CONTEXT.md).
+Personal skill store for a **product + engineering AI skill OS**: domain routers plus thin language adapters. Lives at `skills/` in this repo. Vocabulary: [`CONTEXT.md`](CONTEXT.md).
 
-Install agents with [`npx skills`](https://github.com/vercel-labs/skills). Use `./scripts/skill` only for store hygiene (`promote`, `rename`, `list`).
+Install into agents with [`npx skills`](https://github.com/vercel-labs/skills). Use `./scripts/skill` only for store hygiene (`promote`, `rename`, `list`).
 
 ## Pipeline
 
@@ -23,21 +23,51 @@ flowchart LR
 
 ## Domain map
 
-| Domain       | Job                              | Skill(s)                                                              | Primary branches                                                             | Status                                               |
-| ------------ | -------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------- |
-| **Intent**   | Fuzzy need → actionable work     | `prompt-synthesis`; `jira-ticket`                                     | `code` \| `architecture` \| `product` (default: Shared prep)                 | active — Spec/PRD **deferred**                       |
-| **Product**  | What to build; admit/defer scope | `product-owner`                                                       | `gate` (default); stubs: prioritize, story-slice, experiment                 | active gate; stub bodies **sequenced** (KISS)        |
-| **Solution** | How the system should work       | `architecture`; `docs` **`architecture`** (verify-only)               | `deep-modules` \| `refactor-types` \| `refactor-boundaries` \| `performance` | active; HLD/ADR author **deferred**                  |
-| **Build**    | Change the codebase              | `ruby-dev`, `rust-dev`; overlays `ruby-on-rails-dev`, `mir-architect` | classify: surgical \| design \| review-hand-off                              | active — phase CC during plans                       |
-| **Assure**   | Safe to merge?                   | `review`                                                              | finish, quality, tests, perf, security, publish                              | active — test-design author **gap**                  |
-| **Ship**     | Land on mainline                 | `pull-request`; `release`                                             | PR: open, slice, comment, reply, resolve; release: `notes`                   | active — release ops (flag/promote/rollback) **gap** |
-| **Run**      | Production health                | thin (e.g. jira → Datadog)                                            | —                                                                            | **gap** (Incident postponed)                         |
-| **Explain**  | Humans understand state          | `communication`; `docs`                                               | see skill branches                                                           | active                                               |
-| **Decide**   | Stress-test choices              | `grilling` (third-party); `product-owner` Forced Challenge            | —                                                                            | grilling external — not first-party store skill      |
+| Domain       | Job                              | Skill(s)                                                   | Primary branches                                                             | Status                                               |
+| ------------ | -------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **Intent**   | Fuzzy need → actionable work     | `prompt-synthesis`; `jira-ticket`                          | `code` \| `architecture` \| `product` (default: Shared prep)                 | active — Spec/PRD **deferred**                       |
+| **Product**  | What to build; admit/defer scope | `product-owner`                                            | `gate` (default); stubs: prioritize, story-slice, experiment                 | active gate; stub bodies **sequenced** (KISS)        |
+| **Solution** | How the system should work       | `architecture`; `docs` **`architecture`** (verify-only)    | `deep-modules` \| `refactor-types` \| `refactor-boundaries` \| `performance` | active; HLD/ADR author **deferred**                  |
+| **Build**    | Change the codebase              | `ruby-dev`, `rust-dev`; overlay `ruby-on-rails-dev`        | classify: surgical \| design \| review-hand-off                              | active — phase CC during plans                       |
+| **Assure**   | Safe to merge?                   | `review`                                                   | finish, quality, tests, perf, security, publish                              | active — test-design author **gap**                  |
+| **Ship**     | Land on mainline                 | `pull-request`; `release`                                  | PR: open, slice, comment, reply, resolve; release: `notes`                   | active — release ops (flag/promote/rollback) **gap** |
+| **Run**      | Production health                | thin (e.g. jira → Datadog)                                 | —                                                                            | **gap** (Incident postponed)                         |
+| **Explain**  | Humans understand state          | `communication`; `docs`                                    | see skill branches                                                           | active                                               |
+| **Decide**   | Stress-test choices              | `grilling` (third-party); `product-owner` Forced Challenge | —                                                                            | grilling external — not first-party store skill      |
 
-Third-party packs under `skills/` (`ms-rust`, `rust-performance`, …) are optional spice — never OS source of truth. External registries exist; this README’s examples stay on **this** store.
+Published Build overlay: `ruby-on-rails-dev`. Local-only overlay: `mir-architect` ([below](#local-only-mir-architect)).
 
-`grilling` install (Decide): `npx skills add https://github.com/mattpocock/skills --skill grilling`
+## Optional packs (not OS SoT)
+
+Decide helpers and language spice sit outside the domain routers. They are never OS source of truth. From the dotfiles root (project scope, no `-g`):
+
+```sh
+cd ~/.dotfiles
+
+# Decide
+npx skills add https://github.com/mattpocock/skills --skill grilling -a cursor -a codex -y
+
+# Rust spice (local tree under skills/)
+npx skills add . --skill ms-rust -a cursor -a codex -y
+npx skills add . --skill rust-performance -a cursor -a codex -y
+
+# Swift / Apple (pick what you need)
+npx skills add https://github.com/twostraws/swiftui-agent-skill --skill swiftui-pro -a cursor -a codex -y
+npx skills add https://github.com/twostraws/swift-testing-agent-skill --skill swift-testing-pro -a cursor -a codex -y
+# Catalog: https://github.com/twostraws/Swift-Agent-Skills
+# App-repo specialists: cd <repo> && npx skills add . --skill <name> …
+
+skills-restore   # then commit skills-lock.json if it changed
+```
+
+| Pack               | When you want it                                   | Role                                                   |
+| ------------------ | -------------------------------------------------- | ------------------------------------------------------ |
+| `grilling`         | Stress-test a plan or decision                     | Upstream Decide skill                                  |
+| `ms-rust`          | Microsoft-style Rust guidelines before `.rs` edits | Compose with `rust-dev`                                |
+| `rust-performance` | Measure-before-optimize Rust work                  | Craft ownership stays `architecture` **`performance`** |
+| `swift-*`          | SwiftUI / Swift Testing / Apple packs              | Upstream or `<repo>/.agents/skills/` specialists       |
+
+Discover more on [skills.sh](https://skills.sh/). First-party OS installs: [below](#install-this-store).
 
 ## Compose / handoffs
 
@@ -49,21 +79,38 @@ One-way rules (prevent domain collisions):
 4. **Phase CC → merge → notes** — Solution/Build plan phases author Conventional Commits (validate → ≥1 CC + rationale). After merge, `release` **`notes`** consumes history. `pull-request` **`open`** is leftover applicator only. Format SoT: [`CONTEXT.md`](CONTEXT.md).
 5. **Assure → Ship** — `review` may hand off to `pull-request` **`comment`**. Never reverse: GitHub posting does not live under `review`.
 6. **Explain → docs** — `communication` → `docs` **`editor`** when the artifact is a README/runbook, not a message. Never reverse. `docs` **`architecture`** is Solution-adjacent verify-only (no HLD/ADR author).
-7. **Overlay → runtime** — `ruby-on-rails-dev` / `mir-architect` compose with the matching `*-dev`.
-8. **Decide** — `grilling` (third-party) stress-tests Intent / Product / Solution; product doctrine stays with `product-owner` when the topic is scope.
+7. **Overlay → runtime** — Published: `ruby-on-rails-dev` with `ruby-dev`. Local-only: `mir-architect` with `rust-dev` ([below](#local-only-mir-architect)).
+8. **Decide** — `grilling` stress-tests Intent / Product / Solution; product doctrine stays with `product-owner` when the topic is scope.
 
 ## Skill index
 
-| Domain   | Skills                                                                                                                         |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Intent   | [`prompt-synthesis`](prompt-synthesis/), [`jira-ticket`](jira-ticket/)                                                         |
-| Product  | [`product-owner`](product-owner/)                                                                                              |
-| Solution | [`architecture`](architecture/), [`docs`](docs/)                                                                               |
-| Build    | [`ruby-dev`](ruby-dev/), [`rust-dev`](rust-dev/), [`ruby-on-rails-dev`](ruby-on-rails-dev/), [`mir-architect`](mir-architect/) |
-| Assure   | [`review`](review/)                                                                                                            |
-| Ship     | [`pull-request`](pull-request/), [`release`](release/)                                                                         |
-| Explain  | [`communication`](communication/), [`docs`](docs/)                                                                             |
-| Decide   | `grilling` (third-party — see install above)                                                                                   |
+| Domain   | Skills                                                                                      |
+| -------- | ------------------------------------------------------------------------------------------- |
+| Intent   | [`prompt-synthesis`](prompt-synthesis/), [`jira-ticket`](jira-ticket/)                      |
+| Product  | [`product-owner`](product-owner/)                                                           |
+| Solution | [`architecture`](architecture/), [`docs`](docs/)                                            |
+| Build    | [`ruby-dev`](ruby-dev/), [`rust-dev`](rust-dev/), [`ruby-on-rails-dev`](ruby-on-rails-dev/) |
+| Assure   | [`review`](review/)                                                                         |
+| Ship     | [`pull-request`](pull-request/), [`release`](release/)                                      |
+| Explain  | [`communication`](communication/), [`docs`](docs/)                                          |
+| Decide   | `grilling` (third-party — [Optional packs](#optional-packs-not-os-sot))                     |
+
+### Local-only: `mir-architect`
+
+MIR / rhythmic-analysis overlay for `rust-dev` (club music grids, downbeat, tempo).
+
+|           |                                                                 |
+| --------- | --------------------------------------------------------------- |
+| **When**  | `skills/mir-architect/` is present on this machine              |
+| **How**   | Wire agents from the local tree (below)                         |
+| **Scope** | Local-only; not lock-managed; omit from public install examples |
+
+```sh
+cd ~/.dotfiles
+npx skills add . --skill mir-architect -a cursor -a codex -y
+```
+
+Skip if you are not on that MIR stack.
 
 ## Authoring laws
 
@@ -71,6 +118,7 @@ One-way rules (prevent domain collisions):
 - **Freeze the router** — harvest lessons into `reference/` (tag branch); edit `SKILL.md` only when the contract is wrong.
 - **Compose across domains** with one-way handoffs (above).
 - **Thin `*-dev`** — craft stays in `architecture`; overlays are deltas only.
+- **Local-only overlays** — may live under `skills/` (e.g. `mir-architect`) without lock entries; document when/how/scope, and install with `npx skills add . --skill …`.
 - **Proliferation guard** — new top-level skill only if it cannot be a branch of an existing router (for refactor concerns: `refactor-<concern>` under `architecture`, never bare `refactor` or a parallel `product` skill).
 
 Router shape: `## Pick branch` → `## Shared prep` → `## Branch reference` → `## Handoff` → `## Completion criteria`. Relative `reference/*.md` links; unnumbered `##` headers. Terms: [`CONTEXT.md`](CONTEXT.md). Spec: [agentskills.io](https://agentskills.io/).
@@ -113,22 +161,22 @@ npx skills add . --skill release -a cursor -a codex -y
 skills-restore
 ```
 
-Day-to-day: `npx skills list` · `find` · `update` · `remove` · `init`. Prefer project scope from `~/.dotfiles`; `-g` only outside the lock workflow. External registries exist; do not treat them as this OS’s source of truth.
+Day-to-day: `npx skills list` · `find` · `update` · `remove` · `init`. Prefer project scope from `~/.dotfiles`; `-g` only outside the lock workflow. Optional packs: [above](#optional-packs-not-os-sot). Local-only overlay: [`mir-architect`](#local-only-mir-architect).
 
 ### Paths
 
-| Scope             | Path                                                            |
-| ----------------- | --------------------------------------------------------------- |
-| Store (git)       | `~/.dotfiles/skills/<name>/`                                    |
-| Lock installs     | `~/.dotfiles/.agents/skills/<name>/`                            |
-| Other project     | `<repo>/.agents/skills/<name>/`                                 |
-| Global (optional) | `~/.codex/skills/`, `~/.cursor/skills/` via `npx skills add -g` |
+| Scope             | Path                                                 |
+| ----------------- | ---------------------------------------------------- |
+| Store             | `skills/<name>/` in this repo (git when published)   |
+| Lock installs     | `.agents/skills/<name>/` under this repo (from lock) |
+| Other project     | `<repo>/.agents/skills/<name>/`                      |
+| Global (optional) | user agent dirs via `npx skills add -g`              |
 
-**Deprecated:** `skill link` and per-agent project dirs (`.codex/skills/`, …). Cleanup: remove legacy links, then `cd ~/.dotfiles && skills-restore`.
+### Name lookup
 
-### Retired
+If a prompt names an older skill label, route to the current skill:
 
-| Retired                                                                   | Successor                                  |
+| Prompt name                                                               | Current skill                              |
 | ------------------------------------------------------------------------- | ------------------------------------------ |
 | `refactor-type-driven`                                                    | `architecture` **`refactor-types`**        |
 | gh-review-resolve, gh-address-comments                                    | `pull-request` **`resolve`** / **`reply`** |
@@ -143,5 +191,3 @@ Day-to-day: `npx skills list` · `find` · `update` · `remove` · `init`. Prefe
 | project-update                                                            | `communication` **`project-update`**       |
 | docs-editor                                                               | `docs` **`editor`**                        |
 | docs-architecture                                                         | `docs` **`architecture`**                  |
-
-Leftover dangling symlinks from the `skill link` era are removed by `skills-restore`.

@@ -57,6 +57,7 @@ Evidence rules that apply to both branches:
 - Prefer removal over preserving uncertain content.
 - Do not write absolute filesystem paths in published docs; prefer repo-relative or user-generic paths so docs do not reveal local identity details.
 - Keep terminology consistent with the system, and keep project-specific terms only when current and correct.
+- **Write forward** — teach the current system (what / when / how / success). State constraints as present facts; do not teach via eras, migrations, or expected-failure paths. Detail: `editor` [`reference/editor.md`](reference/editor.md).
 
 Uncertainty handling, both branches:
 
@@ -87,7 +88,7 @@ When the ask turns out to be a message rather than documentation, stop and conti
 
 ## Completion criteria
 
-| Branch         | Done when                                                                                                                           |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `editor`       | Every technical claim re-checked against the repo; main path obvious; outdated content removed; next action explicit                |
-| `architecture` | Flows, boundaries, and constraints verified as enforced; verification tier reached is stated; unknowns isolated instead of narrated |
+| Branch         | Done when                                                                                                                                  |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `editor`       | Every technical claim re-checked against the repo; main path obvious; outdated content removed; next action explicit; prose forward-facing |
+| `architecture` | Flows, boundaries, and constraints verified as enforced; verification tier reached is stated; unknowns isolated instead of narrated        |

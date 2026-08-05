@@ -22,6 +22,7 @@ When checking Ruby core APIs or standard-library behavior, verify them instead o
 - Look for nested loops, repeated regex scans, repeated parsing, repeated allocations, repeated object construction, repeated sorting, and repeated conversions between arrays/hashes/sets.
 - Trace the same data through the pipeline. Flag cases where one stage computes facts and a later stage recomputes them.
 - Prefer architectural rearrangements when they remove entire passes, repeated normalization, or repeated derivation of the same facts.
+- Across retries, fallbacks, or multi-page work: is shared wall-clock (and unlike costs) metered once and honestly?
 
 3. Analyze data structures and big-O.
 

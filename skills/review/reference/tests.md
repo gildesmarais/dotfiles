@@ -29,6 +29,7 @@ After scope prep in `SKILL.md`, continue here.
 
 ## What To Flag
 
+- Specs that reach private surface to assert behavior — missing public collaborator / wrong seam.
 - Tests that manually invoke captured callbacks, private hooks, or internal helper interactions instead of driving the public API.
 - Stubs that reimplement real collaborator behavior such as budgeting, retries, parsing, mapping, or state transitions.
 - Expectations that assert a method was called without asserting the resulting externally visible behavior.
