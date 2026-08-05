@@ -163,7 +163,7 @@ Thin language adapter (`ruby-dev`, `rust-dev`). Classify `surgical` | `design` |
 _Avoid_: inlining module/type/perf craft inside `*-dev`
 
 **Overlay**:
-Framework or domain delta composed with one `*-dev`. Published: `ruby-on-rails-dev` (+ `ruby-dev`). Local-only: `mir-architect` (+ `rust-dev`) — when/how/scope in `agents/skills/README.md` Local-only.
+Framework or domain delta composed with one `*-dev`. Published: `ruby-on-rails-dev` (+ `ruby-dev`); `swiftui-dev` (+ `swift-dev`).
 _Avoid_: standalone mega-router that picks languages
 
 **Design** (classification, not a skill):
@@ -185,7 +185,7 @@ Seven rules in `architecture` Shared prep before adding a branch. Prefer sparse 
 Published skills: `npx skills add gildesmarais/dotfiles/agents/skills` (browse with `--list`). This machine with `rcm`: `rcup` → `~/.agents/skills/`. Details: `agents/skills/README.md` Install.
 
 **Third-party packs**:
-Optional agent installs (`grilling`, `swift-*`, vendor React packs). Not first-party kinds; not OS source of truth. Install with a separate `npx skills add` — see `agents/skills/README.md` Optional packs. Store-local spice (`ms-rust`, `rust-performance`) follows the same install paths as other store skills when present under `agents/skills/` on the default branch.
+Optional agent installs (`grilling`, `swift-*`, vendor React packs). Not first-party kinds; not OS source of truth. Install with a separate `npx skills add` — see `agents/skills/README.md` Optional packs. Store depth packs (`ms-rust`, `rust-performance`) install with the rest of the store (`npx skills` / `rcup`).
 
 **Conventional Commits** (format — single SoT):
 
@@ -230,7 +230,7 @@ Compose with `pull-request` — never absorb PR open/slice/resolve. Phase CC aut
 **Grilling** (third-party skill noun: `grilling`):
 Stress-test interview — one hard question at a time. Upstream Decide skill (not a first-party store router).
 Install (from dotfiles root): `npx skills add https://github.com/mattpocock/skills --skill grilling -a cursor -a codex -y`
-Sibling optional packs (`swift-*`): same `npx skills` pattern — see `agents/skills/README.md` Optional packs. Store spice (`ms-rust`, `rust-performance`): same paths as other store skills when present (`npx skills` / `rcup`).
+Sibling optional packs (`swift-*`): same `npx skills` pattern — see `agents/skills/README.md` Optional packs. Store depth packs (`ms-rust`, `rust-performance`): same paths as other store skills (`npx skills` / `rcup`).
 _Avoid_: using grilling to answer “should we build X?” (that stays `product-owner` **`gate`**)
 
 **Handoff**:
