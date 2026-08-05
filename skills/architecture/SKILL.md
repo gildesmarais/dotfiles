@@ -72,14 +72,25 @@ Load each selected branch’s reference and follow it through completion. Always
 
 ## Growing reference
 
-Grow `reference/learning-log.md` when a large design left a reusable, product-free lesson; guidance was missing/wrong; or the user asks for a learning capture.
+Grow `reference/learning-log.md` when a design or recurring failure class left a lesson that will prevent the next dual-ownership / shallow-seam / type / measured-perf mistake; guidance was missing/wrong; or the user asks for a learning capture.
 
-1. Scope corpus to structural cuts (ownership, seams, types, measured perf) — not feature dumps.
-2. Abstract: one imperative sentence an expert agent can apply in any language. Strip product nouns, paths, schemas.
-3. Filter: reject dependency bumps, fixture moves, and bullets that only restate an existing branch checklist.
-4. Tag each kept gem with branch name(s): `deep-modules` | `refactor-types` | `refactor-boundaries` | `performance`.
-5. Cap ~10 new bullets unless the user asks for more. Noise-pass for product leakage and overlap.
-6. Do not grow branch checklists unless the contract itself is wrong (expansion law rule 6).
+Gems are **preventive mantras** for failure _classes_ — reflective instruction an expert recalls before repeating the mistake — not incident write-ups, mining procedures, or technique recipes.
+
+1. Scope corpus to structural cuts (ownership, seams, types, measured perf) — classes over incidents; dependency bumps and fixture moves are not harvest.
+2. **Generalize before ingress.** Strip product nouns, paths, schemas, language APIs, and domain fingerprints; a stranger must not infer the source codebase.
+3. Abstract: one imperative sentence an expert agent can apply in any language.
+4. Filter: reject bullets that only restate an existing branch checklist **or any existing learning-log gem**. A narrower failure class may specialize; a clone may not.
+5. Tag each kept gem with branch name(s): `deep-modules` | `refactor-types` | `refactor-boundaries` | `performance`.
+6. Cap ~10 new bullets per harvest event unless the user asks for more. Noise-pass for product leakage and overlap.
+7. Do not grow branch checklists unless the contract itself is wrong (expansion law rule 6).
+8. **Scarce reverts:** repeated harden / review-follow-up chains can mean a missing principle (signal shape only — no corpus identity in the log).
+
+### Ingress
+
+1. **Harvests accumulate; they do not replace.** A new corpus is a new dated section. Overwriting a peer section to “make room” destroys shared memory.
+2. **Write only from a fresh read.** The log is concurrent shared state; a stale snapshot is how harvests disappear.
+3. **One corpus, one section, one numbering continuum.** Name the _signal_ in the heading (e.g. deepen, fix/revert year)—never a product or repo name; continue global ids; filter against the entire log.
+4. **Pointers may thin; the corpus must not.** Folding into `*-dev` / review is optional posture thinner than the gem — cues that awaken judgment, not procedures or deletion. Restore missing harvests by append, never by rewriting unrelated sections. The learning-log remains the only full-gem store.
 
 ## Completion criteria
 
