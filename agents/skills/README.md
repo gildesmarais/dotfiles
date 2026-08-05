@@ -114,14 +114,18 @@ Router shape: `## Pick branch` → `## Shared prep` → `## Branch reference` �
 
 Dotfiles + `rcm` on this machine. Everyone else: [Install](#install).
 
-Git-tracked trees under `agents/skills/<name>/` are the source of truth. `rcup` installs them into `~/.agents/skills/<name>/` (file-level links). Keep `SYMLINK_DIRS` unset for `agents` / `agents/skills` so `~/.agents/skills` can hold both `rcup` links and third-party dirs from `npx skills`. After clone/pull or promote/rename, run `rcup` (or wait for topgrade `RCM: rcup`).
+Git-tracked trees under `agents/skills/<name>/` are the source of truth. `rcup` installs them into `~/.agents/skills/<name>/` (file-level links). Keep `SYMLINK_DIRS` unset for `agents` / `agents/skills` so `~/.agents/skills` can hold both `rcup` links and third-party dirs from `npx skills`. After clone/pull, promote/rename, or `backfill`, run `rcup` (or wait for topgrade `RCM: rcup`).
 
-| Command                    | Role                                                  |
-| -------------------------- | ----------------------------------------------------- |
-| `skill list`               | List non-hidden skills in the store                   |
-| `skill promote <name>`     | Move `<project>/.agents/skills/<name>` into the store |
-| `skill rename <old> <new>` | Rename in the store                                   |
-| `rcup`                     | Install store skills into `~/.agents/skills`          |
+| Command                    | Role                                                                 |
+| -------------------------- | -------------------------------------------------------------------- |
+| `skill list`               | List non-hidden skills in the store                                  |
+| `skill doctor`             | Report `ok` / `drift` / `home-only` / `broken` for store vs install  |
+| `skill backfill <name>`    | Copy drifted real files from `~/.agents/skills/<name>` into the store |
+| `skill promote <name>`     | Move `<project>/.agents/skills/<name>` into the store                |
+| `skill rename <old> <new>` | Rename in the store                                                  |
+| `rcup`                     | Install store skills into `~/.agents/skills`                         |
+
+When `skill doctor` reports `drift`, run `skill backfill <name>`, then `rcup`.
 
 | Scope         | Path                                             |
 | ------------- | ------------------------------------------------ |

@@ -4,7 +4,7 @@
 
 `skill/` owns the implementation and tests for the `skill` command used to manage the dotfiles skill store (`~/.dotfiles/agents/skills`).
 
-Install first-party skills into agents with [`rcup`](https://github.com/thoughtbot/rcm) (repo `agents/skills/<name>/` → `~/.agents/skills/<name>/`). This CLI handles store hygiene only: `list`, `promote`, and `rename`.
+Install first-party skills into agents with [`rcup`](https://github.com/thoughtbot/rcm) (repo `agents/skills/<name>/` → `~/.agents/skills/<name>/`). This CLI handles store hygiene only: `list`, `doctor`, `backfill`, `promote`, and `rename`.
 
 ## Key Decision
 
@@ -46,7 +46,8 @@ Do not optimize for:
 - Hidden directories in the store are not user skills and must stay excluded from `list` and related workflows.
 - The tool manages local directories in the dotfiles store; it should fail closed rather than overwrite unexpected paths.
 - Behavior should remain understandable from CLI output alone. Errors should be explicit and actionable.
-- Do not create agent install links. Print an `rcup` hint after promote/rename.
+- Do not create agent install links. Print an `rcup` hint after promote/rename/backfill.
+- `Skill::Classifier` owns status and drift; doctor and backfill must not reimplement those rules.
 
 ## Canonical Paths
 
@@ -54,6 +55,7 @@ Do not optimize for:
 - Agent install: `~/.agents/skills/<name>/` via `rcup` (file-level links from the store)
 - Project promote source: `<project>/.agents/skills/` only (`.codex/skills/` is deprecated and rejected)
 - Main implementation: `skill/src/cli.rb`
+- Classifier: `skill/src/skill/classifier.rb`
 - Tests: `skill/test/cli_test.rb`, `skill/test/unit_test.rb`
 - Lint config: `skill/.rubocop.yml`
 - User guide: `agents/skills/README.md`
@@ -87,3 +89,5 @@ When reviewing changes here, prioritize:
 - argument parsing regressions
 - drift between README, tests, and executable behavior
 - accidental reintroduction of `skill sync` or `.codex/skills` promote workflows
+- dual ownership of status/drift outside `Skill::Classifier`
+- doctor exit-on-drift (`1` when any `drift` row is printed)
