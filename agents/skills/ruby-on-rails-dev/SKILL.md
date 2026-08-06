@@ -10,7 +10,7 @@ description: "Rails overlay for API/controller/service/policy/serializer/worker 
 - Use as a Rails overlay with `$ruby-dev`; keep Ruby-general workflow in `$ruby-dev`.
 - Apply to controllers, routes, models, services, policies, serializers, workers/mailers/jobs, migrations, framework config loaders, cache-key composition, and encryption cutovers.
 - Follow `AGENTS.md` routing and precedence.
-- Require `$review` **`security`** when changes match the `AGENTS.md` `Security Trigger Matrix`.
+- Require `$review.gil` **`security`** when changes match the `AGENTS.md` `Security Trigger Matrix`.
 - Incident/fix postures in this overlay; one-surface and wrong-owner classify stay in `$ruby-dev`.
 - Design or private-seam cases → `$ruby-dev` → `architecture`. Do not invent adapter or regex craft here.
 

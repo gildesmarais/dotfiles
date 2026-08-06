@@ -159,7 +159,7 @@ product-owner gate
   Research Further → name smallest missing product artifact; do not invent strategy
   Reject          → stop
 grilling          → Decide only (stress-test interview); this skill keeps doctrine if topic is scope
-architecture / *-dev / review → never own "should we build X?"
+architecture / *-dev / review.gil → never own "should we build X?"
 ```
 
 - Stress-test dialogue (one question at a time) → `grilling`; still apply this skill’s doctrine if the topic is product scope, and keep evidence rules (cite paths or say `unknown` — do not invent).

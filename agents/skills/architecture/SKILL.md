@@ -25,12 +25,12 @@ Never ask the user to pick a template when signals are clear. Load one or more w
 | `refactor-boundaries` | Wire/API/adapter contract maps; keep domain out of boundary shells | active |
 | `performance`         | Measure → baseline → optimize; language-free stop rules            | active |
 
-| Signal                                                                                         | Load                                               |
-| ---------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| deepen, shallow modules, seams, locality, dual ownership                                       | `deep-modules`                                     |
-| primitive obsession, stringly enums, logic-on-types                                            | `refactor-types`                                   |
-| wire/API maps, adapter contract shape, boundary serialize                                      | `refactor-boundaries`                              |
-| slow, hot path, allocate, profile, benchmark                                                   | `performance`                                      |
+| Signal                                                                                                                                                                             | Load                                               |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| deepen, shallow modules, seams, locality, dual ownership                                                                                                                           | `deep-modules`                                     |
+| primitive obsession, stringly enums, logic-on-types                                                                                                                                | `refactor-types`                                   |
+| wire/API maps, adapter contract shape, boundary serialize                                                                                                                          | `refactor-boundaries`                              |
+| slow, hot path, allocate, profile, benchmark                                                                                                                                       | `performance`                                      |
 | tree / directory / layout audit; peer conformity; snowflake / same job different homes; promote / relocate / fold / nest as ownership moves; whole-layer module-layout unification | `structure-survey` (survey mode) → craft as needed |
 
 **Survey mode** is discovery only: load [`reference/structure-survey.md`](reference/structure-survey.md), then multi-load craft branches from findings. It is not a fifth craft branch.
@@ -46,7 +46,7 @@ Never ask the user to pick a template when signals are clear. Load one or more w
 
 Bare “promote” / “unify” alone → one clarifying question, or stay on the skill already in play.
 
-**Co-load with review:** default stays split. When the ask combines both (e.g. review structure via the tree for promote/relocate): survey first → craft-branch handoff; review finish format only if they also want a findings report.
+**Co-load with review.gil:** default stays split. When the ask combines both (e.g. review structure via the tree for promote/relocate): survey first → craft-branch handoff; review finish format only if they also want a findings report.
 
 ## Shared prep
 
@@ -75,7 +75,7 @@ Load progressively — glossary plus each selected branch or mode. Do not preloa
 ## Handoff
 
 - Implementation and language validation continue in the relevant `*-dev` / overlay after craft decisions are clear.
-- Assure / ship continues with `review` / `pull-request` — never reverse.
+- Assure / ship continues with `review.gil` / `pull-request` — never reverse.
 - Product scope questions go to `product-owner`.
 - Changelog from merged history → `release` **`notes`** (consumer only).
 - Structure survey → ranked ledger + craft-branch names; then load those branches (or hand off to `*-dev` if craft is already decided).

@@ -46,7 +46,7 @@ Requires Node.js / `npx`. Skills ship from GitHub path `agents/skills/`.
 ```sh
 npx skills add gildesmarais/dotfiles/agents/skills --list
 npx skills add gildesmarais/dotfiles/agents/skills -g -a cursor -a codex -y
-npx skills add gildesmarais/dotfiles/agents/skills --skill review --skill docs -g -a cursor -y
+npx skills add gildesmarais/dotfiles/agents/skills --skill review.gil --skill docs -g -a cursor -y
 ```
 
 Browse with `--list`, then install all (`-g` = user-level) or pick skills with `--skill`. Full options: [agents/skills/README.md](agents/skills/README.md#install).

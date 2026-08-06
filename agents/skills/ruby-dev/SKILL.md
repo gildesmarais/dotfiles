@@ -16,8 +16,8 @@ Language-runtime adapter for Ruby. Craft (modules, types, measured perf) lives i
 - Default for plain Ruby gems, libraries, CLI, and adapters; load `ruby-on-rails-dev` **with** this skill when the change is Rails-shaped.
 - Use for Ruby implementation work: surgical fixes, incidents, and small feature adjustments.
 - Read `AGENTS.md` first when present and follow repo-specific conventions over defaults here.
-- Prefer `review` **`tests`** when the user mainly wants test/spec review quality.
-- Prefer `review` **`finish`** when the user wants end-of-branch production-readiness review.
+- Prefer `review.gil` **`tests`** when the user mainly wants test/spec review quality.
+- Prefer `review.gil` **`finish`** when the user wants end-of-branch production-readiness review.
 - Prefer `architecture` when design/structure/types/measured perf is the job (or when classification is `design`).
 - Use with `ruby-on-rails-dev` when the change is Rails-shaped (controllers, policies, serializers, workers, mailers/jobs, migrations, framework config loaders, cache-key composition, encryption cutovers). Do not invent Rails recipes in this skill.
 
@@ -27,7 +27,7 @@ Language-runtime adapter for Ruby. Craft (modules, types, measured perf) lives i
 | ----------------- | ------------------------------------------------------------- |
 | `surgical`        | Stay here; smallest safe change; language validation          |
 | `design`          | Load `architecture`; do not inline craft advice in this skill |
-| `review-hand-off` | Route to `review`                                             |
+| `review-hand-off` | Route to `review.gil`                                         |
 
 Earn `design` when any of: dual ownership / shallow modules / primitive obsession across boundaries / user asks for structural cleanup / measured perf work / type-driven refactor / wrong-owner boundary absorb (serialize/cache/encode bent into a neighbor) / re-ledgering an already-owned aggregate / validate vs runtime expansion diverge / shared deadline or conflated meters across attempts / guard or policy owned in more than one place / published contract vs runtime acceptance drift / specs need private reach to assert behavior.
 
@@ -46,7 +46,7 @@ Earn `design` when any of: dual ownership / shallow modules / primitive obsessio
 3. Branch:
    - **Surgical:** smallest safe change (TDD when behavior changes) → validate → handoff.
    - **Design:** load `architecture` (branch pick inside) → implement decisions here with Ruby validation → handoff.
-   - **Review-hand-off:** stop and continue with `review`.
+   - **Review-hand-off:** stop and continue with `review.gil`.
 4. Handoff: commands run, residual risk, whether architecture harvest should stage → promote or drop (per `architecture/reference/growth.md` — no append-forever log).
 
 ## Surgical path

@@ -15,8 +15,8 @@ Language-runtime adapter for Swift. Craft (modules, types, measured perf) lives 
 - Default for Swift packages, libraries, CLI, and app targets; load `swiftui-dev` **with** this skill when the change is UI-shaped (views, navigation, WidgetKit, AppKit bridges, Transferable, layout).
 - Use for Swift implementation work: surgical fixes and small feature adjustments.
 - Read `AGENTS.md` first when present. Compose sibling guideline or domain skills when they apply; never paste their contents into this workflow.
-- Prefer `review` **`tests`** when the user mainly wants test/spec review quality.
-- Prefer `review` **`finish`** when the user wants end-of-branch production-readiness review.
+- Prefer `review.gil` **`tests`** when the user mainly wants test/spec review quality.
+- Prefer `review.gil` **`finish`** when the user wants end-of-branch production-readiness review.
 - Prefer `architecture` when design/structure/types/measured perf is the job (or when classification is `design`).
 
 ## Classify
@@ -25,7 +25,7 @@ Language-runtime adapter for Swift. Craft (modules, types, measured perf) lives 
 | ----------------- | ------------------------------------------------------------- |
 | `surgical`        | Stay here; smallest safe change; language validation          |
 | `design`          | Load `architecture`; do not inline craft advice in this skill |
-| `review-hand-off` | Route to `review`                                             |
+| `review-hand-off` | Route to `review.gil`                                         |
 
 Earn `design` when any of: dual ownership / shallow modules / primitive obsession across boundaries / user asks for structural cleanup / measured perf work / type-driven refactor.
 
@@ -45,7 +45,7 @@ Earn `design` when any of: dual ownership / shallow modules / primitive obsessio
 3. Branch:
    - **Surgical:** smallest safe change → validate → handoff.
    - **Design:** load `architecture` (branch pick inside) → implement decisions here with Swift validation → handoff.
-   - **Review-hand-off:** stop and continue with `review`.
+   - **Review-hand-off:** stop and continue with `review.gil`.
 4. Handoff: commands run, residual risk, whether architecture harvest should run (stage → promote/drop per `architecture/reference/growth.md` — not a permanent learning-log store).
 
 ## Surgical path

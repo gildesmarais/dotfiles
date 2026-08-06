@@ -16,7 +16,7 @@ Requires Node.js (`npx`) and GitHub access to `gildesmarais/dotfiles`. Verify wi
 | -------------------- | ----------------------------------------------------------------------------- |
 | Browse               | `npx skills add gildesmarais/dotfiles/agents/skills --list`                   |
 | Project-level        | Same add, omit `-g`; run from the target repo                                 |
-| Specific skills      | Add `--skill <name>` (repeatable), e.g. `--skill review --skill docs`         |
+| Specific skills      | Add `--skill <name>` (repeatable), e.g. `--skill review.gil --skill docs`     |
 | This machine (`rcm`) | `rcup` → `~/.agents/skills/<name>/` — [Operate the store](#operate-the-store) |
 
 Equivalent sources: `gildesmarais/dotfiles`, the GitHub URL, or `…/tree/master/agents/skills`. CLI: [vercel-labs/skills](https://github.com/vercel-labs/skills).
@@ -40,16 +40,16 @@ flowchart LR
 
 ## Domain map
 
-| Domain       | Job                              | Skill(s)                                                                         | Primary branches                                                             |
-| ------------ | -------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| **Intent**   | Fuzzy need → actionable work     | `prompt-synthesis`; `jira-ticket`                                                | `code` \| `architecture` \| `product` (default: Shared prep)                 |
-| **Product**  | What to build; admit/defer scope | `product-owner`                                                                  | `gate` (default); stubs: prioritize, story-slice, experiment                 |
+| Domain       | Job                              | Skill(s)                                                                         | Primary branches                                                                                         |
+| ------------ | -------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Intent**   | Fuzzy need → actionable work     | `prompt-synthesis`; `jira-ticket`                                                | `code` \| `architecture` \| `product` (default: Shared prep)                                             |
+| **Product**  | What to build; admit/defer scope | `product-owner`                                                                  | `gate` (default); stubs: prioritize, story-slice, experiment                                             |
 | **Solution** | How the system should work       | `architecture`; `docs` **`architecture`** (verify-only)                          | `deep-modules` \| `refactor-types` \| `refactor-boundaries` \| `performance`; survey: `structure-survey` |
-| **Build**    | Change the codebase              | `ruby-dev`, `rust-dev`, `swift-dev`; overlays `ruby-on-rails-dev`, `swiftui-dev` | classify: surgical \| design \| review-hand-off                              |
-| **Assure**   | Safe to merge?                   | `review`                                                                         | finish, quality, tests, perf, security, publish                              |
-| **Ship**     | Land on mainline                 | `pull-request`; `release`                                                        | PR: open, slice, comment, reply, resolve; release: `notes`                   |
-| **Explain**  | Humans understand state          | `communication`; `docs`                                                          | see skill branches                                                           |
-| **Decide**   | Stress-test choices              | `grilling` (third-party); `product-owner` Forced Challenge                       | —                                                                            |
+| **Build**    | Change the codebase              | `ruby-dev`, `rust-dev`, `swift-dev`; overlays `ruby-on-rails-dev`, `swiftui-dev` | classify: surgical \| design \| review-hand-off                                                          |
+| **Assure**   | Safe to merge?                   | `review.gil`                                                                     | finish, quality, tests, perf, security, publish                                                          |
+| **Ship**     | Land on mainline                 | `pull-request`; `release`                                                        | PR: open, slice, comment, reply, resolve; release: `notes`                                               |
+| **Explain**  | Humans understand state          | `communication`; `docs`                                                          | see skill branches                                                                                       |
+| **Decide**   | Stress-test choices              | `grilling` (third-party); `product-owner` Forced Challenge                       | —                                                                                                        |
 
 Published Build overlays: `ruby-on-rails-dev`, `swiftui-dev`. Rust depth (store): `ms-rust`, `rust-performance`.
 
@@ -78,10 +78,10 @@ More: [skills.sh](https://skills.sh/). Swift catalog: [Swift-Agent-Skills](https
 One-way rules (prevent domain collisions):
 
 1. **Product before non-trivial scope** — `jira-ticket` / feature asks load `product-owner` **`gate`**. Impl continues only on **Build Now**. Skip for pure bugfix, refactor, infra. Product is gate-only this pass (stubs unauthored).
-2. **Craft ≠ product** — `architecture` / `*-dev` / `review` never answer “should we build X?”
+2. **Craft ≠ product** — `architecture` / `*-dev` / `review.gil` never answer “should we build X?”
 3. **Build → Solution** — `*-dev` class `design` loads `architecture` (branch pick inside); do not inline craft in `*-dev`.
 4. **Phase CC → merge → notes** — Solution/Build plan phases author Conventional Commits (validate → ≥1 CC + rationale). After merge, `release` **`notes`** consumes history. At PR open, `pull-request` **`open`** applies the same format only if the tree is still dirty. Format SoT: [`CONTEXT.md`](CONTEXT.md).
-5. **Assure → Ship** — `review` may hand off to `pull-request` **`comment`**. Never reverse: GitHub posting does not live under `review`.
+5. **Assure → Ship** — `review.gil` may hand off to `pull-request` **`comment`**. Never reverse: GitHub posting does not live under `review.gil`.
 6. **Explain → docs** — `communication` → `docs` **`editor`** when the artifact is a README/runbook, not a message. Never reverse. `docs` **`architecture`** is Solution-adjacent verify-only (no HLD/ADR author).
 7. **Overlay → runtime** — `ruby-on-rails-dev` with `ruby-dev`; `swiftui-dev` with `swift-dev`.
 8. **Decide** — `grilling` stress-tests Intent / Product / Solution; product doctrine stays with `product-owner` when the topic is scope.
@@ -94,7 +94,7 @@ One-way rules (prevent domain collisions):
 | Product  | [`product-owner`](product-owner/)                                                                                                                                                                                     |
 | Solution | [`architecture`](architecture/), [`docs`](docs/)                                                                                                                                                                      |
 | Build    | [`ruby-dev`](ruby-dev/), [`rust-dev`](rust-dev/), [`swift-dev`](swift-dev/), [`ruby-on-rails-dev`](ruby-on-rails-dev/), [`swiftui-dev`](swiftui-dev/), [`ms-rust`](ms-rust/), [`rust-performance`](rust-performance/) |
-| Assure   | [`review`](review/)                                                                                                                                                                                                   |
+| Assure   | [`review.gil`](review.gil/)                                                                                                                                                                                           |
 | Ship     | [`pull-request`](pull-request/), [`release`](release/)                                                                                                                                                                |
 | Explain  | [`communication`](communication/), [`docs`](docs/)                                                                                                                                                                    |
 | Decide   | `grilling` (third-party — [Optional packs](#optional-packs-not-os-sot))                                                                                                                                               |

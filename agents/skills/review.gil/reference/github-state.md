@@ -1,6 +1,6 @@
 # GitHub state machine (`publish`)
 
-Pending-review and thread mutations for the `review` skill **`publish`** execution. Ordinary review publishing uses `event: COMMENT` only. Never submit `REQUEST_CHANGES` or `APPROVE` from this skill.
+Pending-review and thread mutations for the `review.gil` skill **`publish`** execution. Ordinary review publishing uses `event: COMMENT` only. Never submit `REQUEST_CHANGES` or `APPROVE` from this skill.
 
 For resolve/reply helpers owned by the `pull-request` skill, see that skill’s `reference/gh-api.md`. End-to-end PR review + publish lives here.
 

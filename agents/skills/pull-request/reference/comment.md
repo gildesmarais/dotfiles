@@ -2,7 +2,7 @@
 
 Post **already-verified** findings as new GitHub review comments on a specific pull request.
 
-For end-to-end “retrieve PR → review → reconcile drafts → publish”, stop and use the **`review` skill `publish`** execution instead. The `comment` branch is for findings the user or another workflow already verified.
+For end-to-end “retrieve PR → review → reconcile drafts → publish”, stop and use the **`review.gil` skill `publish`** execution instead. The `comment` branch is for findings the user or another workflow already verified.
 
 ## Overview
 

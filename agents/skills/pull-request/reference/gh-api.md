@@ -2,7 +2,7 @@
 
 Single reference for **comment**, **resolve**, and **reply** branches. Prefer the bundled `scripts/gh-review-comments` helper for structured thread data; use these patterns when the helper cannot run or for mutations the helper does not cover.
 
-End-to-end PR review + publish (retrieve → review → reconcile drafts → submit) is owned by the **`review` skill `publish`** execution and its `reference/github-state.md`. This file remains the API helper for posting already-verified findings and for resolve/reply.
+End-to-end PR review + publish (retrieve → review → reconcile drafts → submit) is owned by the **`review.gil` skill `publish`** execution and its `reference/github-state.md`. This file remains the API helper for posting already-verified findings and for resolve/reply.
 
 **Submission policy:** “post/submit” creates one review with `event: COMMENT`. “Draft/pending” omits `event` and uses the pending-review flow below. Never submit `APPROVE` or `REQUEST_CHANGES`.
 

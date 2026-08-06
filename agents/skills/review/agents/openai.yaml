@@ -1,4 +1,0 @@
-interface:
-  display_name: "Review"
-  short_description: "Run a focused multi-lens review, optionally publishing a PR COMMENT review."
-  default_prompt: "Use $review to review this change. For a PR, first ask whether to publish the review. Apply the finish baseline and automatically load only relevant tests, Ruby performance, and security lenses; do not ask me to choose a template."

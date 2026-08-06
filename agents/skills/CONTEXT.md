@@ -6,9 +6,9 @@
 A GitHub pull request lifecycle action on a remote PR or branch destined to become one.
 _Avoid_: PR, gh-pr, open-pr
 
-**Review** (skill noun: `review`):
+**Review** (skill noun: `review.gil`):
 Local analysis of a change (working tree, branch, or commit range) that produces findings or merge-prep work. Never posts to GitHub.
-_Avoid_: code-review (external), gh-review, finish-review (old name)
+_Avoid_: review (conflicting/common-tool name), code-review (external), gh-review, finish-review (old name)
 
 **Branch** (skill-internal):
 A distinct verb-path through a skill, selected from the user prompt. Not a git branch.
@@ -16,7 +16,7 @@ _Avoid_: sub-skill, mode, sub-path
 
 **Comment** (`pull-request` branch):
 Post verified findings as new GitHub review comments (usually pending).
-_Avoid_: review (collides with skill noun), critique, feedback
+_Avoid_: review.gil (collides with skill noun), critique, feedback
 
 **Reply** (`pull-request` branch):
 Respond on an existing review thread without introducing a new finding.
@@ -30,20 +30,20 @@ _Avoid_: address, closeout (synonyms — one trigger only)
 Open = commit session work + push + create PR. Slice = rebuild one messy branch into intent-based smaller PRs.
 _Avoid_: pr-opener, pr-slicer, split-to-prs
 
-**Finish** (`review` branch):
+**Finish** (`review.gil` branch):
 Production-readiness **assessment** — findings report only; no boy-scout edits.
 _Avoid_: quality (that branch changes code)
 
-**Quality** (`review` branch):
+**Quality** (`review.gil` branch):
 Merge-prep **execution** — audit → plan → boy-scout refactors + tests → repo gates (absorbs former `quality-loop`).
 _Avoid_: finish (assessment-only), cleanup (too vague for the description)
 
-**Lens** (`review` branches `tests` / `perf` / `security`):
+**Lens** (`review.gil` branches `tests` / `perf` / `security`):
 A specialized findings rubric applied to the same local diff prep as `finish`.
 _Avoid_: dedicated skill per lens
 
 **Handoff**:
-`review` may end with “post these findings” → agent continues into `pull-request` `comment`. Never reverse: GitHub posting does not live under `review`.
+`review.gil` may end with “post these findings” → agent continues into `pull-request` `comment`. Never reverse: GitHub posting does not live under `review.gil`.
 
 # Communication Skills Domain
 
@@ -98,7 +98,7 @@ The ordered source list a branch trusts. Deliberately different per branch: `edi
 _Avoid_: one flattened ordering for both branches
 
 **Handoff**:
-`docs` **`architecture`** may precede craft when a mental model needs verifying first (Solution-adjacent). When the user wants end-of-branch production readiness instead, use the generic `review` workflow. HLD/ADR **author** remains deferred — do not invent an author branch here.
+`docs` **`architecture`** may precede craft when a mental model needs verifying first (Solution-adjacent). When the user wants end-of-branch production readiness instead, use the generic `review.gil` workflow. HLD/ADR **author** remains deferred — do not invent an author branch here.
 
 # Intent Skills Domain
 
@@ -140,7 +140,7 @@ Product constraints cited from repo docs (`AGENTS.md`, `ROADMAP.md`, or equivale
 _Avoid_: inventing budgets or paths when docs are silent → Research Further
 
 **Handoff**:
-Before non-trivial product scope, Intent entrypoints (`jira-ticket`, feature asks) load `product-owner` **`gate`**. Continue impl only on **Build Now** → `architecture` and/or `{lang}-dev` / overlay. Never let `architecture` / `*-dev` / `review` answer “should we build X?”. `grilling` is Decide-only stress-test (third-party install); product-owner keeps doctrine when the topic is scope.
+Before non-trivial product scope, Intent entrypoints (`jira-ticket`, feature asks) load `product-owner` **`gate`**. Continue impl only on **Build Now** → `architecture` and/or `{lang}-dev` / overlay. Never let `architecture` / `*-dev` / `review.gil` answer “should we build X?”. `grilling` is Decide-only stress-test (third-party install); product-owner keeps doctrine when the topic is scope.
 
 # Dev Skills Domain
 
@@ -210,7 +210,7 @@ After each Solution/Build plan phase (architecture phase, surgical milestone, or
 Carriers: `architecture` Shared prep (Solution) and every language-runtime `*-dev` Contracts section (Build). Overlays must not duplicate. Solution/Build implementation plans end each phase with validate → commit (cite this entry; do not fork the format).
 
 **Handoff**:
-`*-dev` `design` → `architecture` (branch pick inside). `architecture` / `*-dev` → `review` / `pull-request` for assure/ship. No reverse: craft does not own Product gate. Changelog after merge → `release` **`notes`**.
+`*-dev` `design` → `architecture` (branch pick inside). `architecture` / `*-dev` → `review.gil` / `pull-request` for assure/ship. No reverse: craft does not own Product gate. Changelog after merge → `release` **`notes`**.
 
 # Ship Skills Domain
 

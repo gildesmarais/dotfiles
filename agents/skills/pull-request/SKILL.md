@@ -42,7 +42,7 @@ Ambiguous routing:
 | "draft/pending a new review" (no supplied ledger)                                                                     | stop — use **review** `publish` draft-only |
 | "publish review to PR" / end-to-end review+publish                                                                    | stop — use **review** skill `publish`      |
 
-**comment** vs **reply**: **comment** posts already-verified findings supplied by the user or another workflow. End-to-end retrieve → review → reconcile → publish belongs to **`review` `publish`**, not this skill. **reply** answers an existing thread and must not add new findings or code changes.
+**comment** vs **reply**: **comment** posts already-verified findings supplied by the user or another workflow. End-to-end retrieve → review → reconcile → publish belongs to **`review.gil` `publish`**, not this skill. **reply** answers an existing thread and must not add new findings or code changes.
 
 Default ambiguous "address comments" → **resolve**, not **reply**. Ambiguous "update the PR" with no code/feedback → **retitle**, not **open**.
 
@@ -70,7 +70,7 @@ Load only the matched branch reference:
 
 ## Handoff
 
-- Read-only or end-to-end PR review → the `review` skill; it asks whether to publish before reviewing.
+- Read-only or end-to-end PR review → the `review.gil` skill; it asks whether to publish before reviewing.
 - Posting a supplied, already-verified ledger stays in **comment**.
 - Resolving or replying to existing feedback stays in this skill.
 - Narrative-only PR updates stay in **retitle**.

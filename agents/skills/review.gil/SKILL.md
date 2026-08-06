@@ -1,10 +1,11 @@
 ---
-name: review
+name: review.gil
 description: >
   Review a local change, branch, or pull request for production readiness, tests,
   performance, security, or merge-prep quality. Use when the user wants a finish
   readiness review, a PR code review, to publish a review to a PR, /code-review,
-  or when another skill needs a production-readiness or test-quality pass.
+  /review.gil, or when another skill needs a production-readiness or test-quality
+  pass.
 ---
 
 # Review

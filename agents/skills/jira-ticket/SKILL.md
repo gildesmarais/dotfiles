@@ -71,10 +71,10 @@ Start from the ticket, gather evidence with Atlassian MCP, verify the codebase l
 
 ## Skill Routing
 
-- **Product gate:** Before non-trivial user-facing scope (new feature, UI/API surface, parity ask, UAT-driven expansion), load `product-owner` branch `gate`. Continue implementation only on **Build Now**. Skip the Product gate for pure bug fix, refactor, or infra with no user-facing concept or step change. Never let `architecture` / `*-dev` / `review` answer “should we build X?”
+- **Product gate:** Before non-trivial user-facing scope (new feature, UI/API surface, parity ask, UAT-driven expansion), load `product-owner` branch `gate`. Continue implementation only on **Build Now**. Skip the Product gate for pure bug fix, refactor, or infra with no user-facing concept or step change. Never let `architecture` / `*-dev` / `review.gil` answer “should we build X?”
 - Invoke the `ruby-dev` skill when Ruby code present for implementation discipline.
 - Add the `ruby-on-rails-dev` skill when Rails or API layers are in scope.
-- Add the `review` skill with explicit security focus whenever the work matches the `AGENTS.md` security trigger matrix. Default to invoking it when authn/authz, tenancy, PII/PHI, exports, webhooks, raw SQL, external fetches, or sensitive Sidekiq behavior may change.
+- Add the `review.gil` skill with explicit security focus whenever the work matches the `AGENTS.md` security trigger matrix. Default to invoking it when authn/authz, tenancy, PII/PHI, exports, webhooks, raw SQL, external fetches, or sensitive Sidekiq behavior may change.
 - Follow `AGENTS.md` precedence if guidance overlaps.
 - If a referenced skill is unavailable in the current environment, say so explicitly and continue with the closest applicable local workflow instead of blocking.
 
@@ -84,7 +84,7 @@ Before creating a branch or editing code, provide a concise checkpoint covering:
 
 - `Ticket facts`: verified Jira facts that define scope.
 - `Files read`: the code areas you actually inspected.
-- `Skills required`: whether `product-owner` gate ran (or was skipped and why), whether `ruby-on-rails-dev` and security-focused `review` are required, plus why.
+- `Skills required`: whether `product-owner` gate ran (or was skipped and why), whether `ruby-on-rails-dev` and security-focused `review.gil` are required, plus why.
 - `Branch name`: the proposed branch name.
 - `Implementation plan`: a short plan for the code change.
 - `Assumptions`: key assumptions or open questions.
