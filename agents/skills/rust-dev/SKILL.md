@@ -43,7 +43,7 @@ Earn `design` when any of: dual ownership / shallow modules / primitive obsessio
    - **Surgical:** smallest safe change → validate → handoff.
    - **Design:** load `architecture` (branch pick inside) → implement decisions here with Rust validation → handoff.
    - **Review-hand-off:** stop and continue with `review`.
-4. Handoff: commands run, residual risk, whether architecture harvest should run (stage → promote/drop per architecture protocol — not a permanent learning-log store).
+4. Handoff: commands run, residual risk, whether architecture harvest should run (stage → promote/drop per `architecture/reference/growth.md` — not a permanent learning-log store).
 
 ## Surgical path
 

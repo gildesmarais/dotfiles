@@ -44,7 +44,7 @@ flowchart LR
 | ------------ | -------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | **Intent**   | Fuzzy need → actionable work     | `prompt-synthesis`; `jira-ticket`                                                | `code` \| `architecture` \| `product` (default: Shared prep)                 |
 | **Product**  | What to build; admit/defer scope | `product-owner`                                                                  | `gate` (default); stubs: prioritize, story-slice, experiment                 |
-| **Solution** | How the system should work       | `architecture`; `docs` **`architecture`** (verify-only)                          | `deep-modules` \| `refactor-types` \| `refactor-boundaries` \| `performance` |
+| **Solution** | How the system should work       | `architecture`; `docs` **`architecture`** (verify-only)                          | `deep-modules` \| `refactor-types` \| `refactor-boundaries` \| `performance`; survey: `structure-survey` |
 | **Build**    | Change the codebase              | `ruby-dev`, `rust-dev`, `swift-dev`; overlays `ruby-on-rails-dev`, `swiftui-dev` | classify: surgical \| design \| review-hand-off                              |
 | **Assure**   | Safe to merge?                   | `review`                                                                         | finish, quality, tests, perf, security, publish                              |
 | **Ship**     | Land on mainline                 | `pull-request`; `release`                                                        | PR: open, slice, comment, reply, resolve; release: `notes`                   |
@@ -116,14 +116,14 @@ Dotfiles + `rcm` on this machine. Everyone else: [Install](#install).
 
 Git-tracked trees under `agents/skills/<name>/` are the source of truth. `rcup` installs them into `~/.agents/skills/<name>/` (file-level links). Keep `SYMLINK_DIRS` unset for `agents` / `agents/skills` so `~/.agents/skills` can hold both `rcup` links and third-party dirs from `npx skills`. After clone/pull, promote/rename, or `backfill`, run `rcup` (or wait for topgrade `RCM: rcup`).
 
-| Command                    | Role                                                                 |
-| -------------------------- | -------------------------------------------------------------------- |
-| `skill list`               | List non-hidden skills in the store                                  |
-| `skill doctor`             | Report `ok` / `drift` / `home-only` / `broken` for store vs install  |
+| Command                    | Role                                                                  |
+| -------------------------- | --------------------------------------------------------------------- |
+| `skill list`               | List non-hidden skills in the store                                   |
+| `skill doctor`             | Report `ok` / `drift` / `home-only` / `broken` for store vs install   |
 | `skill backfill <name>`    | Copy drifted real files from `~/.agents/skills/<name>` into the store |
-| `skill promote <name>`     | Move `<project>/.agents/skills/<name>` into the store                |
-| `skill rename <old> <new>` | Rename in the store                                                  |
-| `rcup`                     | Install store skills into `~/.agents/skills`                         |
+| `skill promote <name>`     | Move `<project>/.agents/skills/<name>` into the store                 |
+| `skill rename <old> <new>` | Rename in the store                                                   |
+| `rcup`                     | Install store skills into `~/.agents/skills`                          |
 
 When `skill doctor` reports `drift`, run `skill backfill <name>`, then `rcup`.
 

@@ -4,7 +4,10 @@ description: >
   Language-free solution craft for module depth, type-driven refactors, and
   measured performance. Use when design or structural cleanup is earned, when
   a *-dev skill classifies design, or when the user asks to deepen modules,
-  replace primitives with domain types, or optimize with a baseline.
+  replace primitives with domain types, or optimize with a baseline. Also use
+  for structural tree / directory surveys: peer-folder conformity, snowflake
+  placement, and module promote/relocate/fold ranking — not for generic code
+  review (use review.gil).
 ---
 
 # Architecture
@@ -13,7 +16,7 @@ Change how the codebase is structured, typed, or measured for performance — no
 
 ## Pick branch
 
-Never ask the user to pick a template when signals are clear. Load one or more branches when signals combine (same as review lenses).
+Never ask the user to pick a template when signals are clear. Load one or more when signals combine.
 
 | Branch                | Job                                                                | Status |
 | --------------------- | ------------------------------------------------------------------ | ------ |
@@ -22,81 +25,68 @@ Never ask the user to pick a template when signals are clear. Load one or more b
 | `refactor-boundaries` | Wire/API/adapter contract maps; keep domain out of boundary shells | active |
 | `performance`         | Measure → baseline → optimize; language-free stop rules            | active |
 
-| Signal                                                    | Branch                |
-| --------------------------------------------------------- | --------------------- |
-| deepen, shallow modules, seams, locality, dual ownership  | `deep-modules`        |
-| primitive obsession, stringly enums, logic-on-types       | `refactor-types`      |
-| wire/API maps, adapter contract shape, boundary serialize | `refactor-boundaries` |
-| slow, hot path, allocate, profile, benchmark              | `performance`         |
+| Signal                                                                                         | Load                                               |
+| ---------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| deepen, shallow modules, seams, locality, dual ownership                                       | `deep-modules`                                     |
+| primitive obsession, stringly enums, logic-on-types                                            | `refactor-types`                                   |
+| wire/API maps, adapter contract shape, boundary serialize                                      | `refactor-boundaries`                              |
+| slow, hot path, allocate, profile, benchmark                                                   | `performance`                                      |
+| tree / directory / layout audit; peer conformity; snowflake / same job different homes; promote / relocate / fold / nest as ownership moves; whole-layer module-layout unification | `structure-survey` (survey mode) → craft as needed |
 
-If the ask is “should we build X?”, stop — use `product-owner`. If the ask is surgical language work only, stay in the relevant `*-dev` skill.
+**Survey mode** is discovery only: load [`reference/structure-survey.md`](reference/structure-survey.md), then multi-load craft branches from findings. It is not a fifth craft branch.
+
+| Ask                                                       | Route instead                                                                 |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| “review code”, `/review.gil`, PR review, finish readiness | `review.gil` — co-load only when the ask also needs tree / layout / snowflake |
+| “promote” in a product / release sense                    | `release` / product                                                           |
+| “unify” UX copy, visual grammar, design tokens            | designer / screen-grammar skills                                              |
+| Surgical deepen of one named module already in hand       | `deep-modules` (and siblings) — skip whole-tree survey                        |
+| “should we build X?”                                      | `product-owner`                                                               |
+| Surgical language work only                               | stay in the relevant `*-dev` skill                                            |
+
+Bare “promote” / “unify” alone → one clarifying question, or stay on the skill already in play.
+
+**Co-load with review:** default stays split. When the ask combines both (e.g. review structure via the tree for promote/relocate): survey first → craft-branch handoff; review finish format only if they also want a findings report.
 
 ## Shared prep
 
 1. Read `AGENTS.md` when present; prefer repo law over defaults here.
 2. Evidence before claims: call sites, ownership, existing tests. Label Strong / Worth / Speculative when surveying.
-3. Apply the glossary in [`reference/glossary.md`](reference/glossary.md) on every loaded branch.
-4. Multi-load OK when signals combine; one handoff covering all loaded branches.
-5. Keep craft language-free. Language recipes belong in `*-dev`, overlays, third-party packs, or project `AGENTS.md` — not here.
-6. **Phase → validate → commit:** after each craft phase (architecture phase, surgical milestone, or user-named plan step), validate, then create ≥1 Conventional Commit with a rationale/intent body before the next phase. Format and phase law: [`CONTEXT.md`](../CONTEXT.md). Inspect `git log` / `git show` when deepening history. Do not wait until `release` **`notes`** or PR open to author history.
+3. Always load [`reference/glossary.md`](reference/glossary.md) with any branch or survey mode.
+4. Multi-load OK when signals combine; one handoff covering everything loaded.
+5. Keep craft language-free. Language recipes belong in `*-dev`, overlays, third-party packs, or project `AGENTS.md`.
+6. **Phase → validate → commit:** after each craft phase (architecture phase, surgical milestone, or user-named plan step), validate, then create ≥1 Conventional Commit with a rationale/intent body before the next phase. Format and phase law: [`CONTEXT.md`](../CONTEXT.md).
+7. Structural signals → run survey **before or with** craft deepening.
 
-### Branch expansion law
-
-Agents must follow these before adding any architecture branch:
-
-1. **Never** add a branch named `refactor`. Use `refactor-<concern>` (e.g. `refactor-types`, `refactor-boundaries`).
-2. **New branch only if** all hold: (a) distinct signals from existing branches; (b) cannot be a section inside an existing `reference/*.md`; (c) reusable ≥2 times; (d) language-free.
-3. **Add a branch:** one row in `## Pick branch` + signals table + `reference/<branch>.md` + completion row. Do not invent a top-level skill.
-4. **Overlap rules:** module ownership/depth → `deep-modules`; closed sets / newtypes / logic-on-types → `refactor-types`; serialize/deserialize and adapter contract shape → `refactor-boundaries`; speed/allocations with measure → `performance`.
-5. **Multi-load OK** when signals combine (same as review lenses).
-6. **Growth default:** staging candidates → `reference/learning-log.md`; **sparse promote** into matching `reference/<branch>.md` Checklist or Anti-patterns only when judgment changes and is not already covered by that file or [`glossary.md`](reference/glossary.md); **drop** the rest. Edit the router (`SKILL.md`) only when the contract is wrong.
-7. **Reject:** `refactor-misc`, `cleanup`, language-named branches (`refactor-rust`), third-party recipe dumps.
+Branch expansion and harvest protocol live in [`reference/growth.md`](reference/growth.md) — load only when adding a branch or harvesting lessons.
 
 ## Branch reference
 
-Load each selected branch’s reference and follow it through completion. Always load the glossary with any branch.
+Load progressively — glossary plus each selected branch or mode. Do not preload every reference.
 
 - Glossary → [`reference/glossary.md`](reference/glossary.md)
-- **`deep-modules`** → [`reference/deep-modules.md`](reference/deep-modules.md)
-- **`refactor-types`** → [`reference/refactor-types.md`](reference/refactor-types.md)
-- **`refactor-boundaries`** → [`reference/refactor-boundaries.md`](reference/refactor-boundaries.md)
-- **`performance`** → [`reference/performance.md`](reference/performance.md)
-- Learning log → [`reference/learning-log.md`](reference/learning-log.md) (same-event staging only — not part of progressive load)
+- Survey mode → [`reference/structure-survey.md`](reference/structure-survey.md)
+- `deep-modules` → [`reference/deep-modules.md`](reference/deep-modules.md)
+- `refactor-types` → [`reference/refactor-types.md`](reference/refactor-types.md)
+- `refactor-boundaries` → [`reference/refactor-boundaries.md`](reference/refactor-boundaries.md)
+- `performance` → [`reference/performance.md`](reference/performance.md)
+- Harvest only → [`reference/growth.md`](reference/growth.md) + [`reference/learning-log.md`](reference/learning-log.md)
 
 ## Handoff
 
 - Implementation and language validation continue in the relevant `*-dev` / overlay after craft decisions are clear.
 - Assure / ship continues with `review` / `pull-request` — never reverse.
-- Product scope questions go to `product-owner`, not this skill.
+- Product scope questions go to `product-owner`.
 - Changelog from merged history → `release` **`notes`** (consumer only).
-
-## Growing reference
-
-Stage candidates in `reference/learning-log.md` when a design or recurring failure class left a lesson that will prevent the next dual-ownership / shallow-seam / type / measured-perf mistake; guidance was missing/wrong; or the user asks for a learning capture.
-
-Gems are **preventive mantras** for failure _classes_ — reflective instruction an expert recalls before repeating the mistake — not incident write-ups, mining procedures, or technique recipes.
-
-1. Scope corpus to structural cuts (ownership, seams, types, measured perf) — classes over incidents; dependency bumps and fixture moves are not harvest.
-2. **Generalize before ingress.** Strip product nouns, paths, schemas, language APIs, and domain fingerprints; a stranger must not infer the source codebase.
-3. Abstract: one imperative sentence an expert agent can apply in any language.
-4. Filter: reject checklist / anti-pattern / glossary restatements and near-clones. A narrower failure class may specialize; a clone may not.
-5. Tag each kept candidate with branch name(s): `deep-modules` | `refactor-types` | `refactor-boundaries` | `performance`. Multi-tag keepers → **one primary branch** (overlap heuristic in expansion law §4); other tags as co-load cues in the bullet only — no duplicate copies.
-6. Cap ~10 new candidates per harvest event unless the user asks for more. Noise-pass for product leakage and overlap.
-7. **Sparse promote** into matching `reference/<branch>.md` Checklist or Anti-patterns only when judgment changes and is not already covered; **drop** the rest. Edit the router only when the contract is wrong (expansion law rule 6).
-8. **Scarce reverts:** repeated harden / review-follow-up chains can mean a missing principle (signal shape only — no corpus identity in staging).
-
-### Ingress
-
-1. **Propose in staging → filter → promote or drop.** Candidates land in `learning-log.md` for the same harvest event; sparse-promote into `reference/<branch>.md` or drop. Leave the log empty/thin. No permanent archive of rejects.
-2. **Write only from a fresh read.** Staging is concurrent shared state; a stale snapshot is how harvests collide or duplicate.
-3. **Dropping weak harvests is required.** Reject checklist / anti-pattern / glossary restatements and near-clones; do not keep noise “for later.”
+- Structure survey → ranked ledger + craft-branch names; then load those branches (or hand off to `*-dev` if craft is already decided).
 
 ## Completion criteria
 
-| Branch                | Done when                                                                                                          |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `deep-modules`        | Deletion test / ownership / seams addressed; phases validated; residual dual ownership called out                  |
-| `refactor-types`      | Primitive obsession at target cleared or scoped; logic on types; consumers cleaned; boundaries mapped              |
-| `refactor-boundaries` | Contract map for targeted edges; domain out of shells; serialize ownership clear; phases committed per Shared prep |
-| `performance`         | Baseline or hot path identified before changes; stop rules applied; no language-specific recipe invented here      |
-| multi-load            | Each loaded branch’s done-when met or explicitly N/A with reason; one combined handoff                             |
+| Branch / mode         | Done when                                                                                                                                 |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `structure-survey`    | Canonical shape stated; anomalies ranked with evidence; craft-branch handoff named; residual dual ownership called out — no code required |
+| `deep-modules`        | Deletion test / ownership / seams addressed; phases validated; residual dual ownership called out                                         |
+| `refactor-types`      | Primitive obsession at target cleared or scoped; logic on types; consumers cleaned; boundaries mapped                                     |
+| `refactor-boundaries` | Contract map for targeted edges; domain out of shells; serialize ownership clear; phases committed per Shared prep                        |
+| `performance`         | Baseline or hot path identified before changes; stop rules applied; no language-specific recipe invented here                             |
+| multi-load            | Each loaded branch’s done-when met or explicitly N/A with reason; one combined handoff                                                    |

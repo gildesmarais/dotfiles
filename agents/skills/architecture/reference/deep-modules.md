@@ -12,6 +12,8 @@ Dual ownership of one fact, passthrough bags, shallow multi-call husks, or the u
 - Prefer deep modules: small interface, substantial private behavior.
 - Kill passthrough bags and dual ownership of the same fact.
 - Prefer ownership and seam failure signals when surveying deepen work; ignore metric smell counts that do not name dual ownership, passthrough, or deletion-test failure.
+- When surveying many peers, infer canonical shape before proposing seams (survey mode when structural signals match).
+- Wrong-layer domain surfaces fail locality even if deep internally — relocate before deepening in place.
 - Narrow stage and dependency interfaces; one fact, one home.
 - Introduce seams only where they buy phased moves or testability — not for ceremony.
 - Share one expansion path between validate and run — dual ownership of expansion greenlights configs that fail later.

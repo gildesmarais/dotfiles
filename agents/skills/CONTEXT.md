@@ -154,8 +154,12 @@ _Avoid_: deep-modules / refactor-types as top-level skills; docs `architecture` 
 Module depth & seams | type hygiene | measure→optimize | wire/adapter contracts.
 _Avoid_: bare branch name `refactor`; language-named branches (`refactor-rust`)
 
+**Structure-survey** (`architecture` survey mode):
+Peer-directory discovery (canonical shape, snowflakes, promote/relocate/fold). Not a craft branch — findings multi-load craft branches.
+_Avoid_: treating survey as a fifth craft branch; auto-loading on bare “promote” / “unify” or generic review
+
 **`refactor-<concern>`**:
-Only legal form for refactor branches under `architecture`. New concerns use the expansion law in `architecture` Shared prep — never a top-level `refactor-*` skill.
+Only legal form for refactor branches under `architecture`. New concerns use the expansion law in `architecture/reference/growth.md` — never a top-level `refactor-*` skill.
 _Avoid_: `refactor`, `refactor-misc`, `cleanup` as skill or branch names
 
 **Language-runtime** / **`*-dev`**:
@@ -175,11 +179,11 @@ Signal that selects `architecture` **`deep-modules`** — not a skill name.
 _Avoid_: deepen-modules skill
 
 **Harvest**:
-Stage candidates in `architecture/reference/learning-log.md` → sparse-promote into matching `reference/<branch>.md` → drop noise (language-only harvest in optional `*-dev` `reference.md` unchanged in spirit).
-_Avoid_: append-only forever doctrine in the log; growing frozen router checklists for every lesson
+Protocol in `architecture/reference/growth.md` (Growing reference + Ingress). Stage in `architecture/reference/learning-log.md` → sparse-promote into matching `reference/<branch>.md` → drop noise (language-only harvest in optional `*-dev` `reference.md` unchanged in spirit).
+_Avoid_: append-only forever doctrine in the log; growing frozen router checklists for every lesson; loading growth.md on every craft session
 
 **Expansion law**:
-Seven rules in `architecture` Shared prep before adding a branch. Prefer sparse harvest over new branches; never invent a top-level craft skill when a `refactor-<concern>` branch fits.
+Seven rules in `architecture/reference/growth.md` before adding a branch. Prefer sparse harvest over new branches; never invent a top-level craft skill when a `refactor-<concern>` branch fits.
 
 **Install** (this store via [`npx skills`](https://github.com/vercel-labs/skills)):
 Published skills: `npx skills add gildesmarais/dotfiles/agents/skills` (browse with `--list`). This machine with `rcm`: `rcup` → `~/.agents/skills/`. Details: `agents/skills/README.md` Install.

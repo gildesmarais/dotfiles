@@ -47,7 +47,7 @@ Earn `design` when any of: dual ownership / shallow modules / primitive obsessio
    - **Surgical:** smallest safe change (TDD when behavior changes) → validate → handoff.
    - **Design:** load `architecture` (branch pick inside) → implement decisions here with Ruby validation → handoff.
    - **Review-hand-off:** stop and continue with `review`.
-4. Handoff: commands run, residual risk, whether architecture harvest should stage → promote or drop (per architecture Growing reference + Ingress — no append-forever log).
+4. Handoff: commands run, residual risk, whether architecture harvest should stage → promote or drop (per `architecture/reference/growth.md` — no append-forever log).
 
 ## Surgical path
 
