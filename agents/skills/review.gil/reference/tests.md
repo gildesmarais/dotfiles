@@ -40,6 +40,11 @@ After scope prep in `SKILL.md`, continue here.
 - Fixtures or factories that create impossible states, bypass validation, or hide real setup constraints.
 - Tests made unrealistically deterministic by freezing time, randomness, ordering, or concurrency without preserving the real contract.
 - Tests that became tightly coupled to sequencing or exact implementation structure, making refactors noisy without increasing confidence.
+- Lifecycle/race regressions that only assert the happy path and never replay the broken storage or unhydrated cache state.
+- Dual-runtime encode decisions asserted on one side only — prefer shared fixture vectors both runtimes check.
+- Per-feature unwrap/parse copies when a shared envelope characterization already exists (or should).
+- Mounting surfaces the project bans from golden-path tests (read `AGENTS.md`; do not invent names here).
+- Helper/mapper production changes without colocated tests when the project enforces that pairing.
 
 ## What To Prefer
 
@@ -49,6 +54,7 @@ After scope prep in `SKILL.md`, continue here.
 - Tests that cover both the intended path and the most plausible regression path introduced by the change.
 - Regression examples that clearly encode the bug trigger, not just the final output.
 - Boundary tests that prove adapters and serializers match the real contract at least once.
+- One shared parse/envelope characterization over duplicated per-feature unwrap assertions.
 
 ## When Mocking Is Correct
 

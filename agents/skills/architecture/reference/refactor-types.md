@@ -37,6 +37,10 @@ Primitive obsession across modules, stringly closed sets, magic ints, parallel l
 - Validate by structure, not by substring ban on identifiers.
 - Immutable holders take a defensive handoff the caller cannot mutate.
 - Presence is not permission; one bag is not two audiences.
+- Durable bags hold serializable primitives; rehydrate domain types at the read seam — methods do not survive a round-trip.
+- Domain absence and wire absence are different closed sets — map each layer’s legal inhabitant; empty stand-ins and nulls are not interchangeable.
+- Capture adapters may accept tokens; resolve before domain construction — do not push domain rejection into the capture edge.
+- Wire vocabulary stays at the wire — normalize aliases into an app closed set at one edge; do not “helpful rename” schema fields.
 
 ## Thin examples (illustrative only)
 

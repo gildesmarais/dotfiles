@@ -1,0 +1,4 @@
+interface:
+  display_name: "TypeScript Dev"
+  short_description: "TypeScript implementation and validation workflow"
+  default_prompt: "Use $typescript-dev to investigate, change, and validate TypeScript with small safe edits and repo-native commands. Prefer named types over string/object soup without over-abstracting. Route design to $architecture; route assure/ship asks to $review.gil."

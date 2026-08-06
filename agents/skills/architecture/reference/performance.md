@@ -24,3 +24,4 @@ User asks for speed/allocations, a clear hot path exists, or measured evidence s
 - Shipping unstable acceleration as the default — keep the portable path default; accelerate behind explicit opt-in and compare both.
 - Forking scalar and accelerated copies of one hot-path algorithm (cue `deep-modules`).
 - Telemetry on the critical path you measure.
+- Gating identity refresh or capture visibility behind sync/work throttles (cue `deep-modules`: freshness ≠ sync).

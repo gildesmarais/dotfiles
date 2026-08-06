@@ -40,16 +40,16 @@ flowchart LR
 
 ## Domain map
 
-| Domain       | Job                              | Skill(s)                                                                         | Primary branches                                                                                         |
-| ------------ | -------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| **Intent**   | Fuzzy need → actionable work     | `prompt-synthesis`; `jira-ticket`                                                | `code` \| `architecture` \| `product` (default: Shared prep)                                             |
-| **Product**  | What to build; admit/defer scope | `product-owner`                                                                  | `gate` (default); stubs: prioritize, story-slice, experiment                                             |
-| **Solution** | How the system should work       | `architecture`; `docs` **`architecture`** (verify-only)                          | `deep-modules` \| `refactor-types` \| `refactor-boundaries` \| `performance`; survey: `structure-survey` |
-| **Build**    | Change the codebase              | `ruby-dev`, `rust-dev`, `swift-dev`; overlays `ruby-on-rails-dev`, `swiftui-dev` | classify: surgical \| design \| review-hand-off                                                          |
-| **Assure**   | Safe to merge?                   | `review.gil`                                                                     | finish, quality, tests, perf, security, legacy, publish                                                  |
-| **Ship**     | Land on mainline                 | `pull-request`; `release`                                                        | PR: open, slice, comment, reply, resolve; release: `notes`                                               |
-| **Explain**  | Humans understand state          | `communication`; `docs`                                                          | see skill branches                                                                                       |
-| **Decide**   | Stress-test choices              | `grilling` (third-party); `product-owner` Forced Challenge                       | —                                                                                                        |
+| Domain       | Job                              | Skill(s)                                                                                           | Primary branches                                                                                         |
+| ------------ | -------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Intent**   | Fuzzy need → actionable work     | `prompt-synthesis`; `jira-ticket`                                                                  | `code` \| `architecture` \| `product` (default: Shared prep)                                             |
+| **Product**  | What to build; admit/defer scope | `product-owner`                                                                                    | `gate` (default); stubs: prioritize, story-slice, experiment                                             |
+| **Solution** | How the system should work       | `architecture`; `docs` **`architecture`** (verify-only)                                            | `deep-modules` \| `refactor-types` \| `refactor-boundaries` \| `performance`; survey: `structure-survey` |
+| **Build**    | Change the codebase              | `ruby-dev`, `rust-dev`, `swift-dev`, `typescript-dev`; overlays `ruby-on-rails-dev`, `swiftui-dev` | classify: surgical \| design \| review-hand-off                                                          |
+| **Assure**   | Safe to merge?                   | `review.gil`                                                                                       | finish, quality, tests, perf, security, legacy, publish                                                  |
+| **Ship**     | Land on mainline                 | `pull-request`; `release`                                                                          | PR: open, slice, comment, reply, resolve; release: `notes`                                               |
+| **Explain**  | Humans understand state          | `communication`; `docs`                                                                            | see skill branches                                                                                       |
+| **Decide**   | Stress-test choices              | `grilling` (third-party); `product-owner` Forced Challenge                                         | —                                                                                                        |
 
 Published Build overlays: `ruby-on-rails-dev`, `swiftui-dev`. Rust depth (store): `ms-rust`, `rust-performance`.
 
@@ -88,16 +88,16 @@ One-way rules (prevent domain collisions):
 
 ## Skill index
 
-| Domain   | Skills                                                                                                                                                                                                                |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Intent   | [`prompt-synthesis`](prompt-synthesis/), [`jira-ticket`](jira-ticket/)                                                                                                                                                |
-| Product  | [`product-owner`](product-owner/)                                                                                                                                                                                     |
-| Solution | [`architecture`](architecture/), [`docs`](docs/)                                                                                                                                                                      |
-| Build    | [`ruby-dev`](ruby-dev/), [`rust-dev`](rust-dev/), [`swift-dev`](swift-dev/), [`ruby-on-rails-dev`](ruby-on-rails-dev/), [`swiftui-dev`](swiftui-dev/), [`ms-rust`](ms-rust/), [`rust-performance`](rust-performance/) |
-| Assure   | [`review.gil`](review.gil/)                                                                                                                                                                                           |
-| Ship     | [`pull-request`](pull-request/), [`release`](release/)                                                                                                                                                                |
-| Explain  | [`communication`](communication/), [`docs`](docs/)                                                                                                                                                                    |
-| Decide   | `grilling` (third-party — [Optional packs](#optional-packs-not-os-sot))                                                                                                                                               |
+| Domain   | Skills                                                                                                                                                                                                                                                     |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Intent   | [`prompt-synthesis`](prompt-synthesis/), [`jira-ticket`](jira-ticket/)                                                                                                                                                                                     |
+| Product  | [`product-owner`](product-owner/)                                                                                                                                                                                                                          |
+| Solution | [`architecture`](architecture/), [`docs`](docs/)                                                                                                                                                                                                           |
+| Build    | [`ruby-dev`](ruby-dev/), [`rust-dev`](rust-dev/), [`swift-dev`](swift-dev/), [`typescript-dev`](typescript-dev/), [`ruby-on-rails-dev`](ruby-on-rails-dev/), [`swiftui-dev`](swiftui-dev/), [`ms-rust`](ms-rust/), [`rust-performance`](rust-performance/) |
+| Assure   | [`review.gil`](review.gil/)                                                                                                                                                                                                                                |
+| Ship     | [`pull-request`](pull-request/), [`release`](release/)                                                                                                                                                                                                     |
+| Explain  | [`communication`](communication/), [`docs`](docs/)                                                                                                                                                                                                         |
+| Decide   | `grilling` (third-party — [Optional packs](#optional-packs-not-os-sot))                                                                                                                                                                                    |
 
 ## Authoring laws
 

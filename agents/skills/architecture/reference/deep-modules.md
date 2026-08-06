@@ -24,6 +24,13 @@ Dual ownership of one fact, passthrough bags, shallow multi-call husks, or the u
 - Name every dependency the path relies on — invisible contracts fail closed in production.
 - Cut over only after the replacement owns the implementation one-way — reverse calls into the old home are still dual ownership.
 - When relocating a predicate's ownership, verify each touched call site's argument shape still matches what the predicate inspects.
+- Fold detect-and-persist into one critical section — check-then-act across suspension points is dual ownership of uniqueness.
+- Keep freshness and sync as different jobs — do not gate identity reload or capture visibility behind work throttles meant for sync.
+- Quarantine permanent validation failures on one unit so sequential siblings still proceed.
+- Committed primary survives failed enrichment — nest enrichment status on the success value; retry enrichment on the already-committed resource; do not unwind the primary.
+- On conflict, revert to last-known-good — do not invent a new identity and retry.
+- Route key stale unless live state matches — if navigation names an entity the live result does not hold, fall back to create/list shell; never render a mismatched result.
+- When two runtimes encode the same closed decision, share one fixture corpus both assert against.
 - Anti-patterns: dump modules of unrelated helpers; twin structs that must stay in sync; adapters that grow domain branches.
 
 ## Sequencing

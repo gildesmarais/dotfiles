@@ -67,6 +67,7 @@ Resolve bundled scripts relative to this installed skill directory.
 - Legacy / dead-compat lens → [`reference/legacy.md`](reference/legacy.md)
 - Merge-prep execution → [`reference/quality.md`](reference/quality.md)
 - PR publish orchestration → [`reference/publish.md`](reference/publish.md); at drafting load [`reference/conventional-comments.md`](reference/conventional-comments.md), and immediately before mutation load [`reference/github-state.md`](reference/github-state.md)
+- Harvest only → [`reference/growth.md`](reference/growth.md) + [`reference/learning-log.md`](reference/learning-log.md)
 
 ## Handoff
 

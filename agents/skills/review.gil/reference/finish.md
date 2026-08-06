@@ -69,14 +69,19 @@ After scope prep in `SKILL.md`, continue here. For a pull request, review the PR
 
 When the target is a `fix`, `Revert`, or production-incident shaped diff, ask:
 
-1. Did this fix wander onto a second surface? → remediate via **ruby-dev** (one-surface).
-2. Is a neighboring layer absorbing a boundary failure? → **ruby-dev** → `architecture`.
-3. Does the path assume an invisible contract (shape, reload, cache identity, cutover successor)? → **ruby-on-rails-dev**.
-4. Is disclosure or access treated as mere presence? → **ruby-on-rails-dev** (+ **security** when sensitive).
+1. Did this fix wander onto a second surface? → remediate via the active `*-dev` skill (one-surface).
+2. Is a neighboring layer absorbing a boundary failure? → active `*-dev` → `architecture`.
+3. Does the path assume an invisible contract (shape, reload, cache identity, cutover successor)? → active framework overlay if present, else `architecture`.
+4. Is disclosure or access treated as mere presence? → overlay when present (+ **security** when sensitive), else `architecture` / **security**.
 5. Did validate and execute see the same truth?
 6. Is each guard or policy owned at one lifecycle point?
 7. Does the published contract accept only what runtime accepts?
 8. Do repeated harden / review-follow-up commits hint a missing principle rather than noise?
 9. Dual public API or silent old-shape hydrate without user-required compat? → load [`legacy.md`](legacy.md); flag as debt (findings) or delete under `quality`.
+10. Did uniqueness or readiness race across a suspension/startup gate?
+11. Did a durable/plain bag get treated as a live domain object without rehydrate?
+12. Did parse/unwrap or generated-client types escape the transport/adapter edge?
+13. Was a wire enum renamed in app code instead of normalized once?
+14. Did the change silence the checker with `as` / `!` / bare suppression instead of earning the type? → active `*-dev` (TypeScript: `typescript-dev`).
 
 Fold answers into the single Findings report; do not invent a separate review lens beyond the selected table in `SKILL.md`.

@@ -167,7 +167,7 @@ Only legal form for refactor branches under `architecture`. New concerns use the
 _Avoid_: `refactor`, `refactor-misc`, `cleanup` as skill or branch names
 
 **Language-runtime** / **`*-dev`**:
-Thin language adapter (`ruby-dev`, `rust-dev`). Classify `surgical` | `design` | `review-hand-off`; on `design`, load `architecture`.
+Thin language adapter (`ruby-dev`, `rust-dev`, `swift-dev`, `typescript-dev`). Classify `surgical` | `design` | `review-hand-off`; on `design`, load `architecture`.
 _Avoid_: inlining module/type/perf craft inside `*-dev`
 
 **Overlay**:
@@ -183,8 +183,8 @@ Signal that selects `architecture` **`deep-modules`** — not a skill name.
 _Avoid_: deepen-modules skill
 
 **Harvest**:
-Protocol in `architecture/reference/growth.md` (Growing reference + Ingress). Stage in `architecture/reference/learning-log.md` → sparse-promote into matching `reference/<branch>.md` → drop noise (language-only harvest in optional `*-dev` `reference.md` unchanged in spirit).
-_Avoid_: append-only forever doctrine in the log; growing frozen router checklists for every lesson; loading growth.md on every craft session
+Architecture: `architecture/reference/growth.md` + `learning-log.md` → sparse-promote into craft refs. Assure: `review.gil/reference/growth.md` + `learning-log.md` → lens refs. Language-only → `*-dev` `reference.md`. After store edits: `skill doctor`; on drift → `skill backfill <name>` → `rcup`.
+_Avoid_: append-only forever doctrine in the log; growing frozen router checklists for every lesson; loading growth.md on every craft/review session
 
 **Expansion law**:
 Seven rules in `architecture/reference/growth.md` before adding a branch. Prefer sparse harvest over new branches; never invent a top-level craft skill when a `refactor-<concern>` branch fits.
