@@ -37,6 +37,8 @@ Prefer version-manager wrappers (`mise exec`, `nix develop`, `direnv`) only when
 
 ## Phase 1 — Audit (read-only)
 
+Always load [`legacy.md`](legacy.md) for this execution. Apply its Find table to the diff (and auto-neighbors).
+
 1. **Establish diff scope**: `git diff --stat <base>..HEAD`.
 2. **Inventory touched modules** — group by area (feature folder, package, crate, module).
 3. **Verify with grep/read** — no speculation. Check project rules from bootstrap, plus generic smells:
@@ -69,6 +71,9 @@ rg "from ['\"].*\\.(service|repository|dao)['\"]" <presentationGlob> --glob '*.{
 # Suppression drift
 rg "eslint-disable|# noqa|allow\\(" <srcRoot> --glob '!**/__tests__/**' '!**/test/**'
 
+# Dead compat markers (see reference/legacy.md)
+rg "@deprecated|DEPRECATED|Obsolete|obsolete|backward compat|during refactor" <srcRoot>
+
 # Coverage (only when configured — use discovered test command)
 # npm/pnpm: npm run test:coverage
 # cargo: cargo llvm-cov or tarpaulin per project docs
@@ -76,14 +81,15 @@ rg "eslint-disable|# noqa|allow\\(" <srcRoot> --glob '!**/__tests__/**' '!**/tes
 
 ### Generic smell categories
 
-| Category            | What to look for                                                        |
-| ------------------- | ----------------------------------------------------------------------- |
-| God file            | Single module > project LOC threshold doing orchestration + logic + I/O |
-| DRY                 | Third+ copy of same mutation/queue/cache pattern in one area            |
-| Stability           | Inline config objects in hook/callback dependency arrays                |
-| Layer breach        | UI/views importing service or persistence layer directly                |
-| Hot path            | Per-row data fetch, inline object creation in list renderers            |
-| Untested pure logic | Helpers with branching and no unit tests                                |
+| Category             | What to look for                                                                     |
+| -------------------- | ------------------------------------------------------------------------------------ |
+| God file             | Single module > project LOC threshold doing orchestration + logic + I/O              |
+| DRY                  | Third+ copy of same mutation/queue/cache pattern in one area                         |
+| Stability            | Inline config objects in hook/callback dependency arrays                             |
+| Layer breach         | UI/views importing service or persistence layer directly                             |
+| Hot path             | Per-row data fetch, inline object creation in list renderers                         |
+| Untested pure logic  | Helpers with branching and no unit tests                                             |
+| Legacy / dead compat | Dual public names, superseded hydrate, deprecated markers — [`legacy.md`](legacy.md) |
 
 Honor additional invariants documented in `AGENTS.md` (money parsing, auth, offline sync, etc.).
 
@@ -120,7 +126,7 @@ KISS rules for plans:
 
 - Prefer **extract pure utils → unit test → thin consumer** over new abstractions
 - One factory per repeated pattern (mutations, queues, cache helpers)
-- No backward-compat shims unless user requires them
+- Follow [`legacy.md`](legacy.md): under `quality`, delete dead compat; invent no shims (stop only if user required backward compatibility)
 - Apply project agent rules and stack-specific skills when bootstrap detects them
 
 ### Commit stack ordering
@@ -198,6 +204,6 @@ If P0/P1 findings remain, **re-invoke** this skill on the branch with branch **`
 
 ## Related skills
 
-- `architecture` **`refactor-types`** — type/domain refactors; quality may _follow_ that work
+- `architecture` **`refactor-types`** / **`deep-modules`** / **`refactor-boundaries`** — dual type homes or layer inversion after [`legacy.md`](legacy.md) handoff; quality may _follow_ that craft
 - `css-cleaner` — CSS/token DRY only; defer CSS-wide cleanup there
 - Stack-specific skills (e.g. React Native perf) — consult when bootstrap detects that stack

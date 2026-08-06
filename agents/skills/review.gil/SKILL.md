@@ -2,10 +2,10 @@
 name: review.gil
 description: >
   Review a local change, branch, or pull request for production readiness, tests,
-  performance, security, or merge-prep quality. Use when the user wants a finish
-  readiness review, a PR code review, to publish a review to a PR, /code-review,
-  /review.gil, or when another skill needs a production-readiness or test-quality
-  pass.
+  performance, security, legacy/dead-compat debt, or merge-prep quality. Use when
+  the user wants a finish readiness review, a PR code review, to publish a review
+  to a PR, /code-review, /review.gil, or when another skill needs a
+  production-readiness or test-quality pass.
 ---
 
 # Review
@@ -37,14 +37,15 @@ Routing rules:
 
 After scope prep, load references progressively:
 
-| Lens       | Load when                                                                                                              |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `finish`   | Baseline for every generic findings or publish review                                                                  |
-| `tests`    | Tests changed, behavior changed without convincing coverage, or the user explicitly asks for test quality              |
-| `perf`     | Ruby code changes a plausibly hot path, query/allocation behavior, or the user explicitly asks for Ruby performance    |
-| `security` | Authn/authz, tenancy, sensitive data, external inputs, secrets, privileged operations, resilience, or explicit request |
+| Lens       | Load when                                                                                                                                       |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `finish`   | Baseline for every generic findings or publish review                                                                                           |
+| `tests`    | Tests changed, behavior changed without convincing coverage, or the user explicitly asks for test quality                                       |
+| `perf`     | Ruby code changes a plausibly hot path, query/allocation behavior, or the user explicitly asks for Ruby performance                             |
+| `security` | Authn/authz, tenancy, sensitive data, external inputs, secrets, privileged operations, resilience, or explicit request                          |
+| `legacy`   | Deprecated/obsolete markers, dual exports, superseded store/wire hydrate, or user asks for legacy/tech-debt cleanup; **always** under `quality` |
 
-For an explicitly focused tests, performance, or security review, load only that lens unless another lens is necessary to verify a concrete finding. Never ask “which review?” when the target is known.
+For an explicitly focused tests, performance, security, or legacy review, load only that lens unless another lens is necessary to verify a concrete finding. Never ask “which review?” when the target is known.
 
 Produce one report, not one report per lens. Generic findings use the `finish` output structure; specialized references contribute checks and finding-specific evidence. Fold security assumptions into **Confidence & Uncertainty** and its compliance summary into **Compliance & Risk Posture**. Publish uses the ledger and review-body structure in `publish.md`. A focused review may use its lens-specific output.
 
@@ -63,6 +64,7 @@ Resolve bundled scripts relative to this installed skill directory.
 - Tests lens → [`reference/tests.md`](reference/tests.md)
 - Ruby performance lens → [`reference/perf.md`](reference/perf.md)
 - Security/compliance lens → [`reference/security.md`](reference/security.md)
+- Legacy / dead-compat lens → [`reference/legacy.md`](reference/legacy.md)
 - Merge-prep execution → [`reference/quality.md`](reference/quality.md)
 - PR publish orchestration → [`reference/publish.md`](reference/publish.md); at drafting load [`reference/conventional-comments.md`](reference/conventional-comments.md), and immediately before mutation load [`reference/github-state.md`](reference/github-state.md)
 
@@ -77,5 +79,5 @@ Resolve bundled scripts relative to this installed skill directory.
 | Execution  | Done when                                                                                                                                                               |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `findings` | Every selected lens applied; Critical empty or owned; Important owned/rationale; readiness Yes/No/Conditional; no GitHub writes                                         |
-| `quality`  | Audit table produced; commit stack executed (or explicit empty); gates green; P0/P1 fixed or listed for re-invoke                                                       |
+| `quality`  | Audit table produced (legacy Find rows present or explicit empty); commit stack executed (or explicit empty); gates green; P0/P1 fixed or listed for re-invoke          |
 | `publish`  | Fresh multi-lens ledger verified on PR head SHA; drafts reconciled; submitted as `COMMENT` or left PENDING when draft-only was explicit; URLs reported; no code changed |

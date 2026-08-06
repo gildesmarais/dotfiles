@@ -77,5 +77,6 @@ When the target is a `fix`, `Revert`, or production-incident shaped diff, ask:
 6. Is each guard or policy owned at one lifecycle point?
 7. Does the published contract accept only what runtime accepts?
 8. Do repeated harden / review-follow-up commits hint a missing principle rather than noise?
+9. Dual public API or silent old-shape hydrate without user-required compat? → load [`legacy.md`](legacy.md); flag as debt (findings) or delete under `quality`.
 
-Fold answers into the single Findings report; do not invent a separate review lens.
+Fold answers into the single Findings report; do not invent a separate review lens beyond the selected table in `SKILL.md`.

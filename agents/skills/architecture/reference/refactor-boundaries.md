@@ -23,6 +23,7 @@ Wire/API contract redesign, adapter shells that grew domain branches, dual owner
    - One fact, one serializer home. Kill parallel encode/decode paths for the same wire shape.
    - Prefer thin maps; do not invent a second abstraction layer for ceremony.
    - Breaking wire changes: call out versioning or explicit migration — do not silent-shim forever.
+   - When compat is waived, delete the superseded hydrate — do not leave an unbounded parallel old-shape accept beside the current path.
 
 4. **Overlap routing**
    - Module depth / dual ownership of behavior → co-load `deep-modules`.

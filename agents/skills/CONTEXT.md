@@ -38,12 +38,16 @@ _Avoid_: quality (that branch changes code)
 Merge-prep **execution** — audit → plan → boy-scout refactors + tests → repo gates (absorbs former `quality-loop`).
 _Avoid_: finish (assessment-only), cleanup (too vague for the description)
 
-**Lens** (`review.gil` branches `tests` / `perf` / `security`):
+**Lens** (`review.gil` branches `tests` / `perf` / `security` / `legacy`):
 A specialized findings rubric applied to the same local diff prep as `finish`.
 _Avoid_: dedicated skill per lens
 
+**Legacy** (`review.gil` lens, always under `quality`):
+Dead compat — dual public names, superseded store/wire hydrate, deprecated markers. Findings report it; `quality` deletes it and invents no shims.
+_Avoid_: cleanup / tech-debt (too vague), a dedicated legacy skill, a `refactor-legacy` branch under `architecture`
+
 **Handoff**:
-`review.gil` may end with “post these findings” → agent continues into `pull-request` `comment`. Never reverse: GitHub posting does not live under `review.gil`.
+`review.gil` may end with “post these findings” → agent continues into `pull-request` `comment`. Never reverse: GitHub posting does not live under `review.gil`. A legacy finding may **name** an `architecture` craft branch (`refactor-types`, `deep-modules`, `refactor-boundaries`) as remediation — naming is not running.
 
 # Communication Skills Domain
 

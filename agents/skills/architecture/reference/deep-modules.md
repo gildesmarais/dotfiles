@@ -11,6 +11,8 @@ Dual ownership of one fact, passthrough bags, shallow multi-call husks, or the u
 - Apply the deletion test to candidate modules and thin re-export bags.
 - Prefer deep modules: small interface, substantial private behavior.
 - Kill passthrough bags and dual ownership of the same fact.
+- One public name per schema or type — delete aliases that keep both live.
+- Shared kernels import the owning type module, not a duplicate re-export.
 - Prefer ownership and seam failure signals when surveying deepen work; ignore metric smell counts that do not name dual ownership, passthrough, or deletion-test failure.
 - When surveying many peers, infer canonical shape before proposing seams (survey mode when structural signals match).
 - Wrong-layer domain surfaces fail locality even if deep internally — relocate before deepening in place.
