@@ -19,7 +19,7 @@ Set up, promote, or refine this repository's local product-owner skill against t
 
 - You already have a developer + SDLC skillset. Do not teach how to code, plan, test, review, or git.
 - The global skill is the doctrine source of truth. Read it first; do not restate or duplicate its doctrine in this repo.
-- Do not invent golden paths, click budgets, or mental models. Only move or point at what the repo already documents. When Setup needs a home for constraints humans already agreed on, add an empty stub section or `TODO(human)` markers only — never agent-authored path numbers or model lists.
+- Do not invent golden paths, operator paths, click budgets, or mental models. Only move or point at what the repo already documents. When Setup needs a home for constraints humans already agreed on, add an empty stub section or `TODO(human)` markers only — never agent-authored path numbers or model lists.
 
 ## Read first (mandatory)
 
@@ -28,8 +28,8 @@ Set up, promote, or refine this repository's local product-owner skill against t
 3. Discover existing product constraints in this repo, in order of preference:
    - Local skill: `.agents/skills/product-owner/SKILL.md` (or similarly named)
    - `AGENTS.md` (or equivalent agent/product governance doc)
-   - `ROADMAP.md` / `CONTEXT.md` / product docs that already hold golden paths, click budgets, or mental models
-4. Inventory what is generic judgment vs project-specific (golden-path numbers, preserved/prohibited mental models, product terminology, subsystem names).
+   - `ROADMAP.md` / `CONTEXT.md` / product docs that already hold golden paths, operator paths, click budgets, or mental models
+4. Inventory what is generic judgment vs project-specific (golden-path / operator-path numbers, preserved/prohibited mental models, product terminology, subsystem names).
 
 ## Hard rules
 
@@ -50,7 +50,7 @@ Create a thin local wrapper at `.agents/skills/product-owner/SKILL.md` (or this 
 
 Ensure project constraints live where this repo already puts product rules:
 
-- Golden paths / click budgets → `ROADMAP.md` (or existing SoT); if none exist and the repo already uses ROADMAP/CONTEXT-style product docs, add an empty stub / `TODO(human)` section only — otherwise place the stub in the existing product governance doc
+- Golden paths **and operator paths** / click budgets → `ROADMAP.md` (or existing SoT); if none exist and the repo already uses ROADMAP/CONTEXT-style product docs, add an empty stub / `TODO(human)` section only — otherwise place the stub in the existing product governance doc
 - Preserved / prohibited mental models, default surface, simplification hierarchy summary → `AGENTS.md` (or equivalent); use stub / `TODO(human)` when content is missing — never invent the lists
 - Point AGENTS (or equivalent) at: canonical global skill + local wrapper as repo entrypoint
 - If the repo has an admission / feature gate line (e.g. in ROADMAP), point it at global skill + AGENTS constraints + local wrapper — do not invent a gate if the repo has none
@@ -82,7 +82,7 @@ Update any admission-gate or "primary skill" links to global skill + AGENTS (or 
 | `~/.agents/skills/product-owner/SKILL.md` | Unchanged (unless fixing a global bug); domain-agnostic |
 | `<repo>/.agents/skills/product-owner/SKILL.md` | Thin wrapper: project-aware description + apply global + pointers to project docs |
 | AGENTS.md (or equivalent) | Project Product Owner rules: click-budget summary, mental models, pointers to global + local skill |
-| ROADMAP / CONTEXT (or equivalent) | Golden-path SoT and/or terminology as this repo already does |
+| ROADMAP / CONTEXT (or equivalent) | Golden-path and operator-path SoT and/or terminology as this repo already does |
 | Admission gate (if any) | Global skill + AGENTS constraints + local wrapper |
 
 ## Out of scope
@@ -91,7 +91,7 @@ Update any admission-gate or "primary skill" links to global skill + AGENTS (or 
 - Inventing numbered `docs/<NNN>-…` layouts (or any other scheme) in a repo that does not already use them
 - Promoting other skills
 - Teaching developer craft or SDLC
-- Writing speculative golden paths or mental models "for completeness"
+- Writing speculative golden paths, operator paths, or mental models "for completeness"
 
 ## Done when
 
@@ -99,5 +99,5 @@ Update any admission-gate or "primary skill" links to global skill + AGENTS (or 
 2. Project-specific constraints live in existing product docs, not in the skill body.
 3. Global skill has no new project coupling.
 4. Links (AGENTS primary skill, ROADMAP admission gate if present) resolve correctly.
-5. Report briefly: mode used, files changed, and where golden paths / mental models now live (or which gaps remain for humans).
+5. Report briefly: mode used, files changed, and where golden paths / operator paths / mental models now live (or which gaps remain for humans).
 ```

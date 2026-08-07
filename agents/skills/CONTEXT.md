@@ -128,23 +128,31 @@ Stops at the paste-ready brief. Does not hand off into Build / Assure / Ship. In
 ## Language
 
 **Product-owner** (skill noun: `product-owner`):
-Product domain router — admit/defer/reject scope and protect golden paths. Exactly one Product skill; grow branches here.
+Product domain router — admit/defer/reject scope, protect golden and operator paths, and run ranking / capacity when those asks dominate. Exactly one Product skill; grow branches here.
 _Avoid_: product (no parallel skill), product-gate, po
 
 **Gate** (`product-owner` branch, default):
 Admission before non-trivial user-facing scope: Build Now / Build Later / Research Further / Reject.
-_Avoid_: prioritize, story-slice, experiment (stub branches — not authored this pass; stay stubs)
+_Avoid_: story-slice, experiment (stub branches — not authored; stay stubs)
+
+**Prioritize** (`product-owner` branch):
+Order pullable backlog work and park the rest (Rank, Ready vs held, refinement readiness). Read-only by default.
+_Avoid_: inventing Priority scales; substituting for `gate` admission
+
+**Capacity** (`product-owner` branch):
+Suggest sprint SP commitment from velocity, named absences, and queued estimated load — always with a planning band. Read-only by default.
+_Avoid_: inventing headcount; board-tool mutation recipes; substituting for `prioritize` ordering
 
 **Decision vocabulary** (`gate`):
 **Build Now** | **Build Later** | **Research Further** | **Reject** — plus Confidence and Forced Challenge. Cite repo product docs or mark `unknown`.
 _Avoid_: ship-it, defer, maybe (use the four decisions only)
 
-**Golden path** / **click budget** / **mental model**:
-Product constraints cited from repo docs (`AGENTS.md`, `ROADMAP.md`, or equivalents) — never invented.
+**Golden path** / **operator path** / **click budget** / **mental model**:
+Product constraints cited from repo docs (`AGENTS.md`, `ROADMAP.md`, or equivalents) — never invented. Paths may be end-user golden paths or documented operator paths.
 _Avoid_: inventing budgets or paths when docs are silent → Research Further
 
 **Handoff**:
-Before non-trivial product scope, Intent entrypoints (`jira-ticket`, feature asks) load `product-owner` **`gate`**. Continue impl only on **Build Now** → `$dev` only (classifies; loads `architecture` when design is earned). Never treat `architecture` as a parallel Build entry beside `$dev`. Never let `architecture` / `dev` / `*-dev` / `review.gil` answer “should we build X?”. `grilling` is Decide-only stress-test (third-party install); product-owner keeps doctrine when the topic is scope.
+Before non-trivial product scope, Intent entrypoints (`jira-ticket`, feature asks) load `product-owner` **`gate`**. Continue impl only on **Build Now** → `$dev` only (classifies; loads `architecture` when design is earned). Never treat `architecture` as a parallel Build entry beside `$dev`. Never let `architecture` / `dev` / `*-dev` / `review.gil` answer “should we build X?”. Ranking / capacity are product branches, not Build. `grilling` is Decide-only stress-test (third-party install); product-owner keeps doctrine when the topic is scope.
 
 # Dev Skills Domain
 
