@@ -53,6 +53,25 @@ Emit always for this branch:
 
 Do not invent Priority labels, OKR scores, click budgets, or golden/operator paths in the output.
 
+### Sample — thin ranking (anonymized)
+
+```
+**Ordered (pullable)**:
+1. Item A — Rank highest among ready+refined; sequence unlocks Item C
+2. Item B — Ready + refined; Rank next; no blocker
+3. Item C — Ready; depends on A landing first
+**Parked**:
+- Item D — needs-refine; not pullable capacity
+- Item E — research-blocked pending spike outcome
+- Item F — pathless / unknown path serve → park until gate or docs cite a path
+**Confidence**: Medium
+**Evidence**:
+- Board Rank + Ready/held fields
+- Refinement status on cards
+- Gaps: Priority uniform/untrusted — ignored as ordering signal
+**Mutations**: none (read-only)
+```
+
 ## Anti-patterns
 
 - Ranking by Priority when every item shares the same Priority.

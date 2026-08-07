@@ -1,16 +1,19 @@
 ---
 name: product-owner
 description: >
-  Protects a product from unnecessary complexity, enforces golden-path click
-  budgets, prevents cognitive overload, and keeps engineering effort focused on
-  customer value. Has high decision weight — apply before feature proposals,
-  scope debates, UI expansion, product evaluations, or any "should we build X?"
-  discussion involving click budgets, cognitive load, or mental models. Also
-  use for idea, feature, user feedback, or UAT discussions that change product
-  scope or surface. Use for backlog ranking / prioritize when ordering work by
-  Rank, Ready vs held, or refinement readiness — not for inventing Priority.
-  Use for sprint capacity / commitment when suggesting story points from
-  velocity, OOO-adjusted capacity, or already-queued estimated load.
+  Protects a product from unnecessary complexity, enforces golden-path and
+  operator-path click budgets, prevents cognitive overload, and keeps
+  engineering effort focused on customer value. Has high decision weight —
+  apply before feature proposals, scope debates, UI expansion, product
+  evaluations, or any "should we build X?" discussion involving click budgets,
+  cognitive load, or mental models. Use for end-user golden paths and for
+  constrained operator/support tooling that replaces unsafe privileged
+  workarounds. Also use for idea, feature, user feedback, or UAT discussions
+  that change product scope or surface. Use for backlog ranking / prioritize
+  when ordering work by Rank, Ready vs held, or refinement readiness — not for
+  inventing Priority. Use for sprint capacity / commitment when suggesting
+  story points from velocity, OOO-adjusted capacity, or already-queued
+  estimated load.
 ---
 
 # Product Owner
@@ -30,7 +33,7 @@ Product domain router. Protect the product from unnecessary complexity. Features
 
 ## Pick branch
 
-Map the ask to one branch. Default: **`gate`**. Use **`prioritize`** when the ask is backlog ordering across a set of items. Use **`capacity`** when the ask is sprint story-point commitment or OOO-adjusted planning.
+Map the ask to one branch. Default: **`gate`**. Use **`prioritize`** when the ask is backlog ordering across a set of items. Use **`capacity`** when the ask is sprint story-point commitment or OOO-adjusted planning. Combined “plan the sprint” asks (order + commit) run **`prioritize` then `capacity`** — one primary load at a time; never multi-load both references.
 
 | Branch        | Status     | Use when                                                                                                     |
 | ------------- | ---------- | ------------------------------------------------------------------------------------------------------------ |
@@ -46,7 +49,7 @@ Stub rows are not authored. Do not invent branch content. If signals point only 
 
 Load progressively — do not preload every reference.
 
-- `gate` → this file (Doctrine / Workflow / Decision Output above)
+- `gate` → this file (Doctrine / Workflow / Decision Output below)
 - `prioritize` → [`reference/prioritize.md`](reference/prioritize.md)
 - `capacity` → [`reference/capacity.md`](reference/capacity.md)
 - Harvest only → [`reference/growth.md`](reference/growth.md) + [`reference/learning-log.md`](reference/learning-log.md)
@@ -170,14 +173,14 @@ Emit per the spam rule above (gate always; overlay only for Reject / Build Later
 ```
 **Recommendation**: Research Further
 **Confidence**: Low
-**Forced Challenge**: Shipping without a documented golden path invents product strategy mid-build — challenge wins until budgets exist.
+**Forced Challenge**: Shipping without a documented path invents product strategy mid-build — challenge wins until budgets exist.
 **Exclusions**: n/a (not admitting scope)
 **Evidence**:
-- AGENTS.md — no golden paths / click budgets / mental models
+- AGENTS.md — no golden paths / operator paths / click budgets / mental models
 - ROADMAP.md — absent
 - CONTEXT.md — absent
 - Gaps: no cited path, no step budget, no preserved/prohibited models
-**Reason**: Repo product docs are silent. Prefer documenting the smallest missing artifact (golden-path budgets) over guessing a Build Now path.
+**Reason**: Repo product docs are silent. Prefer documenting the smallest missing artifact (path budgets — golden or operator) over guessing a Build Now path.
 ```
 
 ### Sample — operator path → Build Now (narrow)
@@ -188,7 +191,7 @@ Emit per the spam rule above (gate always; overlay only for Reject / Build Later
 **Forced Challenge**: Shipping operator tooling without a documented operator path invents workflow mid-build — answered by hard exclusions + replacing ad-hoc privileged access.
 **Exclusions**:
 - Mutations / reactivation on this surface
-- Fuzzy / broad search over regulated identifiers
+- Fuzzy / broad search over privileged identifiers
 - Additional identity models beyond the v1 slice
 **Evidence**:
 - AGENTS.md — operator runbook pain noted; no numbered operator-path budget
@@ -218,9 +221,11 @@ product-owner gate
 product-owner prioritize
   ordered + parked → stop (read-only) unless user asks board mutations
   unadmitted / pathless items → optional gate (do not invent Priority)
+  sprint plan (order + commit) → prioritize then capacity
 product-owner capacity
   recommended SP + band → stop (read-only) unless user asks board mutations
   ordering across items → prioritize; admission → gate
+  sprint plan (order + commit) → prioritize then capacity
 grilling          → Decide only (stress-test interview); this skill keeps doctrine if topic is scope
 architecture / dev / *-dev / review.gil → never own "should we build X?"
 harvest           → reference/growth.md (only when asked or doctrine was wrong)

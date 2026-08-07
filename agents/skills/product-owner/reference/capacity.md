@@ -6,13 +6,14 @@ Suggest a sprint story-point **commitment** from historical estimated-done veloc
 
 Sprint planning capacity / commitment asks: “how many story points next sprint?”; velocity-based targets; OOO- or absence-adjusted planning; optional delivery-uplift judgment the user asserts (e.g. tooling maturity).
 
-If the ask is backlog **ordering** across items → `prioritize`. If the ask is “should we build X?” → `gate`.
+If the ask is backlog **ordering** across items → `prioritize`. If the ask is “should we build X?” → `gate`. Combined “plan the sprint” (order + commit) → run `prioritize` first, then this branch (one primary load at a time).
 
 ## Checklist
 
 1. **Discover sprint window and absences**
    - Confirm sprint start/end (or length in working days) from the board or the user.
-   - List **named** absences (who, how many working days in-sprint). Do not invent headcount or assume full team size — use only what the user or board provides. Express lost person-days vs a full-sprint baseline the user supplies, or state capacity fraction as `unknown` and cap Confidence ≤ Medium.
+   - List **named** absences (who, how many working days in-sprint). Do not invent headcount or assume full team size — use only what the user or board provides.
+   - When sprint window **or** named absences / person-day baseline are missing: ask **one** clarifying question, or state `unknown` and emit the planning band with Confidence ≤ Medium. Prefer the question when a single ask unblocks usable math; never invent headcount.
 
 2. **Read board evidence (no invention)**
    - Query the team’s existing issue tracker for: recent **closed** sprints’ **completed estimated** story points; the **next** (or target) sprint’s **already estimated** points; count of **unestimated** items already on that sprint (bugs/chores if the team’s policy skips estimating them).
@@ -31,14 +32,14 @@ If the ask is backlog **ordering** across items → `prioritize`. If the ask is 
    - Commitment must leave headroom for priority **unestimated** items once refined, or call out that those items force cuts elsewhere.
 
 6. **Optional uplift (user-asserted only)**
-   - Stretch above the OOO-adjusted baseline only when the user explicitly claims a delivery uplift (e.g. AI-assisted throughput). Treat uplift as judgment, not invented math. Always keep a planning **band** around the single recommended number.
+   - Stretch above the OOO-adjusted baseline only when the user explicitly claims a delivery uplift (e.g. AI-assisted throughput). Treat uplift as judgment, not invented math. Always emit a planning **band** around the single recommended number.
 
 7. **Output posture**
    - Default: **read-only** commitment advice. Mutate the board only if the user explicitly asks — this branch does not teach board-tool recipes.
 
 ## Sequencing
 
-1. Sprint window + named absences.
+1. Sprint window + named absences (ask once if missing, or mark `unknown`).
 2. Closed-sprint estimated-done + next-sprint estimated/unestimated load.
 3. Baseline → capacity-adjust → compare to queued load → optional user uplift → band + single recommendation.
 4. Emit Decision Output. Stop unless the user asks for board mutations or routes to `prioritize` / `gate`.
@@ -48,7 +49,7 @@ If the ask is backlog **ordering** across items → `prioritize`. If the ask is 
 Emit always for this branch:
 
 **Recommended commitment** — single story-point number.
-**Planning band** — low–high around that number (required when velocity is noisy or uplift is asserted).
+**Planning band** — low–high around that number (**always required**).
 **Capacity adjustments** — named absences and approx % of sprint capacity remaining (or `unknown`).
 **Board load** — estimated points already in the target sprint; unestimated count and risk if refined heavy.
 **Confidence**: [High | Medium | Low] — High needs cited sprints + clear absence math; gaps and heavy unestimated history cap at Medium.
@@ -58,9 +59,25 @@ Emit always for this branch:
 
 Do not invent Priority labels, OKR scores, golden/operator paths, or a fake second velocity baseline from unestimated throughput.
 
+### Sample — thin commitment (anonymized)
+
+```
+**Recommended commitment**: 28 SP
+**Planning band**: 24–32 SP
+**Capacity adjustments**: 2 named absences ≈ 3 person-days; ~85% capacity remaining vs user-supplied full-sprint baseline
+**Board load**: 18 SP already estimated on next sprint; 4 unestimated items (risk: force cuts if refined heavy)
+**Confidence**: Medium
+**Evidence**:
+- Closed sprints A–C estimated-done: 30 / 26 / 32 (median 30)
+- Next sprint estimated field as used on board
+- Gaps: uplift not asserted
+**Risks / cuts**: Hold lowest-ranked pullable fill if unestimated items refine above ~8 SP
+**Mutations**: none (read-only)
+```
+
 ## Anti-patterns
 
-- Publishing one commitment number with no band when closed-sprint estimated-done is noisy.
+- Publishing one commitment number with no band (band is always required; noisy velocity makes omission especially harmful).
 - Treating unestimated bugs/chores as zero historical throughput (undercounts delivery) _or_ as a numeric second baseline (invention).
 - Inventing team size, Priority scales, OKRs, or product-named doctrine.
 - Stretching for “AI” or tooling uplift the user did not assert.
