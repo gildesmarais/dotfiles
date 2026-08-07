@@ -1,14 +1,15 @@
 ---
 name: swift-dev
 description: >-
-  Language-runtime adapter loaded by $dev. Not the Build entry. Use when $dev
-  routed here or the user names this skill with $dev already loaded. Swift
-  deltas: MainActor/@Observable, Apple docset cues, UI overlay compose.
+  Always load $dev first; this pack is deltas only. Language-runtime adapter
+  loaded by $dev — not the Build entry. Use when $dev routed here or the user
+  names this skill with $dev already loaded. Swift deltas: MainActor/@Observable,
+  Apple docset cues, UI overlay compose.
 ---
 
 # Swift Dev
 
-Follow `$dev` for classify, shared stance, API truth / Dash recipe, workflow/plan, validation law, phase commits, and handoff skeleton. This pack adds Swift deltas only. Craft (modules, types, measured perf) lives in `architecture` — do not inline it here.
+Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, no-destructive git, workflow/plan, validation law, phase commits, and handoff skeleton. This pack adds Swift deltas only. Craft (modules, types, measured perf) lives in `architecture` — do not inline it here.
 
 ## When to use
 
@@ -20,10 +21,14 @@ Follow `$dev` for classify, shared stance, API truth / Dash recipe, workflow/pla
 
 - Prefer Dash docsets: **Swift**, **Objective-C** (optional IDs if present: `qsucmuuh-swift`, `qsucmuuh-objc`). Secondary: Apple docs.
 
+## Stable-surface hints
+
+- Treat Apple public APIs and shipped module public interfaces as stable unless the ask or `AGENTS.md` says otherwise.
+
 ## Stance deltas
 
 - Observation / concurrency: prefer `@Observable` over Combine when the repo allows it; keep MainActor and background-boundary honesty. Project rules live in `AGENTS.md` and local overlays — compose them; do not paste them here.
-- Evidence: touched modules, public contracts, real call sites, existing tests, compat posture (ask if unclear).
+- Evidence: touched modules, public contracts, real call sites, existing tests, compat posture (ask via `$dev` if unclear).
 
 ## Surgical posture
 
@@ -56,5 +61,4 @@ Pointers only — load when present; do not paste their bodies here:
 
 Before handoff (on top of `$dev` skeleton), confirm:
 
-- Compat decision stated, or that the user was asked.
 - Residual risk, unverified paths, and intentional out-of-scope work called out.

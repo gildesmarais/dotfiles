@@ -1,14 +1,15 @@
 ---
 name: rust-dev
 description: >-
-  Language-runtime adapter loaded by $dev. Not the Build entry. Use when $dev
-  routed here or the user names this skill with $dev already loaded. Rust
-  deltas: compat ask, cargo validation, crate docset cues.
+  Always load $dev first; this pack is deltas only. Language-runtime adapter
+  loaded by $dev — not the Build entry. Use when $dev routed here or the user
+  names this skill with $dev already loaded. Rust deltas: cargo validation,
+  crate docset cues, depth-pack compose.
 ---
 
 # Rust Dev
 
-Follow `$dev` for classify, shared stance, API truth / Dash recipe, workflow/plan, validation law, phase commits, and handoff skeleton. This pack adds Rust deltas only. Craft (modules, types, measured perf) lives in `architecture` — do not inline it here.
+Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, no-destructive git, workflow/plan, validation law, phase commits, and handoff skeleton. This pack adds Rust deltas only. Craft (modules, types, measured perf) lives in `architecture` — do not inline it here.
 
 ## When to use
 
@@ -20,10 +21,13 @@ Follow `$dev` for classify, shared stance, API truth / Dash recipe, workflow/pla
 
 - Prefer Dash docsets: **Rust** / installed crate docs. Secondary: `cargo doc` and local usage.
 
+## Stable-surface hints
+
+- Treat crate public API / semver-stable surfaces and documented FFI boundaries as stable unless the ask or `AGENTS.md` says otherwise.
+
 ## Stance deltas
 
-- Compatibility is context-gated. Detect whether the change surface is internal-only or a stable public contract. If unsure whether a break is allowed, **ask** before shipping. No silent shim theater; no silent breaks on surfaces treated as stable.
-- Evidence: touched modules, public contracts, real call sites, existing tests, compat posture (ask if unclear).
+- Evidence: touched modules, public contracts, real call sites, existing tests, compat posture (ask via `$dev` if unclear).
 
 ## Surgical posture
 
@@ -42,9 +46,14 @@ Follow `$dev` for classify, shared stance, API truth / Dash recipe, workflow/pla
 - Do not invent a new global docs regime.
 - If a touched public API already has docs or contract comments, keep them accurate in scope.
 
+## Compose routes
+
+Pointers only — load when present; do not paste their bodies here:
+
+- Store depth → `ms-rust`, `rust-performance` when installed / applicable.
+
 ## Handoff deltas
 
 Before handoff (on top of `$dev` skeleton), confirm:
 
-- Compat decision stated, or that the user was asked.
 - Residual risk, unverified paths, and intentional out-of-scope work called out.

@@ -1,14 +1,15 @@
 ---
 name: ruby-dev
 description: >-
-  Language-runtime adapter loaded by $dev. Not the Build entry. Use when $dev
-  routed here or the user names this skill with $dev already loaded. Ruby
-  deltas: TDD-oriented fixes, gem/CLI/adapter posture, Rails overlay compose.
+  Always load $dev first; this pack is deltas only. Language-runtime adapter
+  loaded by $dev — not the Build entry. Use when $dev routed here or the user
+  names this skill with $dev already loaded. Ruby deltas: TDD-oriented fixes,
+  gem/CLI/adapter posture, Rails overlay compose.
 ---
 
 # Ruby Dev
 
-Follow `$dev` for classify, shared stance, API truth / Dash recipe, workflow/plan, validation law, phase commits, and handoff skeleton. This pack adds Ruby deltas only. Craft (modules, types, measured perf) lives in `architecture` — do not inline it here.
+Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, no-destructive git, workflow/plan, validation law, phase commits, and handoff skeleton. This pack adds Ruby deltas only. Craft (modules, types, measured perf) lives in `architecture` — do not inline it here.
 
 ## When to use
 
@@ -22,6 +23,10 @@ Wrong-owner boundary absorb (serialize/cache/encode bent into a neighbor) / re-l
 ## Docsets
 
 - Prefer Dash docsets: **Ruby**; when `ruby-on-rails-dev` is loaded, also **Rails**. Secondary: YARD/RBS/Sorbet only if the repo already uses them.
+
+## Stable-surface hints
+
+- Treat published gem APIs, public service/CLI entrypoints, and versioned HTTP contracts as stable unless the ask or `AGENTS.md` says otherwise.
 
 ## Stance deltas
 
@@ -44,11 +49,16 @@ Wrong-owner boundary absorb (serialize/cache/encode bent into a neighbor) / re-l
 
 ## Contracts
 
-- Avoid destructive git operations unless explicitly requested.
 - Preserve existing repo conventions for contracts and docs.
 - Do not introduce a new global YARD requirement into a repo that does not already use it.
 - If a touched public API already has YARD, RBS, Sorbet, or equivalent contract docs, keep them accurate in scope.
 - For service objects, jobs, CLI commands, and library-style code, make input/output expectations easy to discover either in code or tests.
+
+## Compose routes
+
+Pointers only — load when present; do not paste their bodies here:
+
+- Rails-shaped work → `ruby-on-rails-dev` (with this skill; via `$dev` route).
 
 ## Handoff deltas
 

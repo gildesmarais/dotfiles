@@ -6,7 +6,7 @@ Review the actual changed code before making recommendations. Use scope prep in 
 
 Focus on findings, not generic advice. For each finding, cite file and line, explain the performance impact, and give concrete improvement options.
 
-When checking Ruby core APIs or standard-library behavior, verify them instead of relying on memory alone. Use the shared Dash MCP recipe from `$dev` (API truth) against the installed **Ruby** docset, then official API docs or primary sources. Prioritize verifying `Enumerable`, `Enumerator::Lazy`, `Set`, `Hash`, `Array`, and `Data.define` semantics when they materially affect the recommendation.
+When checking Ruby core APIs or standard-library behavior, verify them instead of relying on memory alone. Follow the `$dev` API-truth ladder (Dash → Context7 if available → pack secondary → say unknown) against the installed **Ruby** docset. Prioritize verifying `Enumerable`, `Enumerator::Lazy`, `Set`, `Hash`, `Array`, and `Data.define` semantics when they materially affect the recommendation.
 
 ## Review Workflow
 

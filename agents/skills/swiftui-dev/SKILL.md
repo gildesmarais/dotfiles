@@ -1,15 +1,16 @@
 ---
 name: swiftui-dev
 description: >-
-  SwiftUI overlay loaded via $dev with $swift-dev. Use for views, navigation,
-  WidgetKit, and AppKit bridges — native UI-shaped Swift work.
+  Always load $dev first (with $swift-dev); this overlay is deltas only. SwiftUI
+  overlay for views, navigation, WidgetKit, and AppKit bridges — native
+  UI-shaped Swift work.
 ---
 
 # SwiftUI Dev
 
 ## Purpose and Routing
 
-- Overlay loaded via `$dev` with `$swift-dev`; keep Swift-general workflow in `$swift-dev` and shared classify / one-surface / design routing in `$dev`.
+- Overlay loaded via `$dev` with `$swift-dev`; keep Swift-general workflow in `$swift-dev` and shared classify / one-surface / design / API truth / compat / git safety in `$dev`.
 - Apply to views, navigation, layout, WidgetKit, AppKit bridges, Transferable, and presentation/chrome.
 - Follow `AGENTS.md` routing and precedence.
 - Design or private-seam cases → `$dev` → `$swift-dev` → `architecture`. Do not invent adapter craft here.
