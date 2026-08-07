@@ -7,7 +7,8 @@ description: >
   scope debates, UI expansion, product evaluations, or any "should we build X?"
   discussion involving click budgets, cognitive load, or mental models. Also
   use for idea, feature, user feedback, or UAT discussions that change product
-  scope or surface.
+  scope or surface. Use for backlog ranking / prioritize when ordering work by
+  Rank, Ready vs held, or refinement readiness — not for inventing Priority.
 ---
 
 # Product Owner
@@ -22,19 +23,28 @@ Product domain router. Protect the product from unnecessary complexity. Features
 | Idea, feature, user feedback, or UAT that changes product scope or surface              | User explicitly wants a stress-test interview only → use `grilling`                                       |
 | Debating defaults, settings, or expert controls on a primary surface                    | Docs lack product constraints _and_ the ask is already Reject-shaped (state the gap; do not invent paths) |
 | Admission / build-now gates before non-trivial product work                             |                                                                                                           |
+| Backlog ranking across items (Rank, Ready vs held, refinement readiness)                | Board-tool how-to with no ranking judgment; Priority-scale invention asks                                 |
 
 ## Pick branch
 
-Map the ask to one branch. Default: **`gate`**.
+Map the ask to one branch. Default: **`gate`**. Use **`prioritize`** when the ask is backlog ordering across a set of items.
 
-| Branch        | Status     | Use when                                                                               |
-| ------------- | ---------- | -------------------------------------------------------------------------------------- |
-| `gate`        | **active** | Admit/defer/reject scope; "should we build X?"; UI/API surface or UAT-driven expansion |
-| `prioritize`  | stub       | Backlog ranking across items                                                           |
-| `story-slice` | stub       | Slice a feature into shippable user stories                                            |
-| `experiment`  | stub       | Experiment / analytics design                                                          |
+| Branch        | Status     | Use when                                                                                                     |
+| ------------- | ---------- | ------------------------------------------------------------------------------------------------------------ |
+| `gate`        | **active** | Admit/defer/reject scope; "should we build X?"; UI/API surface or UAT-driven expansion                       |
+| `prioritize`  | **active** | Backlog rank / order; Priority flat or untrusted; Ready vs held; refinement readiness; sequence / spike-held |
+| `story-slice` | stub       | Slice a feature into shippable user stories                                                                  |
+| `experiment`  | stub       | Experiment / analytics design                                                                                |
 
 Stub rows are not authored. Do not invent branch content. If signals point only at a stub, stay on `gate` when admission applies, or stop and say the branch is not authored.
+
+## Branch reference
+
+Load progressively — do not preload every reference.
+
+- `gate` → this file (Doctrine / Workflow / Decision Output above)
+- `prioritize` → [`reference/prioritize.md`](reference/prioritize.md)
+- Harvest only → [`reference/growth.md`](reference/growth.md) + [`reference/learning-log.md`](reference/learning-log.md)
 
 ## Gate vs overlay
 
@@ -183,10 +193,11 @@ Emit per the spam rule above (gate always; overlay only for Reject / Build Later
 
 ## Completion criteria
 
-| Mode        | Done when                                                                                                                                    |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Gate**    | Doctrine Check answered; Forced Challenge stated; full Decision Output emitted (incl. Exclusions on Build Now); Evidence lists paths or gaps |
-| **Overlay** | Doctrine applied; full Decision Output only if Reject / Build Later / Research Further; quiet Build Now has no block                         |
+| Mode / branch    | Done when                                                                                                                                    |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Gate**         | Doctrine Check answered; Forced Challenge stated; full Decision Output emitted (incl. Exclusions on Build Now); Evidence lists paths or gaps |
+| **Overlay**      | Doctrine applied; full Decision Output only if Reject / Build Later / Research Further; quiet Build Now has no block                         |
+| **`prioritize`** | Pullable vs parked split; ordered pullable list + park list with one-line rationales; Evidence listed; Mutations default read-only           |
 
 ## Handoff
 
@@ -198,6 +209,9 @@ product-owner gate
   Build Later     → stop impl; optional communication/status
   Research Further → name smallest missing product artifact; do not invent strategy
   Reject          → stop
+product-owner prioritize
+  ordered + parked → stop (read-only) unless user asks board mutations
+  unadmitted / pathless items → optional gate (do not invent Priority)
 grilling          → Decide only (stress-test interview); this skill keeps doctrine if topic is scope
 architecture / dev / *-dev / review.gil → never own "should we build X?"
 harvest           → reference/growth.md (only when asked or doctrine was wrong)
@@ -207,4 +221,5 @@ harvest           → reference/growth.md (only when asked or doctrine was wrong
 - After **Build Now**, continue into **`$dev` only** (classifies; loads `architecture` when design is earned; routes `{lang}-dev` / overlay). Never treat `architecture` as a parallel Build entry beside `$dev`. This skill does not teach how to build.
 - After **Build Later** or **Reject**, do not start implementation.
 - After **Research Further**, name the smallest missing artifact (e.g. “document golden-path budgets in ROADMAP”) rather than drafting speculative product strategy unless asked.
+- After **`prioritize`**, default stop with read-only ranking advice. Optional `gate` for unadmitted items; never invent Priority. Board mutations only if the user explicitly asks.
 - Harvest / doctrine growth → [`reference/growth.md`](reference/growth.md); leave [`reference/learning-log.md`](reference/learning-log.md) empty after the event.
