@@ -22,7 +22,7 @@ Skip when the ask is bare “review code”, product “promote”, UX “unify�
    - **fold** — micro-module into one consumer home
    - **nest** — flat sprawl → intentional sub-module
 7. **Evidence labels** — Strong / Worth / Speculative. Verify orphans and inversions with call-site search before ranking Critical / Important.
-8. **Handoff** — ranked ledger + which craft branches to load next. Language-runtime fixes stay in `*-dev`.
+8. **Handoff** — ranked ledger + which craft branches to load next. Language-runtime fixes stay in `$dev` → `{lang}-dev`.
 
 ## Leverage ranking
 

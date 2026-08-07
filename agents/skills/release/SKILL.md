@@ -34,7 +34,7 @@ Changelog / release notes derived from merged Conventional Commits. Author histo
 
 ## Handoff
 
-- PR lifecycle stays in `pull-request`. Phase CC authoring stays in `architecture` / `*-dev` (leftover applicator: `pull-request` **`open`**).
+- PR lifecycle stays in `pull-request`. Phase CC authoring stays in `architecture` / `dev` (leftover applicator: `pull-request` **`open`**).
 - No flag / promote / rollback from this skill.
 
 ## Completion criteria

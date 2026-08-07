@@ -69,8 +69,8 @@ After scope prep in `SKILL.md`, continue here. For a pull request, review the PR
 
 When the target is a `fix`, `Revert`, or production-incident shaped diff, ask:
 
-1. Did this fix wander onto a second surface? → remediate via the active `*-dev` skill (one-surface).
-2. Is a neighboring layer absorbing a boundary failure? → active `*-dev` → `architecture`.
+1. Did this fix wander onto a second surface? → remediate via `$dev` → routed `{lang}-dev` (one-surface).
+2. Is a neighboring layer absorbing a boundary failure? → `$dev` → `{lang}-dev` → `architecture`.
 3. Does the path assume an invisible contract (shape, reload, cache identity, cutover successor)? → active framework overlay if present, else `architecture`.
 4. Is disclosure or access treated as mere presence? → overlay when present (+ **security** when sensitive), else `architecture` / **security**.
 5. Did validate and execute see the same truth?
@@ -82,6 +82,6 @@ When the target is a `fix`, `Revert`, or production-incident shaped diff, ask:
 11. Did a durable/plain bag get treated as a live domain object without rehydrate?
 12. Did parse/unwrap or generated-client types escape the transport/adapter edge?
 13. Was a wire enum renamed in app code instead of normalized once?
-14. Did the change silence the checker with `as` / `!` / bare suppression instead of earning the type? → active `*-dev` (TypeScript: `typescript-dev`).
+14. Did the change silence the checker with `as` / `!` / bare suppression instead of earning the type? → `$dev` → `typescript-dev`.
 
 Fold answers into the single Findings report; do not invent a separate review lens beyond the selected table in `SKILL.md`.

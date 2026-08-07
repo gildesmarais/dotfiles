@@ -2,8 +2,8 @@
 name: architecture
 description: >
   Language-free solution craft for module depth, type-driven refactors, and
-  measured performance. Use when design or structural cleanup is earned, when
-  a *-dev skill classifies design, or when the user asks to deepen modules,
+  measured performance. Use when $dev classifies design, when design or
+  structural cleanup is earned, or when the user asks to deepen modules,
   replace primitives with domain types, or optimize with a baseline. Also use
   for structural tree / directory surveys: peer-folder conformity, snowflake
   placement, and module promote/relocate/fold ranking — not for generic code
@@ -42,7 +42,7 @@ Never ask the user to pick a template when signals are clear. Load one or more w
 | “unify” UX copy, visual grammar, design tokens            | designer / screen-grammar skills                                              |
 | Surgical deepen of one named module already in hand       | `deep-modules` (and siblings) — skip whole-tree survey                        |
 | “should we build X?”                                      | `product-owner`                                                               |
-| Surgical language work only                               | stay in the relevant `*-dev` skill                                            |
+| Surgical language work only                               | `$dev` (routes to `{lang}-dev` / overlay)                                     |
 
 Bare “promote” / “unify” alone → one clarifying question, or stay on the skill already in play.
 
@@ -54,8 +54,8 @@ Bare “promote” / “unify” alone → one clarifying question, or stay on t
 2. Evidence before claims: call sites, ownership, existing tests. Label Strong / Worth / Speculative when surveying.
 3. Always load [`reference/glossary.md`](reference/glossary.md) with any branch or survey mode.
 4. Multi-load OK when signals combine; one handoff covering everything loaded.
-5. Keep craft language-free. Language recipes belong in `*-dev`, overlays, third-party packs, or project `AGENTS.md`.
-6. **Phase → validate → commit:** after each craft phase (architecture phase, surgical milestone, or user-named plan step), validate, then create ≥1 Conventional Commit with a rationale/intent body before the next phase. Format and phase law: [`CONTEXT.md`](../CONTEXT.md).
+5. Keep craft language-free. Language recipes belong in `{lang}-dev`, overlays, third-party packs, or project `AGENTS.md` (loaded via `$dev`).
+6. **Phase → validate → commit:** after each craft phase (architecture phase, surgical milestone, or user-named plan step), validate, then create ≥1 Conventional Commit with a rationale/intent body before the next phase. Format and phase law: [`CONTEXT.md`](../CONTEXT.md). Build-side phase commits also live on `$dev`.
 7. Structural signals → run survey **before or with** craft deepening.
 
 Branch expansion and harvest protocol live in [`reference/growth.md`](reference/growth.md) — load only when adding a branch or harvesting lessons.
@@ -74,11 +74,11 @@ Load progressively — glossary plus each selected branch or mode. Do not preloa
 
 ## Handoff
 
-- Implementation and language validation continue in the relevant `*-dev` / overlay after craft decisions are clear.
+- Implementation and language validation continue via `$dev` → routed `{lang}-dev` / overlay after craft decisions are clear.
 - Assure / ship continues with `review.gil` / `pull-request` — never reverse.
 - Product scope questions go to `product-owner`.
 - Changelog from merged history → `release` **`notes`** (consumer only).
-- Structure survey → ranked ledger + craft-branch names; then load those branches (or hand off to `*-dev` if craft is already decided).
+- Structure survey → ranked ledger + craft-branch names; then load those branches (or hand off to `$dev` if craft is already decided).
 
 ## Completion criteria
 

@@ -1,18 +1,21 @@
 ---
 name: ruby-on-rails-dev
-description: "Rails overlay for API/controller/service/policy/serializer/worker changes. Use with $ruby-dev for Rails architecture, tenancy, authz, and API contracts."
+description: >-
+  Rails overlay loaded via $dev with $ruby-dev. Use for API/controller/service/
+  policy/serializer/worker changes — Rails architecture, tenancy, authz, and
+  API contracts.
 ---
 
 # Ruby on Rails Dev
 
 ## Purpose and Routing
 
-- Use as a Rails overlay with `$ruby-dev`; keep Ruby-general workflow in `$ruby-dev`.
+- Overlay loaded via `$dev` with `$ruby-dev`; keep Ruby-general workflow in `$ruby-dev` and shared classify / one-surface / design routing in `$dev`.
 - Apply to controllers, routes, models, services, policies, serializers, workers/mailers/jobs, migrations, framework config loaders, cache-key composition, and encryption cutovers.
 - Follow `AGENTS.md` routing and precedence.
 - Require `$review.gil` **`security`** when changes match the `AGENTS.md` `Security Trigger Matrix`.
-- Incident/fix postures in this overlay; one-surface and wrong-owner classify stay in `$ruby-dev`.
-- Design or private-seam cases → `$ruby-dev` → `architecture`. Do not invent adapter or regex craft here.
+- Incident/fix postures in this overlay; one-surface and wrong-owner classify stay in `$dev` / `$ruby-dev`.
+- Design or private-seam cases → `$dev` → `$ruby-dev` → `architecture`. Do not invent adapter or regex craft here.
 
 ## Implementation Rules
 
