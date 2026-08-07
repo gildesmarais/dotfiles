@@ -9,6 +9,8 @@ description: >
   use for idea, feature, user feedback, or UAT discussions that change product
   scope or surface. Use for backlog ranking / prioritize when ordering work by
   Rank, Ready vs held, or refinement readiness — not for inventing Priority.
+  Use for sprint capacity / commitment when suggesting story points from
+  velocity, OOO-adjusted capacity, or already-queued estimated load.
 ---
 
 # Product Owner
@@ -17,22 +19,24 @@ Product domain router. Protect the product from unnecessary complexity. Features
 
 ## When to use / skip
 
-| Use when                                                                                | Skip when                                                                                                 |
-| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Feature proposals, scope expansion, new UI/API surface, parity/"competitor had it" asks | Pure bugfix, refactors, or infra with no user-facing concept or step change                               |
-| Idea, feature, user feedback, or UAT that changes product scope or surface              | User explicitly wants a stress-test interview only → use `grilling`                                       |
-| Debating defaults, settings, or expert controls on a primary surface                    | Docs lack product constraints _and_ the ask is already Reject-shaped (state the gap; do not invent paths) |
-| Admission / build-now gates before non-trivial product work                             |                                                                                                           |
-| Backlog ranking across items (Rank, Ready vs held, refinement readiness)                | Board-tool how-to with no ranking judgment; Priority-scale invention asks                                 |
+| Use when                                                                                | Skip when                                                                                                  |
+| --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Feature proposals, scope expansion, new UI/API surface, parity/"competitor had it" asks | Pure bugfix, refactors, or infra with no user-facing concept or step change                                |
+| Idea, feature, user feedback, or UAT that changes product scope or surface              | User explicitly wants a stress-test interview only → use `grilling`                                        |
+| Debating defaults, settings, or expert controls on a primary surface                    | Docs lack product constraints _and_ the ask is already Reject-shaped (state the gap; do not invent paths)  |
+| Admission / build-now gates before non-trivial product work                             |                                                                                                            |
+| Backlog ranking across items (Rank, Ready vs held, refinement readiness)                | Board-tool how-to with no ranking judgment; Priority-scale invention asks                                  |
+| Sprint SP commitment / capacity (velocity, OOO, queued estimated load)                  | Pure backlog ordering → `prioritize`; scope admission → `gate`; board-API how-to with no capacity judgment |
 
 ## Pick branch
 
-Map the ask to one branch. Default: **`gate`**. Use **`prioritize`** when the ask is backlog ordering across a set of items.
+Map the ask to one branch. Default: **`gate`**. Use **`prioritize`** when the ask is backlog ordering across a set of items. Use **`capacity`** when the ask is sprint story-point commitment or OOO-adjusted planning.
 
 | Branch        | Status     | Use when                                                                                                     |
 | ------------- | ---------- | ------------------------------------------------------------------------------------------------------------ |
 | `gate`        | **active** | Admit/defer/reject scope; "should we build X?"; UI/API surface or UAT-driven expansion                       |
 | `prioritize`  | **active** | Backlog rank / order; Priority flat or untrusted; Ready vs held; refinement readiness; sequence / spike-held |
+| `capacity`    | **active** | Sprint SP commitment; velocity + absences; already-queued estimated load vs target                           |
 | `story-slice` | stub       | Slice a feature into shippable user stories                                                                  |
 | `experiment`  | stub       | Experiment / analytics design                                                                                |
 
@@ -44,6 +48,7 @@ Load progressively — do not preload every reference.
 
 - `gate` → this file (Doctrine / Workflow / Decision Output above)
 - `prioritize` → [`reference/prioritize.md`](reference/prioritize.md)
+- `capacity` → [`reference/capacity.md`](reference/capacity.md)
 - Harvest only → [`reference/growth.md`](reference/growth.md) + [`reference/learning-log.md`](reference/learning-log.md)
 
 ## Gate vs overlay
@@ -198,6 +203,7 @@ Emit per the spam rule above (gate always; overlay only for Reject / Build Later
 | **Gate**         | Doctrine Check answered; Forced Challenge stated; full Decision Output emitted (incl. Exclusions on Build Now); Evidence lists paths or gaps |
 | **Overlay**      | Doctrine applied; full Decision Output only if Reject / Build Later / Research Further; quiet Build Now has no block                         |
 | **`prioritize`** | Pullable vs parked split; ordered pullable list + park list with one-line rationales; Evidence listed; Mutations default read-only           |
+| **`capacity`**   | Recommended SP + planning band; capacity adjustments + board load cited; Evidence + Risks/cuts; Mutations default read-only                  |
 
 ## Handoff
 
@@ -212,6 +218,9 @@ product-owner gate
 product-owner prioritize
   ordered + parked → stop (read-only) unless user asks board mutations
   unadmitted / pathless items → optional gate (do not invent Priority)
+product-owner capacity
+  recommended SP + band → stop (read-only) unless user asks board mutations
+  ordering across items → prioritize; admission → gate
 grilling          → Decide only (stress-test interview); this skill keeps doctrine if topic is scope
 architecture / dev / *-dev / review.gil → never own "should we build X?"
 harvest           → reference/growth.md (only when asked or doctrine was wrong)
@@ -222,4 +231,5 @@ harvest           → reference/growth.md (only when asked or doctrine was wrong
 - After **Build Later** or **Reject**, do not start implementation.
 - After **Research Further**, name the smallest missing artifact (e.g. “document golden-path budgets in ROADMAP”) rather than drafting speculative product strategy unless asked.
 - After **`prioritize`**, default stop with read-only ranking advice. Optional `gate` for unadmitted items; never invent Priority. Board mutations only if the user explicitly asks.
+- After **`capacity`**, default stop with read-only commitment advice (recommended SP + band). Route ordering asks to `prioritize` and admission to `gate`. Board mutations only if the user explicitly asks.
 - Harvest / doctrine growth → [`reference/growth.md`](reference/growth.md); leave [`reference/learning-log.md`](reference/learning-log.md) empty after the event.
