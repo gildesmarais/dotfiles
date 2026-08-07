@@ -9,6 +9,8 @@ description: >-
 
 # TypeScript Dev
 
+**Stop:** read `$dev` Shared prep before any delta.
+
 Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, no-destructive git, workflow/plan, validation law, phase commits, and handoff skeleton. This pack adds TypeScript deltas only. Craft (modules, types, measured perf) lives in `architecture` — do not inline it here.
 
 ## When to use
@@ -67,9 +69,6 @@ Generated client or wire types leaking past the adapter / parse-unwrap outside t
 
 Pointers only — load when present; do not paste their bodies here:
 
-- Structure / types / measured perf → `architecture` (via `$dev` classify `design`).
-- Assure / merge readiness → `review.gil`.
-- Product scope → `product-owner`.
 - React / Next performance depth → `vercel-react-best-practices` when installed.
 - Project RN/UI overlays and `AGENTS.md` when present.
 

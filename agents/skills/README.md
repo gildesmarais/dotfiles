@@ -77,15 +77,17 @@ More: [skills.sh](https://skills.sh/). Swift catalog: [Swift-Agent-Skills](https
 
 One-way rules (prevent domain collisions):
 
-1. **Product before non-trivial scope** — `jira-ticket` / feature asks load `product-owner` **`gate`**. Impl continues only on **Build Now** → `$dev`. Skip for pure bug fix, refactor, infra. Product is gate-only this pass (stubs unauthored).
+1. **Product before non-trivial scope** — `jira-ticket` / feature asks load `product-owner` **`gate`**. Impl continues only on **Build Now** → `$dev` only (classifies; loads `architecture` when design). Skip for pure bug fix, refactor, infra. Product is gate-only this pass (stubs unauthored).
 2. **Craft ≠ product** — `architecture` / `dev` / `*-dev` / `review.gil` never answer “should we build X?”
-3. **Build entry is `$dev`** — classify / route / phase commits live there. Class `design` → `architecture` (branch pick inside); do not inline craft in `dev` or `*-dev`. Multi-load `{lang}-dev` from **touched-file** evidence when a change spans runtimes.
-4. **Implementation plans → `$dev` `plan`** — when writing an implementation plan (including Cursor plan mode), invoke `$dev` branch **`plan`** so classify, runtime route, and validate→commit phases are in the plan.
-5. **Phase CC → merge → notes** — Solution/Build plan phases author Conventional Commits (validate → ≥1 CC + rationale) via `architecture` Shared prep and `$dev`. After merge, `release` **`notes`** consumes history. At PR open, `pull-request` **`open`** applies the same format only if the tree is still dirty. Format SoT: [`CONTEXT.md`](CONTEXT.md).
-6. **Assure → Ship** — `review.gil` may hand off to `pull-request` **`comment`**. Never reverse: GitHub posting does not live under `review.gil`.
+3. **Build entry is `$dev`** — classify / route / phase commits live there. Class `design` → `architecture` (branch pick inside); do not inline craft in `dev` or `*-dev`. Multi-load `{lang}-dev` from **touched-file** evidence when a change spans runtimes. Packs: Stop — read `$dev` Shared prep before any delta.
+4. **Implementation plans → `$dev` `plan`** — when writing an implementation plan (including Cursor plan mode), invoke `$dev` branch **`plan`** so classify, runtime route, and validate→commit phases are in the plan. `jira-ticket` Planning Checkpoint emits via `$dev` **`plan`** when phases/commits matter.
+5. **Phase CC → merge → notes** — Solution/Build plan phases author Conventional Commits (validate → ≥1 CC + rationale) via `architecture` Shared prep and `$dev` — by default off the default branch; ask early when on default. After merge, `release` **`notes`** consumes history. At PR open, `pull-request` **`open`** applies the same format only if the tree is still dirty. Format SoT: [`CONTEXT.md`](CONTEXT.md).
+6. **Assure → Ship** — `review.gil` may hand off to `pull-request` **`comment`**. Never reverse: GitHub posting does not live under `review.gil`. After Build delivery from a plan, spawn `review.gil` (quality when in scope) before reporting done; if subagent unavailable, fresh in-session `review.gil` pass.
 7. **Explain → docs** — `communication` → `docs` **`editor`** when the artifact is a README/runbook, not a message. Never reverse. `docs` **`architecture`** is Solution-adjacent verify-only (no HLD/ADR author).
 8. **Overlay via `$dev` route** — `ruby-on-rails-dev` with `ruby-dev`; `swiftui-dev` with `swift-dev` (loaded by `$dev`, not as competing Build entries). Depth packs stay on pack **Compose routes**.
 9. **Decide** — `grilling` stress-tests Intent / Product / Solution; product doctrine stays with `product-owner` when the topic is scope.
+10. **API-truth soft deps** — API truth assumes Dash and/or Context7; if neither is available, agents warn once on first material API fallthrough then fall back (do not invent APIs). See `$dev` / [`CONTEXT.md`](CONTEXT.md).
+11. **Observability cue** — APM / error tracking / logging via matching MCP when links appear; not a vendor SoT under Build.
 
 ## Skill index
 

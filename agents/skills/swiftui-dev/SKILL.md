@@ -8,6 +8,8 @@ description: >-
 
 # SwiftUI Dev
 
+**Stop:** read `$dev` Shared prep before any delta.
+
 ## Purpose and Routing
 
 - Overlay loaded via `$dev` with `$swift-dev`; keep Swift-general workflow in `$swift-dev` and shared classify / one-surface / design / API truth / compat / git safety in `$dev`.

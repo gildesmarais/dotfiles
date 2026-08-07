@@ -9,6 +9,8 @@ description: >-
 
 # Rust Dev
 
+**Stop:** read `$dev` Shared prep before any delta.
+
 Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, no-destructive git, workflow/plan, validation law, phase commits, and handoff skeleton. This pack adds Rust deltas only. Craft (modules, types, measured perf) lives in `architecture` — do not inline it here.
 
 ## When to use

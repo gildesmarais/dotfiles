@@ -153,8 +153,8 @@ Emit per the spam rule above (gate always; overlay only for Reject / Build Later
 
 ```text
 product-owner gate
-  Build Now       → architecture (if design/structure) and/or $dev
-                    (routes {lang}-dev / overlay); Intent entrypoints
+  Build Now       → $dev only (classifies; loads architecture when design;
+                    routes {lang}-dev / overlay); Intent entrypoints
                     (e.g. jira-ticket) may continue impl
   Build Later     → stop impl; optional communication/status
   Research Further → name smallest missing product artifact; do not invent strategy
@@ -164,6 +164,6 @@ architecture / dev / *-dev / review.gil → never own "should we build X?"
 ```
 
 - Stress-test dialogue (one question at a time) → `grilling`; still apply this skill’s doctrine if the topic is product scope, and keep evidence rules (cite paths or say `unknown` — do not invent).
-- After **Build Now**, continue with `architecture` when design/structure is in play, and/or `$dev` for implementation (routes `{lang}-dev` / overlay). This skill does not teach how to build.
+- After **Build Now**, continue into **`$dev` only** (classifies; loads `architecture` when design is earned; routes `{lang}-dev` / overlay). Never treat `architecture` as a parallel Build entry beside `$dev`. This skill does not teach how to build.
 - After **Build Later** or **Reject**, do not start implementation.
 - After **Research Further**, name the smallest missing artifact (e.g. “document golden-path budgets in ROADMAP”) rather than drafting speculative product strategy unless asked.

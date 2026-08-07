@@ -3,11 +3,13 @@ name: ruby-dev
 description: >-
   Always load $dev first; this pack is deltas only. Language-runtime adapter
   loaded by $dev — not the Build entry. Use when $dev routed here or the user
-  names this skill with $dev already loaded. Ruby deltas: TDD-oriented fixes,
-  gem/CLI/adapter posture, Rails overlay compose.
+  names this skill with $dev already loaded. Ruby deltas: TDD posture,
+  gem/CLI/adapter, Rails overlay compose.
 ---
 
 # Ruby Dev
+
+**Stop:** read `$dev` Shared prep before any delta.
 
 Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, no-destructive git, workflow/plan, validation law, phase commits, and handoff skeleton. This pack adds Ruby deltas only. Craft (modules, types, measured perf) lives in `architecture` — do not inline it here.
 

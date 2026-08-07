@@ -144,15 +144,35 @@ Product constraints cited from repo docs (`AGENTS.md`, `ROADMAP.md`, or equivale
 _Avoid_: inventing budgets or paths when docs are silent → Research Further
 
 **Handoff**:
-Before non-trivial product scope, Intent entrypoints (`jira-ticket`, feature asks) load `product-owner` **`gate`**. Continue impl only on **Build Now** → `dev` (and `architecture` when design/structure is in play). Never let `architecture` / `dev` / `*-dev` / `review.gil` answer “should we build X?”. `grilling` is Decide-only stress-test (third-party install); product-owner keeps doctrine when the topic is scope.
+Before non-trivial product scope, Intent entrypoints (`jira-ticket`, feature asks) load `product-owner` **`gate`**. Continue impl only on **Build Now** → `$dev` only (classifies; loads `architecture` when design is earned). Never treat `architecture` as a parallel Build entry beside `$dev`. Never let `architecture` / `dev` / `*-dev` / `review.gil` answer “should we build X?”. `grilling` is Decide-only stress-test (third-party install); product-owner keeps doctrine when the topic is scope.
 
 # Dev Skills Domain
 
 ## Language
 
 **Dev** (skill noun: `dev`):
-Build domain router — implementation plans and code changes. Branches `plan` | `implement`. Owns shared classify, runtime/overlay route, validation law, and phase commits.
+Build domain router — implementation plans and code changes. Branches `plan` | `implement`. Owns shared classify, runtime/overlay route, validation law, phase commits, API truth, observability cue, security cue, and post-delivery Assure.
 _Avoid_: treating `{lang}-dev` as the Build entry; inlining architecture craft here
+
+**Plan** (`dev` branch):
+Implementation-plan carrier (Solution-touch). Classify; route runtime(s)+overlay(s); when class=`design`, name craft decisions / architecture refs; emit phases ending validate→commit. Cursor plan mode uses this branch.
+_Avoid_: inventing a separate Solution plan skill; skipping classify/route in ad-hoc plans
+
+**API truth** / **warn-once fallthrough**:
+Do not invent material stdlib/framework APIs. Ladder: repo docs → Dash (discover tools first) → Context7 if present → pack secondary → unknown. Warn **once on first material API fallthrough** in the session (not at `$dev` load) when no API-doc MCP verified the claim.
+_Avoid_: warn-at-load; inventing APIs; assuming Dash tool names without discovery
+
+**Observability cue** (APM / error tracking / logging MCP):
+When the ask cites APM / traces, error tracking, or logging links/IDs, discover and use the matching observability MCP. Not a vendor SoT in `$dev`.
+_Avoid_: Datadog as the OS noun; inventing a full observability skill under Build
+
+**Security cue** (light, on `$dev`):
+Authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, privileged ops → prefer `review.gil` **`security`** on post-delivery Assure (co-load during implement when clearly needed). Dense matrix stays in overlay/`AGENTS.md`.
+_Avoid_: duplicating the Rails Security Trigger Matrix in `$dev`
+
+**Post-delivery Assure**:
+Before reporting delivery on plan-driven implement: prefer spawn a new agent → `review.gil` findings (security when cue matched; `quality` when in scope). Fallback: fresh in-session `review.gil` pass. Do not claim ship-ready without it.
+_Avoid_: implementer self-check as the sole review; inferring `quality` from bare “review”
 
 **Architecture** (skill noun: `architecture`):
 Language-free Solution craft: structure, types, measured performance. Exactly one architecture router.
@@ -187,8 +207,8 @@ Signal that selects `architecture` **`deep-modules`** — not a skill name.
 _Avoid_: deepen-modules skill
 
 **Harvest**:
-Architecture: `architecture/reference/growth.md` + `learning-log.md` → sparse-promote into craft refs. Assure: `review.gil/reference/growth.md` + `learning-log.md` → lens refs. Language-only → `*-dev` `reference.md`. After store edits: `skill doctor`; on drift → `skill backfill <name>` → `rcup`.
-_Avoid_: append-only forever doctrine in the log; growing frozen router checklists for every lesson; loading growth.md on every craft/review session; inventing a parallel runtime route registry outside `dev/SKILL.md`
+Build: pain-twice or user-asked only — `$dev` → routed `{lang}-dev` `reference.md` (or `architecture/reference/growth.md` for craft). Architecture: `architecture/reference/growth.md` + `learning-log.md` → sparse-promote into craft refs. Assure: `review.gil/reference/growth.md` + `learning-log.md` → lens refs. After store edits: `skill doctor`; on drift → `skill backfill <name>` → `rcup`.
+_Avoid_: harvest on every `$dev` implement completion; append-only forever doctrine in the log; growing frozen router checklists for every lesson; loading growth.md on every craft/review session; inventing a parallel runtime route registry outside `dev/SKILL.md`; inventing `$dev` harvest theater
 
 **Expansion law**:
 Seven rules in `architecture/reference/growth.md` before adding a branch. Prefer sparse harvest over new branches; never invent a top-level craft skill when a `refactor-<concern>` branch fits. New language packs / overlays are a **router contract edit** on frozen `dev/SKILL.md` (plus README/CONTEXT index) — not a progressive `reference/runtimes.md`.
@@ -214,11 +234,11 @@ Optional agent installs (`grilling`, `swift-*`, vendor React packs). Not first-p
 - Footers: git-trailer style
 
 **Phase commit** (when to commit — not at release):
-After each Solution/Build plan phase (architecture phase, surgical milestone, or user-named plan step): validate → ≥1 Conventional Commit; body = rationale / intent / why. Dirty tree at PR open: `pull-request` **`open`** applies the same format once if needed. `release` **`notes`** consumes merged history only — never invents commits.
-Carriers: `architecture` Shared prep (Solution craft) and **`dev`** Shared prep (Build plan/implement). Overlays must not duplicate. Solution/Build implementation plans end each phase with validate → commit (cite this entry; do not fork the format).
+After each Solution/Build plan phase (architecture phase, surgical milestone, or user-named plan step): validate → ≥1 Conventional Commit; body = rationale / intent / why — **by default when not on the default branch**. On the default branch (from `AGENTS.md` / remote HEAD): ask early whether to author phase commits here or defer; do not silently commit on main/master. Dirty tree at PR open: `pull-request` **`open`** applies the same format once if needed. `release` **`notes`** consumes merged history only — never invents commits.
+Carriers: `architecture` Shared prep (Solution craft) and **`dev`** Shared prep (Build plan/implement). Overlays must not duplicate. Solution/Build implementation plans end each phase with validate → commit (cite this entry; do not fork the format). Handoff states commits made or deferred.
 
 **Handoff**:
-`dev` → `{lang}-dev` / overlay (runtime route). `dev` classify `design` → `architecture` (branch pick inside). `architecture` / `dev` → `review.gil` / `pull-request` for assure/ship. No reverse: craft does not own Product gate. Changelog after merge → `release` **`notes`**.
+`dev` → `{lang}-dev` / overlay (runtime route). `dev` classify `design` → `architecture` (branch pick inside). Plan-driven `implement` → post-delivery Assure (`review.gil` spawn preferred) before delivery report. `architecture` / `dev` → `review.gil` / `pull-request` for assure/ship. No reverse: craft does not own Product gate. Changelog after merge → `release` **`notes`**.
 
 # Ship Skills Domain
 

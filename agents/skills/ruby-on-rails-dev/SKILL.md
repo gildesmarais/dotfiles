@@ -8,6 +8,8 @@ description: >-
 
 # Ruby on Rails Dev
 
+**Stop:** read `$dev` Shared prep before any delta.
+
 ## Purpose and Routing
 
 - Overlay loaded via `$dev` with `$ruby-dev`; keep Ruby-general workflow in `$ruby-dev` and shared classify / one-surface / design / API truth / compat / git safety in `$dev`.

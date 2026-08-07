@@ -1,6 +1,6 @@
 ---
 name: jira-ticket
-description: "Investigate, scope, and implement a Jira ticket in this repository from a ticket URL or key such as ABC-123. Use when work starts from Jira, must use Atlassian MCP to gather issue details, may need Datadog MCP for linked observability evidence, must verify the current codebase before changing code, and should branch from a fresh default branch before autonomous implementation."
+description: "Investigate, scope, and implement a Jira ticket in this repository from a ticket URL or key such as ABC-123. Use when work starts from Jira, must use Atlassian MCP to gather issue details, may need observability MCP (APM / errors / logs) for linked evidence, must verify the current codebase before changing code, and should branch from a fresh default branch before autonomous implementation."
 ---
 
 # Jira Ticket
@@ -8,7 +8,7 @@ description: "Investigate, scope, and implement a Jira ticket in this repository
 ## Overview
 
 Use this skill to turn a Jira ticket into an implementation workflow for this repository.
-Start from the ticket, gather evidence with Atlassian MCP, verify the codebase locally, route into the required repo skills, propose a concrete implementation plan, and after user agreement execute autonomously until blocked.
+Start from the ticket, gather evidence with Atlassian MCP, verify the codebase locally, route into the required repo skills, propose a concrete implementation plan via `$dev` **`plan`**, and after user agreement execute autonomously until blocked — then post-delivery Assure before reporting done.
 
 ## Inputs
 
@@ -20,7 +20,7 @@ Start from the ticket, gather evidence with Atlassian MCP, verify the codebase l
 - Use Atlassian MCP. Do not rely on copied ticket text alone when Jira is accessible.
 - Verify you are in the correct repository before planning or editing code.
 - Read the local code before making claims. Scan files and contracts; do not assume architecture from the ticket wording.
-- If the ticket or linked Jira material contains Datadog links, use Datadog MCP to inspect the linked artifacts and include the findings in your assessment.
+- If the ticket or linked material cites APM / traces, error tracking, or logging links/IDs, use the matching observability MCP when available; fold findings into the assessment.
 - Follow repository routing from `AGENTS.md`.
 
 ## Workflow
@@ -28,13 +28,13 @@ Start from the ticket, gather evidence with Atlassian MCP, verify the codebase l
 1. Normalize the ticket input.
 2. Verify the repository and load repo-specific context.
 3. Fetch and assess Jira details with Atlassian MCP.
-4. Fetch Datadog evidence when the Jira issue references Datadog artifacts.
+4. Fetch observability evidence when the Jira issue references APM / errors / logs artifacts (vendor map below when Datadog links match).
 5. Read the code and determine the affected surface area.
 6. If scope is non-trivial user-facing product work, run `product-owner` `gate` before planning impl; stop on Build Later / Research Further / Reject.
-7. Invoke the required implementation/review skills.
+7. Load `$dev` **`plan`** (and required runtime/review skills) for the Planning Checkpoint when phases/commits matter.
 8. Present a concise implementation assessment and proposed branch name, then wait for user agreement.
-9. After agreement, create a fresh branch from the default branch and implement autonomously.
-10. Run quality gates, summarize validation evidence, and stop when the work is ready to push and open a PR.
+9. After agreement, create a fresh branch from the default branch and implement autonomously via `$dev` **`implement`**.
+10. Run post-delivery Assure (`review.gil` — spawn preferred), quality gates, summarize validation evidence, and stop when the work is ready to push and open a PR.
 
 ## Repository Verification
 
@@ -50,21 +50,21 @@ Start from the ticket, gather evidence with Atlassian MCP, verify the codebase l
 - Distinguish facts from inference. If acceptance criteria are missing, derive the smallest defensible implementation scope from the evidence and mark the assumption explicitly.
 - If the ticket references a Confluence page, use Atlassian MCP to read the page rather than relying on title-only search snippets.
 
-## Datadog Evidence
+## Observability evidence
 
-- Inspect the Jira issue text, comments, remote links, and linked documentation for Datadog URLs or IDs.
-- When Datadog evidence exists, use Datadog MCP to inspect the relevant object instead of treating the link as decoration.
-- Prefer direct retrieval tools when the URL yields a concrete identifier:
+- If linked APM / errors / logs appear, use the MCP that matches the link host/product when present. Do not invent a vendor encyclopedia; discover tools on the matching server when those links appear.
+- Inspect the Jira issue text, comments, remote links, and linked documentation for observability URLs or IDs.
+- **When Datadog links appear** (host/product match), use Datadog MCP to inspect the linked artifacts instead of treating the link as decoration. Prefer direct retrieval tools when the URL yields a concrete identifier:
   incident -> `get_datadog_incident`
   notebook -> `get_datadog_notebook`
   trace -> `get_datadog_trace`
 - Use search tools for dashboards, monitors, logs, spans, services, or when only partial identifiers are available.
 - Pull only the evidence needed to understand the bug, affected services, blast radius, and validation targets.
-- Fold Datadog findings back into the implementation plan and test strategy.
+- Fold observability findings back into the implementation plan and test strategy.
 
 ## Code Reading Discipline
 
-- Search the codebase for ticket terms, error messages, model names, endpoint paths, feature flags, and domain nouns from Jira and Datadog.
+- Search the codebase for ticket terms, error messages, model names, endpoint paths, feature flags, and domain nouns from Jira and observability evidence.
 - Read the surrounding implementation, not just the first textual match.
 - Verify existing contracts in controllers, services, policies, serializers, workers, routes, migrations, specs, and documentation when relevant.
 - Identify tenant scoping, authorization, structured logging, and retry/idempotency behavior when they may be affected.
@@ -72,20 +72,20 @@ Start from the ticket, gather evidence with Atlassian MCP, verify the codebase l
 ## Skill Routing
 
 - **Product gate:** Before non-trivial user-facing scope (new feature, UI/API surface, parity ask, UAT-driven expansion), load `product-owner` branch `gate`. Continue implementation only on **Build Now**. Skip the Product gate for pure bug fix, refactor, or infra with no user-facing concept or step change. Never let `architecture` / `dev` / `*-dev` / `review.gil` answer “should we build X?”
-- Load `$dev` for implementation discipline; it routes the runtime (`ruby-dev`, `rust-dev`, …) and overlays (`ruby-on-rails-dev`, `swiftui-dev`, …) from the change surface.
-- Add the `review.gil` skill with explicit security focus whenever the work matches the `AGENTS.md` security trigger matrix. Default to invoking it when authn/authz, tenancy, PII/PHI, exports, webhooks, raw SQL, external fetches, or sensitive Sidekiq behavior may change.
+- Load `$dev` for implementation discipline; it routes the runtime (`ruby-dev`, `rust-dev`, …) and overlays (`ruby-on-rails-dev`, `swiftui-dev`, …) from the change surface. Planning Checkpoint uses `$dev` **`plan`**; post-agreement coding uses `$dev` **`implement`**.
+- Add the `review.gil` skill with explicit security focus whenever the work matches the `AGENTS.md` security trigger matrix (or `$dev` security cue). Default to invoking it when authn/authz, tenancy, PII/PHI, exports, webhooks, raw SQL, external fetches, or sensitive Sidekiq behavior may change.
 - Follow `AGENTS.md` precedence if guidance overlaps.
 - If a referenced skill is unavailable in the current environment, say so explicitly and continue with the closest applicable local workflow instead of blocking.
 
 ## Planning Checkpoint
 
-Before creating a branch or editing code, provide a concise checkpoint covering:
+Before creating a branch or editing code, emit the plan via / load `$dev` **`plan`** (especially when phases/commits matter), then provide a concise checkpoint covering:
 
 - `Ticket facts`: verified Jira facts that define scope.
 - `Files read`: the code areas you actually inspected.
 - `Skills required`: whether `product-owner` gate ran (or was skipped and why), which `$dev` runtime (+ overlay) is required, whether security-focused `review.gil` is required, plus why.
 - `Branch name`: the proposed branch name.
-- `Implementation plan`: a short plan for the code change.
+- `Implementation plan`: the `$dev` **`plan`** output — ordered phases each ending validate→commit (cite CONTEXT), classification, residual risk.
 - `Assumptions`: key assumptions or open questions.
 
 Wait for explicit user agreement at this point.
@@ -105,7 +105,7 @@ Wait for explicit user agreement at this point.
 After the user agrees:
 
 - Create the branch from the fresh default branch.
-- Implement autonomously.
+- Implement autonomously via `$dev` **`implement`**.
 - Interrupt only when blocked by a real ambiguity, missing access, failing environment prerequisite, or a decision that would be risky to guess.
 - Keep diffs minimal and cohesive.
 - Do not revert unrelated user changes.
@@ -114,11 +114,12 @@ After the user agrees:
 ## Validation And Handoff
 
 - Run the project’s relevant quality gates for the changed surface area.
+- **Post-delivery Assure:** before reporting delivery, prefer spawning a **new agent** that runs `review.gil` (default: **`findings`** / finish + warranted lenses; include **`security`** when the security cue / matrix matched). Invoke **`quality`** when in scope (explicit merge-prep / boy-scout, or clear fixable P0/P1 already authorized — never infer from bare “review”). **Fallback:** if Task/subagent is unavailable, run `review.gil` as a fresh in-session pass (reload skill; do not reuse implementer judgment as the sole review). Report delivery only after that pass returns.
 - Report concrete validation evidence, not vague claims.
 - State whether the required skills were invoked.
 - Stop when the branch is ready to push and a PR can be opened.
 - Final handoff should include:
-  branch name, change summary, commands run, pass/fail status, residual risks, and whether the changes are ready to push and open a pull request.
+  branch name, change summary, commands run, pass/fail status, Assure outcome, residual risks, and whether the changes are ready to push and open a pull request.
 
 ## Output Discipline
 
