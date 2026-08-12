@@ -158,7 +158,8 @@ product-owner gate
                     (e.g. jira-ticket) may continue impl
   Build Later     → stop impl; optional communication/status
   Research Further → name smallest missing product artifact; do not invent strategy
-  Reject          → stop
+  Reject          → stop (unless user explicitly overrides — then $dev plan records override)
+  Plan mode       → explicit /product-owner; product stance in dev/reference/plan-pipeline.md
 grilling          → Decide only (stress-test interview); this skill keeps doctrine if topic is scope
 architecture / dev / *-dev / review.gil → never own "should we build X?"
 ```

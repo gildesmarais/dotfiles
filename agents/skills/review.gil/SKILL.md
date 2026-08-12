@@ -68,6 +68,7 @@ Resolve bundled scripts relative to this installed skill directory.
 - Merge-prep execution → [`reference/quality.md`](reference/quality.md)
 - PR publish orchestration → [`reference/publish.md`](reference/publish.md); at drafting load [`reference/conventional-comments.md`](reference/conventional-comments.md), and immediately before mutation load [`reference/github-state.md`](reference/github-state.md)
 - Harvest only → [`reference/growth.md`](reference/growth.md) + [`reference/learning-log.md`](reference/learning-log.md)
+- Plan embed (checklists only) → [`reference/plan-checklists.md`](reference/plan-checklists.md) via [`dev/reference/plan-pipeline.md`](../dev/reference/plan-pipeline.md); **not** a findings run
 
 ## Handoff
 

@@ -5,8 +5,9 @@ description: >
   language/overlay route, phase commits, validation honesty, API truth.
   Use when the ask is implement, fix, feature, implementation plan, Cursor plan
   mode, surgical, or design-shaped coding work. Routes to {lang}-dev / overlays
-  (multi-load from touched-file evidence); design → architecture; assure/ship →
-  review.gil / pull-request. Never answers "should we build X?".
+  (multi-load from touched-file evidence); design → architecture; plan mode →
+  reference/plan-pipeline.md quality gates; assure/ship → review.gil /
+  pull-request. Never answers "should we build X?".
 ---
 
 # Dev
@@ -17,10 +18,10 @@ Single Build entry (and Solution-touch for implementation plans). Language packs
 
 Never ask the user to pick the branch when signals are clear.
 
-| Branch      | When                                                                              | Job                                                                                                                                                                           |
-| ----------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `plan`      | Writing / refining an implementation plan (Cursor plan mode or explicit plan ask) | Classify; route runtime(s) + overlay(s); name architecture branches if `design`; emit phased plan with validate→commit per phase — no code unless user already approved build |
-| `implement` | Default when coding                                                               | Shared prep → load routed `{lang}-dev` (+ overlay) → surgical or post-architecture execute → handoff                                                                          |
+| Branch      | When                                                                              | Job                                                                                                       |
+| ----------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `plan`      | Writing / refining an implementation plan (Cursor plan mode or explicit plan ask) | Load [`reference/plan-pipeline.md`](reference/plan-pipeline.md) — **no code** until user approves execute |
+| `implement` | Default when coding                                                               | Shared prep → load routed `{lang}-dev` (+ overlay) → surgical or post-architecture execute → handoff      |
 
 | Signal                                      | Branch                 |
 | ------------------------------------------- | ---------------------- |
@@ -63,7 +64,7 @@ Never ask the user to pick the branch when signals are clear.
 
 ## Branch reference
 
-- **`plan`** — Shared prep through route + classify; emit ordered phases each ending validate→commit (cite [`CONTEXT.md`](../CONTEXT.md)); list validation entrypoints from the routed lang pack(s); residual risk. When class=`design`, name craft decisions or progressively load named `architecture` refs so ownership / type / perf are named (or N/A with evidence). No code unless build already approved. Cursor plan mode and “implementation plan” asks use this branch.
+- **`plan`** — Load [`reference/plan-pipeline.md`](reference/plan-pipeline.md) first; follow its ready checklist.
 - **`implement`** — Shared prep → load routed `{lang}-dev` (+ overlay) → execute surgical or post-`architecture` decisions with language validation → post-delivery Assure → handoff.
 
 ## Handoff
@@ -79,5 +80,5 @@ Never ask the user to pick the branch when signals are clear.
 
 | Branch      | Done when                                                                                                                                                                                                                                                                                             |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `plan`      | Classification stated; runtime(s) (+ overlay) named; when `design`, craft decisions / architecture refs named or N/A with evidence; ownership/type/perf named or N/A with evidence; ordered phases each ending validate→commit (or deferral stated if on default branch); residual risk called out    |
+| `plan`      | [`reference/plan-pipeline.md`](reference/plan-pipeline.md) ready checklist satisfied                                                                                                                                                                                                                  |
 | `implement` | Classification stated; compat decision stated or user was asked; routed lang pack (+ overlay) handoff fields satisfied; commands + exit honesty; phase commits made or deferred stated; post-delivery Assure (`review.gil`) completed (spawn preferred, else fresh in-session) before delivery report |

@@ -155,7 +155,7 @@ Build domain router — implementation plans and code changes. Branches `plan` |
 _Avoid_: treating `{lang}-dev` as the Build entry; inlining architecture craft here
 
 **Plan** (`dev` branch):
-Implementation-plan carrier (Solution-touch). Classify; route runtime(s)+overlay(s); when class=`design`, name craft decisions / architecture refs; emit phases ending validate→commit. Cursor plan mode uses this branch.
+Implementation-plan carrier. Procedural SoT: `dev/reference/plan-pipeline.md`. Cursor plan mode uses this branch.
 _Avoid_: inventing a separate Solution plan skill; skipping classify/route in ad-hoc plans
 
 **API truth** / **warn-once fallthrough**:
