@@ -31,6 +31,7 @@ Dual ownership of one fact, passthrough bags, shallow multi-call husks, or the u
 - On conflict, revert to last-known-good — do not invent a new identity and retry.
 - Route key stale unless live state matches — if navigation names an entity the live result does not hold, fall back to create/list shell; never render a mismatched result.
 - When two runtimes encode the same closed decision, share one fixture corpus both assert against.
+- Spec twins that re-encode the same algorithm: probe production for dual ownership before collapsing to shared examples only; if two adapters share rules, extract one kernel and keep thin adapters — do not invent a second production home when the lib path is already single-owner.
 - Anti-patterns: dump modules of unrelated helpers; twin structs that must stay in sync; adapters that grow domain branches.
 
 ## Sequencing

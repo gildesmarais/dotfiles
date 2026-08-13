@@ -4,7 +4,7 @@ description: >-
   Always load $dev first; this pack is deltas only. Language-runtime adapter
   loaded by $dev — not the Build entry. Use when $dev routed here or the user
   names this skill with $dev already loaded. Ruby deltas: TDD posture,
-  gem/CLI/adapter, Rails overlay compose.
+  gem/CLI/adapter, RSpec suite hygiene, Rails overlay compose.
 ---
 
 # Ruby Dev
@@ -20,7 +20,7 @@ Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, 
 
 ## Also earn `design` when
 
-Wrong-owner boundary absorb (serialize/cache/encode bent into a neighbor) / re-ledgering an already-owned aggregate / validate vs runtime expansion diverge / shared deadline or conflated meters across attempts / guard or policy owned in more than one place / published contract vs runtime acceptance drift / specs need private reach to assert behavior.
+Wrong-owner boundary absorb (serialize/cache/encode bent into a neighbor) / re-ledgering an already-owned aggregate / validate vs runtime expansion diverge / shared deadline or conflated meters across attempts / guard or policy owned in more than one place / published contract vs runtime acceptance drift / specs need private reach to assert behavior / mirrored specs that re-encode the same algorithm across two production adapters (probe dual ownership — co-load architecture `deep-modules`).
 
 ## Docsets
 
@@ -35,12 +35,14 @@ Wrong-owner boundary absorb (serialize/cache/encode bent into a neighbor) / re-l
 - Prefer TDD for behavior changes: focused failing test first when cheap, then smallest safe fix.
 - Prefer simple, forward, clean diffs. LOC reduction and modern idioms (`match?`, `Enumerable`, pattern matching) are fine on the surgical path; do not treat them as a substitute for `architecture` when design is earned.
 - Evidence: touched Ruby files, nearby tests, call sites, entrypoints, public contracts; use YARD/RBS/Sorbet only if the repo already relies on them.
+- Load thin postures in [`reference.md`](reference.md) when RSpec suite hygiene, SimpleCov/group floors, spec-twin→lib probe, or CLI/config construction homes are in play. Test-quality review judgment stays in `review.gil` `tests` — do not paste it here.
 
 ## Surgical posture
 
 - For behavior-preserving moves without design signals, keep characterization or boundary coverage before moving code.
 - Favor small, unified methods over fragmented helper-hell; data-driven constants/maps over repetitive branches when that is the whole ask.
 - Local correctness (immutability honesty, adapter honesty, safe handling of untrusted text) stays surgical until dual ownership appears.
+- When suite cleanup discovers mirrored specs, classify **spec-only twin** vs **dual-ownership twin** before editing (see [`reference.md`](reference.md)); dual ownership earns `design` + architecture `deep-modules`.
 - If the failing path is framework-lifecycle shaped, load `ruby-on-rails-dev` and apply its postures in the same change rather than inventing a language-only clamp.
 
 ## Tooling
@@ -61,6 +63,8 @@ Wrong-owner boundary absorb (serialize/cache/encode bent into a neighbor) / re-l
 Pointers only — load when present; do not paste their bodies here:
 
 - Rails-shaped work → `ruby-on-rails-dev` (with this skill; via `$dev` route).
+- Suite quality / over-mocking review → `review.gil` `tests` (Assure), not a second doctrine log here.
+- Spec-twin dual ownership / shared rule kernels → architecture `deep-modules`.
 
 ## Handoff deltas
 

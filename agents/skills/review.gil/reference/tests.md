@@ -43,6 +43,9 @@ After scope prep in `SKILL.md`, continue here.
 - Lifecycle/race regressions that only assert the happy path and never replay the broken storage or unhydrated cache state.
 - Dual-runtime encode decisions asserted on one side only — prefer shared fixture vectors both runtimes check.
 - Per-feature unwrap/parse copies when a shared envelope characterization already exists (or should).
+- Mirrored suite sections that look like “duplication debt”: classify before acting — **spec-only twin** (lib already single-owner → shared examples / table-drive / thin extra layers) vs **dual-ownership twin** (same algorithm in two production homes → extract a shared kernel, then collapse specs). Collapsing specs alone leaves drift risk.
+- Chasing branch-% or near-floor line misses with micro-units when coverage floors already pass and misses are defensive/coercion arms — prefer fixture-driven product edges and flight-level cleanup.
+- The same scenario asserted at three flight levels (unit + session + facade) without a discriminating difference — keep one authoritative layer plus one higher smoke.
 - Mounting surfaces the project bans from golden-path tests (read `AGENTS.md`; do not invent names here).
 - Helper/mapper production changes without colocated tests when the project enforces that pairing.
 
@@ -55,6 +58,8 @@ After scope prep in `SKILL.md`, continue here.
 - Regression examples that clearly encode the bug trigger, not just the final output.
 - Boundary tests that prove adapters and serializers match the real contract at least once.
 - One shared parse/envelope characterization over duplicated per-feature unwrap assertions.
+- When mirrored specs appear, audit production first: if dual ownership, fix the lib; if already DRY, collapse the suite — never invent a second lib fold to make the specs look neat.
+- Prefer fewer, higher-flight behavioral outcomes over denser collaborator choreography when both cover the same product path.
 
 ## When Mocking Is Correct
 
