@@ -18,10 +18,10 @@ Single Build entry (and Solution-touch for implementation plans). Language packs
 
 Never ask the user to pick the branch when signals are clear.
 
-| Branch      | When                                                                              | Job                                                                                                       |
-| ----------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `plan`      | Writing / refining an implementation plan (Cursor plan mode or explicit plan ask) | Load [`reference/plan-pipeline.md`](reference/plan-pipeline.md) — **no code** until user approves execute |
-| `implement` | Default when coding                                                               | Shared prep → load routed `{lang}-dev` (+ overlay) → surgical or post-architecture execute → handoff      |
+| Branch      | When                                                                              | Job                                                                                                                                 |
+| ----------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `plan`      | Writing / refining an implementation plan (Cursor plan mode or explicit plan ask) | Phase 0 Gate: `view_file` on [`reference/plan-pipeline.md`](reference/plan-pipeline.md) — **no code** until user approves           |
+| `implement` | Default when coding                                                               | Shared prep → Classify (Shift-Left `architecture` if design) → load routed `{lang}-dev` (+ overlay & reference) → execute → handoff |
 
 | Signal                                      | Branch                 |
 | ------------------------------------------- | ---------------------- |
@@ -37,20 +37,21 @@ Never ask the user to pick the branch when signals are clear.
 2. Evidence before claims: `rg`, file reads, in-tree call sites. Label Strong / Worth / Speculative when surveying.
 3. **Observability cue:** if the ask cites **APM / traces, error tracking, or logging** links/IDs (or equivalent incident signals), discover and use the **matching observability MCP** when available; fold findings into evidence before coding. Do not hardcode a vendor. Do not invent a full observability skill. If no observability MCP is available, say so and continue with ask text + codebase evidence. Vendor-specific tool recipes stay out of `$dev`.
 4. **Security cue:** when the ask/change touches authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, or privileged ops, prefer `review.gil` **`security`** on the post-delivery Assure pass (and co-load during implement when clearly needed). Dense Rails Security Trigger Matrix stays in the overlay / `AGENTS.md` — this cue is light only.
-5. **Classify:** `surgical` | `design` | `review-hand-off`.
+5. **Classify (Shift-Left Architecture Enforcement):** `surgical` | `design` | `review-hand-off`.
    - Earn `design` when any of the **core six**: dual ownership / shallow modules / primitive obsession across boundaries / structural cleanup ask / measured perf / type-driven refactor.
+   - **Gated Rule:** When `design` is earned, DO NOT edit code immediately. You MUST invoke `architecture` (load its axioms and matched references) and document the structural/seam decisions in the plan or milestone ledger before writing code.
    - Language packs may append a short “also earn when…” list only — do not restate the core six there as a second SoT.
    - `review-hand-off` → stop and continue with `review.gil` (do not implement under this skill).
-6. **Route runtime** (load dedicated skill(s); do not paste bodies). Prefer **files the ask/change actually touches** — not repo-wide extension presence.
+6. **Route runtime** (load dedicated skill(s) + references; do not paste bodies). Prefer **files the ask/change actually touches** — not repo-wide extension presence.
 
-| Touched evidence                                                          | Load                             |
-| ------------------------------------------------------------------------- | -------------------------------- |
-| `.rb` / Ruby gem or plain Ruby                                            | `ruby-dev`                       |
-| Rails-shaped (controllers, policies, serializers, workers, migrations, …) | `ruby-dev` + `ruby-on-rails-dev` |
-| `.rs`                                                                     | `rust-dev`                       |
-| `.swift` (non-UI)                                                         | `swift-dev`                      |
-| SwiftUI / WidgetKit / AppKit UI                                           | `swift-dev` + `swiftui-dev`      |
-| `.ts` / `.tsx` / `.js` / `.jsx`                                           | `typescript-dev`                 |
+| Touched evidence                                                          | Load                                  |
+| ------------------------------------------------------------------------- | ------------------------------------- |
+| `.rb` / Ruby gem or plain Ruby                                            | `ruby-dev` (and `reference.md`)       |
+| Rails-shaped (controllers, policies, serializers, workers, migrations, …) | `ruby-dev` + `ruby-on-rails-dev`      |
+| `.rs`                                                                     | `rust-dev` (and `reference.md`)       |
+| `.swift` (non-UI)                                                         | `swift-dev`                           |
+| SwiftUI / WidgetKit / AppKit UI                                           | `swift-dev` + `swiftui-dev`           |
+| `.ts` / `.tsx` / `.js` / `.jsx`                                           | `typescript-dev` (and `reference.md`) |
 
 **Multi-load OK** when touched files span multiple rows — one phase plan may name several runtimes; validate per surface. Clarify only when file signals are absent or contradictory (or follow repo `AGENTS.md`).
 
@@ -64,8 +65,8 @@ Never ask the user to pick the branch when signals are clear.
 
 ## Branch reference
 
-- **`plan`** — Load [`reference/plan-pipeline.md`](reference/plan-pipeline.md) first; follow its ready checklist.
-- **`implement`** — Shared prep → load routed `{lang}-dev` (+ overlay) → execute surgical or post-`architecture` decisions with language validation → post-delivery Assure → handoff.
+- **`plan`** — Phase 0 Gate: Execute `view_file` on [`reference/plan-pipeline.md`](reference/plan-pipeline.md) first; satisfy its ready checklist before any code is generated.
+- **`implement`** — Shared prep → Classify (Shift-Left `architecture` if design) → load routed `{lang}-dev` (+ overlay & reference) → execute surgical or post-`architecture` decisions with language validation → post-delivery Assure → handoff.
 
 ## Handoff
 
@@ -78,7 +79,7 @@ Never ask the user to pick the branch when signals are clear.
 
 ## Completion criteria
 
-| Branch      | Done when                                                                                                                                                                                                                                                                                             |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `plan`      | [`reference/plan-pipeline.md`](reference/plan-pipeline.md) ready checklist satisfied                                                                                                                                                                                                                  |
-| `implement` | Classification stated; compat decision stated or user was asked; routed lang pack (+ overlay) handoff fields satisfied; commands + exit honesty; phase commits made or deferred stated; post-delivery Assure (`review.gil`) completed (spawn preferred, else fresh in-session) before delivery report |
+| Branch      | Done when                                                                                                                                                                                                                                                                                                                                                  |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `plan`      | [`reference/plan-pipeline.md`](reference/plan-pipeline.md) ready checklist satisfied; no code written before plan approval                                                                                                                                                                                                                                 |
+| `implement` | Classification stated; shift-left architecture documented if design earned; compat decision stated or user was asked; routed lang pack (+ overlay) handoff fields satisfied; commands + exit honesty; phase commits made or deferred stated; post-delivery Assure (`review.gil`) completed (spawn preferred, else fresh in-session) before delivery report |

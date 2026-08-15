@@ -33,22 +33,6 @@ Routing rules:
 - “Draft review” means read-only findings unless the user explicitly asks for GitHub-pending review comments. End-to-end review drafts use `publish` and stop before submission; a supplied, already-verified ledger uses the `pull-request` skill `comment` branch even when it should remain pending.
 - Never infer `quality` from “review.” It requires explicit permission to change code.
 
-## Select review lenses
-
-After scope prep, load references progressively:
-
-| Lens       | Load when                                                                                                                                       |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `finish`   | Baseline for every generic findings or publish review                                                                                           |
-| `tests`    | Tests changed, behavior changed without convincing coverage, or the user explicitly asks for test quality                                       |
-| `perf`     | Ruby code changes a plausibly hot path, query/allocation behavior, or the user explicitly asks for Ruby performance                             |
-| `security` | Authn/authz, tenancy, sensitive data, external inputs, secrets, privileged operations, resilience, or explicit request                          |
-| `legacy`   | Deprecated/obsolete markers, dual exports, superseded store/wire hydrate, or user asks for legacy/tech-debt cleanup; **always** under `quality` |
-
-For an explicitly focused tests, performance, security, or legacy review, load only that lens unless another lens is necessary to verify a concrete finding. Never ask “which review?” when the target is known.
-
-Produce one report, not one report per lens. Generic findings use the `finish` output structure; specialized references contribute checks and finding-specific evidence. Fold security assumptions into **Confidence & Uncertainty** and its compliance summary into **Compliance & Risk Posture**. Publish uses the ledger and review-body structure in `publish.md`. A focused review may use its lens-specific output.
-
 ## Scope prep
 
 Resolve bundled scripts relative to this installed skill directory.
@@ -58,28 +42,73 @@ Resolve bundled scripts relative to this installed skill directory.
 - **Every target:** read `AGENTS.md` when present, distinguish unrelated dirty changes, and summarize scope plus high-risk areas before selecting lenses.
 - **`quality`:** follow its Phase 0 instead of this prep.
 
-## References
+## Phase 0: Mandatory Context Pre-Flight (Blocking)
 
-- Baseline findings → [`reference/finish.md`](reference/finish.md)
-- Tests lens → [`reference/tests.md`](reference/tests.md)
-- Ruby performance lens → [`reference/perf.md`](reference/perf.md)
-- Security/compliance lens → [`reference/security.md`](reference/security.md)
-- Legacy / dead-compat lens → [`reference/legacy.md`](reference/legacy.md)
-- Merge-prep execution → [`reference/quality.md`](reference/quality.md)
-- PR publish orchestration → [`reference/publish.md`](reference/publish.md); at drafting load [`reference/conventional-comments.md`](reference/conventional-comments.md), and immediately before mutation load [`reference/github-state.md`](reference/github-state.md)
-- Harvest only → [`reference/growth.md`](reference/growth.md) + [`reference/learning-log.md`](reference/learning-log.md)
-- Plan embed (checklists only) → [`reference/plan-checklists.md`](reference/plan-checklists.md) via [`dev/reference/plan-pipeline.md`](../dev/reference/plan-pipeline.md); **not** a findings run
+Before evaluating code, drafting findings, or generating review output, execute `view_file` on the required reference files for this target:
+
+1. **Always (Baseline):** You MUST view [`reference/finish.md`](reference/finish.md).
+2. **Behavior or Tests Changed:** You MUST view [`reference/tests.md`](reference/tests.md).
+3. **Auth, Tenancy, Sensitive Data, Secrets, APIs, SQL, or Boundaries:** You MUST view [`reference/security.md`](reference/security.md).
+4. **Execution is `quality`:** You MUST view [`reference/quality.md`](reference/quality.md) and [`reference/legacy.md`](reference/legacy.md).
+5. **Execution is `publish`:** You MUST view [`reference/publish.md`](reference/publish.md), [`reference/conventional-comments.md`](reference/conventional-comments.md), and [`reference/github-state.md`](reference/github-state.md).
+6. **Ruby Hot Path / Allocations:** View [`reference/perf.md`](reference/perf.md).
+
+Do NOT generate findings until the appropriate reference files are loaded into your working context.
+
+## Required Output Schema (All Reviews)
+
+Produce one combined report using this exact structure (specialized lenses contribute checks into these sections):
+
+### Findings
+
+- Categorize each item as **Critical**, **Important**, or **Nice-to-Have**.
+- For each finding: cite exact file/line evidence, explain the concrete failure mechanism, and state the recommended remediation.
+
+### Non-Goals
+
+- Explicit exclusions and intentionally unaddressed areas.
+
+### Confidence & Uncertainty
+
+- Separate verified codebase facts from inferred or unverified assumptions (including security boundary assumptions).
+
+### Compliance & Risk Posture
+
+- Explicit evaluation: What passes review, what is flagged, and minimum viable remediation or compensating controls.
+
+### Executive Summary
+
+- **Production readiness:** `Yes` | `No` | `Conditional`
+- **Top risks:** Bulleted highest-priority failure modes.
+- **Immediate actions:** Clear next steps before merge/deployment.
+
+## Incident & Fix-Diff Postures
+
+When reviewing fixes, reverts, or incident-related changes, check:
+
+1. Did this fix wander onto a second surface? (One-surface incident law).
+2. Is a neighboring layer absorbing a boundary failure?
+3. Does the path assume an invisible contract (shape, reload, cache identity, cutover successor)?
+4. Is disclosure or access treated as mere presence?
+5. Did validate and execute see the same truth?
+6. Is each guard or policy owned at one lifecycle point?
+7. Does the published contract accept only what runtime accepts?
+8. Did uniqueness or readiness race across a suspension/startup gate?
+9. Did a durable/plain bag get treated as a live domain object without rehydrate?
+10. Did parse/unwrap or generated-client types escape the transport/adapter edge?
+11. Was a wire enum renamed in app code instead of normalized once at the boundary?
+12. Did TypeScript changes silence the checker with `as` / `!` / bare suppression instead of earning the type?
 
 ## Handoff
 
 - End-to-end PR review + publish stays in this skill.
 - Posting an already-verified ledger continues with the `pull-request` skill `comment` branch.
-- Findings execution never posts.
+- Findings execution never posts to GitHub.
 
 ## Completion criteria
 
 | Execution  | Done when                                                                                                                                                               |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `findings` | Every selected lens applied; Critical empty or owned; Important owned/rationale; readiness Yes/No/Conditional; no GitHub writes                                         |
+| `findings` | Every selected lens applied; Critical empty or owned; Important owned/rationale; readiness Yes/No/Conditional; Required Output Schema satisfied; no GitHub writes       |
 | `quality`  | Audit table produced (legacy Find rows present or explicit empty); commit stack executed (or explicit empty); gates green; P0/P1 fixed or listed for re-invoke          |
 | `publish`  | Fresh multi-lens ledger verified on PR head SHA; drafts reconciled; submitted as `COMMENT` or left PENDING when draft-only was explicit; URLs reported; no code changed |

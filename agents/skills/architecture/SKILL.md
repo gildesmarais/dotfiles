@@ -14,6 +14,14 @@ description: >
 
 Change how the codebase is structured, typed, or measured for performance — not whether to build a feature, and not language-runtime validation.
 
+## Core Architectural Axioms (Always Active)
+
+- **Deep Modules:** Small interface surface, substantial private behavior. Avoid shallow pass-through bags.
+- **Deletion Test:** Candidate modules must pass the deletion test — removing or swapping a module should not cause cascading rewrites across unrelated consumers.
+- **Single Ownership:** One fact, rule, or expansion algorithm has exactly one authoritative owner. Eliminate dual ownership between validate and execute, or between two adapters.
+- **Locality over Ceremony:** Introduce seams only where they buy testability or phased migration. Wrong-layer domain surfaces fail locality even if deep internally.
+- **Wire vs Domain Boundary:** Domain types enforce invariants at construction; boundary adapters map wire primitives inbound and outbound. Keep application logic out of serialization shells.
+
 ## Pick branch
 
 Never ask the user to pick a template when signals are clear. Load one or more when signals combine.
@@ -33,7 +41,7 @@ Never ask the user to pick a template when signals are clear. Load one or more w
 | slow, hot path, allocate, profile, benchmark                                                                                                                                       | `performance`                                      |
 | tree / directory / layout audit; peer conformity; snowflake / same job different homes; promote / relocate / fold / nest as ownership moves; whole-layer module-layout unification | `structure-survey` (survey mode) → craft as needed |
 
-**Survey mode** is discovery only: load [`reference/structure-survey.md`](reference/structure-survey.md), then multi-load craft branches from findings. It is not a fifth craft branch.
+**Survey mode** is discovery only: execute `view_file` on [`reference/structure-survey.md`](reference/structure-survey.md), then multi-load craft branches from findings. It is not a fifth craft branch.
 
 | Ask                                                       | Route instead                                                                 |
 | --------------------------------------------------------- | ----------------------------------------------------------------------------- |
@@ -52,25 +60,23 @@ Bare “promote” / “unify” alone → one clarifying question, or stay on t
 
 1. Read `AGENTS.md` when present; prefer repo law over defaults here.
 2. Evidence before claims: call sites, ownership, existing tests. Label Strong / Worth / Speculative when surveying.
-3. Always load [`reference/glossary.md`](reference/glossary.md) with any branch or survey mode.
-4. Multi-load OK when signals combine; one handoff covering everything loaded.
-5. Keep craft language-free. Language recipes belong in `{lang}-dev`, overlays, third-party packs, or project `AGENTS.md` (loaded via `$dev`).
-6. **Phase → validate → commit:** after each craft phase (architecture phase, surgical milestone, or user-named plan step), validate, then create ≥1 Conventional Commit with a rationale/intent body before the next phase. Format and phase law: [`CONTEXT.md`](../CONTEXT.md). Build-side phase commits also live on `$dev`.
-7. Structural signals → run survey **before or with** craft deepening.
+3. Multi-load OK when signals combine; one handoff covering everything loaded.
+4. Keep craft language-free. Language recipes belong in `{lang}-dev`, overlays, third-party packs, or project `AGENTS.md` (loaded via `$dev`).
+5. **Phase → validate → commit:** after each craft phase (architecture phase, surgical milestone, or user-named plan step), validate, then create ≥1 Conventional Commit with a rationale/intent body before the next phase. Format and phase law: [`CONTEXT.md`](../CONTEXT.md). Build-side phase commits also live on `$dev`.
+6. Structural signals → run survey **before or with** craft deepening.
 
-Branch expansion and harvest protocol live in [`reference/growth.md`](reference/growth.md) — load only when adding a branch or harvesting lessons.
+## Phase 0: Mandatory Context Pre-Flight (Blocking)
 
-## Branch reference
+Before authoring architectural designs, refactoring code, or restructuring boundaries, execute `view_file` on the matching reference files:
 
-Load progressively — glossary plus each selected branch or mode. Do not preload every reference.
+1. **`deep-modules`:** You MUST view [`reference/deep-modules.md`](reference/deep-modules.md).
+2. **`refactor-types`:** You MUST view [`reference/refactor-types.md`](reference/refactor-types.md).
+3. **`refactor-boundaries`:** You MUST view [`reference/refactor-boundaries.md`](reference/refactor-boundaries.md).
+4. **`performance`:** You MUST view [`reference/performance.md`](reference/performance.md).
+5. **`structure-survey`:** You MUST view [`reference/structure-survey.md`](reference/structure-survey.md).
+6. **Detailed Terms & Definitions:** View [`reference/glossary.md`](reference/glossary.md).
 
-- Glossary → [`reference/glossary.md`](reference/glossary.md)
-- Survey mode → [`reference/structure-survey.md`](reference/structure-survey.md)
-- `deep-modules` → [`reference/deep-modules.md`](reference/deep-modules.md)
-- `refactor-types` → [`reference/refactor-types.md`](reference/refactor-types.md)
-- `refactor-boundaries` → [`reference/refactor-boundaries.md`](reference/refactor-boundaries.md)
-- `performance` → [`reference/performance.md`](reference/performance.md)
-- Harvest only → [`reference/growth.md`](reference/growth.md) + [`reference/learning-log.md`](reference/learning-log.md)
+Branch expansion and harvest protocol live in [`reference/growth.md`](reference/growth.md) + [`reference/learning-log.md`](reference/learning-log.md) (harvest only).
 
 ## Handoff
 

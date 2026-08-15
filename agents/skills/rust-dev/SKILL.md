@@ -36,6 +36,7 @@ Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, 
 - Preserve behavior unless the ask is an intentional break and compat allows it.
 - Add or tighten a focused test when the failure can be expressed cheaply.
 - Validate with the narrowest repo-native command that covers the change.
+- Load language-specific harvest postures in [`reference.md`](reference.md) when crate/toolchain conventions apply.
 
 ## Tooling
 
