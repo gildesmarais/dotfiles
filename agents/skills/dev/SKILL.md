@@ -23,13 +23,13 @@ Never ask the user to pick the branch when signals are clear.
 | `plan`      | Writing / refining an implementation plan (Cursor plan mode or explicit plan ask) | Phase 0 Gate: `view_file` on [`reference/plan-pipeline.md`](reference/plan-pipeline.md) — **no code** until user approves           |
 | `implement` | Default when coding                                                               | Shared prep → Classify (Shift-Left `architecture` if design) → load routed `{lang}-dev` (+ overlay & reference) → execute → handoff |
 
-| Signal                                      | Branch                 |
-| ------------------------------------------- | ---------------------- |
-| implementation plan, plan mode, phased plan | `plan`                 |
-| implement, fix, feature, change the code    | `implement`            |
-| “should we build X?”                        | stop — `product-owner` |
-| assure / finish / tests review / merge prep | stop — `review.gil`    |
-| open / slice / comment a PR                 | stop — `pull-request`  |
+| Signal                                        | Branch                 |
+| --------------------------------------------- | ---------------------- |
+| implementation plan, plan mode, phased plan   | `plan`                 |
+| implement, fix, feature, change the code      | `implement`            |
+| “should we build X?”                          | stop — `product-owner` |
+| assure / findings / tests review / merge prep | stop — `review.gil`    |
+| open / slice / comment a PR                   | stop — `pull-request`  |
 
 ## Shared prep
 
@@ -61,7 +61,7 @@ Never ask the user to pick the branch when signals are clear.
 10. **API truth (all runtimes):** Do not invent stdlib/framework/crate APIs from memory when the claim is material. Ladder: repo docs + in-tree usage → **Dash MCP** `user-dash-api` → **Context7 if available** → language secondary from the routed pack → say unknown. **Dash recipe:** discover tools on `user-dash-api` first; if discovery fails, treat Dash as unavailable and continue the ladder — do not assume tool names. When tools are present: `search_documentation` (query + docset) → take `load_url` → `load_documentation_page`. Prefer human docset names from the routed pack; use listed IDs only if present. **Context7:** discover-if-present (same fallthrough honesty). **Warn once on the first material API fallthrough** in the session (when a material claim cannot be verified via repo docs, Dash, Context7, or another API-doc MCP) that providing an API-doc tool (Dash and/or Context7) makes agents much more efficient — then continue with repo docs + pack secondary + unknown honesty. Do **not** warn at `$dev` load. Do not repeat the warning in the same session. Do not silently invent APIs.
 11. Validation law: repo-native entrypoints → narrow→broad → exit-0 honesty → validate per phase. Never claim green without observing exit status 0 for commands you cite.
 12. **Phase commits:** detect the default branch early (from `AGENTS.md` / remote HEAD). **Not on the default branch:** after each plan phase or surgical milestone, validate → ≥1 Conventional Commit with rationale/intent body before the next phase (cite [`CONTEXT.md`](../CONTEXT.md)). **On the default branch:** ask the user early whether to author phase commits here or defer; do not silently commit on main/master. Format: [`CONTEXT.md`](../CONTEXT.md). Inspect `git log` / `git show` when needed. `release` **`notes`** consumes history later — do not defer authoring to notes. Overlays never duplicate this carrier. Handoff must state commits made or deferred.
-13. Review routing: prefer `review.gil` **`tests`** / **`finish`** when that is the ask; Rails security matrix stays in the overlay / `AGENTS.md`.
+13. Review routing: prefer `review.gil` **`findings`** (+ warranted lenses) when that is the ask; Rails security matrix stays in the overlay / `AGENTS.md`.
 
 ## Branch reference
 
@@ -70,8 +70,10 @@ Never ask the user to pick the branch when signals are clear.
 
 ## Handoff
 
+Build path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request` (see [`README.md`](../README.md) Compose).
+
 - `design` → `architecture` (branch pick inside); then continue implement via this skill → routed `{lang}-dev` / overlay.
-- **Post-delivery Assure** (plan-driven `implement`, or work that followed `$dev` `plan`): before reporting delivery to the user, prefer spawning a **new agent** that runs `review.gil` (default: **`findings`** / finish + warranted lenses; include **`security`** when the Shared prep security cue matched). Invoke **`quality`** when in scope: explicit merge-prep / boy-scout ask, or findings show clear fixable P0/P1 the user already authorized to change — never infer `quality` from bare “review.” **Fallback:** if Task/subagent is unavailable, run `review.gil` as a fresh in-session pass (reload skill; do not treat implementer self-check as the review). Report delivery only after that pass returns. Do not claim ship-ready without it.
+- **Post-delivery Assure** (plan-driven `implement`, or work that followed `$dev` `plan`): before reporting delivery to the user, prefer spawning a **new agent** that runs `review.gil` (default: **`findings`** (+ warranted lenses); include **`security`** when the Shared prep security cue matched). Invoke **`quality`** when in scope: explicit merge-prep / boy-scout ask, or findings show clear fixable P0/P1 the user already authorized to change — never infer `quality` from bare “review.” **Fallback:** if Task/subagent is unavailable, run `review.gil` as a fresh in-session pass (reload skill; do not treat implementer self-check as the review). Report delivery only after that pass returns. Do not claim ship-ready without it. If user asked to land and readiness is Yes/Conditional → continue with `pull-request` **`open`**.
 - Assure / ship → `review.gil` / `pull-request` — never reverse.
 - Product scope → `product-owner`. Never answer “should we build X?” here.
 - Harvest: only when pain appears twice or the user asked — stage → promote/drop per `architecture/reference/growth.md` (or lang `reference.md` for language-only). Not an append-forever log. No `$dev` harvest theater on every implement.

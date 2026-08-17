@@ -3,7 +3,7 @@ name: review.gil
 description: >
   Review a local change, branch, or pull request for production readiness, tests,
   performance, security, legacy/dead-compat debt, or merge-prep quality. Use when
-  the user wants a finish readiness review, a PR code review, to publish a review
+  the user wants a findings-ready review, a PR code review, to publish a review
   to a PR, /code-review, /review.gil, or when another skill needs a
   production-readiness or test-quality pass.
 ---
@@ -104,6 +104,7 @@ When reviewing fixes, reverts, or incident-related changes, check:
 - End-to-end PR review + publish stays in this skill.
 - Posting an already-verified ledger continues with the `pull-request` skill `comment` branch.
 - Findings execution never posts to GitHub.
+- If user asked to land and readiness is Yes/Conditional (owned residuals) → continue with `pull-request` **`open`**. Never auto-open without that ask.
 
 ## Completion criteria
 

@@ -114,7 +114,7 @@ After the user agrees:
 ## Validation And Handoff
 
 - Run the project’s relevant quality gates for the changed surface area.
-- **Post-delivery Assure:** before reporting delivery, prefer spawning a **new agent** that runs `review.gil` (default: **`findings`** / finish + warranted lenses; include **`security`** when the security cue / matrix matched). Invoke **`quality`** when in scope (explicit merge-prep / boy-scout, or clear fixable P0/P1 already authorized — never infer from bare “review”). **Fallback:** if Task/subagent is unavailable, run `review.gil` as a fresh in-session pass (reload skill; do not reuse implementer judgment as the sole review). Report delivery only after that pass returns.
+- **Post-delivery Assure:** before reporting delivery, prefer spawning a **new agent** that runs `review.gil` (default: **`findings`** (+ warranted lenses); include **`security`** when the security cue / matrix matched). Invoke **`quality`** when in scope (explicit merge-prep / boy-scout, or clear fixable P0/P1 already authorized — never infer from bare “review”). **Fallback:** if Task/subagent is unavailable, run `review.gil` as a fresh in-session pass (reload skill; do not reuse implementer judgment as the sole review). Report delivery only after that pass returns. If user asked to land and readiness is Yes/Conditional → continue with `pull-request` **`open`**.
 - Report concrete validation evidence, not vague claims.
 - State whether the required skills were invoked.
 - Stop when the branch is ready to push and a PR can be opened.

@@ -14,7 +14,7 @@ Quality gates for **`$dev` `plan`** (Cursor plan mode, prepare/refine plan, impl
 8. Pre-ship checklists embed ([`review.gil/reference/plan-checklists.md`](../../review.gil/reference/plan-checklists.md) — not full findings)
 9. Plan ready — no code until user approves execute
 
-Execute approved → `$dev` `implement` → validate → commit per phase → post-delivery **`review.gil` findings**.
+Execute approved → `$dev` `implement` → validate → commit per phase → post-delivery **`review.gil` findings** → if user asked to land, **`pull-request` `open`**.
 
 ## Product stance
 

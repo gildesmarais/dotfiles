@@ -43,18 +43,18 @@ Never ask the user to pick a template when signals are clear. Load one or more w
 
 **Survey mode** is discovery only: execute `view_file` on [`reference/structure-survey.md`](reference/structure-survey.md), then multi-load craft branches from findings. It is not a fifth craft branch.
 
-| Ask                                                       | Route instead                                                                 |
-| --------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| “review code”, `/review.gil`, PR review, finish readiness | `review.gil` — co-load only when the ask also needs tree / layout / snowflake |
-| “promote” in a product / release sense                    | `release` / product                                                           |
-| “unify” UX copy, visual grammar, design tokens            | designer / screen-grammar skills                                              |
-| Surgical deepen of one named module already in hand       | `deep-modules` (and siblings) — skip whole-tree survey                        |
-| “should we build X?”                                      | `product-owner`                                                               |
-| Surgical language work only                               | `$dev` (routes to `{lang}-dev` / overlay)                                     |
+| Ask                                                     | Route instead                                                                 |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| “review code”, `/review.gil`, PR review, findings-ready | `review.gil` — co-load only when the ask also needs tree / layout / snowflake |
+| “promote” in a product / release sense                  | `release` / product                                                           |
+| “unify” UX copy, visual grammar, design tokens          | designer / screen-grammar skills                                              |
+| Surgical deepen of one named module already in hand     | `deep-modules` (and siblings) — skip whole-tree survey                        |
+| “should we build X?”                                    | `product-owner`                                                               |
+| Surgical language work only                             | `$dev` (routes to `{lang}-dev` / overlay)                                     |
 
 Bare “promote” / “unify” alone → one clarifying question, or stay on the skill already in play.
 
-**Co-load with review.gil:** default stays split. When the ask combines both (e.g. review structure via the tree for promote/relocate): survey first → craft-branch handoff; review finish format only if they also want a findings report.
+**Co-load with review.gil:** default stays split. When the ask combines both (e.g. review structure via the tree for promote/relocate): survey first → craft-branch handoff; `findings` Required Output Schema only if they also want a findings report.
 
 ## Shared prep
 
@@ -80,8 +80,18 @@ Branch expansion and harvest protocol live in [`reference/growth.md`](reference/
 
 ## Handoff
 
+Return ledger (required before coding continues via `$dev`):
+
+- Branches loaded
+- Craft decisions (structural / type / boundary / perf) — what implement must honor
+- Residuals / N/A (including dual ownership)
+- Commits made or deferred
+- If craft touched code: re-route through `$dev` → `{lang}-dev` / overlay for language validation before Assure / Ship
+
+Then:
+
 - Implementation and language validation continue via `$dev` → routed `{lang}-dev` / overlay after craft decisions are clear.
-- Assure / ship continues with `review.gil` / `pull-request` — never reverse.
+- Assure / ship continues with `review.gil` / `pull-request` — never reverse; never skip `$dev` validation when code changed.
 - Product scope questions go to `product-owner`.
 - Changelog from merged history → `release` **`notes`** (consumer only).
 - Structure survey → ranked ledger + craft-branch names; then load those branches (or hand off to `$dev` if craft is already decided).

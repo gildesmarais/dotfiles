@@ -7,7 +7,7 @@ A GitHub pull request lifecycle action on a remote PR or branch destined to beco
 _Avoid_: PR, gh-pr, open-pr
 
 **Review** (skill noun: `review.gil`):
-Local analysis of a change (working tree, branch, or commit range) that produces findings or merge-prep work. Never posts to GitHub.
+Local analysis of a change (working tree, branch, or commit range) that produces findings or merge-prep work. Executions: `findings` (no GitHub) | `publish` (e2e → GitHub `COMMENT`) | `quality` (merge-prep code changes). Verified-ledger posting stays on `pull-request` **`comment`**.
 _Avoid_: review (conflicting/common-tool name), code-review (external), gh-review, finish-review (old name)
 
 **Branch** (skill-internal):
@@ -30,24 +30,28 @@ _Avoid_: address, closeout (synonyms — one trigger only)
 Open = commit session work + push + create PR. Slice = rebuild one messy branch into intent-based smaller PRs.
 _Avoid_: pr-opener, pr-slicer, split-to-prs
 
-**Finish** (`review.gil` branch):
-Production-readiness **assessment** — findings report only; no boy-scout edits.
-_Avoid_: quality (that branch changes code)
+**Findings** (`review.gil` execution):
+Read-only production-readiness report — no boy-scout edits, no GitHub writes. Baseline lens: [`review.gil/reference/finish.md`](review.gil/reference/finish.md).
+_Avoid_: finish (old execution name — now the baseline lens only); quality (that execution changes code)
 
-**Quality** (`review.gil` branch):
+**Publish** (`review.gil` execution):
+End-to-end PR review → reconcile drafts → submit GitHub `COMMENT` (or leave PENDING when draft-only). Owns Assure’s GitHub path.
+_Avoid_: pull-request `comment` (that posts an already-verified ledger)
+
+**Quality** (`review.gil` execution):
 Merge-prep **execution** — audit → plan → boy-scout refactors + tests → repo gates (absorbs former `quality-loop`).
-_Avoid_: finish (assessment-only), cleanup (too vague for the description)
+_Avoid_: findings (assessment-only), cleanup (too vague for the description)
 
-**Lens** (`review.gil` branches `tests` / `perf` / `security` / `legacy`):
-A specialized findings rubric applied to the same local diff prep as `finish`.
-_Avoid_: dedicated skill per lens
+**Lens** (`review.gil` under `findings` / `quality`: `tests` / `perf` / `security` / `legacy`):
+A specialized findings rubric applied to the same local diff prep as `findings`.
+_Avoid_: dedicated skill per lens; treating `finish` as an execution
 
 **Legacy** (`review.gil` lens, always under `quality`):
 Dead compat — dual public names, superseded store/wire hydrate, deprecated markers. Findings report it; `quality` deletes it and invents no shims.
 _Avoid_: cleanup / tech-debt (too vague), a dedicated legacy skill, a `refactor-legacy` branch under `architecture`
 
 **Handoff**:
-`review.gil` may end with “post these findings” → agent continues into `pull-request` `comment`. Never reverse: GitHub posting does not live under `review.gil`. A legacy finding may **name** an `architecture` craft branch (`refactor-types`, `deep-modules`, `refactor-boundaries`) as remediation — naming is not running.
+`publish` lives under `review.gil`; verified-ledger posting lives under `pull-request` **`comment`** — never reverse those two. `review.gil` may end with “post these findings” → `pull-request` `comment`. If user asked to land and readiness is Yes/Conditional → `pull-request` **`open`**. A legacy finding may **name** an `architecture` craft branch (`refactor-types`, `deep-modules`, `refactor-boundaries`) as remediation — naming is not running.
 
 # Communication Skills Domain
 
@@ -238,7 +242,7 @@ After each Solution/Build plan phase (architecture phase, surgical milestone, or
 Carriers: `architecture` Shared prep (Solution craft) and **`dev`** Shared prep (Build plan/implement). Overlays must not duplicate. Solution/Build implementation plans end each phase with validate → commit (cite this entry; do not fork the format). Handoff states commits made or deferred.
 
 **Handoff**:
-`dev` → `{lang}-dev` / overlay (runtime route). `dev` classify `design` → `architecture` (branch pick inside). Plan-driven `implement` → post-delivery Assure (`review.gil` spawn preferred) before delivery report. `architecture` / `dev` → `review.gil` / `pull-request` for assure/ship. No reverse: craft does not own Product gate. Changelog after merge → `release` **`notes`**.
+`dev` → `{lang}-dev` / overlay (runtime route). `dev` classify `design` → `architecture` (return ledger → continue `$dev`). Plan-driven `implement` → post-delivery Assure (`review.gil` **`findings`**, spawn preferred) before delivery report. If user asked to land and readiness Yes/Conditional → `pull-request` **`open`**. `architecture` / `dev` → `review.gil` / `pull-request` for assure/ship. No reverse: craft does not own Product gate. Changelog after merge → `release` **`notes`**.
 
 # Ship Skills Domain
 

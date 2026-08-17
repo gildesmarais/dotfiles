@@ -9,7 +9,7 @@ Keep the workflow autonomous by default. Only stop to ask the user when a requir
 1. Inspect branch and worktree.
 2. Derive the ticket number from the branch name.
 3. Identify the session-touched files to include.
-4. Validate the intended commit scope and recent verification evidence.
+4. Validate the intended commit scope and recent verification evidence. Prefer noting Assure outcome / validation evidence when available (soft precondition — not a hard block when the user explicitly opens).
 5. Create a conventional commit.
 6. Push the branch.
 7. Open `gh pr create --web` with prefilled title and body.

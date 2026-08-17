@@ -26,21 +26,21 @@ Map the user prompt to exactly one branch:
 
 Ambiguous routing:
 
-| User says                                                                                                             | Branch                                     |
-| --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| "address PR comments", "fix review feedback", "resolve comments"                                                      | **resolve**                                |
-| "reply to comments", "respond on GitHub", "draft replies" (existing threads only)                                     | **reply**                                  |
-| "post these already-verified findings"                                                                                | **comment** (submit `COMMENT`)             |
-| "add these as pending/draft comments" (verified list)                                                                 | **comment** (remain pending)               |
-| "open a PR", "commit and create PR"                                                                                   | **open**                                   |
-| "split into PRs", "slice branch"                                                                                      | **slice**                                  |
-| "update title", "update description", "update PR title/desc", "refresh PR summary", "/pull-request update title+desc" | **retitle**                                |
-| "update the PR" (no code change and no review-feedback ask)                                                           | **retitle**                                |
-| "review the PR"                                                                                                       | stop — use the **review** skill            |
-| "draft a review" (read-only findings)                                                                                 | stop — use **review** `findings`           |
-| "post review comments", "new findings on PR", "review and post on GitHub"                                             | stop — use **review** `publish`            |
-| "draft/pending a new review" (no supplied ledger)                                                                     | stop — use **review** `publish` draft-only |
-| "publish review to PR" / end-to-end review+publish                                                                    | stop — use **review** skill `publish`      |
+| User says                                                                                                             | Branch                                         |
+| --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| "address PR comments", "fix review feedback", "resolve comments"                                                      | **resolve**                                    |
+| "reply to comments", "respond on GitHub", "draft replies" (existing threads only)                                     | **reply**                                      |
+| "post these already-verified findings"                                                                                | **comment** (submit `COMMENT`)                 |
+| "add these as pending/draft comments" (verified list)                                                                 | **comment** (remain pending)                   |
+| "open a PR", "commit and create PR"                                                                                   | **open**                                       |
+| "split into PRs", "slice branch"                                                                                      | **slice**                                      |
+| "update title", "update description", "update PR title/desc", "refresh PR summary", "/pull-request update title+desc" | **retitle**                                    |
+| "update the PR" (no code change and no review-feedback ask)                                                           | **retitle**                                    |
+| "review the PR"                                                                                                       | stop — use the **review.gil** skill            |
+| "draft a review" (read-only findings)                                                                                 | stop — use **review.gil** `findings`           |
+| "post review comments", "new findings on PR", "review and post on GitHub"                                             | stop — use **review.gil** `publish`            |
+| "draft/pending a new review" (no supplied ledger)                                                                     | stop — use **review.gil** `publish` draft-only |
+| "publish review to PR" / end-to-end review+publish                                                                    | stop — use **review.gil** skill `publish`      |
 
 **comment** vs **reply**: **comment** posts already-verified findings supplied by the user or another workflow. End-to-end retrieve → review → reconcile → publish belongs to **`review.gil` `publish`**, not this skill. **reply** answers an existing thread and must not add new findings or code changes.
 

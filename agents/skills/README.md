@@ -46,7 +46,7 @@ flowchart LR
 | **Product**  | What to build; admit/defer scope | `product-owner`                                                                                                             | `gate` (default); stubs: prioritize, story-slice, experiment                                                                            |
 | **Solution** | How the system should work       | `architecture`; `docs` **`architecture`** (verify-only); `dev` **`plan`** (implementation-plan carrier)                     | craft: `deep-modules` \| `refactor-types` \| `refactor-boundaries` \| `performance`; survey: `structure-survey`; plan: `dev` **`plan`** |
 | **Build**    | Change the codebase              | `dev` (router); adapters `ruby-dev`, `rust-dev`, `swift-dev`, `typescript-dev`; overlays `ruby-on-rails-dev`, `swiftui-dev` | `plan` \| `implement`; classify: surgical \| design \| review-hand-off                                                                  |
-| **Assure**   | Safe to merge?                   | `review.gil`                                                                                                                | finish, quality, tests, perf, security, legacy, publish                                                                                 |
+| **Assure**   | Safe to merge?                   | `review.gil`                                                                                                                | `findings`, `publish`, `quality` (lenses: tests, perf, security, legacy)                                                                |
 | **Ship**     | Land on mainline                 | `pull-request`; `release`                                                                                                   | PR: open, slice, comment, reply, resolve; release: `notes`                                                                              |
 | **Explain**  | Humans understand state          | `communication`; `docs`                                                                                                     | see skill branches                                                                                                                      |
 | **Decide**   | Stress-test choices              | `grilling` (third-party); `product-owner` Forced Challenge                                                                  | —                                                                                                                                       |
@@ -75,6 +75,8 @@ More: [skills.sh](https://skills.sh/). Swift catalog: [Swift-Agent-Skills](https
 
 ## Compose / handoffs
 
+**Build path (runtime):** `$dev` ⇄ `architecture` → `review.gil` → `pull-request`. `$dev` is the only Build entry; `architecture` is shift-left craft inside Build — Solution-before-Build in the domain map is conceptual, not a second entrypoint.
+
 One-way rules (prevent domain collisions):
 
 1. **Product before non-trivial scope** — `jira-ticket` / feature asks load `product-owner` **`gate`**. Impl continues only on **Build Now** → `$dev` only (classifies; loads `architecture` when design). Skip for pure bug fix, refactor, infra. Product is gate-only this pass (stubs unauthored).
@@ -82,7 +84,7 @@ One-way rules (prevent domain collisions):
 3. **Build entry is `$dev`** — classify / route / phase commits live there. Class `design` → `architecture` (branch pick inside); do not inline craft in `dev` or `*-dev`. Multi-load `{lang}-dev` from **touched-file** evidence when a change spans runtimes. Packs: Stop — read `$dev` Shared prep before any delta.
 4. **Implementation plans → `$dev` `plan`** — when writing an implementation plan (including Cursor plan mode), invoke `$dev` branch **`plan`** and load [`dev/reference/plan-pipeline.md`](dev/reference/plan-pipeline.md). Plan mode: product stance section only — `/product-owner` explicit for admission. `jira-ticket` Planning Checkpoint emits via `$dev` **`plan`** when phases/commits matter.
 5. **Phase CC → merge → notes** — Solution/Build plan phases author Conventional Commits (validate → ≥1 CC + rationale) via `architecture` Shared prep and `$dev` — by default off the default branch; ask early when on default. After merge, `release` **`notes`** consumes history. At PR open, `pull-request` **`open`** applies the same format only if the tree is still dirty. Format SoT: [`CONTEXT.md`](CONTEXT.md).
-6. **Assure → Ship** — `review.gil` may hand off to `pull-request` **`comment`**. Never reverse: GitHub posting does not live under `review.gil`. After Build delivery from a plan, spawn `review.gil` (quality when in scope) before reporting done; if subagent unavailable, fresh in-session `review.gil` pass.
+6. **Assure → Ship** — `findings` never posts; `publish` (e2e → GitHub `COMMENT`) lives under `review.gil`; verified-ledger posting lives under `pull-request` **`comment`** — never reverse those two. After Build delivery from a plan, spawn `review.gil` **`findings`** (security/quality when in scope) before reporting done; if subagent unavailable, fresh in-session pass. If user asked to land and readiness is Yes/Conditional → `pull-request` **`open`**.
 7. **Explain → docs** — `communication` → `docs` **`editor`** when the artifact is a README/runbook, not a message. Never reverse. `docs` **`architecture`** is Solution-adjacent verify-only (no HLD/ADR author).
 8. **Overlay via `$dev` route** — `ruby-on-rails-dev` with `ruby-dev`; `swiftui-dev` with `swift-dev` (loaded by `$dev`, not as competing Build entries). Depth packs stay on pack **Compose routes**.
 9. **Decide** — `grilling` stress-tests Intent / Product / Solution; product doctrine stays with `product-owner` when the topic is scope.
@@ -118,6 +120,8 @@ Router shape: `## Pick branch` → `## Shared prep` → `## Branch reference` �
 Dotfiles + `rcm` on this machine. Everyone else: [Install](#install).
 
 Git-tracked trees under `agents/skills/<name>/` are the source of truth. `rcup` installs them into `~/.agents/skills/<name>/` (file-level links). Keep `SYMLINK_DIRS` unset for `agents` / `agents/skills` so `~/.agents/skills` can hold both `rcup` links and third-party dirs from `npx skills`. After clone/pull, promote/rename, or `backfill`, run `rcup` (or wait for topgrade `RCM: rcup`).
+
+**CONTEXT:** vocabulary SoT lives at store root [`CONTEXT.md`](CONTEXT.md) (`~/.dotfiles/agents/skills/CONTEXT.md` on this machine). Skills cite `../CONTEXT.md` relative to the store tree; that path is not installed under `~/.agents/skills/<name>/`. When working outside the dotfiles workspace, read CONTEXT from the store root (or open this repo) — do not copy it into each skill.
 
 | Command                    | Role                                                                  |
 | -------------------------- | --------------------------------------------------------------------- |
