@@ -86,6 +86,14 @@ Write title and body per [`pr-narrative.md`](pr-narrative.md) (shared with **ret
 - Before opening the PR, confirm the branch push succeeded.
 - If `gh` is unavailable or unauthenticated, provide the PR URL or manual next step instead of blocking.
 
+## After PR exists — Jira sync
+
+When a ticket key was derived from the branch (or the session is a `$jira-ticket` flow) and Atlassian MCP is available:
+
+- Run **Post-PR Jira sync** from the `jira-ticket` skill: transition the issue to **Ready for Review** (half-automatic) and comment the PR URL when possible.
+- Do not ask the user to restate “move to review” if they already asked to open the PR for that ticket.
+- If Atlassian is unavailable or no matching transition exists, report that and continue; do not fail the PR open.
+
 ## Output
 
 Report:
@@ -94,5 +102,6 @@ Report:
 - derived ticket
 - commit hash and title
 - validation commands run
-- whether the PR browser flow was opened
+- whether the PR browser flow was opened (or REST/`gh pr create` URL)
+- Jira status after Post-PR sync (or why skipped)
 - any residual local files intentionally left out of the commit
