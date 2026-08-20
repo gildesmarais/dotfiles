@@ -62,9 +62,21 @@ if command_exists fzf; then
   eval "$(fzf --zsh)"
 fi
 
-# setup zoxide
+# setup zoxide — smart cd only in interactive TTYs; agents keep builtin cd
 if command_exists zoxide; then
-  eval "$(zoxide init --cmd cd zsh)"
+  _zoxide_use_cd_shim() {
+    [ -n "${CURSOR_AGENT:-}${CLAUDECODE:-}${AIDER:-}" ] && return 1
+    case $- in *i*) ;; *) return 1 ;; esac
+    [ -t 1 ] || return 1
+    return 0
+  }
+
+  if _zoxide_use_cd_shim; then
+    eval "$(zoxide init --cmd cd zsh)"
+  else
+    eval "$(zoxide init zsh)"
+  fi
+  unset -f _zoxide_use_cd_shim
 fi
 
 #region completion optimizations
