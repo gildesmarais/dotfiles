@@ -33,6 +33,7 @@ Dual ownership of one fact, passthrough bags, shallow multi-call husks, or the u
 - When two runtimes encode the same closed decision, share one fixture corpus both assert against.
 - Hardcoded environment paths or uninjectable global stores force callers and tests into god-object orchestration — inject base directories, clocks, or storages to keep modules independently testable.
 - Trapped domain math in views or configuration structs distorts caller boundaries — extract pure calculation kernels to domain value objects before building view layers.
+- Views and delegate adapters with event callbacks must expose pure internal action handlers so logic can be tested directly without synthesizing heavy runtime framework event objects.
 - Anti-patterns: dump modules of unrelated helpers; twin structs that must stay in sync; adapters that grow domain branches; view bodies housing pure domain geometry or signal filtering.
 
 ## Sequencing

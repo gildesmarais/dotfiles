@@ -38,6 +38,7 @@ Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, 
 - Add or tighten a focused test when the failure can be expressed cheaply.
 - Validate with the narrowest repo-native command that covers the change.
 - If the failing path is UI-shaped, load `swiftui-dev` and apply its deltas in the same change rather than inventing a language-only clamp.
+- Swift Testing macro hygiene: Never nest `#require` macro invocations inside other `#require` calls (e.g. `try #require(HTTPURLResponse(url: #require(...)))`). Sequentialize optional unwrapping onto separate lines to prevent recursive macro expansion compiler errors.
 
 ## Tooling
 
