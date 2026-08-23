@@ -14,7 +14,9 @@ Quality gates for **`$dev` `plan`** (Cursor plan mode, prepare/refine plan, impl
 8. Pre-ship checklists embed ([`review.gil/reference/plan-checklists.md`](../../review.gil/reference/plan-checklists.md) — not full findings)
 9. Plan ready — no code until user approves execute
 
-Execute approved → `$dev` `implement` → validate → commit per phase → post-delivery **`review.gil` findings** → if user asked to land, **`pull-request` `open`**.
+Execute approved → `$dev` `implement` → validate → commit per phase → post-delivery **`review.gil` findings** → forward doc (below) → if user asked to land, **`pull-request` `open`**.
+
+**Forward doc (post-Assure, readiness Yes/Conditional):** update repo maint docs (`AGENTS.md` or nested equivalent) with non-obvious upkeep only — canonical paths, validation commands, change rules. Skip when delivery is small or already self-documenting; state skip in handoff.
 
 ## Product stance
 
@@ -39,15 +41,16 @@ Never invent Build Now without evidence or explicit override.
 
 Add section when signal matches; N/A with evidence if skipped.
 
-| Section                     | Signals                                                  |
-| --------------------------- | -------------------------------------------------------- |
-| Module architecture         | `design`; new subsystem; dual ownership risk             |
-| Boundary contract map       | Wire/API/JS bridge; adapter; serialize edge              |
-| Performance budgets         | Hot path; debounce/async; large payload; latency ask     |
-| Sandbox / platform          | Sandbox; WebKit/XPC/JS; file URLs; network; entitlements |
-| Observability               | ≥2 phases                                                |
-| Autonomous delivery runbook | ≥2 phases                                                |
-| Pre-ship checklists         | Plans that will be implemented                           |
+| Section                     | Signals                                                                                |
+| --------------------------- | -------------------------------------------------------------------------------------- |
+| Module architecture         | `design`; new subsystem; dual ownership risk                                           |
+| Boundary contract map       | Wire/API/JS bridge; adapter; serialize edge                                            |
+| Test pyramid & seam design  | Test refactor/audit ask; coverage remediation; monolithic suite split; flight smearing |
+| Performance budgets         | Hot path; debounce/async; large payload; latency ask                                   |
+| Sandbox / platform          | Sandbox; WebKit/XPC/JS; file URLs; network; entitlements                               |
+| Observability               | ≥2 phases                                                                              |
+| Autonomous delivery runbook | ≥2 phases                                                                              |
+| Pre-ship checklists         | Plans that will be implemented                                                         |
 
 ## Observability + runbook (≥2 phases)
 
@@ -62,6 +65,7 @@ Add section when signal matches; N/A with evidence if skipped.
 - [ ] Product stance filled or override recorded
 - [ ] Classification + runtime route stated
 - [ ] Architecture findings (if triggered) or N/A with evidence
+- [ ] Flight height evaluated by default (pure unit base, fakes for component, real I/O for integration; test friction diagnosed as production defects)
 - [ ] Conditional sections or N/A with evidence
 - [ ] Observability + runbook if ≥2 phases
 - [ ] Pre-ship checklists embedded

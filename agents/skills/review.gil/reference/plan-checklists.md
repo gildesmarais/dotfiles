@@ -9,7 +9,7 @@ Checklists for **`$dev` `plan`** — not a findings report. Post-implement: full
 
 ## tests (behavior changes)
 
-- [ ] In-process over UI/E2E unless repo requires otherwise; no sleep-based async
+- [ ] Flight height evaluated by default: pure unit base for domain/math, focused fakes for component, real I/O for integration; in-process over heavy UI harness; no sleep-based async; test friction diagnosed as production seam defects.
 
 ## perf (performance section)
 

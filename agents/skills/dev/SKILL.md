@@ -55,7 +55,7 @@ Never ask the user to pick the branch when signals are clear.
 
 **Multi-load OK** when touched files span multiple rows — one phase plan may name several runtimes; validate per surface. Clarify only when file signals are absent or contradictory (or follow repo `AGENTS.md`).
 
-7. Shared surgical laws: smallest safe change; preserve behavior unless intentional break; focused test when cheap; **one-surface** incident rule (drive-by edits on a second surface travel with the revert); no silent craft inline — when `design` is earned, load `architecture`.
+7. Shared surgical laws: smallest safe change; preserve behavior unless intentional break; focused test when cheap; **evaluate flight height by default** (pure unit for domain/math, focused fakes for component, real I/O for integration; test friction diagnoses production seam defects); **one-surface** incident rule (drive-by edits on a second surface travel with the revert); no silent craft inline — when `design` is earned, load `architecture`.
 8. **Compat ask:** detect internal-only vs stable public contract. If a break may hit a surface treated as stable and permission is unclear, **ask** before shipping. No silent shim theater; no silent breaks on stable surfaces. Packs may name what counts as stable in that ecosystem — not a second ask ritual.
 9. **No destructive git:** never `push --force`, hard reset, or other irreversible git unless the user explicitly asks.
 10. **API truth (all runtimes):** Do not invent stdlib/framework/crate APIs from memory when the claim is material. Ladder: repo docs + in-tree usage → **Dash MCP** `user-dash-api` → **Context7 if available** → language secondary from the routed pack → say unknown. **Dash recipe:** discover tools on `user-dash-api` first; if discovery fails, treat Dash as unavailable and continue the ladder — do not assume tool names. When tools are present: `search_documentation` (query + docset) → take `load_url` → `load_documentation_page`. Prefer human docset names from the routed pack; use listed IDs only if present. **Context7:** discover-if-present (same fallthrough honesty). **Warn once on the first material API fallthrough** in the session (when a material claim cannot be verified via repo docs, Dash, Context7, or another API-doc MCP) that providing an API-doc tool (Dash and/or Context7) makes agents much more efficient — then continue with repo docs + pack secondary + unknown honesty. Do **not** warn at `$dev` load. Do not repeat the warning in the same session. Do not silently invent APIs.
@@ -78,6 +78,7 @@ Build path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request` (see [
 - Product scope → `product-owner`. Never answer “should we build X?” here.
 - Harvest: only when pain appears twice or the user asked — stage → promote/drop per `architecture/reference/growth.md` (or lang `reference.md` for language-only). Not an append-forever log. No `$dev` harvest theater on every implement.
 - Phase commits: state commits made or deferred (especially when work started on the default branch).
+- **Forward doc (post-Assure):** when readiness Yes/Conditional, capture non-obvious maintenance in repo `AGENTS.md` (or nested equivalent). Skip if small/self-documenting; say so in handoff.
 
 ## Completion criteria
 

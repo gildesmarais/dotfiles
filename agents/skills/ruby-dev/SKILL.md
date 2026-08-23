@@ -37,6 +37,13 @@ Wrong-owner boundary absorb (serialize/cache/encode bent into a neighbor) / re-l
 - Evidence: touched Ruby files, nearby tests, call sites, entrypoints, public contracts; use YARD/RBS/Sorbet only if the repo already relies on them.
 - Load thin postures in [`reference.md`](reference.md) when RSpec suite hygiene, SimpleCov/group floors, spec-twin→lib probe, or CLI/config construction homes are in play. Test-quality review judgment stays in `review.gil` `tests` — do not paste it here.
 
+## Ruby 4 baseline
+
+- Read repo `.tool-versions` and `AGENTS.md` when present; default **Ruby 4.0+, no 3.x compat shims or dual-path APIs**.
+- Apply syntax + performance checklist from [`reference.md`](reference.md#ruby-4-baseline-harvest) (self-contained — do not assume a gem AGENTS pointer).
+- Prefer LOC reduction via dedupe/unify before new files; extract only when a real seam or test surface is earned.
+- When the repo has RuboCop, align with `AllCops.TargetRubyVersion: 4.0` and `Style/ItBlockParameter` where enabled.
+
 ## Surgical posture
 
 - For behavior-preserving moves without design signals, keep characterization or boundary coverage before moving code.
