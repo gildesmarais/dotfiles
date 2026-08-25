@@ -7,7 +7,7 @@ Dispatch the persisted IR task-by-task. Each worker is a fresh sub-agent that lo
 Halt (do not dispatch) unless all hold:
 
 1. **IR file exists** — path from user or `.agents/compile/<slug>.yaml`.
-2. **User approved** — including `circuit_breaker.user_approved: true` (consent for reset to last green task commit).
+2. **User approved** — `circuit_breaker.user_approved: true` in the IR file (consent for reset to last green task commit). If the user just approved in-conversation but the flag is still `false`, set it to `true` in the IR first (see `compile.md` Emit step 4), then proceed.
 3. **Clean worktree** — `git status` shows no uncommitted changes. Dirty tree → halt and ask the user to commit, stash, or discard _their_ work first. Never reset over unrelated dirty state.
 4. **Not on silent main** — if HEAD is the default branch, follow `$dev` phase-commit law (ask early whether to commit here or defer); do not silently commit on main/master.
 
@@ -18,7 +18,7 @@ Record `baseline_commit` = current `HEAD` at dispatch start (last green before a
 1. Read the IR file.
 2. Build the sequential order: topological sort by `depends_on` (empty deps first; reject cycles).
 3. Skip tasks with `status: green`.
-4. If a task is `failed`, halt until the user fixes the IR / tree and re-invokes `run` (or explicitly asks to retry that task — reset its `status` to `pending` and `attempts` to 0 only on that ask).
+4. If a task is `failed`, halt until the user fixes the IR / tree and re-invokes `run` (or explicitly asks to retry that task — reset its `status` to `pending` in the IR only on that ask; attempts restart at 0 automatically since they are session-local).
 5. Dispatch the next `pending` task only.
 
 ## Per-task loop
@@ -28,7 +28,7 @@ For each next `pending` task:
 ### 1. Snapshot
 
 - `task_baseline` = current `HEAD` (clean).
-- Note `attempts` (start at 0; cap = `max_retries`, default 2).
+- Track `attempts` in orchestrator memory only — not persisted in the IR (start at 0; cap = `max_retries`, default 2).
 
 ### 2. Spawn worker
 

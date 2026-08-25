@@ -97,4 +97,5 @@ Do not invent `target_files`, `verification_gate`, or invariants. If unknown: gr
 1. Persist the YAML file.
 2. Summarize: path, invariant count, task count (ids + names), residual unknowns.
 3. Ask for approval to **`run`**, explicitly calling out the circuit-breaker policy.
-4. Stop — do not dispatch.
+4. When the user explicitly approves, set `circuit_breaker.user_approved: true` in the IR file — the only post-emit edit this branch makes. `run` precondition 2 reads this flag, not conversation memory.
+5. Stop — do not dispatch.
