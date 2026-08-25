@@ -67,6 +67,7 @@ npx skills add https://github.com/arjitj2/swiftui-design-principles --skill swif
 | Pack                        | When                           | Role                                                            |
 | --------------------------- | ------------------------------ | --------------------------------------------------------------- |
 | `grilling`                  | Stress-test a plan or decision | Upstream Decide skill                                           |
+| `docs-sync`                 | Sync Clean Arch domain docs    | Solution/Explain documentation synchronization engine           |
 | `swiftui-pro`               | SwiftUI review depth           | Compose via `$dev` + `swiftui-dev`; depth pack, not Build entry |
 | `swift-testing-pro`         | Swift Testing depth            | Compose via `$dev` + `swift-dev`; depth pack, not Build entry   |
 | `swiftui-design-principles` | Spacing, typography, materials | Compose via `$dev` + `swiftui-dev`; depth pack, not Build entry |

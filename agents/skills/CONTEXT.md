@@ -167,7 +167,7 @@ Implementation-plan carrier. Procedural SoT: `dev/reference/plan-pipeline.md`. C
 _Avoid_: inventing a separate Solution plan skill; skipping classify/route in ad-hoc plans
 
 **API truth** / **warn-once fallthrough**:
-Do not invent material stdlib/framework APIs. Ladder: repo docs → Dash (discover tools first) → Context7 if present → pack secondary → unknown. Warn **once on first material API fallthrough** in the session (not at `$dev` load) when no API-doc MCP verified the claim.
+Do not invent material stdlib/framework APIs. Ladder: repo docs → Dash (discover tools on `dash-api` or `user-dash-api` first) → Context7 if present → pack secondary → unknown. Warn **once on first material API fallthrough** in the session (not at `$dev` load) when no API-doc MCP verified the claim.
 _Avoid_: warn-at-load; inventing APIs; assuming Dash tool names without discovery
 
 **Observability cue** (APM / error tracking / logging MCP):
@@ -229,7 +229,7 @@ Seven rules in `architecture/reference/growth.md` before adding a branch. Prefer
 Published skills: `npx skills add gildesmarais/dotfiles/agents/skills` (browse with `--list`). This machine with `rcm`: `rcup` → `~/.agents/skills/`. Details: `agents/skills/README.md` Install.
 
 **Third-party packs**:
-Optional agent installs (`grilling`, `swift-*`, vendor React packs). Not first-party kinds; not OS source of truth. Install with a separate `npx skills add` — see `agents/skills/README.md` Optional packs. Store depth packs (`ms-rust`, `rust-performance`) install with the rest of the store (`npx skills` / `rcup`).
+Optional agent installs (`grilling`, `docs-sync`, `swift-*`, vendor React packs). Not first-party kinds; not OS source of truth. Install with a separate `npx skills add` — see `agents/skills/README.md` Optional packs. Store depth packs (`ms-rust`, `rust-performance`) install with the rest of the store (`npx skills` / `rcup`).
 
 **Conventional Commits** (format — single SoT):
 

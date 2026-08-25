@@ -31,17 +31,17 @@ Grow this file only for Ruby-specific lessons that cannot be stated language-fre
 
 Default **4.0+, no 3.x compat**. Read repo `.tool-versions` / `AGENTS.md` first; when absent, apply this checklist.
 
-| Check | Prefer | Avoid |
-| --- | --- | --- |
-| Frozen strings | `# frozen_string_literal: true` on every `.rb` | Per-file mutable string churn |
-| Block params | `it` for single-arg blocks | `{ \|x\| … }` when one arg only |
-| Condition wraps | Leading `&&` / `\|\|` at line start | Trailing operators on wrapped lines |
-| Shape dispatch | Pattern matching (`case … in`) | Deep `if/elsif` on structure |
-| Collections | Core `Set`, `filter_map`, `index_by` | `require 'set'`, verbose `map`/`compact` |
-| Structs | `Data.define` | OpenStruct / hand-rolled structs |
-| Regex | `match?` | `=~` for boolean checks |
-| Hot paths | Memoize pure/`ENV.fetch` work; one helper owner | Duplicated helpers split for metrics |
-| Specs | Table-drive matrices; `:aggregate_failures` for discriminating multi-assert | `send(...)` to pin private behavior |
-| Extraction | Dedupe/unify before new files | Metric-driven micro-methods or files |
+| Check           | Prefer                                                                      | Avoid                                    |
+| --------------- | --------------------------------------------------------------------------- | ---------------------------------------- |
+| Frozen strings  | `# frozen_string_literal: true` on every `.rb`                              | Per-file mutable string churn            |
+| Block params    | `it` for single-arg blocks                                                  | `{ \|x\| … }` when one arg only          |
+| Condition wraps | Leading `&&` / `\|\|` at line start                                         | Trailing operators on wrapped lines      |
+| Shape dispatch  | Pattern matching (`case … in`)                                              | Deep `if/elsif` on structure             |
+| Collections     | Core `Set`, `filter_map`, `index_by`                                        | `require 'set'`, verbose `map`/`compact` |
+| Structs         | `Data.define`                                                               | OpenStruct / hand-rolled structs         |
+| Regex           | `match?`                                                                    | `=~` for boolean checks                  |
+| Hot paths       | Memoize pure/`ENV.fetch` work; one helper owner                             | Duplicated helpers split for metrics     |
+| Specs           | Table-drive matrices; `:aggregate_failures` for discriminating multi-assert | `send(...)` to pin private behavior      |
+| Extraction      | Dedupe/unify before new files                                               | Metric-driven micro-methods or files     |
 
 **Anti-patterns:** Ruby 3.x guards or dual-path APIs; `send` in specs to reach private APIs; trailing wrapped `&&`/`||`; duplicated helpers across files; `require 'set'` on Ruby 4; OpenStruct for value objects; metric-only extractions that buy no seam.

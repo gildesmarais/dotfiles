@@ -32,7 +32,7 @@ For each next `pending` task:
 
 ### 2. Spawn worker
 
-Fresh sub-agent / clean context. Prompt shape (adapt paths):
+Fresh sub-agent / clean context (`invoke_subagent` in subagent-capable environments, or fresh task turn). Prompt shape (adapt paths):
 
 ```text
 Load and follow the `$dev` skill, branch `implement`.

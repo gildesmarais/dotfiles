@@ -1,6 +1,7 @@
-#!/usr/bin/env ruby
-# frozen_string_literal: true
-
-require_relative "../skill/src/cli"
-
-Skill::CLI.run(ARGV)
+#!/bin/sh
+# Execute skill CLI using system or environment ruby with gems disabled
+if [ -x /usr/bin/ruby ]; then
+  exec /usr/bin/ruby --disable-gems "$(dirname "$0")/../skill/src/cli.rb" "$@"
+else
+  exec ruby --disable-gems "$(dirname "$0")/../skill/src/cli.rb" "$@"
+fi
