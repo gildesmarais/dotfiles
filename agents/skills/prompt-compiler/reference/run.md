@@ -54,6 +54,9 @@ re-runs the verification gate and commits. Do not git commit yourself unless the
 orchestrator prompt says otherwise. Prefer Conventional Commit message text in your
 handoff for the orchestrator to use.
 
+Single-task worker: skip `$dev` post-delivery Assure — the orchestrator owns gates;
+DAG-level Assure runs once at full completion.
+
 Validation hint (orchestrator will re-run): <verification_gate>
 ```
 

@@ -51,7 +51,7 @@ Dead compat — dual public names, superseded store/wire hydrate, deprecated mar
 _Avoid_: cleanup / tech-debt (too vague), a dedicated legacy skill, a `refactor-legacy` branch under `architecture`
 
 **Handoff**:
-`publish` lives under `review.gil`; verified-ledger posting lives under `pull-request` **`comment`** — never reverse those two. `review.gil` may end with “post these findings” → `pull-request` `comment`. If user asked to land and readiness is Yes/Conditional → `pull-request` **`open`**. A legacy finding may **name** an `architecture` craft branch (`refactor-types`, `deep-modules`, `refactor-boundaries`) as remediation — naming is not running.
+`publish` lives under `review.gil`; verified-ledger posting lives under `pull-request` **`comment`** — never reverse those two. `review.gil` may end with “post these findings” → `pull-request` `comment`. If user asked to land and readiness is Yes/Conditional → `pull-request` **`open`**. Any structural finding (legacy debt, shallow module, dual ownership, primitive obsession, boundary leak, unmeasured hot path) may **name** an `architecture` craft branch (`deep-modules`, `refactor-types`, `refactor-boundaries`, `performance`) as remediation — naming is not running.
 
 # Communication Skills Domain
 
@@ -179,8 +179,8 @@ Authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, privileged o
 _Avoid_: duplicating the Rails Security Trigger Matrix in `$dev`
 
 **Post-delivery Assure**:
-Before reporting delivery on plan-driven implement: prefer spawn a new agent → `review.gil` findings (security when cue matched; `quality` when in scope). Fallback: fresh in-session `review.gil` pass. Do not claim ship-ready without it.
-_Avoid_: implementer self-check as the sole review; inferring `quality` from bare “review”
+Before reporting delivery on **any** `$dev` implement (plan-driven or surgical): prefer spawn a new agent → `review.gil` findings (security when cue matched; `quality` when in scope). Small single-surface surgical diffs may use the fresh in-session pass; spawn stays preferred for plan-driven, multi-phase, or security-cue work. Orchestrated single-task workers (e.g. `prompt-compiler` **`run`**) skip Assure — orchestrator owns gates; DAG-level Assure once at completion. Do not claim ship-ready without Assure (or a stated trivial-diff skip). Trivial-diff skip (docs-only, comment/typo, single-line config) allowed only when stated with reason in the handoff.
+_Avoid_: implementer self-check as the sole review; inferring `quality` from bare “review”; silent Assure skip; per-task Assure under an orchestrator
 
 **Architecture** (skill noun: `architecture`):
 Language-free Solution craft: structure, types, measured performance. Exactly one architecture router.
@@ -207,8 +207,12 @@ Framework or domain delta composed via `$dev` with one `*-dev`. Published: `ruby
 _Avoid_: standalone mega-router that picks languages; duplicating phase-commit / classify law
 
 **Design** (classification, not a skill):
-`dev` class meaning structural/type/perf craft is earned — hand off to `architecture`.
-_Avoid_: treating “design” as a skill noun
+`dev` class meaning structural/type/perf craft is earned — hand off to `architecture`. Ambiguous surgical-vs-design prefers `design`. Regardless of class, `architecture` axioms ride along on every implement (axioms-only load).
+_Avoid_: treating “design” as a skill noun; defaulting to `surgical` to save a load
+
+**Delivery Ledger** (shared handoff shape):
+Classification / branches loaded; craft or implement decisions; commits made or deferred; Assure result + readiness (or stated skip); residuals and stated skips. `$dev` and `architecture` cite this shape; `review.gil` Executive Summary maps onto it.
+_Avoid_: inventing a second handoff schema per skill
 
 **Deepen**:
 Signal that selects `architecture` **`deep-modules`** — not a skill name.
@@ -246,7 +250,7 @@ After each Solution/Build plan phase (architecture phase, surgical milestone, or
 Carriers: `architecture` Shared prep (Solution craft) and **`dev`** Shared prep (Build plan/implement). Overlays must not duplicate. Solution/Build implementation plans end each phase with validate → commit (cite this entry; do not fork the format). Handoff states commits made or deferred.
 
 **Handoff**:
-`dev` → `{lang}-dev` / overlay (runtime route). `dev` classify `design` → `architecture` (return ledger → continue `$dev`). Plan-driven `implement` → post-delivery Assure (`review.gil` **`findings`**, spawn preferred) before delivery report. If user asked to land and readiness Yes/Conditional → `pull-request` **`open`**. `architecture` / `dev` → `review.gil` / `pull-request` for assure/ship. No reverse: craft does not own Product gate. Changelog after merge → `release` **`notes`**.
+`dev` → `{lang}-dev` / overlay (runtime route; `architecture` axioms ride along on every implement). `dev` classify `design` → `architecture` (Delivery Ledger → continue `$dev`). Every `implement` delivery → post-delivery Assure (`review.gil` **`findings`**; spawn preferred for plan-driven / multi-phase / security-cue; in-session OK for small surgical; trivial-diff skip stated in handoff) before delivery report. If user asked to land and readiness Yes/Conditional → `pull-request` **`open`**. `architecture` / `dev` → `review.gil` / `pull-request` for assure/ship. No reverse: craft does not own Product gate. Changelog after merge → `release` **`notes`**.
 
 # Ship Skills Domain
 

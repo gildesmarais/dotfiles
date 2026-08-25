@@ -1,12 +1,12 @@
-# Perf (Ruby)
+# Perf
 
-Ruby performance lens for changed code, branches, commit ranges, or pull requests.
+Performance lens for changed code, branches, commit ranges, or pull requests. **Language scope:** Review Workflow steps 1–3 (through data structures / big-O), Performance Heuristics, and Architectural Rearrangement Patterns are language-free. **Ruby-Specific Review Points** and Ruby API-truth checks apply only to Ruby diffs — for other languages, apply the language-free sections and verify APIs via `$dev` API-truth against the matching docset.
 
 Review the actual changed code before making recommendations. Use scope prep in `SKILL.md`; for a pull request, use the PR patch and surrounding code at its recorded head SHA rather than a local default-branch diff.
 
 Focus on findings, not generic advice. For each finding, cite file and line, explain the performance impact, and give concrete improvement options.
 
-When checking Ruby core APIs or standard-library behavior, verify them instead of relying on memory alone. Follow the `$dev` API-truth ladder (Dash → Context7 if available → pack secondary → say unknown) against the installed **Ruby** docset. Prioritize verifying `Enumerable`, `Enumerator::Lazy`, `Set`, `Hash`, `Array`, and `Data.define` semantics when they materially affect the recommendation.
+When checking Ruby core APIs or standard-library behavior on a Ruby diff, verify them instead of relying on memory alone. Follow the `$dev` API-truth ladder (Dash → Context7 if available → pack secondary → say unknown) against the installed **Ruby** docset. Prioritize verifying `Enumerable`, `Enumerator::Lazy`, `Set`, `Hash`, `Array`, and `Data.define` semantics when they materially affect the recommendation.
 
 ## Review Workflow
 

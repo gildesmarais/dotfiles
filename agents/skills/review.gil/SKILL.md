@@ -49,9 +49,10 @@ Before evaluating code, drafting findings, or generating review output, execute 
 1. **Always (Baseline):** You MUST view [`reference/finish.md`](reference/finish.md).
 2. **Behavior or Tests Changed:** You MUST view [`reference/tests.md`](reference/tests.md).
 3. **Auth, Tenancy, Sensitive Data, Secrets, APIs, SQL, or Boundaries:** You MUST view [`reference/security.md`](reference/security.md).
-4. **Execution is `quality`:** You MUST view [`reference/quality.md`](reference/quality.md) and [`reference/legacy.md`](reference/legacy.md).
-5. **Execution is `publish`:** You MUST view [`reference/publish.md`](reference/publish.md), [`reference/conventional-comments.md`](reference/conventional-comments.md), and [`reference/github-state.md`](reference/github-state.md).
-6. **Ruby Hot Path / Allocations:** View [`reference/perf.md`](reference/perf.md).
+4. **Dead-compat signals** (deprecated markers, dual exports, superseded hydrate): You MUST view [`reference/legacy.md`](reference/legacy.md). Under `findings` / `publish`, report only — do not delete (deletion stays `quality`-only).
+5. **Execution is `quality`:** You MUST view [`reference/quality.md`](reference/quality.md) and [`reference/legacy.md`](reference/legacy.md) (always under `quality`, even without dead-compat signals).
+6. **Execution is `publish`:** You MUST view [`reference/publish.md`](reference/publish.md), [`reference/conventional-comments.md`](reference/conventional-comments.md), and [`reference/github-state.md`](reference/github-state.md).
+7. **Hot path / allocations (any language):** View [`reference/perf.md`](reference/perf.md).
 
 Do NOT generate findings until the appropriate reference files are loaded into your working context.
 
@@ -84,23 +85,11 @@ Produce one combined report using this exact structure (specialized lenses contr
 
 ## Incident & Fix-Diff Postures
 
-When reviewing fixes, reverts, or incident-related changes, check:
-
-1. Did this fix wander onto a second surface? (One-surface incident law).
-2. Is a neighboring layer absorbing a boundary failure?
-3. Does the path assume an invisible contract (shape, reload, cache identity, cutover successor)?
-4. Is disclosure or access treated as mere presence?
-5. Did validate and execute see the same truth?
-6. Is each guard or policy owned at one lifecycle point?
-7. Does the published contract accept only what runtime accepts?
-8. Did uniqueness or readiness race across a suspension/startup gate?
-9. Did a durable/plain bag get treated as a live domain object without rehydrate?
-10. Did parse/unwrap or generated-client types escape the transport/adapter edge?
-11. Was a wire enum renamed in app code instead of normalized once at the boundary?
-12. Did TypeScript changes silence the checker with `as` / `!` / bare suppression instead of earning the type?
+When reviewing fixes, reverts, or incident-related changes, apply the incident / fix-diff postures in [`reference/finish.md`](reference/finish.md) (single SoT — do not duplicate the list here).
 
 ## Handoff
 
+- **Structural findings name craft:** when a finding is structural (shallow module, dual ownership, primitive obsession, boundary leak, unmeasured hot path — not just legacy debt), name the matching `architecture` craft branch (`deep-modules` / `refactor-types` / `refactor-boundaries` / `performance`) as the remediation route. Naming is not running — remediation still enters via `$dev`.
 - End-to-end PR review + publish stays in this skill.
 - Posting an already-verified ledger continues with the `pull-request` skill `comment` branch.
 - Findings execution never posts to GitHub.

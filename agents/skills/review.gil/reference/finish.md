@@ -20,7 +20,7 @@ After scope prep in `SKILL.md`, continue here. For a pull request, review the PR
 
 3. Apply the review workflow
 
-- Assess architecture, boundaries, responsibilities.
+- Assess architecture, boundaries, responsibilities against the `architecture` Core Axioms (deep modules, single ownership, wire-vs-domain) — axioms only; do not load craft branch refs unless the finding names a remediation branch.
 - Evaluate code quality, failure modes, edge cases.
 - Validate config, logging, security, and ops concerns.
 - Enumerate risks, debt, limitations, and compliance gaps.

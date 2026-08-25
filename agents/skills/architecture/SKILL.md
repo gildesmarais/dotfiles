@@ -22,6 +22,8 @@ Change how the codebase is structured, typed, or measured for performance — no
 - **Locality over Ceremony:** Introduce seams only where they buy testability or phased migration. Wrong-layer domain surfaces fail locality even if deep internally.
 - **Wire vs Domain Boundary:** Domain types enforce invariants at construction; boundary adapters map wire primitives inbound and outbound. Keep application logic out of serialization shells.
 
+**Ride-along contract:** `$dev` loads this `SKILL.md` on every `implement` (surgical included) so the axioms are always active during Build. That default load is axioms-only — branch pick, Phase 0 pre-flight, and reference files engage when `design` is earned or a branch signal matches.
+
 ## Pick branch
 
 Never ask the user to pick a template when signals are clear. Load one or more when signals combine.
@@ -80,7 +82,7 @@ Branch expansion and harvest protocol live in [`reference/growth.md`](reference/
 
 ## Handoff
 
-Return ledger (required before coding continues via `$dev`):
+Return ledger (required before coding continues via `$dev`) — **Delivery Ledger** shape in [`CONTEXT.md`](../CONTEXT.md):
 
 - Branches loaded
 - Craft decisions (structural / type / boundary / perf) — what implement must honor
