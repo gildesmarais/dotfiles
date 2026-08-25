@@ -112,20 +112,24 @@ _Avoid_: one flattened ordering for both branches
 
 ## Language
 
-**Prompt-synthesis** (skill noun: `prompt-synthesis`):
-Transforms rough notes into a dense paste-ready agent brief. Grills material gaps before emit; never executes the underlying task.
-_Avoid_: prompt-engineer, refine-prompt (triggers only — not skill nouns)
+**Prompt-compiler** (skill noun: `prompt-compiler`):
+Intent router — compiles raw developer intent into a persisted IR (invariants + atomic task DAG), then on approval dispatches sequential workers through `$dev` `implement` with orchestrator-enforced gates. Replaces `prompt-synthesis`.
+_Avoid_: prompt-synthesis, prompt-engineer, refine-prompt (legacy/trigger aliases only — not skill nouns); mutating application code outside `$dev` workers
 
-**Code** / **architecture** / **product** (`prompt-synthesis` branches):
-Class rubrics that enrich Context / Constraints / Verify. Default path is Shared prep only when no class fits.
-_Avoid_: general branch; Role/Context/Task/Deliverable templates
+**Compile** / **run** (`prompt-compiler` branches):
+`compile` (default) grills gaps, satisfies `$dev` plan-pipeline ready checklist, writes `.agents/compile/<slug>.yaml`, stops. `run` resumes from IR `status`, dispatches next `pending` task via `$dev`, enforces gates, updates status.
+_Avoid_: auto-dispatch without IR approval; parallel worktree dispatch (deferred)
 
-**Brief fields** (`prompt-synthesis` emit):
-**Goal** · **Context** · **Success** · **Constraints** (omit if empty) · **Verify**. Success = done-when; Verify = proof steps.
-_Avoid_: Role/persona, SynthesisLog, naming OS skills in the emitted brief
+**IR fields** (`prompt-compiler` emit):
+`version` · `invariants` · `circuit_breaker` · `tasks[]` (`id`, `name`, `target_files`, `read_context`, `verification_gate`, `max_retries`, `depends_on`, `status`). Persisted file is an **equivalent syntax** of the `$dev` `plan` carrier — not a competing plan format.
+_Avoid_: five-field Goal/Context/Success briefs; inventing gates or mutation bounds; dual plan formats
+
+**Lifecycle**:
+Ingest & Assess → `/grill-me` (or inline fallback) on ambiguity → `compile` (plan-pipeline-satisfying IR file) → user approves (incl. circuit-breaker policy) → `run` via `$dev` → orchestrator re-runs gate + `target_files` bounds diff → commit / mark green → next pending; on repeated failure reset to **last green task commit** and halt → full DAG → `review.gil` **`findings`**.
+_Avoid_: blind `git reset --hard`; trusting worker "green" claims; skipping Assure after a green DAG; continuing after circuit breaker
 
 **Handoff**:
-Stops at the paste-ready brief. Does not hand off into Build / Assure / Ship. Intent entrypoints that start from Jira still use `jira-ticket` (and `product-owner` **`gate`** when scope is non-trivial); Build continues via `dev`. Spec/PRD router is **deferred** — no first-party `spec` skill.
+`compile` stops at the IR file. `run` hands each task to `$dev` (only Build entry). After full DAG success, post-delivery Assure is required before delivery report; Ship only when the user asked to land. Intent entrypoints that start from Jira still use `jira-ticket` (and `product-owner` **`gate`** when scope is non-trivial). Spec/PRD router is **deferred** — no first-party `spec` skill.
 
 # Product Skills Domain
 
