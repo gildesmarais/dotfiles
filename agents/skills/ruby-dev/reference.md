@@ -26,3 +26,22 @@ Grow this file only for Ruby-specific lessons that cannot be stated language-fre
 ## Construction homes (gem/CLI)
 
 11. **One builder for explicit-key provenance.** When CLI and public API shortcuts both assemble the same controls object with slightly different “explicit” semantics, own construction on the config/type (`from_shortcut` / `from_cli_options`); keep Thor/option parsing thin at the edge.
+
+## Ruby 4 baseline (harvest)
+
+Default **4.0+, no 3.x compat**. Read repo `.tool-versions` / `AGENTS.md` first; when absent, apply this checklist.
+
+| Check | Prefer | Avoid |
+| --- | --- | --- |
+| Frozen strings | `# frozen_string_literal: true` on every `.rb` | Per-file mutable string churn |
+| Block params | `it` for single-arg blocks | `{ \|x\| … }` when one arg only |
+| Condition wraps | Leading `&&` / `\|\|` at line start | Trailing operators on wrapped lines |
+| Shape dispatch | Pattern matching (`case … in`) | Deep `if/elsif` on structure |
+| Collections | Core `Set`, `filter_map`, `index_by` | `require 'set'`, verbose `map`/`compact` |
+| Structs | `Data.define` | OpenStruct / hand-rolled structs |
+| Regex | `match?` | `=~` for boolean checks |
+| Hot paths | Memoize pure/`ENV.fetch` work; one helper owner | Duplicated helpers split for metrics |
+| Specs | Table-drive matrices; `:aggregate_failures` for discriminating multi-assert | `send(...)` to pin private behavior |
+| Extraction | Dedupe/unify before new files | Metric-driven micro-methods or files |
+
+**Anti-patterns:** Ruby 3.x guards or dual-path APIs; `send` in specs to reach private APIs; trailing wrapped `&&`/`||`; duplicated helpers across files; `require 'set'` on Ruby 4; OpenStruct for value objects; metric-only extractions that buy no seam.
