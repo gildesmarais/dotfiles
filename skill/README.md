@@ -48,6 +48,7 @@ Run the CLI entrypoint:
 Expected results:
 
 - `doctor` prints aligned columns (padded name, then status: `ok`, `drift`, `home-only`, `broken`); exits `0` when no `drift`, else `1`
+- Agent install listing includes skill directories (and broken skill symlinks for `broken` status); excludes vocabulary file symlinks such as `CONTEXT.md`
 - `backfill <name>` prints each copied relative path, notes an `rcup` hint, and refuses home-only / broken / no-drift / missing store skills
 - After `backfill`, run `rcup` (or wait for topgrade) so `~/.agents/skills` matches the store again
 

@@ -90,7 +90,9 @@ module Skill
         next false if name.start_with?(".")
 
         path = File.join(dir, name)
-        File.directory?(path) || File.symlink?(path)
+        # Skill installs are directories (or dir symlinks). Include broken symlinks
+        # so doctor can report `broken`. Exclude file symlinks (e.g. CONTEXT.md).
+        File.directory?(path) || (File.symlink?(path) && !File.file?(path))
       end
     end
 

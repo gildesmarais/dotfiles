@@ -119,6 +119,17 @@ class SkillUnitTest < Minitest::Test
     assert_equal(%w[broken-link live], @paths.agents_skill_names)
   end
 
+  def test_agents_skill_names_excludes_vocabulary_file_symlinks
+    FileUtils.mkdir_p(@paths.agents_skills_dir)
+    create_store_skill("live")
+    FileUtils.ln_s(@paths.store_skill_path("live"), @paths.agents_skill_path("live"))
+    vocab = File.join(@paths.store_dir, "CONTEXT.md")
+    File.write(vocab, "# Vocab\n")
+    FileUtils.ln_s(vocab, File.join(@paths.agents_skills_dir, "CONTEXT.md"))
+
+    assert_equal(%w[live], @paths.agents_skill_names)
+  end
+
   def test_classifier_statuses_are_frozen_closed_set
     assert_equal(%w[ok drift home-only broken], Skill::Classifier::STATUSES)
     assert(Skill::Classifier::STATUSES.frozen?)
