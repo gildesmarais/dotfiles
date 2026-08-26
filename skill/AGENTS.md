@@ -42,7 +42,7 @@ Do not optimize for:
 
 - Ruby must stay compatible with macOS system Ruby 2.6.
 - Prefer stdlib only.
-- `scripts/skill` must remain a tiny launcher.
+- `scripts/skill` must remain a tiny launcher. Keep `require_relative` so the rcm `~/.scripts/skill` symlink still loads `src/cli.rb`.
 - Hidden directories in the store are not user skills and must stay excluded from `list` and related workflows.
 - The tool manages local directories in the dotfiles store; it should fail closed rather than overwrite unexpected paths.
 - Behavior should remain understandable from CLI output alone. Errors should be explicit and actionable.

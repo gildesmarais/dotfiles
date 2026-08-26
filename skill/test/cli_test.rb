@@ -145,6 +145,19 @@ class SkillCliTest < Minitest::Test
     assert_includes(output, "backfill")
   end
 
+  def test_launcher_finds_cli_when_invoked_via_rcm_symlink
+    install_dir = File.join(@home_dir, ".scripts")
+    FileUtils.mkdir_p(install_dir)
+    install_path = File.join(install_dir, "skill")
+    FileUtils.ln_s(@script_path, install_path)
+
+    result = run_skill_from(install_path, "help")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "Usage: skill")
+    refute_match(/No such file or directory/, result.output)
+  end
+
   def test_doctor_help_after_command_exits_zero
     result = run_skill("doctor", "--help")
 
@@ -329,10 +342,13 @@ class SkillCliTest < Minitest::Test
   private
 
   def run_skill(*args)
+    run_skill_from(@script_path, *args)
+  end
+
+  def run_skill_from(script_path, *args)
     output, status = Open3.capture2e(
       { "HOME" => @home_dir },
-      RbConfig.ruby,
-      @script_path,
+      script_path,
       *args,
       chdir: @project_root
     )
