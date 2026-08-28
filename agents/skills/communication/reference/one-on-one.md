@@ -1,50 +1,55 @@
 # One-on-One
 
-Turn raw 1:1 notes into a small, speaker-aware summary that is easy to scan later.
+Turn raw 1:1 notes into a shared post-meeting summary readable by both participants. The note taker sends this to the other person after the 1:1 so both can verify and recall what was said.
 
 ## When to Use
 
-Use this branch when the user wants a compact summary distilled from:
+Use this branch when the user wants a summary distilled from:
 
 - raw one-on-one notes
 - markdown notes with blockquotes
 - shorthand or fragmented note-taking
-- `Q:` / `A:` markers
+- `Q:` / `A:` / `q:` markers
 - speaker-directed notes where who said what matters
 
 ## Output Rules
 
 - Default to returning only the final summary.
-- Keep the result small and scannable, usually `4-6` bullets total.
+- Write in two-person voice: **I** is the note taker, **You** is the other person. Both must recognize themselves in the output.
+- One bullet per question or topic — no bullet cap. Merge only fragments that clearly restate the same point; drop nothing substantive.
 - Default to one flat bullet list rather than grouped sections.
-- Do not use `Asked`, `Said`, `Takeaways`, `you`, or `they` labels by default.
-- Preserve speaker attribution when it changes meaning.
-- Preserve direction indirectly through phrasing when needed, for example by framing a point as a question, concern, preference, or observation.
-- Lightly clean up shorthand, fragments, and typos into readable bullets.
+- Each bullet typically opens with what the note taker did ("I asked about X.", "I showed Y.", "I offered Z.") followed by the other person's response.
+- Preserve the note taker's own remarks, offers, and asks as "I …" statements.
+- Render the other person's side as "You: …" for multi-part answers, or woven prose ("You'll …", "You want …", "You think …") for single points.
+- Lightly clean up shorthand, fragments, and typos in ordinary words — never expand, explain, or "correct" proper nouns, ticket IDs, or internal codenames.
 - Do not rewrite the notes into paragraphs by default.
-- Do not invent certainty when attribution or meaning is ambiguous.
+- Do not editorialize beyond what was said. Do not invent certainty or fabricate takeaways.
 
 ## Steno Notation
 
-Interpret the raw markdown using these direction rules:
+Interpret the raw markdown using these direction and attribution rules:
 
-- `>` means the other person said or asked the content.
-- unquoted lines are the note taker's side unless the text clearly indicates otherwise.
-- `Q:` marks a question.
-- `A:` marks an answer.
-- quoting overrides bare `Q:` / `A:` direction, so `> Q:` means the other person asked the question.
-- indented follow-up lines belong to the item immediately above unless the notes clearly break context.
-- shorthand, fragments, and misspellings should be normalized lightly for readability without changing intent.
-- if a line is too ambiguous to attribute confidently, keep the wording conservative rather than forcing speaker certainty.
+### Voice mapping
 
-## Distillation Standard
+- Any line whose marker chain contains `>` belongs to the other person → **You** in the output.
+- Lines without `>` — including `-` sub-points indented under the other person's answers — belong to the note taker → **I** in the output.
+- `> Q:` means the other person asked the question.
+- Bare `Q:` or `q:` means the note taker asked the question.
+- `A:` without `>` means the note taker's answer; `> A:` means the other person's answer.
+- Lowercase `q:` is equivalent to `Q:`.
+- Indented follow-up lines belong to the item immediately above unless the notes clearly break context.
 
-- Prefer the few points most useful for recalling the conversation later.
-- Keep both content and attribution compact.
-- Merge repeated fragments into one clean bullet when they clearly describe the same point.
-- Preserve unresolved questions, concerns, or process friction when they appear central.
-- Summarize questions as open points, concerns, or topics to clarify.
-- Summarize statements as observations, preferences, constraints, or takeaways.
+### Ambiguity
+
+- If attribution is genuinely unclear, phrase it as "we discussed X" rather than guessing. Wrong attribution in a shared note is worse than vague attribution.
+
+## Fidelity Rules
+
+- Completeness beats brevity — the other person must recognize everything they said.
+- Merge repeated fragments into one clean bullet only when they clearly describe the same point.
+- Preserve unresolved questions, concerns, commitments, and process friction inline.
+- Carry proper nouns, ticket IDs, and internal codenames verbatim — never expand, explain, translate, or "correct" them, even when they look misspelled.
+- Spelling cleanup applies only to ordinary words (e.g. "mentatilty" → "mentality").
 - If no clear takeaway exists, do not fabricate one.
 
 ## Examples
@@ -52,49 +57,45 @@ Interpret the raw markdown using these direction rules:
 Input:
 
 ```markdown
-> Q: how should access requests work once the team grows?
-> what happens if the approver is away?
+Q: noshow on quarterly leadership sync?
 
-Q: Where does delivery usually slow down the most?
+> took part in the beginning
+> catched up via meeting notes
+> Q: catchup on townhall?
+> translated slides to english.
+> no further questions
+> I offered explanation and ask for attention when work is not contributing to goals, or we overlook opportunities.
+> Q: project-northstar - we had team meeting last week to align on approach. are next steps clear?
+> is clear.
+> work started.
+> sync with alex
 
-> usually around incidents / response quality matters a lot
-> test environments are close enough to miss issues until later stages
-> differences between review and staging slow things down
-> dependencies across services make rollout coordination harder
-> release alignment takes time
+- tickets are high level, align before work early i.e. in deep dive
+- great to see stacked PRs of the PRJ-204 already up; great way to keep delivering and slice the delivers
+  q: i showed jira timeline. this view used over manual figma
+- epic based
+- templates for figma to track projects
+  > AI topic: thinks best is tool-alpha right now, tool-beta, tool-gamma. example. switched thru some tools.
+- > proposed tool-beta project overview / autogenerated / sharing via tool-beta / manual publish / mcp.
+  > I replied it's great example for info sharing, accessibility needs some work (to be accessible for all team members)
 ```
 
 Output:
 
-- Questions around how access requests should work as the team grows, including fallback when an approver is unavailable.
-- Delivery seems to slow down most around incidents and response quality.
-- Incident handling quality has a major effect on operational speed.
-- Differences between review and staging make issues harder to catch early and slow delivery.
-- Cross-service dependencies and release alignment add coordination overhead.
+- I asked about the no-show at the quarterly leadership sync. You took part at the beginning and caught up via meeting notes.
+- I asked about the townhall catch-up. You translated the slides to English and had no further questions. I offered an explanation and asked you to pay attention when work isn't contributing to the goals, or when we overlook opportunities.
+- I asked whether next steps on project-northstar are clear after last week's team alignment. You: it's clear, work has started, and you'll sync with Alex. I noted that tickets are high-level, so align before work starts — e.g. in a deep dive. Great to see stacked PRs for PRJ-204 already up; a good way to keep delivering in slices.
+- I showed the Jira timeline: epic-based, and the view to use instead of tracking projects manually in Figma (Figma templates still exist for that).
+- You on AI: tool-alpha feels best right now, then tool-beta and tool-gamma; you've switched through some tools. You proposed a tool-beta project overview — autogenerated, shared via tool-beta, with manual publish and MCP. I replied that it's a great example of info sharing; accessibility still needs work so it's usable for all team members.
 
 Input:
 
 ```markdown
-> worried about handoffs between product / eng
-> unclear owner once incident spans teams
-> Q: where is the biggest confusion?
+> unclear who owns the rollout once it spans squads
+> Q: where does confusion start?
 > usually after first escalation
 ```
 
 Output:
 
-- Biggest confusion appears during cross-team incidents after the first escalation.
-- Handoffs between product and engineering feel weak.
-- Ownership often becomes unclear once an incident spans teams.
-
-Input:
-
-```markdown
-A: prefers smaller rollouts
-A: wants clearer success signal
-```
-
-Output:
-
-- Prefers smaller rollouts.
-- Wants a clearer signal for rollout success.
+- We discussed rollout ownership once it spans squads — confusion usually starts after the first escalation.

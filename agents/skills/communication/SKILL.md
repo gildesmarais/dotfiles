@@ -17,7 +17,7 @@ Map the user prompt to exactly one branch:
 
 | User intent                                                                | Branch                                    |
 | -------------------------------------------------------------------------- | ----------------------------------------- |
-| Summarize raw 1:1 / speaker-attributed notes                               | `one-on-one`                              |
+| Summarize raw 1:1 notes into a shared two-person summary (I/You voice)     | `one-on-one`                              |
 | Draft/refine an internal Slack message, announcement, or escalation        | `slack-message`                           |
 | Distill a project status line comparable across projects                   | `project-update`                          |
 | Draft a customer, partner, or public-facing message (email, support reply) | `external-message`                        |
@@ -40,9 +40,9 @@ When the ask is a README, runbook, or product doc rather than a message, stop an
 
 ## Completion criteria
 
-| Branch             | Done when                                                                                         |
-| ------------------ | ------------------------------------------------------------------------------------------------- |
-| `one-on-one`       | Compact speaker-aware bullet summary returned (usually 4–6 bullets)                               |
-| `slack-message`    | Slack-ready internal message returned; sensitive framing applied when relevant                    |
-| `project-update`   | Single comparable status line returned in required format (≤200 chars unless user asks otherwise) |
-| `external-message` | External message returned with no internal jargon, no unconfirmed commitments, legal-safe tone    |
+| Branch             | Done when                                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------------------------- |
+| `one-on-one`       | Two-person dialogue summary (I/You voice), one bullet per topic, shareable with the other participant |
+| `slack-message`    | Slack-ready internal message returned; sensitive framing applied when relevant                        |
+| `project-update`   | Single comparable status line returned in required format (≤200 chars unless user asks otherwise)     |
+| `external-message` | External message returned with no internal jargon, no unconfirmed commitments, legal-safe tone        |
