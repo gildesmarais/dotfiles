@@ -40,6 +40,14 @@ Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, 
 - If the failing path is UI-shaped, load `swiftui-dev` and apply its deltas in the same change rather than inventing a language-only clamp.
 - Swift Testing macro hygiene: Never nest `#require` macro invocations inside other `#require` calls (e.g. `try #require(HTTPURLResponse(url: #require(...)))`). Sequentialize optional unwrapping onto separate lines to prevent recursive macro expansion compiler errors.
 
+## Performance & Allocation Hygiene
+
+- **Zero-Allocation Domain Types**: Eliminate string formatting (`"\(a)\(b)"`) and regex parsing in hot domain loops and value object relationship checks. Use pure integer arithmetic, enum raw values, bitmasks (`UInt32`), or precomputed static lookup tables.
+- **Equatable & Table Diffing Safety**: Never invoke computed properties that allocate or flatten collections (e.g., `points.flatMap { [$0.low, $0.mid, $0.high] }`) inside `static func ==` or hot loops. Back collections with contiguous storage or compare underlying struct arrays directly to prevent SwiftUI table diffing heap churn.
+- **SIMD & Accelerate Vectorization**: Vectorize multi-channel Euclidean distance kernels using `SIMD3` / `SIMD4` vector math with $4\times$ loop unrolling. For vector embeddings and dot products, use Apple Accelerate framework `vDSP` (`vDSP_dotpr`, `vDSP_svesq`) over contiguous memory (`withUnsafeBufferPointer`).
+- **Binary Search for 60 FPS Scrubbing**: For monotonic coordinate maps (e.g. beat/time maps), sort upon ingestion and use binary search ($O(\log N)$) instead of runtime `.sorted()` allocations and linear scans on 60 FPS playhead ticks.
+- **MainActor Event-Loop Protection**: Throttle high-frequency progress callbacks from background tasks (e.g. DFS graph search, batch ingestion) with timestamp coalescing (e.g., max 20 Hz) to prevent saturating the MainActor event loop.
+
 ## Tooling
 
 - Use repo-native entrypoints (`xcodebuild`, `swift test`, project wrappers, Make targets). Prefer a ready, documented target over inventing one-off commands.
