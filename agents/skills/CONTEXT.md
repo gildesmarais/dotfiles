@@ -97,9 +97,9 @@ _Avoid_: readme (too narrow), writer (implies net-new docs)
 Architecture-facing docs — ADRs, design notes, diagrams, system overviews. **Verify/rewrite only** (Solution-adjacent). Does not author net-new HLD/ADR; that author path is deferred.
 _Avoid_: adr (too narrow), design (ambiguous with product design), authoring greenfield HLD from this branch
 
-**Triage** (shared):
+**Doc-class** (shared):
 Four-way document classification (`accurate`, `partial`, `misleading`, `obsolete`) that sets effort before rewriting. Shared by both branches.
-_Avoid_: per-branch classification vocabularies
+_Avoid_: triage (Intent skill noun); per-branch classification vocabularies
 
 **Evidence ladder** (branch-local):
 The ordered source list a branch trusts. Deliberately different per branch: `editor` starts at code and tests, `architecture` starts at live runtime behavior.
@@ -111,6 +111,14 @@ _Avoid_: one flattened ordering for both branches
 # Intent Skills Domain
 
 ## Language
+
+**Triage** (skill noun: `triage`):
+Intent intake — incident/ops evidence (observability MCP, local reproduce) → Triage Ledger → `product-owner` **`gate`** and/or `$dev` **`plan`**. Branch: **`intake`** (default); playbooks under `reference/` (e.g. scrape-incident). Does not implement or answer “should we build X?”.
+_Avoid_: Doc-class (docs four-way classification); implementing; conflating with `jira-ticket` / `prompt-compiler`
+
+**Intake** (`triage` branch):
+Default verb-path: evidence checklist, route table, required Triage Ledger, one-way handoff.
+_Avoid_: peer branches that duplicate handoff; re-grilling playbook locks
 
 **Prompt-compiler** (skill noun: `prompt-compiler`):
 Intent router — compiles raw developer intent into a persisted IR (invariants + atomic task DAG), then on approval dispatches sequential workers through `$dev` `implement` with orchestrator-enforced gates. Replaces `prompt-synthesis`.
@@ -129,7 +137,7 @@ Ingest & Assess → `/grill-me` (or inline fallback) on ambiguity → `compile` 
 _Avoid_: blind `git reset --hard`; trusting worker "green" claims; skipping Assure after a green DAG; continuing after circuit breaker
 
 **Handoff**:
-`compile` stops at the IR file. `run` hands each task to `$dev` (only Build entry). After full DAG success, post-delivery Assure is required before delivery report; Ship only when the user asked to land. Intent entrypoints that start from Jira still use `jira-ticket` (and `product-owner` **`gate`** when scope is non-trivial). Spec/PRD router is **deferred** — no first-party `spec` skill.
+`triage` → `product-owner` **`gate`** and/or `$dev` **`plan`** per ledger (Build Now continues to plan; approved plan / go → `$dev` `implement`). `compile` stops at the IR file. `run` hands each task to `$dev` (only Build entry). After full DAG success, post-delivery Assure is required before delivery report; Ship only when the user asked to land. Intent entrypoints that start from Jira still use `jira-ticket` (and `product-owner` **`gate`** when scope is non-trivial). Incident/observability without Jira/IR → `triage` first. Spec/PRD router is **deferred** — no first-party `spec` skill.
 
 # Product Skills Domain
 
@@ -152,7 +160,7 @@ Product constraints cited from repo docs (`AGENTS.md`, `ROADMAP.md`, or equivale
 _Avoid_: inventing budgets or paths when docs are silent → Research Further
 
 **Handoff**:
-Before non-trivial product scope, Intent entrypoints (`jira-ticket`, feature asks) load `product-owner` **`gate`**. Continue impl only on **Build Now** → `$dev` only (classifies; loads `architecture` when design is earned). Never treat `architecture` as a parallel Build entry beside `$dev`. Never let `architecture` / `dev` / `*-dev` / `review.gil` answer “should we build X?”. `grilling` is Decide-only stress-test (third-party install); product-owner keeps doctrine when the topic is scope.
+Before non-trivial product scope, Intent entrypoints (`triage`, `jira-ticket`, feature asks) load `product-owner` **`gate`**. Continue impl only on **Build Now** → `$dev` only (classifies; loads `architecture` when design is earned). Never treat `architecture` as a parallel Build entry beside `$dev`. Never let `architecture` / `dev` / `*-dev` / `review.gil` answer “should we build X?”. `grilling` is Decide-only stress-test (third-party install); product-owner keeps doctrine when the topic is scope.
 
 # Dev Skills Domain
 

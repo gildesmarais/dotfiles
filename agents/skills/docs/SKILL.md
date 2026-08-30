@@ -77,7 +77,7 @@ Load exactly one disclosed reference file and follow it through completion:
 Report for every branch:
 
 - the target document and its role
-- the triage classification
+- the doc-class (four-way classification)
 - the authoritative sources checked
 - what was removed or clarified
 - unresolved verification gaps
