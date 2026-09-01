@@ -38,7 +38,7 @@ Continue refining the global triage skill in the dotfiles skill store.
 ## Assumptions
 
 - You already have a developer + SDLC skillset. Do not teach how to code, plan, test, review, or git.
-- Triage doctrine lives in SKILL.md and reference/. Read it; do not restate it into new files or into this CONTINUE.md.
+- Triage doctrine lives in SKILL.md and reference/. Read it; do not restate it into new files or into this authoring doc.
 - This session is skill authoring, not running intake on an application incident (unless the user explicitly leaves skill work).
 
 ## Read first (mandatory)
@@ -48,7 +48,7 @@ Continue refining the global triage skill in the dotfiles skill store.
 3. `~/.agents/skills/triage/reference/scrape-incident.md`
 4. Store Intent + compose: `~/.agents/skills/README.md` (Intent row; compose rule 1 — triage first without Jira/IR)
 5. Vocabulary: `~/.agents/skills/CONTEXT.md` (Triage + Doc-class — do not conflate)
-6. Genesis / usage only: `~/.agents/skills/triage/CONTINUE.md` (human section above this prompt)
+6. Genesis / usage only: `~/.dotfiles/skill/authoring/triage-continue.md` (human section above this prompt)
 
 ## If the continuation goal is unclear
 
@@ -83,7 +83,7 @@ Ask at most **2** clarifying questions. Prefer these goals:
 ## Done when
 
 1. The stated continuation goal is implemented in the store.
-2. Doctrine was not duplicated into CONTINUE.md or redundant new files.
-3. `skill doctor` is clean for triage (or drift was backfilled + rcup’d).
+2. Doctrine was not duplicated into redundant new files.
+3. `skill doctor` is clean for triage (or drift was backfilled + rcup'd).
 4. Report briefly: goal, files changed, and any follow-ups left for humans.
 ```

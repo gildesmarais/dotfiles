@@ -51,7 +51,7 @@ flowchart LR
 | **Explain**  | Humans understand state          | `communication`; `docs`                                                                                                     | see skill branches                                                                                                                      |
 | **Decide**   | Stress-test choices              | `grilling` (third-party); `product-owner` Forced Challenge                                                                  | —                                                                                                                                       |
 
-Published Build overlays: `ruby-on-rails-dev`, `swiftui-dev`. Rust depth (store): `ms-rust`, `rust-performance`.
+Published Build overlays: `ruby-on-rails-dev`, `swiftui-dev`.
 
 ## Optional packs (not OS SoT)
 
@@ -94,16 +94,16 @@ One-way rules (prevent domain collisions):
 
 ## Skill index
 
-| Domain   | Skills                                                                                                                                                                                                                                                                    |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Intent   | [`triage`](triage/), [`prompt-compiler`](prompt-compiler/), [`jira-ticket`](jira-ticket/)                                                                                                                                                                                  |
-| Product  | [`product-owner`](product-owner/)                                                                                                                                                                                                                                         |
-| Solution | [`architecture`](architecture/), [`docs`](docs/)                                                                                                                                                                                                                          |
-| Build    | [`dev`](dev/), [`ruby-dev`](ruby-dev/), [`rust-dev`](rust-dev/), [`swift-dev`](swift-dev/), [`typescript-dev`](typescript-dev/), [`ruby-on-rails-dev`](ruby-on-rails-dev/), [`swiftui-dev`](swiftui-dev/), [`ms-rust`](ms-rust/), [`rust-performance`](rust-performance/) |
-| Assure   | [`review.gil`](review.gil/)                                                                                                                                                                                                                                               |
-| Ship     | [`pull-request`](pull-request/), [`release`](release/)                                                                                                                                                                                                                    |
-| Explain  | [`communication`](communication/), [`docs`](docs/)                                                                                                                                                                                                                        |
-| Decide   | `grilling` (third-party — [Optional packs](#optional-packs-not-os-sot))                                                                                                                                                                                                   |
+| Domain   | Skills                                                                                                                                                                                                    |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Intent   | [`triage`](triage/), [`prompt-compiler`](prompt-compiler/), [`jira-ticket`](jira-ticket/)                                                                                                                 |
+| Product  | [`product-owner`](product-owner/)                                                                                                                                                                         |
+| Solution | [`architecture`](architecture/), [`docs`](docs/)                                                                                                                                                          |
+| Build    | [`dev`](dev/), [`ruby-dev`](ruby-dev/), [`rust-dev`](rust-dev/), [`swift-dev`](swift-dev/), [`typescript-dev`](typescript-dev/), [`ruby-on-rails-dev`](ruby-on-rails-dev/), [`swiftui-dev`](swiftui-dev/) |
+| Assure   | [`review.gil`](review.gil/)                                                                                                                                                                               |
+| Ship     | [`pull-request`](pull-request/), [`release`](release/)                                                                                                                                                    |
+| Explain  | [`communication`](communication/), [`docs`](docs/)                                                                                                                                                        |
+| Decide   | `grilling` (third-party — [Optional packs](#optional-packs-not-os-sot))                                                                                                                                   |
 
 ## Authoring laws
 

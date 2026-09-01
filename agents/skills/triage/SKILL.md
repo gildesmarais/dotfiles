@@ -16,24 +16,24 @@ Evidence first; one handoff; no Build.
 
 ## When to use / skip
 
-| Use when | Skip when |
-| --- | --- |
-| Prod errors, Sentry/APM, scrape/timeouts, "investigate then what?" | Clear "implement this plan" / approved plan → `$dev` `implement` |
-| Need route: product admit vs eng plan | Jira key/URL as entry → prefer `jira-ticket` |
-| `/triage`, `/intake`, incident without ticket or IR | Pure compile-to-IR → `prompt-compiler`; stress-test only → `grilling` |
+| Use when                                                           | Skip when                                                             |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| Prod errors, Sentry/APM, scrape/timeouts, "investigate then what?" | Clear "implement this plan" / approved plan → `$dev` `implement`      |
+| Need route: product admit vs eng plan                              | Jira key/URL as entry → prefer `jira-ticket`                          |
+| `/triage`, `/intake`, incident without ticket or IR                | Pure compile-to-IR → `prompt-compiler`; stress-test only → `grilling` |
 
 ## Pick branch
 
 Never ask the user to pick when signals are clear. Default: **`intake`**.
 
-| Branch | Status | Use when |
-| --- | --- | --- |
+| Branch   | Status     | Use when                                               |
+| -------- | ---------- | ------------------------------------------------------ |
 | `intake` | **active** | Default incident/fuzzy ops → evidence → ledger → route |
 
 **Playbooks** (progressive load under `reference/`, not peer branches):
 
-| Signal | Load |
-| --- | --- |
+| Signal                                                                       | Load                                                           |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------- |
 | Botasaurus, scrape-api, challenge_block, timeout/work, fail-closed scrape UX | [`reference/scrape-incident.md`](reference/scrape-incident.md) |
 
 ## Shared prep
@@ -70,9 +70,9 @@ Compose: Product before non-trivial scope (store README rule 1). `$dev` never an
 
 ## Completion criteria
 
-| Path | Done when |
-| --- | --- |
+| Path                  | Done when                                                                                               |
+| --------------------- | ------------------------------------------------------------------------------------------------------- |
 | `intake` (+ playbook) | Evidence listed; Triage Ledger emitted; route chosen with rationale; next skill loaded or explicit stop |
-| Handoff PO | Gate runs (or prior gate summarized); no application code |
-| Handoff `$dev` plan | Product stance noted (`Build Now` / `skip`+why / pending); plan-pipeline owned by `$dev` |
-| Stop | Approved plan already present, or PO not Build Now, or should-we-build-only resolved |
+| Handoff PO            | Gate runs (or prior gate summarized); no application code                                               |
+| Handoff `$dev` plan   | Product stance noted (`Build Now` / `skip`+why / pending); plan-pipeline owned by `$dev`                |
+| Stop                  | Approved plan already present, or PO not Build Now, or should-we-build-only resolved                    |

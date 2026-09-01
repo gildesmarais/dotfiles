@@ -53,7 +53,8 @@ Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, 
 
 Pointers only — load when present; do not paste their bodies here:
 
-- Store depth → `ms-rust`, `rust-performance` when installed / applicable.
+- Measured perf / hot path → `$dev` classify `design` → `architecture` **`performance`**
+- Third-party Rust guideline packs (if user installs separately): compose when present; never paste bodies here
 
 ## Handoff deltas
 

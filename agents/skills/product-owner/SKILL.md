@@ -96,7 +96,7 @@ Run in order for every in-scope proposal (gate or overlay):
 5. **Decision Output** — **Gate:** always emit the full block. **Overlay:** emit the full block only for Reject / Build Later / Research Further; for quiet Build Now, apply doctrine silently and continue without the block.
 6. **Gate (record)** — if the repo already records product evaluations, write this one using that convention. Do not invent a new doc scheme or path layout.
 
-**Promotion:** to set up / promote / refine a repo-local wrapper, see [`PROMOTE.md`](PROMOTE.md).
+**Promotion:** to set up / promote / refine a repo-local wrapper, see [`skill/authoring/product-owner-promote.md`](../../../skill/authoring/product-owner-promote.md).
 
 ## Doctrine Check (Mandatory)
 

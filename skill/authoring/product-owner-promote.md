@@ -24,7 +24,7 @@ Set up, promote, or refine this repository's local product-owner skill against t
 ## Read first (mandatory)
 
 1. Global skill: `~/.agents/skills/product-owner/SKILL.md`
-2. Promotion notes: `~/.agents/skills/product-owner/PROMOTE.md` (usage notes above this prompt)
+2. Promotion notes: `~/.dotfiles/skill/authoring/product-owner-promote.md` (usage notes above this prompt)
 3. Discover existing product constraints in this repo, in order of preference:
    - Local skill: `.agents/skills/product-owner/SKILL.md` (or similarly named)
    - `AGENTS.md` (or equivalent agent/product governance doc)

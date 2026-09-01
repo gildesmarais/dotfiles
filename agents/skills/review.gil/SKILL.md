@@ -56,32 +56,7 @@ Before evaluating code, drafting findings, or generating review output, execute 
 
 Do NOT generate findings until the appropriate reference files are loaded into your working context.
 
-## Required Output Schema (All Reviews)
-
-Produce one combined report using this exact structure (specialized lenses contribute checks into these sections):
-
-### Findings
-
-- Categorize each item as **Critical**, **Important**, or **Nice-to-Have**.
-- For each finding: cite exact file/line evidence, explain the concrete failure mechanism, and state the recommended remediation.
-
-### Non-Goals
-
-- Explicit exclusions and intentionally unaddressed areas.
-
-### Confidence & Uncertainty
-
-- Separate verified codebase facts from inferred or unverified assumptions (including security boundary assumptions).
-
-### Compliance & Risk Posture
-
-- Explicit evaluation: What passes review, what is flagged, and minimum viable remediation or compensating controls.
-
-### Executive Summary
-
-- **Production readiness:** `Yes` | `No` | `Conditional`
-- **Top risks:** Bulleted highest-priority failure modes.
-- **Immediate actions:** Clear next steps before merge/deployment.
+Output shape: [`reference/finish.md`](reference/finish.md) § Output format.
 
 ## Incident & Fix-Diff Postures
 
@@ -99,6 +74,6 @@ When reviewing fixes, reverts, or incident-related changes, apply the incident /
 
 | Execution  | Done when                                                                                                                                                               |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `findings` | Every selected lens applied; Critical empty or owned; Important owned/rationale; readiness Yes/No/Conditional; Required Output Schema satisfied; no GitHub writes       |
+| `findings` | Every selected lens applied; Critical empty or owned; Important owned/rationale; readiness Yes/No/Conditional; finish.md output shape satisfied; no GitHub writes       |
 | `quality`  | Audit table produced (legacy Find rows present or explicit empty); commit stack executed (or explicit empty); gates green; P0/P1 fixed or listed for re-invoke          |
 | `publish`  | Fresh multi-lens ledger verified on PR head SHA; drafts reconciled; submitted as `COMMENT` or left PENDING when draft-only was explicit; URLs reported; no code changed |
