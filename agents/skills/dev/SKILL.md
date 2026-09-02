@@ -4,7 +4,9 @@ description: >
   Build-domain router for implementation plans and code changes — classify,
   language/overlay route, phase commits, validation honesty, API truth.
   Use when the ask is implement, fix, feature, implementation plan, Cursor plan
-  mode, surgical, or design-shaped coding work. Routes to {lang}-dev / overlays
+  mode, surgical, or design-shaped coding work; also optimize, hot path,
+  throughput, latency, allocate, profile, benchmark, Apple Silicon / SIMD as
+  coding work that still enters via this skill. Routes to {lang}-dev / overlays
   (multi-load from touched-file evidence); design → architecture; plan mode →
   reference/plan-pipeline.md quality gates; assure/ship → review.gil /
   pull-request. Never answers "should we build X?".

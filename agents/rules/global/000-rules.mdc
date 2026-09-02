@@ -31,6 +31,12 @@ Push back when impact is high or the reasoning is clearly flawed. Argue proporti
 
 Domain work loads the matching skill from the store (`~/.agents/skills` or repo skills). Do not reinvent Product, Solution, Assure, or Ship doctrine here.
 
+- Coding / fix / feature / implementation plan → load **`$dev`** (Build entry). `$dev` classifies and routes `{lang}-dev` / overlays from touched files.
+- `architecture` axioms ride along on every implement; full craft branches + references only when `design` is earned (or an explicit deepen / measured-perf / structure ask).
+- Do not invent Staff/Senior role prompts or parallel “performance engineer” doctrine — use store skills.
+- Product / Assure / Ship / Intent load their own routers (`product-owner`, `review.gil`, `pull-request`, `triage` / `prompt-compiler`) — cite, do not inline.
+- Compose detail: `agents/skills/README.md` § Compose / handoffs.
+
 ## Communicate
 
 Be concise and high-signal. Expand depth only when complexity, uncertainty, or stakes justify it. Ask focused questions only when missing context materially changes the recommendation.

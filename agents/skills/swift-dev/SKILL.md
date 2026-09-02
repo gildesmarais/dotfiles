@@ -4,7 +4,8 @@ description: >-
   Always load $dev first; this pack is deltas only. Language-runtime adapter
   loaded by $dev — not the Build entry. Use when $dev routed here or the user
   names this skill with $dev already loaded. Swift deltas: MainActor/@Observable,
-  Apple docset cues, UI overlay compose.
+  Apple docset cues, UI overlay compose; after measured-perf handoff also ARC/QoS
+  hygiene and Metal / Accelerate / ANE recipes.
 ---
 
 # Swift Dev
@@ -39,14 +40,18 @@ Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, 
 - Validate with the narrowest repo-native command that covers the change.
 - If the failing path is UI-shaped, load `swiftui-dev` and apply its deltas in the same change rather than inventing a language-only clamp.
 - Swift Testing macro hygiene: Never nest `#require` macro invocations inside other `#require` calls (e.g. `try #require(HTTPURLResponse(url: #require(...)))`). Sequentialize optional unwrapping onto separate lines to prevent recursive macro expansion compiler errors.
+- Load language-specific harvest postures in [`reference.md`](reference.md) when Apple/Swift runtime conventions apply.
 
 ## Performance & Allocation Hygiene
 
-- **Zero-Allocation Domain Types**: Eliminate string formatting (`"\(a)\(b)"`) and regex parsing in hot domain loops and value object relationship checks. Use pure integer arithmetic, enum raw values, bitmasks (`UInt32`), or precomputed static lookup tables.
-- **Equatable & Table Diffing Safety**: Never invoke computed properties that allocate or flatten collections (e.g., `points.flatMap { [$0.low, $0.mid, $0.high] }`) inside `static func ==` or hot loops. Back collections with contiguous storage or compare underlying struct arrays directly to prevent SwiftUI table diffing heap churn.
-- **SIMD & Accelerate Vectorization**: Vectorize multi-channel Euclidean distance kernels using `SIMD3` / `SIMD4` vector math with $4\times$ loop unrolling. For vector embeddings and dot products, use Apple Accelerate framework `vDSP` (`vDSP_dotpr`, `vDSP_svesq`) over contiguous memory (`withUnsafeBufferPointer`).
-- **Binary Search for 60 FPS Scrubbing**: For monotonic coordinate maps (e.g. beat/time maps), sort upon ingestion and use binary search ($O(\log N)$) instead of runtime `.sorted()` allocations and linear scans on 60 FPS playhead ticks.
-- **MainActor Event-Loop Protection**: Throttle high-frequency progress callbacks from background tasks (e.g. DFS graph search, batch ingestion) with timestamp coalescing (e.g., max 20 Hz) to prevent saturating the MainActor event loop.
+Hot-path work earns `$dev` classify `design` → `architecture` **`performance`** first; this pack supplies Apple/Swift recipes after stop rules.
+
+- Prefer value types / `final` / `@frozen` to cut ARC and witness traffic; reach for `Unsafe*` only on a profiled loop.
+- Avoid string formatting, regex, and allocating computed properties inside `==` or other hot equality/diff paths; keep domain checks on integers, enums, bitmasks, or contiguous storage.
+- On Apple Silicon, design shared-memory stages (CPU ↔ GPU ↔ ANE) before inventing copies; pick Accelerate/AMX vs Metal vs Core ML by workload shape.
+- Structured concurrency + correct QoS: compute on performance intent, background I/O on utility/background — wrong QoS is a throughput bug.
+- Verify with Instruments (Time Profiler, Allocations, Metal System Trace): ARC retain/release, P vs E residency, GPU timelines.
+- Depth: [`reference.md`](reference.md).
 
 ## Tooling
 
@@ -63,6 +68,7 @@ Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, 
 
 Pointers only — load when present; do not paste their bodies here:
 
+- Measured perf / hot path → `$dev` classify `design` → `architecture` **`performance`**
 - UI-shaped work → `swiftui-dev` (with this skill; via `$dev` route).
 - Swift Testing depth → `swift-testing-pro` when installed.
 - On-device AI → `apple-on-device-ai` when that pack exists.

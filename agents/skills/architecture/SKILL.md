@@ -4,8 +4,10 @@ description: >
   Language-free solution craft for module depth, type-driven refactors, and
   measured performance. Use when $dev classifies design, when design or
   structural cleanup is earned, or when the user asks to deepen modules,
-  replace primitives with domain types, or optimize with a baseline. Also use
-  for structural tree / directory surveys: peer-folder conformity, snowflake
+  replace primitives with domain types, optimize with a baseline, name a
+  bottleneck class, zero-copy / heterogeneous placement, or measured hot-path
+  work — not a Build entry alone (enter via $dev for coding). Also use for
+  structural tree / directory surveys: peer-folder conformity, snowflake
   placement, and module promote/relocate/fold ranking — not for generic code
   review (use review.gil).
 ---

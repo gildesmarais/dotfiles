@@ -17,3 +17,6 @@ Operational defs shared by every architecture branch and survey mode.
 | **promote**         | Move a surface up only when it is truly shared and domain-free; otherwise push domain down.                         |
 | **relocate**        | Move a unit to its owning module/layer (wrong home → right home).                                                   |
 | **fold**            | Absorb a micro-module into one consumer home when it fails the deletion test or has a single owner.                 |
+| **bottleneck class** | The scarce resource on the hot path (layout, alloc traffic, bandwidth, syscalls, offload transfer, scheduler) — not the first fancy API that might help. |
+| **heterogeneous placement** | Choosing which execution unit owns a stage when memory can be shared or must be copied; a seam decision, not a micro-opt. |
+| **zero-copy boundary** | A seam where producer and consumer observe the same bytes without intermediate owned buffers; must be proven, not asserted. |

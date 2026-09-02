@@ -4,7 +4,8 @@ description: >-
   Always load $dev first; this pack is deltas only. Language-runtime adapter
   loaded by $dev — not the Build entry. Use when $dev routed here or the user
   names this skill with $dev already loaded. Rust deltas: cargo validation,
-  crate docset cues, depth-pack compose.
+  crate docset cues, depth-pack compose; after measured-perf handoff also
+  cargo-asm, Criterion, target-cpu, io_uring, and related toolchain recipes.
 ---
 
 # Rust Dev
