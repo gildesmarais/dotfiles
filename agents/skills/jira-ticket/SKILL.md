@@ -66,7 +66,7 @@ Search for ticket terms, errors, models, paths, flags, domain nouns. Read surrou
 
 ## Skill Routing
 
-- **Product gate:** non-trivial user-facing scope → `product-owner` **`gate`**; **Build Now** only. Skip for pure bugfix/refactor/infra.
+- **Product gate:** non-trivial user-facing scope → `product-owner` **`gate`**; **Build Now** only. Multi-slice / UX-mandated AC → `product-owner` **`story-slice`** then `$dev` **`plan`**. Skip for pure bugfix/refactor/infra.
 - **Build:** `$dev` **`plan`** / **`implement`** (routes runtime + overlays from change surface).
 - **Assure / land:** `$dev` Handoff → `review.gil` / `pull-request` **`open`**.
 - Unavailable skill → say so; continue closest local workflow.

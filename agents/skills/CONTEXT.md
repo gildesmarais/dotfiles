@@ -148,7 +148,11 @@ Not: product (parallel skill), product-gate, po
 
 **Gate** (`product-owner` branch, default):
 Admission before non-trivial user-facing scope: Build Now / Build Later / Research Further / Reject.
-Not: prioritize, story-slice, experiment (stubs)
+Not: prioritize, experiment (stubs)
+
+**Story-slice** (`product-owner` branch):
+Admitted (`Build Now` / founder override) scope → Given/When/Then stories with cited interaction budgets before `$dev` `plan`.
+Not: slicing Rejected or uncited scope; inventing SLAs when docs are silent
 
 **Decision vocabulary** (`gate`):
 **Build Now** | **Build Later** | **Research Further** | **Reject** — plus Confidence and Forced Challenge. Cite repo product docs or `unknown`.
@@ -159,7 +163,7 @@ Product constraints from repo docs (`AGENTS.md`, `ROADMAP.md`, equivalents) — 
 Not: inventing budgets when docs are silent
 
 **Handoff**:
-Intent entrypoints load `product-owner` **`gate`** before non-trivial scope. **Build Now** → `$dev` only. Never let `architecture` / `dev` / `*-dev` / `review.gil` answer "should we build X?". `grilling` is Decide-only stress-test.
+Intent entrypoints load `product-owner` **`gate`** before non-trivial scope. **Build Now** → `story-slice` when stories/UX AC are needed, else `$dev` only. Never let `architecture` / `dev` / `*-dev` / `review.gil` answer "should we build X?". `grilling` is Decide-only stress-test.
 
 # Dev Skills Domain
 
