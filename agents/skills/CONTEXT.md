@@ -138,6 +138,19 @@ Not: blind `git reset --hard`; trusting worker green claims; skipping Assure aft
 **Handoff**:
 `triage` → `product-owner` **`gate`** and/or `$dev` **`plan`**. `compile` stops at IR file. `run` → `$dev` only. Jira entry → `jira-ticket`. Incident without Jira/IR → `triage` first. Spec/PRD router deferred.
 
+**Orchestrator** (skill noun: `orchestrator`):
+Sequential delivery of admitted tranches from repo roadmap docs.
+Discovers tranches, spawns `$dev` workers, gates on validation, updates roadmap.
+Roadmap is the state — no separate tracking file.
+Not: prompt-compiler (single-prompt IR); jira-ticket (ticket entry); triage (incident intake)
+
+**Run** (`orchestrator` branch):
+Default and only branch. Discover → dispatch → gate → update → advance.
+
+**Handoff**:
+`run` → `$dev` `implement` per tranche. Full completion → `review.gil` **`findings`**.
+Land → `pull-request` **`open`**. Circuit break → halt.
+
 # Product Skills Domain
 
 ## Language
