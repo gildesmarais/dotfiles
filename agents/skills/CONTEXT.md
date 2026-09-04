@@ -30,6 +30,34 @@ Not: address, closeout
 Open = commit session work + push + create PR. Slice = rebuild one messy branch into intent-based smaller PRs.
 Not: pr-opener, pr-slicer, split-to-prs
 
+**Fix-ci** (`pull-request` branch):
+Repair failing GitHub Actions on a PR — failing-job logs only, classify, fix+push, watch once.
+Not: explaining CI without a fix ask (report-only); whole-run log dumps
+
+**Conflicts** (`pull-request` branch):
+Rebase/merge a PR branch onto its base; preserve intents; push (lease when rebase).
+Not: starting fix-ci or resolve from this branch
+
+**Unblock chain** (`pull-request` routing rule, not a branch):
+conflicts → resolve → fix-ci in order; refresh live PR state each pass; never approve/merge.
+Not: a dedicated unblock-pr skill; autopilot that merges
+
+**Dependabot** (skill noun: `dependabot`):
+Store-owned Dependabot configure + PR triage. Branches: `configure` | `triage`.
+Not: third-party mega-guide; hand-editing when the repo already generates manifests from ownership config
+
+**Configure** / **Triage** (`dependabot` branches):
+Configure = draft/optimize `dependabot.yml`. Triage = risk skim + fallout via `pull-request` fix-ci/conflicts; report approve-readiness; stop before approve/merge.
+Not: rewriting Dependabot commits; auto-merge from triage
+
+**PR Sweep** (skill noun: `pr-sweep`):
+Read-only multi-repo attention ledger (Intent). Branch: `report`. Compact rows: repo, PR, blocker, store invocation.
+Not: fixing, commenting, or inlining diffs/logs; a `pull-request` branch
+
+**Sweep ledger**:
+One-row-per-item output from `pr-sweep`; invocations only — no diffs or CI excerpts.
+Not: a todo list the sweep itself executes
+
 **Findings** (`review.gil` execution):
 Read-only production-readiness report — no boy-scout edits, no GitHub writes. Baseline lens: [`review.gil/reference/finish.md`](review.gil/reference/finish.md).
 Not: finish (old execution name), quality (changes code)
@@ -51,7 +79,7 @@ Dead compat — dual public names, superseded store/wire hydrate, deprecated mar
 Not: cleanup, tech-debt, dedicated legacy skill, `refactor-legacy` under `architecture`
 
 **Handoff**:
-`publish` → `review.gil`; verified-ledger posting → `pull-request` **`comment`** — never reverse. Structural findings may **name** an `architecture` craft branch as remediation — naming is not running. Land ask + readiness Yes/Conditional → `pull-request` **`open`**.
+`publish` → `review.gil`; verified-ledger posting → `pull-request` **`comment`** — never reverse. Structural findings may **name** an `architecture` craft branch as remediation — naming is not running. Land ask + readiness Yes/Conditional → `pull-request` **`open`**. Unblock → conflicts → resolve → fix-ci. `pr-sweep` → ledger only → `pull-request` / `dependabot` / `review.gil`. Dependabot CI fallout → `pull-request` **`fix-ci`**.
 
 # Communication Skills Domain
 
@@ -136,7 +164,7 @@ Ingest → grill gaps → `compile` → user approves → `run` via `$dev` → g
 Not: blind `git reset --hard`; trusting worker green claims; skipping Assure after green DAG
 
 **Handoff**:
-`triage` → `product-owner` **`gate`** and/or `$dev` **`plan`**. `compile` stops at IR file. `run` → `$dev` only. Jira entry → `jira-ticket`. Incident without Jira/IR → `triage` first. Spec/PRD router deferred.
+`triage` → `product-owner` **`gate`** and/or `$dev` **`plan`**. `compile` stops at IR file. `run` → `$dev` only. Jira entry → `jira-ticket`. Incident without Jira/IR → `triage` first. Spec/PRD router deferred. Morning PR attention → `pr-sweep` **`report`** (not `triage`).
 
 **Orchestrator** (skill noun: `orchestrator`):
 Sequential delivery of admitted tranches from repo roadmap docs.
