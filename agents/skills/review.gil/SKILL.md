@@ -69,6 +69,7 @@ When reviewing fixes, reverts, or incident-related changes, apply the incident /
 - Posting an already-verified ledger continues with the `pull-request` skill `comment` branch.
 - Findings execution never posts to GitHub.
 - If user asked to land and readiness is Yes/Conditional (owned residuals) → continue with `pull-request` **`open`**. Never auto-open without that ask.
+- **Harvest feedback:** when review uncovers recurring failure classes, non-obvious security/perf traps, or deferred architectural friction that cannot be fixed in scope, hand off to `harvest` (`distill` for preventive mantras, `debt` for `.agents/debt-ledger.md`).
 
 ## Completion criteria
 

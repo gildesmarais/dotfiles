@@ -35,6 +35,7 @@ Domain work loads the matching skill from the store (`~/.agents/skills` or repo 
 - `architecture` axioms ride along on every implement; full craft branches + references only when `design` is earned (or an explicit deepen / measured-perf / structure ask).
 - Do not invent Staff/Senior role prompts or parallel “performance engineer” doctrine — use store skills.
 - Product / Assure / Ship / Intent load their own routers (`product-owner`, `review.gil`, `pull-request`, `triage` / `prompt-compiler`) — cite, do not inline.
+- Continuous learning & debt → load **`harvest`** (`distill` for preventive mantras, `debt` for `.agents/debt-ledger.md`).
 - Compose detail: `agents/skills/README.md` § Compose / handoffs.
 
 ## Communicate

@@ -19,11 +19,12 @@ Product domain router. Protect the product from unnecessary complexity. Features
 
 | Use when                                                                                | Skip when                                                                                                 |
 | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Feature proposals, scope expansion, new UI/API surface, parity/"competitor had it" asks | Pure bugfix, refactors, or infra with no user-facing concept or step change                               |
+| Feature proposals, scope expansion, new UI/API surface, parity/"competitor had it" asks | Routine surgical bugfix or single-slice cleanup with no user-facing concept or step change                 |
 | Idea, feature, user feedback, or UAT that changes product scope or surface              | User explicitly wants a stress-test interview only → use `grilling`                                       |
 | Debating defaults, settings, or expert controls on a primary surface                    | Docs lack product constraints _and_ the ask is already Reject-shaped (state the gap; do not invent paths) |
 | Admission / build-now gates before non-trivial product work                             |                                                                                                           |
 | Admitted scope → high-fidelity user stories / GWT / UX budgets before `$dev` `plan`     | Scope is still ungated, Rejected, or already a single cited AC with no slice ask                          |
+| Admitting architecture debt / refactor tranches from `.agents/debt-ledger.md`            |                                                                                                           |
 
 ## Pick branch
 
@@ -119,11 +120,17 @@ Count new concepts introduced. More than one needs explicit justification.
 
 New surface area (UI, API, compute, copy) must justify downstream customer value. Reject elegant work that does not reduce friction on a golden path.
 
+### Health capacity budget (architecture & tech debt)
+
+Engineering velocity degrades when architectural friction and technical debt compound unaddressed. The product-owner enforces an explicit **Health Capacity Budget** (default: ~20% capacity or 1 debt tranche per 3–4 feature tranches).
+- **Check the Debt Ledger:** Before admitting new scope or prioritizing tranches, read `<project>/.agents/debt-ledger.md` (or `ROADMAP.md` health section).
+- **Admit when friction threatens velocity:** High-friction debt items that block or slow golden paths qualify for **Build Now** under the health capacity budget even without a new user-facing feature.
+
 ## Workflow (`gate`)
 
 Run in order for every in-scope proposal (gate or overlay):
 
-1. **Discover constraints** — read product docs (golden paths, budgets, models, personas); list sources found and gaps. If personas are absent, recommend establishing `docs/personas.md` with candidate personas synthesized from local project history.
+1. **Discover constraints** — read product docs (golden paths, budgets, models, personas) and check `<project>/.agents/debt-ledger.md` when evaluating capacity or debt tranches; list sources found and gaps. If personas are absent, recommend establishing `docs/personas.md` with candidate personas synthesized from local project history.
 2. **Doctrine Check** — answer all seven questions (below). Weak or uncited answers → Reject, Build Later, or Research Further.
 3. **Forced Challenge** — state the strongest honest case for “do not build this.” If it cannot be answered, Reject or Build Later.
 4. **Founder-bias check** — requester enthusiasm, technical elegance, and “competitor/parity product had it” are insufficient alone. Documented golden paths + mental models decide.
@@ -232,7 +239,8 @@ product-owner gate
   Build Now       → story-slice when the ask is stories / multi-slice /
                     UX-mandated AC; else $dev only (classifies; loads
                     architecture when design; routes {lang}-dev / overlay);
-                    Intent entrypoints (e.g. jira-ticket) may continue
+                    Intent entrypoints (e.g. jira-ticket) may continue;
+                    debt tranches from .agents/debt-ledger.md route to $dev
   Build Later     → stop impl; optional communication/status
   Research Further → name smallest missing product artifact; do not invent strategy
   Reject          → stop (unless user explicitly overrides — then $dev plan records override)

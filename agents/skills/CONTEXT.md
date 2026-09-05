@@ -270,7 +270,7 @@ Not: inventing a second handoff schema per skill
 Signal for `architecture` **`deep-modules`** — not a skill name.
 
 **Harvest**:
-Pain-twice or user-asked only → sparse-promote via `growth.md` / `learning-log.md`. After store edits: `skill doctor`; drift → `skill backfill` → `rcup`.
+Feedback loop via `harvest` skill (`distill` for preventive mantras, `debt` for `.agents/debt-ledger.md`). Sparse-promote into reference checklists/anti-patterns; drop weak candidates. After store edits: `skill doctor`; drift → `skill backfill` → `rcup`.
 Not: harvest on every implement; append-only forever logs
 
 **Expansion law**:
@@ -280,7 +280,7 @@ Seven rules in `architecture/reference/growth.md` before adding a branch. New la
 After each plan phase: validate → ≥1 [Conventional Commit](https://www.conventionalcommits.org/) with rationale body — default off default branch; ask early on default branch. Carriers: `architecture` Shared prep and `$dev` Shared prep. `release` **`notes`** consumes merged history only. Procedure: `$dev` Handoff.
 
 **Handoff** (shape only — procedure in `$dev` / `architecture` SKILL.md):
-`dev` → `{lang}-dev` / overlay; `design` → `architecture` → continue `$dev`; Assure → `review.gil`; land → `pull-request` **`open`**; changelog → `release` **`notes`**. No reverse: craft does not own Product gate.
+`dev` → `{lang}-dev` / overlay; `design` → `architecture` → continue `$dev`; Assure → `review.gil`; land → `pull-request` **`open`**; changelog → `release` **`notes`**; friction/learnings → `harvest`. No reverse: craft does not own Product gate.
 
 # Ship Skills Domain
 
@@ -307,6 +307,37 @@ Not: using grilling for "should we build X?" (→ `product-owner` **`gate`**)
 
 **Handoff**:
 Decide-only. May stress Intent briefs, Product gate proposals, or Solution craft choices. Product doctrine stays with `product-owner` when topic is scope.
+
+# Harvest Skills Domain
+
+## Language
+
+**Harvest** (skill noun: `harvest`):
+Continuous learning and debt capture router. Turn session friction, user corrections, and review findings into durable system wisdom without polluting skills with raw noise. Branches: `distill` | `debt`.
+Not: raw incident dumps; append-only forever logs
+
+**Distill** (`harvest` branch, default):
+Extract imperative preventive mantras (checklist items and anti-patterns) from session corrections, test loops, and review findings. Deduplicate and sparse-promote to project-local rules or global skill references.
+Not: raw transcripts; incident postmortems; vague platitudes
+
+**Debt** (`harvest` branch):
+Log architectural friction, structural rot, leaky module seams, or performance traps to `<project>/.agents/debt-ledger.md`.
+Not: burying debt in ephemeral chat; unbounded boy-scout refactors mid-feature
+
+**Debt Ledger** (`.agents/debt-ledger.md`):
+Project-level backlog of identified architectural friction and structural debt. Consumed by `product-owner` under the Health Capacity Budget and executed by `orchestrator` / `$dev`.
+Not: Jira replacement; untracked todo comments
+
+**Health Budget**:
+`product-owner` capacity rule allocating ~20% capacity (or 1 debt tranche per 3–4 feature tranches) to admit high-friction items from `.agents/debt-ledger.md`.
+Not: uncontrolled gold-plating; ignoring debt until velocity halts
+
+**Preventive Mantra**:
+One imperative sentence an expert recalls before repeating a mistake. Format: checklist item ("When X, always Y to prevent Z") or anti-pattern ("Avoid X; use Y instead because Z").
+Not: conversational notes; multi-paragraph postmortems
+
+**Handoff**:
+`review.gil` / `pull-request` → `harvest` on non-obvious fixes, review findings, or deferred debt. `harvest debt` → `.agents/debt-ledger.md` → `product-owner` (Health Budget) → `orchestrator` / `$dev`. After global store edits: `skill doctor` → `rcup`.
 
 # Install
 

@@ -90,6 +90,7 @@ Load only the matched branch reference:
 - Narrative-only PR updates stay in **retitle**.
 - Dependabot PR assessment (changelog / approve-readiness) → `dependabot` **triage** (may call back into **fix-ci**).
 - Multi-repo attention list → `pr-sweep` (read-only; does not fix).
+- Harvest feedback: after landing a PR, resolving non-obvious review comments, or fixing systemic CI failures, hand off to `harvest` (`distill` for preventive mantras, `debt` for `.agents/debt-ledger.md`).
 
 ## Completion criteria
 

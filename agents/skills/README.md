@@ -33,6 +33,10 @@ flowchart LR
   Ship --> Run[Run]
   Run --> Explain[Explain]
   Explain --> Intent
+  Assure -.-> Harvest[Harvest]
+  Ship -.-> Harvest
+  Harvest --> Solution
+  Harvest --> Intent
   Decide[Decide] -.-> Intent
   Decide -.-> Product
   Decide -.-> Solution
@@ -50,6 +54,7 @@ flowchart LR
 | **Ship**     | Land on mainline                 | `pull-request`; `dependabot`; `release`                                                                                     | PR: open, slice, comment, reply, resolve, fix-ci, conflicts (+ unblock chain); Dependabot: configure \| triage; release: `notes`           |
 | **Explain**  | Humans understand state          | `communication`; `docs`                                                                                                     | see skill branches                                                                                                                         |
 | **Decide**   | Stress-test choices              | `grilling` (third-party); `product-owner` Forced Challenge                                                                  | —                                                                                                                                          |
+| **Harvest**  | Continuous learning & debt loop  | `harvest`                                                                                                                   | `distill` (default); `debt`                                                                                                                |
 
 Published Build overlays: `ruby-on-rails-dev`, `swiftui-dev`.
 
@@ -93,6 +98,7 @@ One-way rules (prevent domain collisions):
 11. **Observability cue** — APM / error tracking / logging via matching MCP when links appear; not a vendor SoT under Build.
 12. **Sweep never fixes** — `pr-sweep` emits a compact ledger only; rows route to `pull-request` / `dependabot` / `review.gil`. Never reverse.
 13. **Unblock chain** — `pull-request` "unblock / make merge-ready" runs **conflicts → resolve → fix-ci** in order (live state each pass); never auto-approve/merge. Dependabot assessment stays on `dependabot` **triage** (may call **fix-ci**).
+14. **Harvest loop** — `review.gil` (Assure) and `pull-request` (Ship) hand off to `harvest` whenever non-obvious fixes, user corrections, review findings, or deferred architectural debt occur. `harvest distill` writes imperative preventive mantras to local rules (`<project>/AGENTS.md`) or global store references (`architecture`, `review.gil`, `{lang}-dev`). `harvest debt` logs structural rot to `<project>/.agents/debt-ledger.md`. `product-owner` admits debt tranches under its Health Capacity Budget (~20% capacity or 1 debt tranche per 3–4 feature tranches) to feed `orchestrator` / `$dev`.
 
 ## Skill index
 
@@ -106,6 +112,7 @@ One-way rules (prevent domain collisions):
 | Ship     | [`pull-request`](pull-request/), [`dependabot`](dependabot/), [`release`](release/)                                                                                                                       |
 | Explain  | [`communication`](communication/), [`docs`](docs/)                                                                                                                                                        |
 | Decide   | `grilling` (third-party — [Optional packs](#optional-packs-not-os-sot))                                                                                                                                   |
+| Harvest  | [`harvest`](harvest/)                                                                                                                                                                                     |
 
 ## Authoring laws
 
