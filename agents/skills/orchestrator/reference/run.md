@@ -20,7 +20,15 @@ Implement all phases from: <plan_doc_path>
 Read `AGENTS.md` for repo law. Commit per phase per `$dev` phase-commit.
 Do not skip forward-doc.
 Skip per-task Assure — orchestrator owns the final gate.
+Tooling/env hints: <known tool runners/shims, e.g. mise exec, sandbox bypass requirements, git signing flags>
 Validation hint: <verification_gate>
+
+On completion, report back ONLY a concise, high-signal summary (prevent context bloat):
+1. Phase commits: list of `<sha> <conventional commit message>`
+2. Verification result: exact gate command run and exit status
+3. Key insights & deviations: unexpected design decisions or architectural adjustments made
+4. Pitfalls & friction resolved: any local environment, test, or tooling hurdles overcome
+Do NOT dump full terminal logs or step-by-step tool output.
 ```
 
 ## §4 Hard gate (zero worker trust)
@@ -54,3 +62,5 @@ All admitted green → `review.gil` **`findings`** (+ warranted lenses). Report 
 - Running `product-owner` mid-loop
 - Pushing without user ask
 - Hard reset without circuit-breaker consent
+- Omitting known tooling/environment prefixes when spawning workers (forcing worker to rediscover local shims/sandbox requirements)
+- Ingesting verbose worker command transcripts into orchestrator context (context bloat)

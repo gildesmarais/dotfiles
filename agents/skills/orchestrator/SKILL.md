@@ -33,6 +33,7 @@ Single branch. Default: **`run`** — discover → dispatch → gate → commit 
 6. **Default-branch law** — on main/master, follow `$dev` phase-commit law: ask user before committing.
 7. **Admission** — skip unadmitted tranches (report each). Never run `product-owner` mid-loop.
 8. **No destructive git** — no force-push, no hard reset (except circuit break with consent), never push.
+9. **Tooling & environment context** — identify runtime requirements (mise/asdf shims, sandbox bypass needs, git signing flags) to propagate to workers.
 
 ## Branch reference
 
@@ -40,8 +41,8 @@ Single branch. Default: **`run`** — discover → dispatch → gate → commit 
 
 ## Handoff
 
-- **Per tranche:** fresh sub-agent loading `$dev` `implement` with plan path. Worker commits per `$dev` phase-commit. Worker skips per-task Assure (orchestrated carve-out). Worker must forward-doc.
-- **Post-worker:** orchestrator re-runs gate (zero worker trust). Pass → update roadmap status → conventional commit `docs(roadmap): mark tranche <NNN> done` → advance.
+- **Per tranche:** fresh sub-agent loading `$dev` `implement` with plan path and known tooling/env hints. Worker commits per `$dev` phase-commit. Worker skips per-task Assure (orchestrated carve-out). Worker must forward-doc and report back with a concise insight summary.
+- **Post-worker:** orchestrator ingests concise summary (commit SHAs, insights, resolved pitfalls; zero raw log bloat) and re-runs gate (zero worker trust). Pass → update roadmap status → conventional commit `docs(roadmap): mark tranche <NNN> done` → advance.
 - **Full completion:** all green → `review.gil` **`findings`** (+ **`security`** when cues matched). Report after review returns. Land request → `pull-request` **`open`**.
 - **Circuit break:** `max_retries` (default 2) gate failures → `git reset --hard <last_green_commit>` → halt.
 
