@@ -29,13 +29,13 @@ Each item logged in `.agents/debt-ledger.md` follows this standard shape:
 
 ## Categories
 
-| Category | Typical Signal | Remediation Route |
-| :--- | :--- | :--- |
+| Category   | Typical Signal                                                         | Remediation Route                                    |
+| :--------- | :--------------------------------------------------------------------- | :--------------------------------------------------- |
 | `boundary` | Leaky module seams, circular imports, god objects, multi-table queries | `architecture deep-modules` or `refactor-boundaries` |
-| `types` | Primitive obsession, stringly-typed IDs, unsafe JSON bags | `architecture refactor-types` |
-| `perf` | Unmeasured hot paths, N+1 queries, runaway allocations | `architecture performance` |
-| `legacy` | Superseded models, deprecated APIs, dead compatibility shims | `review.gil quality` (legacy lens) |
-| `test` | Flaky tests, missing integration seams, testing implementation details | `review.gil quality` (tests lens) |
+| `types`    | Primitive obsession, stringly-typed IDs, unsafe JSON bags              | `architecture refactor-types`                        |
+| `perf`     | Unmeasured hot paths, N+1 queries, runaway allocations                 | `architecture performance`                           |
+| `legacy`   | Superseded models, deprecated APIs, dead compatibility shims           | `review.gil quality` (legacy lens)                   |
+| `test`     | Flaky tests, missing integration seams, testing implementation details | `review.gil quality` (tests lens)                    |
 
 ## Governance Ingress
 

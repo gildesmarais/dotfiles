@@ -264,6 +264,7 @@ Not: "design" as skill noun; defaulting to surgical to save a load
 
 **Delivery Ledger** (shared handoff shape):
 Markdown DTO passed across handoffs (`$dev` implement → `review.gil`, and `review.gil` → `pull-request` / `harvest`). Standardized fields:
+
 - `Classification / Branches`: `surgical` | `design` and active branches
 - `Target Files`: List of changed files
 - `Verification`: Command executed + exit 0 observed
@@ -271,7 +272,7 @@ Markdown DTO passed across handoffs (`$dev` implement → `review.gil`, and `rev
 - `Active Lenses`: Triggered review lenses (`security`, `tests`, `perf`, `legacy`)
 - `Readiness`: `Yes` | `No` | `Conditional`
 - `Residuals / Debt`: Deferred items, architectural debt, or N/A
-Not: inventing a second handoff schema per skill; conversational prose handoffs without bounded fields
+  Not: inventing a second handoff schema per skill; conversational prose handoffs without bounded fields
 
 **Deepen**:
 Signal for `architecture` **`deep-modules`** — not a skill name.

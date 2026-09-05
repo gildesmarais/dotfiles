@@ -16,13 +16,13 @@ Every distilled lesson must be written as an **imperative preventive mantra**:
 
 Before placing an item, determine scope:
 
-| Scope | Condition | Transformation | Destination |
-| :--- | :--- | :--- | :--- |
-| **Project-Local** | Specific to this repo, custom script, internal API, or build tool | Keep exact paths, flags, file names, and domain invariants | `<project>/AGENTS.md` or `<project>/.agents/rules/*.md` |
-| **Global Architecture** | Seam leakage, dual ownership, type modeling, measured perf | Strip all repo nouns; express as language-free architectural law | `~/.dotfiles/agents/skills/architecture/reference/<branch>.md` |
-| **Global Review** | Detection heuristic, security trap, test gap, dead compat | Express as inspection check / review lens finding | `~/.dotfiles/agents/skills/review.gil/reference/<lens>.md` |
-| **Global Language** | Language idiom, compiler quirk, gem/crate/package behavior | Express as runtime-specific syntax/perf checklist item | `~/.dotfiles/agents/skills/<lang>-dev/reference.md` |
-| **Global Workflow** | Git, PR sizing, CI triage, branch hygiene | Express as SDLC checklist item | `~/.dotfiles/agents/skills/<skill>/reference/...` |
+| Scope                   | Condition                                                         | Transformation                                                   | Destination                                                    |
+| :---------------------- | :---------------------------------------------------------------- | :--------------------------------------------------------------- | :------------------------------------------------------------- |
+| **Project-Local**       | Specific to this repo, custom script, internal API, or build tool | Keep exact paths, flags, file names, and domain invariants       | `<project>/AGENTS.md` or `<project>/.agents/rules/*.md`        |
+| **Global Architecture** | Seam leakage, dual ownership, type modeling, measured perf        | Strip all repo nouns; express as language-free architectural law | `~/.dotfiles/agents/skills/architecture/reference/<branch>.md` |
+| **Global Review**       | Detection heuristic, security trap, test gap, dead compat         | Express as inspection check / review lens finding                | `~/.dotfiles/agents/skills/review.gil/reference/<lens>.md`     |
+| **Global Language**     | Language idiom, compiler quirk, gem/crate/package behavior        | Express as runtime-specific syntax/perf checklist item           | `~/.dotfiles/agents/skills/<lang>-dev/reference.md`            |
+| **Global Workflow**     | Git, PR sizing, CI triage, branch hygiene                         | Express as SDLC checklist item                                   | `~/.dotfiles/agents/skills/<skill>/reference/...`              |
 
 ## Ingress Procedure
 

@@ -41,16 +41,16 @@ Never invent Build Now without evidence or explicit override.
 
 Add section when signal matches; N/A with evidence if skipped.
 
-| Section                     | Signals                                                                                |
-| --------------------------- | -------------------------------------------------------------------------------------- |
-| Module architecture         | `design`; new subsystem; dual ownership risk                                           |
-| Boundary contract map       | Wire/API/JS bridge; adapter; serialize edge                                            |
+| Section                     | Signals                                                                                                                                                           |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Module architecture         | `design`; new subsystem; dual ownership risk                                                                                                                      |
+| Boundary contract map       | Wire/API/JS bridge; adapter; serialize edge                                                                                                                       |
 | Test pyramid & seam design  | Test refactor/audit ask; coverage remediation; monolithic suite split; flight smearing; dual delivery paths for one derived fact; durable mutation failure matrix |
-| Performance budgets         | Hot path; debounce/async; large payload; latency ask                                   |
-| Sandbox / platform          | Sandbox; WebKit/XPC/JS; file URLs; network; entitlements                               |
-| Observability               | ≥2 phases                                                                              |
-| Autonomous delivery runbook | ≥2 phases                                                                              |
-| Pre-ship checklists         | Plans that will be implemented                                                         |
+| Performance budgets         | Hot path; debounce/async; large payload; latency ask                                                                                                              |
+| Sandbox / platform          | Sandbox; WebKit/XPC/JS; file URLs; network; entitlements                                                                                                          |
+| Observability               | ≥2 phases                                                                                                                                                         |
+| Autonomous delivery runbook | ≥2 phases                                                                                                                                                         |
+| Pre-ship checklists         | Plans that will be implemented                                                                                                                                    |
 
 When **Test pyramid & seam design** matches: require characterization before cutover (parity across delivery modes and/or failure-injection matrix). Acceptance criteria must name observable outcomes or queries — not internal field inventories. Diagnose test friction as production seam defects (`$dev` Shared prep).
 

@@ -14,25 +14,25 @@ Continuous learning and debt capture router. Turn session friction, user correct
 
 ## When to use / skip
 
-| Use when                                                                                   | Skip when                                                                    |
-| ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
-| Post-delivery handoff from `review.gil` (Assure) or `pull-request` (Ship) with friction    | Routine execution with zero corrections, no new failure class, and zero debt |
-| User explicitly asked to capture, learn, or harvest lessons from the session               | User asks "should we build X?" → load `product-owner`                       |
-| A tricky bug, subtle failure class, or non-obvious work-around was resolved                | Trivial typo, variable rename, or pure mechanical bump                       |
-| Unresolved architectural debt, leaky boundary, or performance trap deferred for later      | Raw incident writeup / transcript dump (harvest rejects raw logs)            |
+| Use when                                                                                | Skip when                                                                    |
+| --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Post-delivery handoff from `review.gil` (Assure) or `pull-request` (Ship) with friction | Routine execution with zero corrections, no new failure class, and zero debt |
+| User explicitly asked to capture, learn, or harvest lessons from the session            | User asks "should we build X?" → load `product-owner`                        |
+| A tricky bug, subtle failure class, or non-obvious work-around was resolved             | Trivial typo, variable rename, or pure mechanical bump                       |
+| Unresolved architectural debt, leaky boundary, or performance trap deferred for later   | Raw incident writeup / transcript dump (harvest rejects raw logs)            |
 
 ## Pick branch
 
 Map the harvest ask to one branch. Default: **`distill`**.
 
-| Branch    | Status     | Use when                                                                                           |
-| --------- | ---------- | -------------------------------------------------------------------------------------------------- |
+| Branch    | Status     | Use when                                                                                          |
+| --------- | ---------- | ------------------------------------------------------------------------------------------------- |
 | `distill` | **active** | Extract preventive mantras; update project-local rules or global skill checklists / anti-patterns |
-| `debt`    | **active** | Log architectural friction, boundary rot, or debt tranches into `.agents/debt-ledger.md`           |
+| `debt`    | **active** | Log architectural friction, boundary rot, or debt tranches into `.agents/debt-ledger.md`          |
 
-| Signal                                                                              | Branch    |
-| ----------------------------------------------------------------------------------- | --------- |
-| learn, distill, checklist update, anti-pattern, user correction, failure lesson     | `distill` |
+| Signal                                                                                   | Branch    |
+| ---------------------------------------------------------------------------------------- | --------- |
+| learn, distill, checklist update, anti-pattern, user correction, failure lesson          | `distill` |
 | debt, architectural friction, tech debt, cleanup candidate, debt ledger, refactor sprint | `debt`    |
 
 ## Shared prep
@@ -71,7 +71,7 @@ harvest debt
 
 ## Completion criteria
 
-| Branch    | Done when                                                                                                                                                                          |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Branch    | Done when                                                                                                                                                                             |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `distill` | Signals distilled to imperative mantras; domain noise stripped (if global); target read fresh; deduplicated against existing items; placed in correct section; store synced if global |
-| `debt`    | Friction classified (boundary/types/perf/legacy); concrete blast radius and evidence cited; added to `.agents/debt-ledger.md`; no raw diff blobs                                    |
+| `debt`    | Friction classified (boundary/types/perf/legacy); concrete blast radius and evidence cited; added to `.agents/debt-ledger.md`; no raw diff blobs                                      |

@@ -19,12 +19,12 @@ Product domain router. Protect the product from unnecessary complexity. Features
 
 | Use when                                                                                | Skip when                                                                                                 |
 | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Feature proposals, scope expansion, new UI/API surface, parity/"competitor had it" asks | Routine surgical bugfix or single-slice cleanup with no user-facing concept or step change                 |
+| Feature proposals, scope expansion, new UI/API surface, parity/"competitor had it" asks | Routine surgical bugfix or single-slice cleanup with no user-facing concept or step change                |
 | Idea, feature, user feedback, or UAT that changes product scope or surface              | User explicitly wants a stress-test interview only → use `grilling`                                       |
 | Debating defaults, settings, or expert controls on a primary surface                    | Docs lack product constraints _and_ the ask is already Reject-shaped (state the gap; do not invent paths) |
 | Admission / build-now gates before non-trivial product work                             |                                                                                                           |
 | Admitted scope → high-fidelity user stories / GWT / UX budgets before `$dev` `plan`     | Scope is still ungated, Rejected, or already a single cited AC with no slice ask                          |
-| Admitting architecture debt / refactor tranches from `.agents/debt-ledger.md`            |                                                                                                           |
+| Admitting architecture debt / refactor tranches from `.agents/debt-ledger.md`           |                                                                                                           |
 
 ## Pick branch
 
@@ -123,6 +123,7 @@ New surface area (UI, API, compute, copy) must justify downstream customer value
 ### Health capacity budget (architecture & tech debt)
 
 Engineering velocity degrades when architectural friction and technical debt compound unaddressed. The product-owner enforces an explicit **Health Capacity Budget** (default: ~20% capacity or 1 debt tranche per 3–4 feature tranches).
+
 - **Check the Debt Ledger:** Before admitting new scope or prioritizing tranches, read `<project>/.agents/debt-ledger.md` (or `ROADMAP.md` health section).
 - **Admit when friction threatens velocity:** High-friction debt items that block or slow golden paths qualify for **Build Now** under the health capacity budget even without a new user-facing feature.
 
