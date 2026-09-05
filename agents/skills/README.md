@@ -120,6 +120,8 @@ One-way rules (prevent domain collisions):
 - **Thin `*-dev`** — craft stays in `architecture`; shared classify/workflow/phase commits stay on `$dev`; overlays are deltas only.
 - **Phase commits on `dev`** — Build carrier is `$dev` Shared prep (cite [`CONTEXT.md`](CONTEXT.md)); overlays never copy it. `{lang}-dev` packs add language deltas only. Solution craft phases still commit via `architecture` Shared prep.
 - **Proliferation guard** — new top-level skill only if it cannot be a branch of an existing router (for refactor concerns: `refactor-<concern>` under `architecture`, never bare `refactor` or a parallel `product` skill). Runtime route table stays in frozen `dev/SKILL.md` (contract edit for new langs — not a parallel registry).
+- **Zero backward compat** — clean cutovers on store refactors: delete superseded aliases, old execution names, and dual shims immediately. Backward-compatibility shims waste token context and trigger dual-ownership confusion in LLMs.
+- **Agentic architecture (tokens over CPU)** — treat attention, token weight, and round-trip latency as the architectural currency. Enforce single ownership of decisions, keep routers deep via progressive disclosure, use bounded Markdown DTOs for handoffs, and avoid intermediate prompt abstraction layers or brittle nested AST schemas for conversational turns.
 
 Router shape: `## Pick branch` → `## Shared prep` → `## Branch reference` → `## Handoff` → `## Completion criteria`. Relative `reference/*.md` links; unnumbered `##` headers. Terms: [`CONTEXT.md`](CONTEXT.md). Spec: [agentskills.io](https://agentskills.io/).
 

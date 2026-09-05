@@ -37,7 +37,7 @@ Dual ownership of one fact, passthrough bags, shallow multi-call husks, or the u
 - Delivery modes (live/cold/warm, sync/async, cached/uncached) are not schema authors — one construction path for each derived fact; modes only deliver it (co-load `refactor-types` when the fact is a closed set).
 - Side effects that advertise success (in-memory publish, derived indexes, sensory/UI confirmation) attach only after the authoritative durable operation succeeds — swallowed I/O plus publish is dual ownership of truth.
 - Multi-step durable work exposes three outcomes: committed; rejected when the durable store is proven unchanged; indeterminate when compensation cannot prove final state — then reconcile; do not swallow rollback failure (co-load `refactor-types` for the outcome closed set).
-- Anti-patterns: dump modules of unrelated helpers; twin structs that must stay in sync; adapters that grow domain branches; view bodies housing pure domain geometry or signal filtering.
+- Anti-patterns: dump modules of unrelated helpers; twin structs that must stay in sync; adapters that grow domain branches; view bodies housing pure domain geometry or signal filtering; in agentic / prompt pipelines: multi-hop abstraction husks that pass user intent through repeated re-summarization layers (the telephone game), or brittle nested AST schemas where structured Markdown DTOs suffice.
 
 ## Sequencing
 

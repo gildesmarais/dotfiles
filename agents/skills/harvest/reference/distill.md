@@ -8,6 +8,7 @@ Every distilled lesson must be written as an **imperative preventive mantra**:
 
 - **Checklist item:** `"When X, always Y to prevent Z."`
 - **Anti-pattern:** `"Avoid X; use Y instead because Z."`
+- **Zero backward compat in skills:** Clean cutovers only — delete superseded aliases, old execution names, and compat wrappers immediately to prevent prompt bloat and agent hesitation.
 - **Length:** 1–2 concise sentences maximum.
 - **Tone:** An instruction an expert engineer recalls before repeating the mistake.
 - **Reject:** Raw incident writeups, stack traces, step-by-step debug stories, or vague platitudes ("test edge cases").
