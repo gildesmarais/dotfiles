@@ -26,20 +26,18 @@ Equivalent sources: `gildesmarais/dotfiles`, the GitHub URL, or `…/tree/master
 ```mermaid
 flowchart LR
   Intent[Intent] --> Product[Product]
-  Product --> Solution[Solution]
-  Solution --> Build[Build]
+  Product --> Build["Build ($dev ⇄ architecture)"]
   Build --> Assure[Assure]
   Assure --> Ship[Ship]
-  Ship --> Run[Run]
-  Run --> Explain[Explain]
+  Ship --> Explain[Explain]
   Explain --> Intent
   Assure -.-> Harvest[Harvest]
   Ship -.-> Harvest
-  Harvest --> Solution
+  Harvest --> Build
   Harvest --> Intent
   Decide[Decide] -.-> Intent
   Decide -.-> Product
-  Decide -.-> Solution
+  Decide -.-> Build
 ```
 
 ## Domain map
@@ -88,9 +86,9 @@ One-way rules (prevent domain collisions):
 1. **Product before non-trivial scope** — `jira-ticket` / feature asks load `product-owner` **`gate`**. Impl continues only on **Build Now**. Multi-slice / UX-mandated AC → **`story-slice`** then `$dev` `plan`; already-one-slice asks → `$dev` only (classifies; loads `architecture` when design). Skip for pure bug fix, refactor, infra. Stubs still unauthored: `prioritize`, `experiment`. Incident/observability/reproduce **without** Jira or IR → **`triage` first** (ledger → PO and/or `$dev` `plan` per class). Jira entry stays `jira-ticket`.
 2. **Craft ≠ product** — `architecture` / `dev` / `*-dev` / `review.gil` never answer “should we build X?”
 3. **Build entry is `$dev`** — classify / route / phase commits live there. `architecture` axioms ride along on every `implement` (axioms-only load; branch pick + references when `design` is earned; ambiguous classify prefers `design`); do not inline craft in `dev` or `*-dev`. Multi-load `{lang}-dev` from **touched-file** evidence when a change spans runtimes. Packs: Stop — read `$dev` Shared prep before any delta.
-4. **Implementation plans → `$dev` `plan`** — when writing an implementation plan (including Cursor plan mode), invoke `$dev` branch **`plan`** and load [`dev/reference/plan-pipeline.md`](dev/reference/plan-pipeline.md). Plan mode: product stance section only — `/product-owner` explicit for admission. `jira-ticket` Planning Checkpoint emits via `$dev` **`plan`** when phases/commits matter. `prompt-compiler` **`compile`** satisfies the same plan-pipeline ready checklist; its persisted IR is an equivalent syntax of the `$dev` `plan` carrier (not a second format). **`run`** hands each task to `$dev` `implement` (rule 3 intact). `orchestrator` **`run`** discovers tranches from repo roadmap docs and hands each to `$dev` `implement` (rule 3 intact); no compile/IR step — docs already exist; roadmap is the state file.
+4. **Implementation plans → `$dev` `plan`** — when writing an implementation plan (including Cursor plan mode), invoke `$dev` branch **`plan`** and load [`dev/reference/plan-pipeline.md`](dev/reference/plan-pipeline.md). Plan mode: product stance section only — `/product-owner` explicit for admission. `jira-ticket` Planning Checkpoint emits via `$dev` **`plan`** when phases/commits matter. Both `$dev` **`plan`** and `prompt-compiler` **`compile`** enforce the same Plan Invariant Contract (explicit `target_files`, `verification_gate` exit 0, atomic phase commits, and circuit-breaker rollback on failure); the persisted IR is the structured task syntax of this contract. **`run`** hands each task to `$dev` `implement` (rule 3 intact). `orchestrator` **`run`** discovers tranches from repo roadmap docs and hands each to `$dev` `implement` (rule 3 intact); no compile/IR step — docs already exist; roadmap is the state file.
 5. **Phase CC → merge → notes** — Solution/Build plan phases author Conventional Commits (validate → ≥1 CC + rationale) via `architecture` Shared prep and `$dev` — by default off the default branch; ask early when on default. After merge, `release` **`notes`** consumes history. At PR open, `pull-request` **`open`** applies the same format only if the tree is still dirty. Format SoT: [`CONTEXT.md`](CONTEXT.md).
-6. **Assure → Ship** — `findings` never posts; `publish` (e2e → GitHub `COMMENT`) lives under `review.gil`; verified-ledger posting lives under `pull-request` **`comment`** — never reverse those two. After **every** Build delivery (plan-driven or surgical), run `review.gil` **`findings`** (security/quality when in scope) before reporting done: spawn preferred for plan-driven, multi-phase, or security-cue work; small single-surface surgical diffs may use a fresh in-session pass. Trivial diffs (docs-only, comment/typo, single-line config) may skip with the reason stated in the handoff. Orchestrated workers under `prompt-compiler` **`run`** or `orchestrator` **`run`** skip per-task Assure (DAG-level once). If user asked to land and readiness is Yes/Conditional → `pull-request` **`open`**.
+6. **Assure → Ship** — `findings` never posts; `publish` (e2e → GitHub `COMMENT`) lives under `review.gil`; verified-ledger posting lives under `pull-request` **`comment`** — never reverse those two. After **every** Build delivery (plan-driven or surgical), emit the standardized Delivery Ledger DTO and run `review.gil` **`findings`** (security/quality when in scope) before reporting done: spawn preferred for plan-driven, multi-phase, or security-cue work; small single-surface surgical diffs may use a fresh in-session pass. Trivial diffs (docs-only, comment/typo, single-line config) may skip with the reason stated in the handoff. Orchestrated workers under `prompt-compiler` **`run`** or `orchestrator` **`run`** skip per-task Assure (DAG-level once). If user asked to land and readiness is Yes/Conditional → `pull-request` **`open`**.
 7. **Explain → docs** — `communication` → `docs` **`editor`** when the artifact is a README/runbook, not a message. Never reverse. `docs` **`architecture`** is Solution-adjacent verify-only (no HLD/ADR author).
 8. **Overlay via `$dev` route** — `ruby-on-rails-dev` with `ruby-dev`; `swiftui-dev` with `swift-dev` (loaded by `$dev`, not as competing Build entries). Depth packs stay on pack **Compose routes**.
 9. **Decide** — `grilling` stress-tests Intent / Product / Solution; product doctrine stays with `product-owner` when the topic is scope.

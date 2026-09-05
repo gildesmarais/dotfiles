@@ -5,10 +5,9 @@ description: >-
   coding agents. Translates high-level, unstructured, or ambiguous prompts into
   a persisted IR (invariants + atomic task DAG), then dispatches sequential
   worker sub-agents through `$dev` `implement` with orchestrator-enforced
-  verification gates. Use when the user says /prompt-compiler, /prompt-synthesis,
-  "compile this prompt", "refine prompt", "structure this prompt", or wants
-  intent compiled into isolated executable tasks rather than a free-form agent
-  brief.
+  verification gates. Use when the user says /prompt-compiler, "compile this prompt",
+  "refine prompt", "structure this prompt", or wants intent compiled into isolated
+  executable tasks rather than a free-form agent brief.
 ---
 
 # Prompt Compiler
@@ -66,7 +65,7 @@ Never ask the user to pick the branch when signals are clear. Default: **`compil
 1. **Product before non-trivial scope** — feature / UX / new surface asks load `product-owner` **`gate`** first. Continue only on **Build Now**. Multi-slice / UX-mandated AC → `product-owner` **`story-slice`** before `$dev` `plan` / `compile`. Skip for pure bug fix, refactor, infra. (README rule 1.)
 2. **Hard bounds on this skill** — `compile` is read-only except writing the IR file. `run` never edits application code itself; workers load `$dev` `implement`. Never invent invariants, `target_files`, or `verification_gate` — ground in the repo or obtain via `/grill-me`.
 3. **`/grill-me` on ambiguity** — trigger when structural changes lack non-negotiable invariants, explicit mutation bounds (target vs frozen), or clear breaking-change trade-offs. Load the `grilling` pack when installed; otherwise inline fallback: one targeted question at a time on constraints / scope / acceptance (soft cap 5). Halt until material gaps resolve.
-4. **IR is the plan carrier** — `compile` loads [`../dev/reference/plan-pipeline.md`](../dev/reference/plan-pipeline.md) and must satisfy its ready checklist before emitting. The IR is an equivalent syntax of `$dev` `plan`, not a competing format. (README rule 4.)
+4. **IR is the plan carrier** — `compile` loads [`../dev/reference/plan-pipeline.md`](../dev/reference/plan-pipeline.md) and must satisfy its ready checklist before emitting. The IR is the structured task syntax of the Plan Invariant Contract shared with `$dev` `plan`. (README rule 4.)
 5. **Circuit-breaker consent** — `run` starts only after the user approves the IR _including_ the circuit-breaker policy (reset to last green task commit on repeated gate failure). That approval is the explicit consent `$dev` Shared prep requires for irreversible git.
 
 ## Branch reference

@@ -149,7 +149,7 @@ Not: peer branches duplicating handoff
 
 **Prompt-compiler** (skill noun: `prompt-compiler`):
 Compiles raw intent into persisted IR (invariants + atomic task DAG), then dispatches workers through `$dev` `implement` with orchestrator gates.
-Not: prompt-synthesis (legacy alias); mutating app code outside `$dev` workers
+Not: mutating app code outside `$dev` workers
 
 **Compile** / **run** (`prompt-compiler` branches):
 `compile` writes `.agents/compile/<slug>.yaml` and stops. `run` resumes IR `status`, dispatches next `pending` task via `$dev`.
@@ -263,8 +263,15 @@ Structural/type/perf craft earned → hand off to `architecture`. Axioms ride al
 Not: "design" as skill noun; defaulting to surgical to save a load
 
 **Delivery Ledger** (shared handoff shape):
-Classification / branches loaded; decisions; commits made or deferred; Assure result + readiness (or stated skip); residuals. `$dev`, `architecture`, and `review.gil` Executive Summary map onto this shape.
-Not: inventing a second handoff schema per skill
+Markdown DTO passed across handoffs (`$dev` implement → `review.gil`, and `review.gil` → `pull-request` / `harvest`). Standardized fields:
+- `Classification / Branches`: `surgical` | `design` and active branches
+- `Target Files`: List of changed files
+- `Verification`: Command executed + exit 0 observed
+- `Phase Commits`: Hashes & rationale (or explicit deferral on default branch)
+- `Active Lenses`: Triggered review lenses (`security`, `tests`, `perf`, `legacy`)
+- `Readiness`: `Yes` | `No` | `Conditional`
+- `Residuals / Debt`: Deferred items, architectural debt, or N/A
+Not: inventing a second handoff schema per skill; conversational prose handoffs without bounded fields
 
 **Deepen**:
 Signal for `architecture` **`deep-modules`** — not a skill name.

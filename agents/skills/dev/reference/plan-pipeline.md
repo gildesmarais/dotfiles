@@ -67,11 +67,13 @@ When **Test pyramid & seam design** matches: require characterization before cut
 - [ ] Product stance filled or override recorded
 - [ ] Classification + runtime route stated
 - [ ] Architecture findings (if triggered) or N/A with evidence
+- [ ] Target file bounds explicit (`target_files` declared vs frozen surfaces)
 - [ ] Flight height evaluated by default (pure unit base, fakes for component, real I/O for integration; test friction diagnosed as production defects)
 - [ ] Dual delivery / durable-mutation scope: characterization parity or failure-matrix planned before cutover; acceptance names outcomes/queries, not field inventories
 - [ ] Conditional sections or N/A with evidence
 - [ ] Observability + runbook if ≥2 phases
 - [ ] Pre-ship checklists embedded
-- [ ] Phases: validate → commit (or deferral on default branch)
+- [ ] Phases: validate (exit 0) → Conventional Commit (or deferral on default branch)
+- [ ] Rollback boundary / circuit breaker stated on repeated phase verification failure
 - [ ] Residual risks named
 - [ ] No code unless user asked to execute
