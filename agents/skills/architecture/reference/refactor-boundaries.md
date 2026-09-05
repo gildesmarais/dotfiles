@@ -21,6 +21,8 @@ Wire/API contract redesign, adapter shells that grew domain branches, dual owner
 
 3. **Serialize ownership**
    - One fact, one serializer home. Kill parallel encode/decode paths for the same wire shape.
+   - Ephemeral cache or derived-store freshness must bind content identity (or equivalent), not only size/time heuristics that accept same-size rapid rewrites.
+   - Keeping a derived export outside the primary transaction does not authorize drop-on-error — if the vendor reports not accepted/journaled, retain and retry with coalescing (cue `deep-modules` for outbox ownership).
 
 - Prefer thin maps; do not invent a second abstraction layer for ceremony.
 - Breaking wire changes: call out versioning or explicit migration — do not silent-shim forever.

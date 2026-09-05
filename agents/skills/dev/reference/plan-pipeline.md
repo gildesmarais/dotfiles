@@ -45,12 +45,14 @@ Add section when signal matches; N/A with evidence if skipped.
 | --------------------------- | -------------------------------------------------------------------------------------- |
 | Module architecture         | `design`; new subsystem; dual ownership risk                                           |
 | Boundary contract map       | Wire/API/JS bridge; adapter; serialize edge                                            |
-| Test pyramid & seam design  | Test refactor/audit ask; coverage remediation; monolithic suite split; flight smearing |
+| Test pyramid & seam design  | Test refactor/audit ask; coverage remediation; monolithic suite split; flight smearing; dual delivery paths for one derived fact; durable mutation failure matrix |
 | Performance budgets         | Hot path; debounce/async; large payload; latency ask                                   |
 | Sandbox / platform          | Sandbox; WebKit/XPC/JS; file URLs; network; entitlements                               |
 | Observability               | ≥2 phases                                                                              |
 | Autonomous delivery runbook | ≥2 phases                                                                              |
 | Pre-ship checklists         | Plans that will be implemented                                                         |
+
+When **Test pyramid & seam design** matches: require characterization before cutover (parity across delivery modes and/or failure-injection matrix). Acceptance criteria must name observable outcomes or queries — not internal field inventories. Diagnose test friction as production seam defects (`$dev` Shared prep).
 
 ## Observability + runbook (≥2 phases)
 
@@ -66,6 +68,7 @@ Add section when signal matches; N/A with evidence if skipped.
 - [ ] Classification + runtime route stated
 - [ ] Architecture findings (if triggered) or N/A with evidence
 - [ ] Flight height evaluated by default (pure unit base, fakes for component, real I/O for integration; test friction diagnosed as production defects)
+- [ ] Dual delivery / durable-mutation scope: characterization parity or failure-matrix planned before cutover; acceptance names outcomes/queries, not field inventories
 - [ ] Conditional sections or N/A with evidence
 - [ ] Observability + runbook if ≥2 phases
 - [ ] Pre-ship checklists embedded

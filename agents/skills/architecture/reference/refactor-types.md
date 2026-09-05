@@ -39,6 +39,8 @@ Primitive obsession across modules, stringly closed sets, magic ints, parallel l
 - Presence is not permission; one bag is not two audiences.
 - Durable bags hold serializable primitives; rehydrate domain types at the read seam — methods do not survive a round-trip.
 - Domain absence and wire absence are different closed sets — map each layer’s legal inhabitant; empty stand-ins and nulls are not interchangeable.
+- Facts needing a peer/catalog set are a different closed set from single-record extracts — do not force relational membership onto a per-record DTO (cue `deep-modules` for second-stage ownership).
+- Durable-operation results are a typed closed set (e.g. committed / rejected / indeterminate), not void plus logs.
 - Capture adapters may accept tokens; resolve before domain construction — do not push domain rejection into the capture edge.
 - Wire vocabulary stays at the wire — normalize aliases into an app closed set at one edge; do not “helpful rename” schema fields.
 
