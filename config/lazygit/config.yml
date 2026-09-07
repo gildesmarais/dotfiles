@@ -9,18 +9,15 @@ gui:
   theme:
     lightTheme: false
     selectedLineBgColor: ["reverse"]
-
 git:
-  pagers:
+  diffRenderers:
     - colorArg: always
-      pager: ""
+      type: rawGit
   merging:
     manualCommit: true
-
 os:
   editCommand: "code"
   editCommandTemplate: "code -g {{filename}}:{{line}}"
-
 keybinding:
   main:
     toggleSelectHunk: "s" # stage/unstage hunk
