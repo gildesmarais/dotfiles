@@ -32,6 +32,7 @@ Never ask the user to pick a template when signals are clear. Load one or more w
 
 | Branch                | Job                                                                | Status |
 | --------------------- | ------------------------------------------------------------------ | ------ |
+| `philosophy`          | design axioms; evaluate cognitive load and module depth            | active |
 | `deep-modules`        | Module/interface/depth/seam/adapter/locality/deletion test         | active |
 | `refactor-types`      | Primitives/strings → domain types; logic on types; type hygiene    | active |
 | `refactor-boundaries` | Wire/API/adapter contract maps; keep domain out of boundary shells | active |
@@ -39,6 +40,7 @@ Never ask the user to pick a template when signals are clear. Load one or more w
 
 | Signal                                                                                                                                                                             | Load                                               |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| tactical programming, cognitive load, tech debt accumulation, complex interface, obscure logic, information leakage, exception handling bloat                                      | `philosophy`                                       |
 | deepen, shallow modules, seams, locality, dual ownership                                                                                                                           | `deep-modules`                                     |
 | primitive obsession, stringly enums, logic-on-types                                                                                                                                | `refactor-types`                                   |
 | wire/API maps, adapter contract shape, boundary serialize                                                                                                                          | `refactor-boundaries`                              |
@@ -79,6 +81,7 @@ Before authoring architectural designs, refactoring code, or restructuring bound
 4. **`performance`:** You MUST view [`reference/performance.md`](reference/performance.md).
 5. **`structure-survey`:** You MUST view [`reference/structure-survey.md`](reference/structure-survey.md).
 6. **Detailed Terms & Definitions:** View [`reference/glossary.md`](reference/glossary.md).
+7. **`philosophy`:** You MUST view [`reference/philosophy.md`](reference/philosophy.md).
 
 Branch expansion and harvest protocol live in [`reference/growth.md`](reference/growth.md) + [`reference/learning-log.md`](reference/learning-log.md) (harvest only).
 
@@ -102,11 +105,12 @@ Then:
 
 ## Completion criteria
 
-| Branch / mode         | Done when                                                                                                                                 |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `structure-survey`    | Canonical shape stated; anomalies ranked with evidence; craft-branch handoff named; residual dual ownership called out — no code required |
-| `deep-modules`        | Deletion test / ownership / seams addressed; phases validated; residual dual ownership called out                                         |
-| `refactor-types`      | Primitive obsession at target cleared or scoped; logic on types; consumers cleaned; boundaries mapped                                     |
-| `refactor-boundaries` | Contract map for targeted edges; domain out of shells; serialize ownership clear; phases committed per Shared prep                        |
-| `performance`         | Baseline or hot path identified before changes; stop rules applied; no language-specific recipe invented here                             |
-| multi-load            | Each loaded branch’s done-when met or explicitly N/A with reason; one combined handoff                                                    |
+| Branch / mode         | Done when                                                                                                                                                                                                |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `structure-survey`    | Canonical shape stated; anomalies ranked with evidence; craft-branch handoff named; residual dual ownership called out — no code required                                                                |
+| `deep-modules`        | Deletion test / ownership / seams addressed; phases validated; residual dual ownership called out                                                                                                        |
+| `refactor-types`      | Primitive obsession at target cleared or scoped; logic on types; consumers cleaned; boundaries mapped                                                                                                    |
+| `refactor-boundaries` | Contract map for targeted edges; domain out of shells; serialize ownership clear; phases committed per Shared prep                                                                                       |
+| `performance`         | Baseline or hot path identified before changes; stop rules applied; no language-specific recipe invented here                                                                                            |
+| multi-load            | Each loaded branch’s done-when met or explicitly N/A with reason; one combined handoff                                                                                                                   |
+| `philosophy`          | design axioms evaluated.. At least two alternative designs considered; interfaces simplified; error states structurally minimized; cognitive load, module depth assessed, tech debt explicitly addressed |
