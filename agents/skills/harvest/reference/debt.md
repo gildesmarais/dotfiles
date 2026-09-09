@@ -42,4 +42,4 @@ Each item logged in `.agents/debt-ledger.md` follows this standard shape:
 1. **Emit:** Append new items to `.agents/debt-ledger.md` with status `open`.
 2. **Prioritize:** `product-owner` consults this file when reviewing roadmap capacity.
 3. **Admit:** Under the **Health Capacity Budget** (default: ~20% capacity or 1 debt tranche per 3–4 feature tranches), `product-owner` admits high-friction items as `Build Now`.
-4. **Resolve:** When an admitted tranche is delivered by `$dev` and passes Assure, update status to `resolved` with commit SHA.
+4. **Resolve:** When an admitted tranche is delivered by `$dev` and passes Assure, update status to `resolved` with commit SHA. When a commit or pull request references `Resolves: DEBT-<NUMBER>` or `Fixes [DEBT-<NUMBER>]`, `orchestrator run` and `pull-request resolve` automatically reconcile `<project>/.agents/debt-ledger.md`: find the matching entry, set **Status** to `resolved`, and record the associated commit hash. Halt only if the reference is ambiguous or no matching ledger entry exists; do not ask for a manual ledger edit.

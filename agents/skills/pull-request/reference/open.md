@@ -2,7 +2,7 @@
 
 Turn a finished local change into a clean branch push plus browser-based PR flow.
 
-Keep the workflow autonomous by default. Only stop to ask the user when a required input cannot be derived safely, especially the ticket number.
+Keep the workflow autonomous by default. Only stop to ask the user when a required input cannot be derived safely; a missing ticket number is not a blocker.
 
 ## Workflow
 
@@ -18,11 +18,13 @@ Keep the workflow autonomous by default. Only stop to ask the user when a requir
 
 - Read the current branch name first with `git branch --show-current`.
 - Extract the first ticket matching `/[A-Z][A-Z0-9]+-\d+/` from the branch name.
-- If no `/[A-Z][A-Z0-9]+-\d+/` match is present, ask the user for the ticket number before committing or opening the PR.
-- Reuse the derived ticket in:
+- If no match is present, continue without a ticket in automated or non-interactive contexts. Use the branch slug, or a short Conventional Commit summary derived from the diff, as the commit/PR title and scope. Do not halt to ask for a ticket.
+- In a top-level interactive session, a ticket may be requested only when repository law makes it required; otherwise use the same fallback.
+- When a ticket was derived, optionally reuse it in:
   - the conventional commit title
   - the PR title
   - the PR body
+- Omit ticket injection from those surfaces when no ticket was derived.
 
 ## Commit Scope Rules
 
@@ -44,12 +46,15 @@ Keep the workflow autonomous by default. Only stop to ask the user when a requir
 
 - Use Conventional Commits. Format SoT: [`CONTEXT.md`](../../CONTEXT.md) — do not paste a second copy here.
 - Prefer history already authored per phase during Solution/Build. If the tree is still dirty at PR open, apply the same format once for session-touched files (leftover applicator — not the authoring home).
-- Put the ticket immediately after the scope in square brackets when the branch encodes one.
-- Format the title as:
+- When a ticket was derived and selected for injection, put it immediately after the scope in square brackets.
+- Use one of these title forms:
 
 ```text
 type(scope): [ABC-123] summary
+type(scope): summary
 ```
+
+Use the ticketless form when no ticket was derived.
 
 - Prefer `fix` for bug fixes, `feat` for user-visible additions, `refactor` for behavior-preserving internal changes, `docs` for documentation-only changes, and `chore` for maintenance work.
 - Keep the summary short and concrete; body = rationale / intent when useful.

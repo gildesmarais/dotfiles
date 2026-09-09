@@ -8,7 +8,7 @@
 2. If `.agents/compile/<slug>.yaml` exists, read `intent_spec` and treat its invariants, `blast_radius.allowed_domains`, and breaking-change posture as authoritative. Skip redundant intent interviews.
 3. Halt on an invalid DTO, a repository contradiction, or a technical plan that cannot remain inside `allowed_domains`. Return the contradiction to the intent owner; do not silently widen scope.
 4. If no Intent DTO exists, gather the same intent constraints once within `$dev plan` before technical discovery.
-5. `circuit_breaker.approved` records explicit destructive-reset consent. Never change false to true without direct user approval.
+5. `circuit_breaker.approved` records explicit destructive-reset consent. The planning agent may set it to `true` when the prompt or authoritative parent context explicitly grants execution consent up front, including `--yes`, autonomous orchestrator mode, or an explicit user approval. Otherwise leave it `false`; never infer consent from a generic implementation request.
 
 The Intent DTO is not an implementation plan. It contains no task graph, exact mutation whitelist, command, status, or retry policy.
 

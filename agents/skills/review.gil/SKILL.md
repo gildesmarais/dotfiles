@@ -14,11 +14,13 @@ Findings-first analysis of a working tree, branch, commit range, or pull request
 
 ## Choose execution
 
-For a review associated with a pull request, the first step is to ask exactly:
+When the invocation is non-interactive or orchestrated, default to `findings` without asking, including for pull-request targets. In interactive contexts, prompts that do not explicitly request publication also default to `findings`, except for the narrow case below.
+
+Ask exactly the following only in a top-level interactive human session that targets an existing pull request and leaves execution intent unspecified:
 
 > Publish review on PR?
 
-Skip the question when the user already answered it, explicitly asked for a read-only/draft findings report, or the target has no pull request. The answer selects execution, not review lenses:
+Skip the question when the user already answered it, requested or implied read-only/draft findings, explicitly requested publication, or the target has no pull request. The answer selects execution, not review lenses:
 
 | Execution  | Use when                                                                                       |
 | ---------- | ---------------------------------------------------------------------------------------------- |

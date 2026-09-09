@@ -102,9 +102,11 @@ Rely on the local repo instructions for which quality gates to run. Do not redef
 
 Push the branch after the grouped commit set is ready.
 
-### 9. Resolve threads
+### 9. Resolve threads and debt references
 
 Resolve only after push. Resolve only the review comments clearly addressed in the pushed commit(s). Leave ambiguous or partially addressed comments open.
+
+Inspect the pushed commit subjects/bodies and PR title/body for `Resolves: DEBT-<NUMBER>` or `Fixes [DEBT-<NUMBER>]`. For each unique matching entry in `<project>/.agents/debt-ledger.md`, set **Status** to `resolved` and record the associated pushed commit hash. Commit and push that ledger-only reconciliation before resolving threads. Halt on a missing or ambiguous entry; do not ask the user to edit the ledger manually.
 
 Prefer this template:
 

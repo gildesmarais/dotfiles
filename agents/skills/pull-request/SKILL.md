@@ -84,7 +84,7 @@ Load only the matched branch reference:
 
 ## Handoff
 
-- Read-only or end-to-end PR review → the `review.gil` skill; it asks whether to publish before reviewing.
+- Read-only or end-to-end PR review → the `review.gil` skill; it defaults to read-only findings unless publication is explicit or its narrow top-level interactive prompt applies.
 - Posting a supplied, already-verified ledger stays in **comment**.
 - Resolving or replying to existing feedback stays in this skill.
 - Narrative-only PR updates stay in **retitle**.
