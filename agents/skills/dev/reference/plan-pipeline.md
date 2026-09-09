@@ -1,83 +1,97 @@
 # Dev plan pipeline
 
-Quality gates for **`$dev` `plan`** (Cursor plan mode, prepare/refine plan, implementation plan asks). Product admission: **`product-owner`** explicit invoke only — no auto-run in plan mode.
+`$dev plan` is the authoritative technical-discovery and implementation-plan carrier. It converts admitted intent into concrete repository-native phases. It writes no application code.
 
-## Pre-compiled IR Boundary
+## Phase 0: ingress
 
-When executing under a pre-compiled prompt-compiler IR, treat its task schema as authoritative for invariants, mutation bounds, and gated trade-offs. Skip redundant grill interviews unless repository evidence contradicts the IR or a required field is invalid.
+1. Resolve the requested slug.
+2. If `.agents/compile/<slug>.yaml` exists, read `intent_spec` and treat its invariants, `blast_radius.allowed_domains`, and breaking-change posture as authoritative. Skip redundant intent interviews.
+3. Halt on an invalid DTO, a repository contradiction, or a technical plan that cannot remain inside `allowed_domains`. Return the contradiction to the intent owner; do not silently widen scope.
+4. If no Intent DTO exists, gather the same intent constraints once within `$dev plan` before technical discovery.
+5. `circuit_breaker.approved` records explicit destructive-reset consent. Never change false to true without direct user approval.
 
-## Sequence
+The Intent DTO is not an implementation plan. It contains no task graph, exact mutation whitelist, command, status, or retry policy.
 
-1. Product stance (thread or AskQuestion if unstated)
-2. Shared prep + classify (`surgical` | `design` | `review-hand-off`)
-3. Route runtime (`{lang}-dev` + overlays from touched evidence)
-4. Architecture pass if `design` OR new subsystem → findings table
-5. Conditional sections (signal matrix)
-6. Observability (≥2 phases)
-7. Delivery runbook (≥2 phases)
-8. Pre-ship checklists embed ([`review.gil/reference/plan-checklists.md`](../../review.gil/reference/plan-checklists.md) — not full findings)
-9. Plan ready — no code until user approves execute
+## Technical discovery
 
-Execute approved → `$dev` `implement` → validate → commit per phase → post-delivery **`review.gil` findings** → forward doc (below) → if user asked to land, **`pull-request` `open`**.
+Inspect repository-native evidence before defining phases:
 
-**Forward doc (post-Assure, readiness Yes/Conditional):** update repo maint docs (`AGENTS.md` or nested equivalent) with non-obvious upkeep only — canonical paths, validation commands, change rules. Skip when delivery is small or already self-documenting; state skip in handoff.
+- root and nested `AGENTS.md` files
+- `Makefile` and documented task runners
+- language and package manifests plus lockfiles
+- source layout and in-tree call sites
+- test directories, focused test conventions, and CI configuration
+- existing Conventional Commit history when scope naming is unclear
 
-## Product stance
+Derive from that evidence:
 
-Fields: Recommendation (Build Now / Build Later / Research Further / Reject / Unstated), Source, SSOT impact.
+- atomic, sequential implementation phases
+- exact repository-relative `target_files`
+- exact repository-relative read-only `read_context`
+- one exact repo-native `verification_gate` command per phase
+- one Conventional Commit message per phase
 
-| Situation                        | Action                                         |
-| -------------------------------- | ---------------------------------------------- |
-| Prior PO gate in thread          | Summarize + cite eval path                     |
-| Overruled after Reject           | Record override; Phase 1 may flip product SSOT |
-| Reject in thread, plan continues | AskQuestion once: override / defer / stop      |
-| No PO gate                       | Unstated → AskQuestion before plan ready       |
+Never invent a command. Prefer repository entrypoints and the narrowest gate that proves the phase. If no trustworthy gate exists, halt and name the missing repository contract.
 
-Never invent Build Now without evidence or explicit override.
+## Planning sequence
 
-## Architecture pass
+1. Product stance or prior admission
+2. Intent ingress and contradiction check
+3. Shared prep and classification (`surgical` | `design` | `review-hand-off`)
+4. Runtime routing from discovered touched-file evidence
+5. Architecture pass when `design` is earned
+6. Repository inspection and phase derivation
+7. Conditional risks, observability, and pre-ship checks where signaled
+8. Emit the plan carrier and halt for execution approval
 
-**When:** `design` OR new subsystem / deep module / cross-process bridge.
-**Load:** `architecture`; co-load branches from signals.
-**Artifact:** Architecture review findings table (Severity | Finding | Plan fix). When earned: ownership map, boundary contract map, deletion test cuts. Craft: [`architecture/SKILL.md`](../../architecture/SKILL.md).
+## Output carrier
 
-## Signal matrix
+Write `.agents/plan/<slug>.md`. Use this fixed Markdown DTO; do not introduce a parallel YAML task schema or status tracker:
 
-Add section when signal matches; N/A with evidence if skipped.
+```markdown
+# Implementation Plan: <slug>
 
-| Section                     | Signals                                                                                                                                                           |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Module architecture         | `design`; new subsystem; dual ownership risk                                                                                                                      |
-| Boundary contract map       | Wire/API/JS bridge; adapter; serialize edge                                                                                                                       |
-| Test pyramid & seam design  | Test refactor/audit ask; coverage remediation; monolithic suite split; flight smearing; dual delivery paths for one derived fact; durable mutation failure matrix |
-| Performance budgets         | Hot path; debounce/async; large payload; latency ask                                                                                                              |
-| Sandbox / platform          | Sandbox; WebKit/XPC/JS; file URLs; network; entitlements                                                                                                          |
-| Observability               | ≥2 phases                                                                                                                                                         |
-| Autonomous delivery runbook | ≥2 phases                                                                                                                                                         |
-| Pre-ship checklists         | Plans that will be implemented                                                                                                                                    |
+Intent: `.agents/compile/<slug>.yaml` | inline
+Circuit breaker approved: false
+Max retries: 2
 
-When **Test pyramid & seam design** matches: require characterization before cutover (parity across delivery modes and/or failure-injection matrix). Acceptance criteria must name observable outcomes or queries — not internal field inventories. Diagnose test friction as production seam defects (`$dev` Shared prep).
+<!-- phase:start -->
 
-## Observability + runbook (≥2 phases)
+## Phase 01 — <imperative outcome>
 
-- One log category per new subsystem; level map; no secrets/full user content in logs
-- Cross-process bridge: error forward path if applicable
-- Branch: repo `AGENTS.md` / Makefile; if silent AskQuestion once (main vs feature), lock session
-- One Conventional Commit per phase; validate exit 0 before next phase; never push unless asked
-- Document parallel vs serial phases; entry/exit + resume criteria per phase
+target_files:
 
-## Plan ready checklist
+- `path/to/exact-file`
 
-- [ ] Product stance filled or override recorded
-- [ ] Classification + runtime route stated
-- [ ] Architecture findings (if triggered) or N/A with evidence
-- [ ] Target file bounds explicit (`target_files` declared vs frozen surfaces)
-- [ ] Flight height evaluated by default (pure unit base, fakes for component, real I/O for integration; test friction diagnosed as production defects)
-- [ ] Dual delivery / durable-mutation scope: characterization parity or failure-matrix planned before cutover; acceptance names outcomes/queries, not field inventories
-- [ ] Conditional sections or N/A with evidence
-- [ ] Observability + runbook if ≥2 phases
-- [ ] Pre-ship checklists embedded
-- [ ] Phases: validate (exit 0) → Conventional Commit (or deferral on default branch)
-- [ ] Rollback boundary / circuit breaker stated on repeated phase verification failure
-- [ ] Residual risks named
-- [ ] No code unless user asked to execute
+read_context:
+
+- `path/to/read-only-file`
+
+verification_gate: `<exact repo-native command>`
+commit_message: `<type>(<scope>): <description>`
+<!-- phase:end -->
+```
+
+Carrier laws:
+
+- Phase numbers are unique, contiguous, and execution order is document order.
+- `target_files` and `read_context` are exact paths; no globs, directories, prose, or overlap between mutation and read-only lists.
+- Every phase has at least one `target_files` entry and exactly one command and commit message.
+- A path may appear in multiple phase mutation lists only when the plan explains why later mutation is required.
+- Commands are copied from repository-native evidence and remain exact strings for independent runner execution.
+- The carrier has no mutable phase status, attempt counters, worker transcripts, or retry loop state. Git commits are execution progress.
+
+## Ready checklist
+
+- [ ] Intent constraints are authoritative and contradictions resolved
+- [ ] Classification, runtime route, and architecture decisions stated where required
+- [ ] Repository-native build and test entrypoints inspected
+- [ ] Every phase has exact `target_files` and `read_context`
+- [ ] Every `verification_gate` is discovered, exact, and independently runnable
+- [ ] Every `commit_message` is Conventional Commit text
+- [ ] Conditional risks, observability, and pre-ship checks are included or N/A with evidence
+- [ ] Circuit-breaker consent is explicit
+- [ ] Plan persisted at `.agents/plan/<slug>.md`
+- [ ] No application code written before execution approval
+
+Approved execution hands the plan to `orchestrator run`. Individual workers enter through `$dev implement`; DAG-level `review.gil findings` remains orchestrator-owned.

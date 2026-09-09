@@ -148,35 +148,34 @@ Default verb-path: evidence checklist, route table, required Triage Ledger, one-
 Not: peer branches duplicating handoff
 
 **Prompt-compiler** (skill noun: `prompt-compiler`):
-Compiles raw intent into persisted IR (invariants + atomic task DAG), then dispatches workers through `$dev` `implement` with orchestrator gates.
-Not: mutating app code outside `$dev` workers
+Compiles raw intent into a persisted `intent_spec` DTO: invariants, allowed blast radius, breaking-change posture, and circuit-breaker consent state. It never plans or executes implementation work.
+Not: technical discovery; task graphs; worker dispatch
 
-**Compile** / **run** (`prompt-compiler` branches):
-`compile` writes `.agents/compile/<slug>.yaml` and stops. `run` resumes IR `status`, dispatches next `pending` task via `$dev`.
-Not: auto-dispatch without IR approval; parallel worktree dispatch
+**Compile** (`prompt-compiler` branch):
+Writes `.agents/compile/<slug>.yaml` and stops. `$dev` **`plan`** consumes the DTO and writes `.agents/plan/<slug>.md`; `orchestrator` **`run`** alone dispatches phases.
+Not: task generation, commands, retries, or execution status
 
-**IR fields** (`prompt-compiler` emit):
-`version` · `invariants` · `circuit_breaker` · `tasks[]` (`id`, `name`, `target_files`, `read_context`, `verification_gate`, `max_retries`, `depends_on`, `status`). Equivalent syntax of `$dev` `plan` — not a competing format.
-Not: five-field briefs; inventing gates; dual plan formats
+**Intent DTO fields** (`prompt-compiler` emit):
+`intent_spec.version` · `slug` · `invariants` · `blast_radius.allowed_domains` · `trade_offs.breaking_changes` · `circuit_breaker.approved`.
+Not: tasks, files, commands, gates, retries, dependencies, or statuses
 
 **Lifecycle**:
-Ingest → grill gaps → `compile` → user approves → `run` via `$dev` → gates → full DAG → `review.gil` **`findings`**. On repeated failure: reset to last green task commit and halt.
-Not: blind `git reset --hard`; trusting worker green claims; skipping Assure after green DAG
+Ingest → grill owned intent gaps → `prompt-compiler compile` → `$dev plan` technical discovery → `orchestrator run` via `$dev implement` → one DAG-level `review.gil findings`. On repeated execution failure: reset to the last green phase commit and halt.
+Not: compiler-owned execution mechanics; blind reset; trusting worker green claims; per-phase Assure
 
 **Handoff**:
-`triage` → `product-owner` **`gate`** and/or `$dev` **`plan`**. `compile` stops at IR file. `run` → `$dev` only. Jira entry → `jira-ticket`. Incident without Jira/IR → `triage` first. Spec/PRD router deferred. Morning PR attention → `pr-sweep` **`report`** (not `triage`).
+`triage` → `product-owner` **`gate`** and/or `$dev` **`plan`**. `prompt-compiler compile` stops at the Intent DTO; `$dev plan` emits the phase carrier; `orchestrator run` dispatches `$dev implement`. Jira entry → `jira-ticket`. Incident without Jira or Intent DTO → `triage` first. Morning PR attention → `pr-sweep` **`report`** (not `triage`).
 
 **Orchestrator** (skill noun: `orchestrator`):
-Sequential delivery of admitted tranches from repo roadmap docs.
-Discovers tranches, spawns `$dev` workers, gates on validation, updates roadmap.
-Roadmap is the state — no separate tracking file.
-Not: prompt-compiler (single-prompt IR); jira-ticket (ticket entry); triage (incident intake)
+Zero-trust execution of `.agents/plan/<slug>.md` phases. Spawns `$dev implement` workers, enforces exact file bounds and exit-0 gates, commits each phase, circuit breaks, then runs one DAG-level Assure pass.
+Git commits are execution state; the plan remains immutable.
+Not: intent compilation; technical discovery; application implementation; mutable status files
 
 **Run** (`orchestrator` branch):
-Default and only branch. Discover → dispatch → gate → update → advance.
+Default and only branch. Read plan → dispatch → bounds and gate → commit → advance.
 
 **Handoff**:
-`run` → `$dev` `implement` per tranche. Full completion → `review.gil` **`findings`**.
+`run` → `$dev` `implement` per phase. Full completion → one `review.gil` **`findings`** pass across the cumulative diff.
 Land → `pull-request` **`open`**. Circuit break → halt.
 
 # Product Skills Domain

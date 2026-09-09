@@ -1,91 +1,50 @@
 ---
 name: prompt-compiler
 description: >-
-  Intermediate compilation layer between raw developer intent and downstream
-  coding agents. Translates high-level, unstructured, or ambiguous prompts into
-  a persisted IR (invariants + atomic task DAG), then dispatches sequential
-  worker sub-agents through `$dev` `implement` with orchestrator-enforced
-  verification gates. Use when the user says /prompt-compiler, "compile this prompt",
-  "refine prompt", "structure this prompt", or wants intent compiled into isolated
-  executable tasks rather than a free-form agent brief.
+  Intent specification compiler. Translates high-level, unstructured, or
+  ambiguous developer prompts into a clean persisted intent_spec DTO containing
+  invariants, allowed blast radius, breaking-change posture, and circuit-breaker
+  consent state. Use for /prompt-compiler, "compile this prompt", "refine prompt",
+  or "structure this prompt". Never plans or executes implementation work.
 ---
 
 # Prompt Compiler
 
-Intent-domain router. Compiles raw developer intent into a bounded, verifiable IR, then (on approval) dispatches tasks sequentially through `$dev` — the only Build entry. Never mutates code itself.
-
-```
-[Raw User Prompt]
-       │
-       ▼
- ┌──────────────────────┐
- │  1. Ingest & Assess  │ ── (Evaluate Ambiguity & Blast Radius)
- └──────────┬───────────┘
-            │
-            ├─► [High Ambiguity / Missing Invariants] ──► Invoke `/grill-me` (Halt & Clarify)
-            │                                                      │
-            │ ◄────────────────────────────────────────────────────┘
-            ▼
- ┌──────────────────────┐
- │  2. Compile Spec     │ ── (Persist IR file; plan-pipeline ready)
- └──────────┬───────────┘
-            │
-            ├─► User approves IR (incl. circuit-breaker policy)
-            ▼
- ┌──────────────────────┐
- │  3. Dispatch Tasks   │ ── (Sequential `$dev` workers; clean contexts)
- └──────────┬───────────┘
-            │
-            ▼
- ┌──────────────────────┐
- │  4. Hard Gate Check  │ ── [Orchestrator re-runs gate + bounds diff]
- └──────────┬───────────┘
-            │
-            ├─► Pass ──► Git Commit ──► Mark green ──► Next pending
-            └─► Fail ──► Retry (Max 2) ──► Circuit Breaker (reset to last green commit)
-```
+Deep Intent module: raw developer language in, one bounded `intent_spec` DTO out. It owns no technical discovery or execution mechanics.
 
 ## Pick branch
 
-Never ask the user to pick the branch when signals are clear. Default: **`compile`**.
+Single branch. Default: **`compile`**.
 
-| Branch    | Use when                                                                               | Job                                                                                            |
-| --------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `compile` | Default; "compile this", "structure this prompt", refine/grill intent, first invoke    | Grill gaps → satisfy plan-pipeline → persist IR file → stop (no code)                          |
-| `run`     | User approved a persisted IR; "run the compile", "continue the DAG", resume after halt | Dispatch next `pending` task via `$dev` `implement`; orchestrator gates; resume from IR status |
+| Signal                                                   | Route                           |
+| -------------------------------------------------------- | ------------------------------- |
+| compile / refine / structure / grill intent              | `compile`                       |
+| write implementation phases / discover files or commands | stop → `$dev` **`plan`**        |
+| execute / dispatch / continue / retry                    | stop → `orchestrator` **`run`** |
+| implement one bounded phase outside orchestration        | stop → `$dev` **`implement`**   |
+| "should we build X?"                                     | stop → `product-owner`          |
 
-| Signal                                            | Branch                 |
-| ------------------------------------------------- | ---------------------- |
-| compile / refine / structure / grill / new IR ask | `compile`              |
-| run / dispatch / continue / resume approved IR    | `run`                  |
-| "should we build X?" without prior PO gate        | stop — `product-owner` |
+`compile` produces `.agents/compile/<slug>.yaml` with an `intent_spec` DTO. It does not produce an executable task graph.
 
 ## Shared prep
 
-1. **Product before non-trivial scope** — feature / UX / new surface asks load `product-owner` **`gate`** first. Continue only on **Build Now**. Multi-slice / UX-mandated AC → `product-owner` **`story-slice`** before `$dev` `plan` / `compile`. Skip for pure bug fix, refactor, infra. (README rule 1.)
-2. **Hard bounds on this skill** — `compile` is read-only except writing the IR file. `run` never edits application code itself; workers load `$dev` `implement`. Never invent invariants, `target_files`, or `verification_gate` — ground in the repo or obtain via `/grill-me`.
-3. **`/grill-me` on ambiguity** — trigger when structural changes lack non-negotiable invariants, explicit mutation bounds (target vs frozen), or clear breaking-change trade-offs. Load the `grilling` pack when installed; otherwise inline fallback: one targeted question at a time on constraints / scope / acceptance (soft cap 5). Halt until material gaps resolve.
-4. **IR is the plan carrier** — `compile` loads [`../dev/reference/plan-pipeline.md`](../dev/reference/plan-pipeline.md) and must satisfy its ready checklist before emitting. The IR is the structured task syntax of the Plan Invariant Contract shared with `$dev` `plan`. (README rule 4.)
-5. **Circuit-breaker consent** — `run` starts only after the user approves the IR _including_ the circuit-breaker policy (reset to last green task commit on repeated gate failure). That approval is the explicit consent `$dev` Shared prep requires for irreversible git.
+1. **Product boundary** — non-trivial feature or UX scope requires an admitted product decision before intent compilation. Pure bug fixes, refactors, and infrastructure work do not.
+2. **Compiler boundary** — compilation is read-only except for its one DTO file. Never inspect repo mechanics to speculate about files, commands, phases, or tests.
+3. **Grill only owned gaps** — resolve invariants, `allowed_domains`, and breaking-change posture. Load `grilling` when available; otherwise ask one targeted question at a time.
+4. **No execution schema** — task DAGs, dependencies, statuses, retries, commands, verification gates, and worker prompts are forbidden here.
+5. **Consent remains explicit** — emit `circuit_breaker.approved: false`; no compiler inference or automatic approval.
 
 ## Branch reference
 
-- **`compile`** → [`reference/compile.md`](reference/compile.md) — grill rubric, IR schema + file path, plan-pipeline hook, no-invention rules.
-- **`run`** → [`reference/run.md`](reference/run.md) — clean-tree precondition, resume from IR status, `$dev` worker prompt, orchestrator gate + `target_files` diff guard, retry / circuit breaker.
+- **`compile`** → [`reference/compile.md`](reference/compile.md)
 
 ## Handoff
 
-- **`compile` → user** — present the IR path + summary; wait for approval (incl. circuit-breaker policy) before `run`. Do not auto-dispatch.
-- **`run` → `$dev`** — each task is a fresh worker sub-agent that loads `$dev` `implement` with only that task's IR slice + `read_context`. `$dev` owns classify, language routing, validation law, and phase-commit format. Orchestrator re-runs the gate and bounds-diff before accepting a commit. (README rule 3.)
-- **Full DAG → Assure** — before reporting done, prefer spawning `review.gil` **`findings`** (+ warranted lenses); fallback: fresh in-session pass. If user asked to land and readiness is Yes/Conditional → `pull-request` **`open`**. (README rule 6.)
-- Jira entrypoints still use `jira-ticket` (and `product-owner` **`gate`** when scope is non-trivial).
+`compile` → `$dev` **`plan`** with the emitted DTO path. `$dev plan` performs technical discovery and writes `.agents/plan/<slug>.md`. `orchestrator run` consumes that plan and owns the sequential execution loop. `$dev implement` owns code changes inside a single dispatched phase.
 
 ## Completion criteria
 
-| Branch / path   | Done when                                                                                                                               |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| grill (active)  | Halted; `/grill-me` (or inline fallback) pending until invariants / mutation bounds / trade-offs land                                   |
-| `compile`       | Plan-pipeline ready checklist satisfied; IR file persisted with invariants + ordered atomic tasks; no application code mutated          |
-| `run` (task N)  | Clean tree at start; worker via `$dev`; orchestrator gate exit 0 + only `target_files` changed; commit; task `status: green` in IR file |
-| circuit breaker | After `max_retries` failures: reset to last green task commit; mark task `failed`; halt; no further tasks until user re-invokes `run`   |
-| full DAG        | All tasks `green`; post-delivery `review.gil` **`findings`** completed before delivery report                                           |
+| Path         | Done when                                                                                                                     |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| grill active | Halted until invariants, allowed blast radius, and trade-off posture are explicit                                             |
+| `compile`    | Valid `intent_spec` v2.0 persisted; no implementation fields or application mutations; halted after clean `$dev plan` handoff |

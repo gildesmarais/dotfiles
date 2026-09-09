@@ -1,37 +1,53 @@
 # compile
 
-The prompt compiler translates raw intent into a deterministic, bounded Intermediate Representation (IR). Do not mutate application code here.
+Compile raw developer intent into a clean Intent DTO. This branch specifies constraints only. It does not inspect implementation mechanics, mutate application code, or dispatch workers.
 
-## Core Directives (Less is More)
+## Ownership
 
-1. **Strict Mutation Whitelist:** Every task MUST have a `target_files` array. This is the absolute mutation boundary.
-2. **Zero-Trust Verification Gate:** Every task MUST include a `verification_gate` containing a repo-native command (e.g., `make test`, `npm run lint`). Do not invent commands.
-3. **No Speculative Features:** Reject prompts that introduce unearned complexity or drift from the documented golden paths.
+`prompt-compiler compile` owns only:
 
-## Grill Gate Ownership
+1. **Invariants** — unbreakable public contracts, behavior, latency budgets, and system guarantees.
+2. **Blast radius** — domains or paths implementation may affect, expressed as `allowed_domains` rather than guessed files.
+3. **Trade-off posture** — whether breaking changes are forbidden, allowed, or require a decision.
 
-Before emitting the canonical IR schema, the grill gate owns extracting explicit invariants, scoping each task's mutation whitelist, and gating unresolved trade-offs. Do not defer those interviews to `$dev plan` or encode unresolved choices in the IR.
+`$dev plan` owns repository discovery, phase decomposition, exact `target_files`, read context, verification commands, and commit messages. `orchestrator run` owns worker dispatch, retries, status, bounds enforcement, commits, rollback, and DAG-level Assure.
 
-## IR Schema Requirement
+## Grill gate
 
-You must emit the following YAML structure to `.agents/compile/<slug>.yaml`. Every `target_files` value MUST be a YAML list of exact repository-relative paths; scalars, globs, directories, and prose bounds are invalid:
+Grill only unresolved intent constraints:
+
+- Which public contracts, behaviors, or latency budgets must remain true?
+- Which domains or paths define the permitted blast radius?
+- Are breaking changes forbidden, allowed, or undecided?
+
+Ask one targeted question at a time. Do not ask for commands, filenames, task ordering, test targets, retry counts, or execution status. Do not infer technical mechanics from intent language.
+
+## Output contract
+
+Emit exactly one file at `.agents/compile/<slug>.yaml`:
 
 ```yaml
-prompt_compiler:
-  version: "1.0"
+intent_spec:
+  version: "2.0"
+  slug: "<slug>"
   invariants:
-    - "System contracts must remain unmodified."
+    - "<unbreakable-system-contract>"
+  blast_radius:
+    allowed_domains:
+      - "<path-or-domain>"
+  trade_offs:
+    breaking_changes: forbidden # forbidden | allowed | ask
   circuit_breaker:
-    policy: "On repeated gate failure, reset working tree to last green task commit and halt"
-    user_approved: false
-  tasks:
-    - id: "task_01"
-      name: "Execute constrained task"
-      target_files:
-        - "src/domain/module.rb"
-      read_context:
-        - "src/domain/interface.rb"
-      verification_gate: "rspec spec/domain/module_spec.rb"
-      max_retries: 2
-      status: pending
+    approved: false
 ```
+
+Requirements:
+
+- Keep the DTO declarative and implementation-free.
+- Do not emit task IDs, task DAGs, dependencies, `target_files`, `read_context`, commands, gates, commit messages, statuses, attempts, or retry limits.
+- Do not encode unresolved prose outside the three owned intent dimensions. Grill until the DTO is valid or halt without emitting it.
+- Leave `circuit_breaker.approved` false at emission. Approval is explicit user consent for the destructive rollback policy, never inferred by the compiler.
+
+## Halt and handoff
+
+Halt immediately after emission. Report the Intent DTO path and hand it to `$dev plan`. Do not dispatch workers, invoke `$dev implement`, start an execution loop, or mutate application code.
