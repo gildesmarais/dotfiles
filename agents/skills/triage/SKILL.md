@@ -16,11 +16,11 @@ Evidence first; one handoff; no Build.
 
 ## When to use / skip
 
-| Use when                                                           | Skip when                                                             |
-| ------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| Prod errors, Sentry/APM, scrape/timeouts, "investigate then what?" | Clear "implement this plan" / approved plan → `$dev` `implement`      |
-| Need route: product admit vs eng plan                              | Jira key/URL as entry → prefer `jira-ticket`                          |
-| `/triage`, `/intake`, incident without ticket or IR                | Pure compile-to-IR → `prompt-compiler`; stress-test only → `grilling` |
+| Use when                                                           | Skip when                                                                  |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| Prod errors, Sentry/APM, scrape/timeouts, "investigate then what?" | Clear "implement this plan" / approved plan → `$dev` `implement`           |
+| Need route: product admit vs eng plan                              | Jira key/URL as entry → prefer `jira-ticket`                               |
+| `/triage`, `/intake`, incident without ticket or Intent DTO        | Pure intent compilation → `prompt-compiler`; stress-test only → `grilling` |
 
 ## Pick branch
 

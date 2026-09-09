@@ -53,7 +53,6 @@ Write `.agents/plan/<slug>.md`. Use this fixed Markdown DTO; do not introduce a 
 
 Intent: `.agents/compile/<slug>.yaml` | inline
 Circuit breaker approved: false
-Max retries: 2
 
 <!-- phase:start -->
 

@@ -230,7 +230,7 @@ Authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, privileged o
 Not: duplicating overlay security matrices in `$dev`
 
 **Post-delivery Assure**:
-Before delivery report on `$dev` `implement`: `review.gil` **`findings`** (procedure in `$dev` Handoff). Orchestrated workers skip per-task Assure.
+Before delivery report on `$dev` `implement`: `review.gil` **`findings`** (procedure in `$dev` Handoff). Workers with `orchestrated: true` skip per-phase Assure.
 Not: implementer self-check as sole review; silent Assure skip
 
 **Architecture** (skill noun: `architecture`):

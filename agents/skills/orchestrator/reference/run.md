@@ -12,14 +12,14 @@ Halt unless all conditions hold:
 4. The worktree is clean before the first phase. Never reset over unrelated work.
 5. Default-branch commit consent satisfies `$dev` law.
 
-Read phases in document order. Determine completed phases from matching commits on the current plan execution range; do not add status fields to the plan.
+Read phases in document order. Determine completed phases from matching commits on the current plan execution range; do not add status fields to the plan. Before dispatching any worker, set `dag_baseline = HEAD` and `last_green_commit = HEAD`.
 
 ## Sequential phase loop
 
 For each incomplete phase:
 
-1. Set `task_baseline = HEAD` and `last_green_commit = HEAD` before dispatch.
-2. Spawn a fresh isolated worker through `$dev implement` with only the phase outcome, intent invariants, `target_files`, and `read_context`. The worker must not commit and must skip per-phase Assure.
+1. Set `task_baseline = HEAD` before dispatch. Do not reinitialize `last_green_commit`.
+2. Spawn a fresh isolated worker through `$dev implement` with `orchestrated: true` and only the phase outcome, intent invariants, `target_files`, and `read_context`. The worker must not commit and must skip per-phase Assure.
 3. After return, run `git diff --name-only <task_baseline>`. Include untracked paths from `git ls-files --others --exclude-standard` in the same bounds decision. Assert every changed path is exactly present in `target_files`; `read_context` grants no mutation permission.
 4. Execute the phase's exact `verification_gate` independently. Accept only an observed exit code of 0. Worker reports are not evidence.
 5. On bounds and gate success, stage only `target_files`, author the plan's exact `commit_message` as a Conventional Commit, set `last_green_commit = HEAD`, and advance.
@@ -31,6 +31,7 @@ For each incomplete phase:
 
 ```text
 Load and follow `$dev`, branch `implement`.
+orchestrated: true
 Execute exactly this implementation-plan phase. Do not expand scope.
 Preserve the supplied intent invariants.
 Mutate only target_files. read_context is read-only.
@@ -54,7 +55,7 @@ Never reset to a worker-supplied revision. Never continue after a circuit break.
 
 After every phase commit is green:
 
-1. Compute the cumulative delivery diff from the pre-DAG baseline through `HEAD`.
+1. Compute the cumulative delivery diff from `dag_baseline` through `HEAD`.
 2. Trigger exactly one fresh `review.gil findings` audit across that cumulative diff, adding warranted lenses such as security, tests, performance, or legacy.
 3. Report delivery only after the audit returns. If findings require implementation, halt for an explicit follow-up plan; do not smuggle repair work into the completed DAG.
 
