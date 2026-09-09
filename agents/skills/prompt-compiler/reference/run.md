@@ -6,7 +6,7 @@ Dispatch the persisted IR task-by-task. Each worker is a fresh sub-agent that lo
 
 Halt (do not dispatch) unless all hold:
 
-1. **IR file exists** — path from user or `.agents/compile/<slug>.yaml`.
+1. **IR file exists and is structurally valid** — path from user or `.agents/compile/<slug>.yaml`. Every task’s `target_files` MUST be a YAML list of exact repository-relative paths; reject scalars, globs, directories, or prose bounds.
 2. **User approved** — `circuit_breaker.user_approved: true` in the IR file (consent for reset to last green task commit). If the user just approved in-conversation but the flag is still `false`, set it to `true` in the IR first (see `compile.md` Emit step 4), then proceed.
 3. **Clean worktree** — `git status` shows no uncommitted changes. Dirty tree → halt and ask the user to commit, stash, or discard _their_ work first. Never reset over unrelated dirty state.
 4. **Not on silent main** — if HEAD is the default branch, follow `$dev` phase-commit law (ask early whether to commit here or defer); do not silently commit on main/master.

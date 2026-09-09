@@ -68,7 +68,7 @@ Bare “promote” / “unify” alone → one clarifying question, or stay on t
 2. Evidence before claims: call sites, ownership, existing tests. Label Strong / Worth / Speculative when surveying.
 3. Multi-load OK when signals combine; one handoff covering everything loaded.
 4. Keep craft language-free. Language recipes belong in `{lang}-dev`, overlays, third-party packs, or project `AGENTS.md` (loaded via `$dev`).
-5. **Phase → validate → commit:** after each craft phase (architecture phase, surgical milestone, or user-named plan step), validate, then create ≥1 Conventional Commit with a rationale/intent body before the next phase. Format and phase law: [`CONTEXT.md`](../CONTEXT.md). Build-side phase commits also live on `$dev`.
+5. **Phase → validate → commit:** Solution craft phase commits follow [`CONTEXT.md`](../CONTEXT.md). Build carrier phase commits belong to `$dev` Shared prep. When `architecture` is loaded during an implementation run, dirty-tree git interactions and phase-commit prompts on the default branch are owned exclusively by `$dev`.
 6. Structural signals → run survey **before or with** craft deepening.
 
 ## Phase 0: Mandatory Context Pre-Flight (Blocking)
@@ -105,12 +105,12 @@ Then:
 
 ## Completion criteria
 
-| Branch / mode         | Done when                                                                                                                                                                                                |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `structure-survey`    | Canonical shape stated; anomalies ranked with evidence; craft-branch handoff named; residual dual ownership called out — no code required                                                                |
-| `deep-modules`        | Deletion test / ownership / seams addressed; phases validated; residual dual ownership called out                                                                                                        |
-| `refactor-types`      | Primitive obsession at target cleared or scoped; logic on types; consumers cleaned; boundaries mapped                                                                                                    |
-| `refactor-boundaries` | Contract map for targeted edges; domain out of shells; serialize ownership clear; phases committed per Shared prep                                                                                       |
-| `performance`         | Baseline or hot path identified before changes; stop rules applied; no language-specific recipe invented here                                                                                            |
-| multi-load            | Each loaded branch’s done-when met or explicitly N/A with reason; one combined handoff                                                                                                                   |
-| `philosophy`          | design axioms evaluated.. At least two alternative designs considered; interfaces simplified; error states structurally minimized; cognitive load, module depth assessed, tech debt explicitly addressed |
+| Branch / mode         | Done when                                                                                                                                                  |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `structure-survey`    | Canonical shape stated; anomalies ranked with evidence; craft-branch handoff named; residual dual ownership called out — no code required                  |
+| `deep-modules`        | Deletion test / ownership / seams addressed; phases validated; residual dual ownership called out                                                          |
+| `refactor-types`      | Primitive obsession at target cleared or scoped; logic on types; consumers cleaned; boundaries mapped                                                      |
+| `refactor-boundaries` | Contract map for targeted edges; domain out of shells; serialize ownership clear; phases committed per Shared prep                                         |
+| `performance`         | Baseline or hot path identified before changes; stop rules applied; no language-specific recipe invented here                                              |
+| multi-load            | Each loaded branch’s done-when met or explicitly N/A with reason; one combined handoff                                                                     |
+| `philosophy`          | At least two alternative designs considered; interfaces simplified; error states structurally minimized; cognitive load and tech debt explicitly addressed |

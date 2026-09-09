@@ -266,7 +266,7 @@ Not: "design" as skill noun; defaulting to surgical to save a load
 Markdown DTO passed across handoffs (`$dev` implement → `review.gil`, and `review.gil` → `pull-request` / `harvest`). Standardized fields:
 
 - `Classification / Branches`: `surgical` | `design` and active branches
-- `Target Files`: List of changed files
+- `Target Files`: List of changed files; entries must be exact paths deterministically matchable against `git diff --name-only <task_baseline>`
 - `Verification`: Command executed + exit 0 observed
 - `Phase Commits`: Hashes & rationale (or explicit deferral on default branch)
 - `Active Lenses`: Triggered review lenses (`security`, `tests`, `perf`, `legacy`)

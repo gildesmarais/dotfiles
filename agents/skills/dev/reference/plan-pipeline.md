@@ -2,6 +2,10 @@
 
 Quality gates for **`$dev` `plan`** (Cursor plan mode, prepare/refine plan, implementation plan asks). Product admission: **`product-owner`** explicit invoke only — no auto-run in plan mode.
 
+## Pre-compiled IR Boundary
+
+When executing under a pre-compiled prompt-compiler IR, treat its task schema as authoritative for invariants, mutation bounds, and gated trade-offs. Skip redundant grill interviews unless repository evidence contradicts the IR or a required field is invalid.
+
 ## Sequence
 
 1. Product stance (thread or AskQuestion if unstated)
