@@ -18,6 +18,7 @@ Wire/API contract redesign, adapter shells that grew domain branches, dual owner
    - Boundary shells parse, validate shape, map to/from domain types, and forward.
    - No business rules, policy branches, or multi-step workflows inside adapters.
    - If a shell already owns domain logic, extract before widening the contract.
+   - Foreign exception / unwinding containment: Adapters wrapping foreign, legacy, or system event loops (e.g. C/C++ runtimes, OS event dispatchers, foreign exception boundaries) must contain and normalize unwinding faults at the boundary. Never allow foreign unwinding to bypass language concurrency state machines, task runners, or resource cleanup routines without fail-fast containment.
 
 3. **Serialize ownership**
    - One fact, one serializer home. Kill parallel encode/decode paths for the same wire shape.

@@ -25,3 +25,12 @@ When the measured hot path looks like these patterns, prefer the matching postur
 - **Multi-channel distance / embeddings:** `SIMD3`/`SIMD4` or Accelerate `vDSP` over contiguous buffers rather than scalar loops with formatting.
 - **Monotonic coordinate maps (scrubbing):** sort on ingestion; binary search on tick rather than re-sort or linear scan each frame.
 - **Equatable / table diffing:** compare contiguous underlying storage; never allocate or flatten inside `==`.
+
+## Concurrency, TLS & Foreign Exception Hardening
+
+Swift Concurrency runtime maintains thread-local task state (`TPIDRRO_EL0 + 0x340` on ARM64) during actor and async execution. Objective-C / foreign exceptions unwind stack frames without running Swift Concurrency exit handlers, corrupting TLS if swallowed by host runloops (AppKit/UIKit event dispatch):
+
+- **Zero `assumeIsolated` / Thread sniffing theater:** Never sniff `Thread.isMainThread` to conditionally branch between `MainActor.assumeIsolated` and `Task`. If an unwound frame poisoned TLS, `assumeIsolated` reads unmapped memory and crashes with delayed `EXC_BAD_ACCESS` (e.g. in `objc_opt_class` or `swift_task_isCurrentExecutor`). Declare actor isolation natively or dispatch via `Task { @MainActor [weak self] in ... }`.
+- **Text storage bounds clamping:** Text storages can mutate across asynchronous runloop ticks. Guard all attribute removals and presentations with validated range clamps (`safeAttributeRange(for:)`, `safeFullRange`) to prevent `NSRangeException` unwinding.
+- **Storage delegate detachment during bulk edits & undo:** Detach `textStorage.delegate = nil` (restored via `defer`) across programmatic replaces and undo registrations so `didProcessEditing` cannot re-enter mid-mutation.
+- **Fail-fast on swallowed exceptions:** Register `"NSApplicationCrashOnExceptions": true` in `UserDefaults` and install `NSSetUncaughtExceptionHandler` in app delegates so foreign exceptions crash immediately at the offending callstack instead of being swallowed into silent concurrency corruption.

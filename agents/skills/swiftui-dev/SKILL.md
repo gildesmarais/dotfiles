@@ -29,6 +29,9 @@ description: >-
 - Keep view bodies thin: own presentation state locally; push domain logic and orchestration out of views.
 - Prefer native navigation (`NavigationStack` / `NavigationSplitView`) and platform idioms over bespoke shells.
 - For interactive surfaces, ship focus, labels, and keyboard shortcuts with the interaction.
+- In `NSViewRepresentable`/`UIViewRepresentable`, track focus via coordinator `lastFocusedField`; never spoof prior focus from native first-responder state.
+- Keep outbound data mirroring unidirectional: avoid attaching SwiftUI `.onChange` to properties updated by outbound text flushes.
+- Route model persistence through a single non-reentrant trigger rather than stacking multiple parallel `.onChange` modifiers.
 
 ## Tooling and Completion
 
