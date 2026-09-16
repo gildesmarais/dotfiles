@@ -44,10 +44,6 @@ Primitive obsession across modules, stringly closed sets, magic ints, parallel l
 - Capture adapters may accept tokens; resolve before domain construction — do not push domain rejection into the capture edge.
 - Wire vocabulary stays at the wire — normalize aliases into an app closed set at one edge; do not “helpful rename” schema fields.
 
-## Thin examples (illustrative only)
+## Done when
 
-Value object shape (any language): wrap a scalar; reject out-of-range in the constructor; expose a read accessor.
-
-Closed set shape: finite variants; predicates on the type (`has_vocals?` / `has_vocals`); map to/from wire strings only at the boundary.
-
-Do not dump language-specific serde/ORM recipes here.
+Primitive obsession at target cleared or scoped; logic on types; consumers cleaned; boundaries mapped.

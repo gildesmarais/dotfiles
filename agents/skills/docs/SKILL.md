@@ -19,11 +19,11 @@ Assume existing prose may be outdated until verified. Prefer improving an existi
 
 Map the user prompt to exactly one branch:
 
-| Branch         | Use when                                                                                          |
-| -------------- | ------------------------------------------------------------------------------------------------- |
-| `editor`       | Public-facing or operational docs — README, contributor, operator, feature docs, runbooks         |
-| `architecture` | Architecture-facing docs — ADRs, design notes, diagrams, system overviews, integration flows      |
-| `evidence`     | Prove a stated control from the repo (auditor pack; Assessment / Evidence / Scope / Task)         |
+| Branch         | Use when                                                                                     |
+| -------------- | -------------------------------------------------------------------------------------------- |
+| `editor`       | Public-facing or operational docs — README, contributor, operator, feature docs, runbooks    |
+| `architecture` | Architecture-facing docs — ADRs, design notes, diagrams, system overviews, integration flows |
+| `evidence`     | Prove a stated control from the repo (auditor pack; Assessment / Evidence / Scope / Task)    |
 
 Routing signals:
 
@@ -92,8 +92,8 @@ When the ask turns out to be a message rather than documentation, stop and conti
 
 ## Completion criteria
 
-| Branch         | Done when                                                                                                                                  |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `editor`       | Every technical claim re-checked against the repo; main path obvious; outdated content removed; next action explicit; prose forward-facing |
-| `architecture` | Flows, boundaries, and constraints verified as enforced; verification tier reached is stated; unknowns isolated instead of narrated        |
+| Branch         | Done when                                                                                                                                         |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `editor`       | Every technical claim re-checked against the repo; main path obvious; outdated content removed; next action explicit; prose forward-facing        |
+| `architecture` | Flows, boundaries, and constraints verified as enforced; verification tier reached is stated; unknowns isolated instead of narrated               |
 | `evidence`     | Control answer and verdict table stand alone; gaps explicit; verification tier stated; no invented live config; system under assessment unchanged |

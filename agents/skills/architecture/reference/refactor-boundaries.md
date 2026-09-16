@@ -40,10 +40,6 @@ Wire/API contract redesign, adapter shells that grew domain branches, dual owner
 
 Work one edge (or one owned map) per phase. Validate after each phase → ≥1 Conventional Commit (format and phase law: [`CONTEXT.md`](../../CONTEXT.md)) before the next edge. Prefer co-loading `refactor-types` when maps still pass primitives deep; co-load `deep-modules` when adapters are shallow passthrough bags.
 
-## Thin examples (illustrative only)
+## Done when
 
-Inbound: handler receives raw JSON/params → constructs domain types → calls application code with types only.
-
-Outbound: application returns domain values → shell maps to wire DTO/primitives → no domain predicates in the encoder.
-
-Do not dump language-specific serde/ORM recipes here.
+Contract map for targeted edges; domain out of shells; serialize ownership clear; phases committed per Shared prep.

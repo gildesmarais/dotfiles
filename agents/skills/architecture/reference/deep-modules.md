@@ -9,7 +9,6 @@ Dual ownership of one fact, passthrough bags, shallow multi-call husks, or the u
 ## Checklist
 
 - Apply the deletion test to candidate modules and thin re-export bags.
-- Prefer deep modules: small interface, substantial private behavior.
 - Kill passthrough bags and dual ownership of the same fact.
 - One public name per schema or type — delete aliases that keep both live.
 - Shared kernels import the owning type module, not a duplicate re-export.
@@ -42,3 +41,7 @@ Dual ownership of one fact, passthrough bags, shallow multi-call husks, or the u
 ## Sequencing
 
 Work in small phases. Validate after each phase before the next. Prefer co-loading `refactor-types` when closed sets or primitive obsession sit on the same seams; co-load `performance` only when a measured bottleneck drives a layout move.
+
+## Done when
+
+Deletion test / ownership / seams addressed; phases validated; residual dual ownership called out.

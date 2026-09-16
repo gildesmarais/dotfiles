@@ -68,6 +68,7 @@ read_context:
 
 verification_gate: `<exact repo-native command>`
 commit_message: `<type>(<scope>): <description>`
+
 <!-- phase:end -->
 ```
 

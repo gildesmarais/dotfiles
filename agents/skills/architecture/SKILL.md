@@ -1,53 +1,39 @@
 ---
 name: architecture
 description: >
-  Language-free solution craft for module depth, type-driven refactors, and
-  measured performance. Use when $dev classifies design, when design or
-  structural cleanup is earned, or when the user asks to deepen modules,
-  replace primitives with domain types, optimize with a baseline, name a
-  bottleneck class, zero-copy / heterogeneous placement, or measured hot-path
-  work — not a Build entry alone (enter via $dev for coding). Also use for
+  Language-free solution craft for module depth, type-driven refactors,
+  measured performance, and GoF design-pattern selection. Use when $dev
+  classifies design, when design or structural cleanup is earned, or when
+  the user asks to deepen modules, replace primitives with domain types,
+  optimize with a baseline, name a bottleneck class, zero-copy /
+  heterogeneous placement, measured hot-path work, or which GoF pattern
+  fits — not a Build entry alone (enter via $dev for coding). Also use for
   structural tree / directory surveys: peer-folder conformity, snowflake
-  placement, and module promote/relocate/fold ranking — not for generic code
-  review (use review.gil).
+  placement, and module promote/relocate/fold ranking — not for generic
+  code review (use review.gil).
 ---
 
 # Architecture
 
 Change how the codebase is structured, typed, or measured for performance — not whether to build a feature, and not language-runtime validation.
 
-## Core Architectural Axioms (Always Active)
-
-- **Deep Modules:** Small interface surface, substantial private behavior. Avoid shallow pass-through bags.
-- **Deletion Test:** Candidate modules must pass the deletion test — removing or swapping a module should not cause cascading rewrites across unrelated consumers.
-- **Single Ownership:** One fact, rule, or expansion algorithm has exactly one authoritative owner. Eliminate dual ownership between validate and execute, or between two adapters.
-- **Locality over Ceremony:** Introduce seams only where they buy testability or phased migration. Wrong-layer domain surfaces fail locality even if deep internally.
-- **Wire vs Domain Boundary:** Domain types enforce invariants at construction; boundary adapters map wire primitives inbound and outbound. Keep application logic out of serialization shells.
-
-**Ride-along contract:** `$dev` loads this `SKILL.md` on every `implement` (surgical included) so the axioms are always active during Build. That default load is axioms-only — branch pick, Phase 0 pre-flight, and reference files engage when `design` is earned or a branch signal matches.
+**Axioms SoT:** [`reference/axioms.md`](reference/axioms.md) — ride-along load for `$dev` `implement`. This `SKILL.md` (branch pick, Phase 0, references) loads when `design` is earned or a branch signal matches.
 
 ## Pick branch
 
 Never ask the user to pick a template when signals are clear. Load one or more when signals combine.
 
-| Branch                | Job                                                                | Status |
-| --------------------- | ------------------------------------------------------------------ | ------ |
-| `philosophy`          | design axioms; evaluate cognitive load and module depth            | active |
-| `deep-modules`        | Module/interface/depth/seam/adapter/locality/deletion test         | active |
-| `refactor-types`      | Primitives/strings → domain types; logic on types; type hygiene    | active |
-| `refactor-boundaries` | Wire/API/adapter contract maps; keep domain out of boundary shells | active |
-| `performance`         | Measure → baseline → optimize; language-free stop rules            | active |
+| Branch                | Signals                                                                                                                                                 | Job                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `philosophy`          | tactical programming, cognitive load, tech debt, complex interface, obscure logic, information leakage, exception-handling bloat                        | design axioms; evaluate cognitive load and module depth            |
+| `deep-modules`        | deepen, shallow modules, seams, locality, dual ownership                                                                                                | Module/interface/depth/seam/adapter/locality/deletion test         |
+| `refactor-types`      | primitive obsession, stringly enums, logic-on-types                                                                                                     | Primitives/strings → domain types; logic on types; type hygiene    |
+| `refactor-boundaries` | wire/API maps, adapter contract shape, boundary serialize                                                                                               | Wire/API/adapter contract maps; keep domain out of boundary shells |
+| `performance`         | slow, hot path, allocate, profile, benchmark                                                                                                            | Measure → baseline → optimize; language-free stop rules            |
+| `design-patterns`     | pattern names, "which pattern", decouple sender/receiver, pluggable strategies, undo/redo, object-creation flexibility                                  | GoF pattern vocabulary; earn a pattern from forces; map to craft   |
+| `structure-survey`    | tree / directory / layout audit; peer conformity; snowflake; promote / relocate / fold / nest as ownership moves; whole-layer module-layout unification | survey mode → craft as needed                                      |
 
-| Signal                                                                                                                                                                             | Load                                               |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| tactical programming, cognitive load, tech debt accumulation, complex interface, obscure logic, information leakage, exception handling bloat                                      | `philosophy`                                       |
-| deepen, shallow modules, seams, locality, dual ownership                                                                                                                           | `deep-modules`                                     |
-| primitive obsession, stringly enums, logic-on-types                                                                                                                                | `refactor-types`                                   |
-| wire/API maps, adapter contract shape, boundary serialize                                                                                                                          | `refactor-boundaries`                              |
-| slow, hot path, allocate, profile, benchmark                                                                                                                                       | `performance`                                      |
-| tree / directory / layout audit; peer conformity; snowflake / same job different homes; promote / relocate / fold / nest as ownership moves; whole-layer module-layout unification | `structure-survey` (survey mode) → craft as needed |
-
-**Survey mode** is discovery only: execute `view_file` on [`reference/structure-survey.md`](reference/structure-survey.md), then multi-load craft branches from findings. It is not a fifth craft branch.
+**Survey mode** is discovery only: execute `view_file` on [`reference/structure-survey.md`](reference/structure-survey.md), then multi-load craft branches from findings. It is not a craft branch.
 
 | Ask                                                     | Route instead                                                                 |
 | ------------------------------------------------------- | ----------------------------------------------------------------------------- |
@@ -73,17 +59,7 @@ Bare “promote” / “unify” alone → one clarifying question, or stay on t
 
 ## Phase 0: Mandatory Context Pre-Flight (Blocking)
 
-Before authoring architectural designs, refactoring code, or restructuring boundaries, execute `view_file` on the matching reference files:
-
-1. **`deep-modules`:** You MUST view [`reference/deep-modules.md`](reference/deep-modules.md).
-2. **`refactor-types`:** You MUST view [`reference/refactor-types.md`](reference/refactor-types.md).
-3. **`refactor-boundaries`:** You MUST view [`reference/refactor-boundaries.md`](reference/refactor-boundaries.md).
-4. **`performance`:** You MUST view [`reference/performance.md`](reference/performance.md).
-5. **`structure-survey`:** You MUST view [`reference/structure-survey.md`](reference/structure-survey.md).
-6. **Detailed Terms & Definitions:** View [`reference/glossary.md`](reference/glossary.md).
-7. **`philosophy`:** You MUST view [`reference/philosophy.md`](reference/philosophy.md).
-
-Branch expansion and harvest protocol live in [`reference/growth.md`](reference/growth.md) + [`reference/learning-log.md`](reference/learning-log.md) (harvest only).
+Before authoring architectural designs, refactoring code, or restructuring boundaries: `view_file` the matched `reference/<branch>.md` (and [`reference/glossary.md`](reference/glossary.md) for terms). Branch expansion and harvest protocol live in [`reference/growth.md`](reference/growth.md) + [`reference/learning-log.md`](reference/learning-log.md) (harvest only).
 
 ## Handoff
 
@@ -105,12 +81,4 @@ Then:
 
 ## Completion criteria
 
-| Branch / mode         | Done when                                                                                                                                                  |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `structure-survey`    | Canonical shape stated; anomalies ranked with evidence; craft-branch handoff named; residual dual ownership called out — no code required                  |
-| `deep-modules`        | Deletion test / ownership / seams addressed; phases validated; residual dual ownership called out                                                          |
-| `refactor-types`      | Primitive obsession at target cleared or scoped; logic on types; consumers cleaned; boundaries mapped                                                      |
-| `refactor-boundaries` | Contract map for targeted edges; domain out of shells; serialize ownership clear; phases committed per Shared prep                                         |
-| `performance`         | Baseline or hot path identified before changes; stop rules applied; no language-specific recipe invented here                                              |
-| multi-load            | Each loaded branch’s done-when met or explicitly N/A with reason; one combined handoff                                                                     |
-| `philosophy`          | At least two alternative designs considered; interfaces simplified; error states structurally minimized; cognitive load and tech debt explicitly addressed |
+Done when each loaded reference's **Done when** is met or explicitly N/A with reason; one combined handoff for multi-load.

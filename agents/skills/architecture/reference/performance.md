@@ -34,3 +34,7 @@ User asks for speed/allocations, a clear hot path exists, or measured evidence s
 - Optimizing for peak FLOPS while bandwidth-, alloc-, or scheduler-bound.
 - Telemetry on the critical path you measure.
 - Gating identity refresh or capture visibility behind sync/work throttles (cue `deep-modules`: freshness ≠ sync).
+
+## Done when
+
+Baseline or hot path identified before changes; stop rules applied; no language-specific recipe invented here.

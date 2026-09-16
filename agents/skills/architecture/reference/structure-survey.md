@@ -44,6 +44,7 @@ Label each item Strong / Worth / Speculative. Call out residual dual ownership e
 | Ownership / depth / seams / locality / deletion-test failure           | `deep-modules`             |
 | Dual homes for one type / closed set / primitive obsession on the seam | also `refactor-types`      |
 | Serialize shells / adapter contract / domain in boundary layers        | also `refactor-boundaries` |
+| Named GoF / which-pattern / pattern ceremony without named forces      | also `design-patterns`     |
 | Measured hot path driving a layout move                                | also `performance`         |
 
 Survey first → multi-load craft branches as warranted → one combined handoff.

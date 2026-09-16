@@ -34,3 +34,7 @@ Trigger a failure or redesign when encountering these signals during code review
 ## Sequencing
 
 Apply these axioms during the design and planning phase (via `$dev plan`) before code is mutated. If tactical programming is unavoidable due to external constraints, the resulting tech debt must be captured via the `harvest` skill into the `.agents/debt-ledger.md`.
+
+## Done when
+
+At least two alternative designs considered; interfaces simplified; error states structurally minimized; cognitive load and tech debt explicitly addressed.
