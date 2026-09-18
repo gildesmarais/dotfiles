@@ -8,7 +8,9 @@ description: >
   discussion involving click budgets, cognitive load, or mental models. Also
   use for idea, feature, user feedback, or UAT discussions that change product
   scope or surface; and when slicing admitted scope into Given/When/Then user
-  stories with interaction budgets before $dev plan.
+  stories with interaction budgets before $dev plan. Also use when doctrine
+  feels stale, the north star predates what shipped, or founder overrides have
+  piled up and the written basis needs a re-baseline.
 ---
 
 # Product Owner
@@ -34,17 +36,19 @@ Map the ask to one branch. Default: **`gate`**. Never ask the user to pick when 
 | ------------- | ---------- | ------------------------------------------------------------------------------------------------- |
 | `gate`        | **active** | Admit/defer/reject scope; "should we build X?"; UI/API surface or UAT-driven expansion            |
 | `story-slice` | **active** | Break admitted (`Build Now` / founder override) scope into UX-mandated stories before `$dev plan` |
+| `rebaseline`  | **active** | Doctrine feels stale; north star predates the shipped product; many founder overrides             |
 | `prioritize`  | stub       | Backlog ranking across items                                                                      |
 | `experiment`  | stub       | Experiment / analytics design                                                                     |
 
 Stub rows are not authored. Do not invent branch content. If signals point only at a stub, stay on `gate` when admission applies, or stop and say the branch is not authored.
 
-| Signal                                              | Branch                       |
-| --------------------------------------------------- | ---------------------------- |
-| should we build, admit/defer, parity, UAT expansion | `gate`                       |
-| user stories, GWT, story-slice, UX budgets, AC      | `story-slice` (after `gate`) |
+| Signal                                                                              | Branch                       |
+| ----------------------------------------------------------------------------------- | ---------------------------- |
+| should we build, admit/defer, parity, UAT expansion                                 | `gate`                       |
+| user stories, GWT, story-slice, UX budgets, AC                                      | `story-slice` (after `gate`) |
+| doctrine feels stale, north star predates shipped product, many founder overrides   | `rebaseline`                 |
 
-Raw idea → research → stories → UX-ready handoff is one pipeline, two authored branches:
+Raw idea → research → stories → UX-ready handoff is one pipeline (`gate` → `story-slice`). `rebaseline` is a separate authored branch: refresh the basis, then `gate` again.
 
 ```mermaid
 flowchart LR
@@ -127,10 +131,16 @@ Engineering velocity degrades when architectural friction and technical debt com
 - **Check the Debt Ledger:** Before admitting new scope or prioritizing tranches, read `<project>/.agents/debt-ledger.md` (or `ROADMAP.md` health section).
 - **Admit when friction threatens velocity:** High-friction debt items that block or slow golden paths qualify for **Build Now** under the health capacity budget even without a new user-facing feature.
 
+**Anti-pattern:** Doctrine written before exploration ends is a fossil — re-derive from what shipped and was kept.
+
 ## Workflow (`gate`)
 
-Run in order for every in-scope proposal (gate or overlay):
+Run in order for every in-scope proposal (gate or overlay). Quiet overlay does not skip step 0.
 
+0. **Staleness check** — before Discover constraints. Read the repo-local product-owner wrapper for a line matching `Doctrine ledger: <path>`.
+   - **Absent:** do not invent a ledger or a path. Record Evidence note `ledger absent` and recommend the wrapper declare one. On a quiet overlay Build Now, that note is one line — do not emit the full block solely because the ledger is absent.
+   - **Present:** read that file's ledger (last re-baseline date, override count, tranche count if present). Thresholds are declared by the wrapper, not hardcoded here. If the wrapper states thresholds, use them. If the ledger exists but thresholds are missing, note the gap and do not invent numbers.
+   - **Tripped:** when any declared threshold is tripped, return **Recommendation: Research Further** with reason `re-baseline` and do not evaluate the feature.
 1. **Discover constraints** — read product docs (golden paths, budgets, models, personas) and check `<project>/.agents/debt-ledger.md` when evaluating capacity or debt tranches; list sources found and gaps. If personas are absent, recommend establishing `docs/personas.md` with candidate personas synthesized from local project history.
 2. **Doctrine Check** — answer all seven questions (below). Weak or uncited answers → Reject, Build Later, or Research Further.
 3. **Forced Challenge** — state the strongest honest case for “do not build this.” If it cannot be answered, Reject or Build Later.
@@ -171,6 +181,9 @@ Emit per the spam rule above (gate always; overlay only for Reject / Build Later
 **Forced Challenge**: One sentence — strongest “do not build” case, and why it fails or wins.
 **Evidence**: Bullet list of docs read (paths). Note gaps explicitly.
 **Reason**: One concise paragraph.
+**Doctrine delta**: `none` | `<anchor/registry/direction edit in this tranche>`
+
+A **Build Now** (or any admit) that the evaluation itself labels a founder override **and** sets Doctrine delta to `none` is **invalid output**. A founder override is allowed only when the same tranche edits doctrine so the decision is non-override next time.
 
 ### Sample — silent docs → Research Further
 
@@ -184,6 +197,7 @@ Emit per the spam rule above (gate always; overlay only for Reject / Build Later
 - CONTEXT.md — absent
 - Gaps: no cited path, no step budget, no preserved/prohibited models
 **Reason**: Repo product docs are silent. Prefer documenting the smallest missing artifact (golden-path budgets) over guessing a Build Now path.
+**Doctrine delta**: none
 ```
 
 ## Branch: story-slice
@@ -225,13 +239,20 @@ Budgets, SLAs, and conflict rules in step 4 are **cited from product docs** (sam
 **Test target / verification**:
 ```
 
+## Branch: rebaseline
+
+Use when doctrine feels stale: the north star predates the shipped product, or many founder overrides show the written basis no longer matches what was kept. Also when step 0 returns Research Further with reason `re-baseline`.
+
+Do not evaluate a feature on this branch. Procedure, output, and completion criteria (including the falsification clause): [`reference/rebaseline.md`](reference/rebaseline.md).
+
 ## Completion criteria
 
 | Mode            | Done when                                                                                                                               |
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| **Gate**        | Doctrine Check answered; Forced Challenge stated; full Decision Output emitted; Evidence lists paths or gaps                            |
-| **Overlay**     | Doctrine applied; full Decision Output only if Reject / Build Later / Research Further; quiet Build Now has no block                    |
+| **Gate**        | Step 0 ran; Doctrine Check answered; Forced Challenge stated; full Decision Output emitted including Doctrine delta; Evidence lists paths or gaps |
+| **Overlay**     | Step 0 ran (quiet overlay does not skip it); full Decision Output only if Reject / Build Later / Research Further; quiet Build Now has no block |
 | **story-slice** | Prerequisite gate/override cited; contraband stripped; each slice has a Story Card; Quality Gate Matrix filled; ready for `$dev` `plan` |
+| **rebaseline**  | [`reference/rebaseline.md`](reference/rebaseline.md) completion criteria met, including the falsification clause |
 
 ## Handoff
 
@@ -243,12 +264,15 @@ product-owner gate
                     Intent entrypoints (e.g. jira-ticket) may continue;
                     debt tranches from .agents/debt-ledger.md route to $dev
   Build Later     → stop impl; optional communication/status
-  Research Further → name smallest missing product artifact; do not invent strategy
+  Research Further → name smallest missing product artifact; do not invent strategy;
+                    reason `re-baseline` → branch `rebaseline` (do not evaluate the feature)
   Reject          → stop (unless user explicitly overrides — then $dev plan records override)
 product-owner story-slice
   ready cards     → $dev plan (not implement until plan ready)
   ungated/reject  → stop; do not invent stories
   Plan mode       → explicit /product-owner; product stance in dev/reference/plan-pipeline.md
+product-owner rebaseline
+  done            → gate can run again against the new basis
 grilling          → Decide only (stress-test interview); this skill keeps doctrine if topic is scope
 architecture / dev / *-dev / review.gil → never own "should we build X?"
 ```
@@ -256,4 +280,4 @@ architecture / dev / *-dev / review.gil → never own "should we build X?"
 - Stress-test dialogue (one question at a time) → `grilling`; still apply this skill’s doctrine if the topic is product scope, and keep evidence rules (cite paths or say `unknown` — do not invent).
 - After **Build Now**, if slicing is in scope, finish **`story-slice`** then **`$dev` `plan`**. If the ask is already one cited slice with no story work, continue into **`$dev` only** (classifies; loads `architecture` when design is earned; routes `{lang}-dev` / overlay). Never treat `architecture` as a parallel Build entry beside `$dev`. This skill does not teach how to build.
 - After **Build Later** or **Reject**, do not start implementation and do not write stories.
-- After **Research Further**, name the smallest missing artifact (e.g. “document golden-path budgets in ROADMAP”) rather than drafting speculative product strategy unless asked.
+- After **Research Further**, name the smallest missing artifact (e.g. “document golden-path budgets in ROADMAP”) rather than drafting speculative product strategy unless asked. Reason `re-baseline` is the exception: run **`rebaseline`** and do not evaluate the feature.
