@@ -56,17 +56,20 @@ Evidence rules (all branches):
 
 ```text
 product-owner gate
-  Build Now       → story-slice when the ask is stories / multi-slice /
-                    UX-mandated AC; else $dev only (classifies; loads
-                    architecture when design; routes {lang}-dev / overlay);
-                    Intent entrypoints (e.g. jira-ticket) may continue;
-                    debt tranches from .agents/debt-ledger.md route to $dev
+  Build Now       → fold still-open consents into this same reply
+                    (circuit breaker, commit on the default branch, land).
+                    Do not ask how to run the plan yet.
+                    story-slice when the ask is stories / multi-slice /
+                    UX-mandated AC; else $dev plan. After the plan file
+                    exists, $dev offers multi-agent or enqueue. Intent
+                    entrypoints (e.g. jira-ticket) may continue; debt
+                    tranches from .agents/debt-ledger.md route to $dev plan
   Build Later     → stop impl; no stories; optional communication/status
   Research Further → name smallest missing product artifact; do not invent strategy;
                     reason `re-baseline` → branch `rebaseline` (do not evaluate the feature)
   Reject          → stop; no stories (unless user explicitly overrides — then $dev plan records override)
 product-owner story-slice
-  ready cards     → $dev plan (not implement until plan ready)
+  ready cards     → $dev plan in the same turn (planning session writes no code)
   ungated/reject  → stop; do not invent stories
   Plan mode       → explicit /product-owner; product stance in dev/reference/plan-pipeline.md
 product-owner rebaseline

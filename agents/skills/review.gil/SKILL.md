@@ -56,7 +56,7 @@ Resolve scripts relative to this skill directory. `quality` skips this and runs 
 - Structural findings (shallow module, dual ownership, primitive obsession, boundary leak, unmeasured hot path — not just legacy debt) **name** the `architecture` branch (`deep-modules` / `refactor-types` / `refactor-boundaries` / `performance`). Naming ≠ running; remediation enters via `$dev`.
 - End-to-end PR review + publish stays here; posting an already-verified ledger → `pull-request` `comment`. Never reverse.
 - `findings` never writes to GitHub.
-- Land asked + readiness Yes/Conditional (owned residuals) → `pull-request` `open`. Never auto-open.
+- Orchestrated or Cursor multi-agent DAG pass: append findings to `.agents/run/<slug>.md` and return. No publish question on that path. Land was in the pipeline batch and readiness is Yes/Conditional → `pull-request` `open`. A top-level review still asks "Publish review on PR?" only as Pick branch says. Never auto-open when land was not requested.
 - Recurring failure classes, non-obvious security/perf traps, out-of-scope architectural friction → `harvest` (`distill` mantras; `debt` → `.agents/debt-ledger.md`).
 - Delivery Ledger fields: [`../CONTEXT.md`](../CONTEXT.md).
 

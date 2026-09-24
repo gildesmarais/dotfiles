@@ -54,13 +54,17 @@ Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 
 **Triage** (`triage`, branch `intake`): incident/ops evidence → **Triage Ledger** → `product-owner` `gate` and/or `$dev` `plan`. Playbooks under `reference/`. Never implements.
 
-**Prompt-compiler** (`prompt-compiler`, branch `compile`): raw intent → `.agents/compile/<slug>.yaml`, then stop. Never plans or executes.
+**Prompt-compiler** (`prompt-compiler`, branch `compile`): raw intent → `.agents/compile/<slug>.yaml`, then `$dev plan` in the same turn. Never plans or executes.
 
 **Intent DTO fields**: `intent_spec.version` · `slug` · `invariants` · `blast_radius.allowed_domains` · `trade_offs.breaking_changes` · `circuit_breaker.approved`. Not: tasks, files, commands, gates, retries, dependencies, statuses.
 
-**Orchestrator** (`orchestrator`, branch `run`): zero-trust execution of `.agents/plan/<slug>.md` phases via `$dev` `implement` workers; exact file bounds, exit-0 gates, one commit per phase, circuit break, one DAG-level Assure. Git commits are execution state; the plan stays immutable.
+**Orchestrator** (`orchestrator`, branch `run`): brain for a plan already enqueued at `.agents/plan/<slug>.md`. One `$dev implement` hand at a time on one worktree; the hand prompt is the plan path and phase id. Brain checks bounds, runs the gate, commits. Plan stays immutable.
 
-**Lifecycle**: ingest → grill owned intent gaps → `prompt-compiler compile` → `$dev plan` → `orchestrator run` → one DAG-level `review.gil findings`. Repeated failure: reset to last green phase commit and halt.
+**Pipeline batch**: one message before any pipeline file is written, asking only what the opening prompt left open — product admission when a feature needs it, intent gaps, circuit-breaker consent, commit on the default branch, land a PR. Answered once.
+
+**Delivery offer**: after `.agents/plan/<slug>.md` exists, one question — execute with multi-agent, or enqueue for the orchestrator? Skip it when the opening prompt already named the runner. Enqueue writes nothing further; the plan file is the queue.
+
+**Lifecycle**: `product-owner` gate when a feature is not already admitted → `prompt-compiler compile` → `$dev plan` → delivery offer → multi-agent (one agent per phase; `depends_on` waits; disjoint phases together) or a later `orchestrator run` → one `review.gil findings` pass in `.agents/run/<slug>.md` → `pull-request open` only when land was in the batch. Repeated failure: reset to the last green commit and halt.
 
 ## Product
 

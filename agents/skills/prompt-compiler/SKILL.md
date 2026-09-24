@@ -9,7 +9,7 @@ description: >-
 
 # Prompt Compiler
 
-Raw developer language in, one `intent_spec` DTO (`.agents/compile/<slug>.yaml`) out, then stop. Never plans or executes implementation work; no executable task graph. DTO fields: [`../CONTEXT.md`](../CONTEXT.md) (Intent DTO fields).
+Raw developer language in, one `intent_spec` DTO (`.agents/compile/<slug>.yaml`) out, then `$dev plan` in the same turn. Never executes implementation work; no executable task graph. DTO fields: [`../CONTEXT.md`](../CONTEXT.md) (Intent DTO fields).
 
 ## Pick branch
 
@@ -27,9 +27,9 @@ Single branch **`compile`**.
 
 1. **Product boundary:** non-trivial feature/UX scope needs an admitted product decision first; bug fixes, refactors, infra don't.
 2. **Read-only** except the one DTO file. Never inspect repo mechanics to speculate about files, commands, phases, or tests.
-3. **Grill only owned gaps** (invariants, `allowed_domains`, breaking-change posture): load `grilling` when available, else one targeted question at a time.
+3. **Owned gaps join the pipeline batch** ([`../CONTEXT.md`](../CONTEXT.md)): invariants, `allowed_domains`, breaking-change posture. One message, then write the DTO. Do not grill one question at a time on this path.
 4. **No execution schema:** task DAGs, dependencies, statuses, retries, commands, verification gates, worker prompts are forbidden.
-5. **Consent explicit:** always emit `circuit_breaker.approved: false`; never infer approval.
+5. **Consent:** `circuit_breaker.approved` records the batch. The opening prompt did not grant it → the batch asks once. Never invent approval.
 
 ## Branch reference
 
@@ -37,9 +37,9 @@ Single branch **`compile`**.
 
 ## Handoff
 
-`compile` → `$dev` **`plan`** with the DTO path (it does discovery and writes `.agents/plan/<slug>.md`) → `orchestrator run` → `$dev implement` per dispatched phase.
+`compile` → `$dev` **`plan`** with the DTO path. Do not stop for a second confirmation. The planning session owns discovery and delivery.
 
 ## Completion criteria
 
-- Grill active: halted until invariants, blast radius, and trade-off posture are explicit.
-- `compile`: valid `intent_spec` v2.0 persisted; no implementation fields or application mutations; halted after `$dev plan` handoff.
+- Owned gaps were in the batch or already answered. The DTO is not written while any of the three dimensions is unknown.
+- `compile`: valid `intent_spec` v2.0 persisted; no implementation fields or application mutations; `$dev plan` has the DTO path.

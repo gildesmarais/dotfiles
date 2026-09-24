@@ -6,11 +6,11 @@ Owns only three intent dimensions:
 2. **Blast radius** — `allowed_domains` (domains/paths), never guessed files.
 3. **Trade-off posture** — breaking changes forbidden / allowed / ask.
 
-`$dev plan` owns discovery, phases, `target_files`, read context, verification commands, commit messages. `orchestrator run` owns dispatch, retries, status, bounds, commits, rollback, DAG-level Assure.
+`$dev plan` owns discovery, phases, `depends_on`, and delivery (Cursor multi-agent or `orchestrator run`).
 
-## Grill gate
+## Batch
 
-One targeted question at a time, only on: contracts/behaviors/latency budgets that must stay true; domains/paths of permitted blast radius; breaking-change posture. Never ask for commands, filenames, ordering, test targets, retry counts, or status; never infer mechanics from intent language.
+Ask the open dimensions in one message: contracts that must stay true, allowed domains, breaking-change posture. Never ask for commands, filenames, ordering, test targets, or retry counts. Never infer mechanics from intent language.
 
 ## Output contract
 
@@ -32,9 +32,9 @@ intent_spec:
 ```
 
 - Forbidden: task IDs/DAGs, dependencies, `target_files`, `read_context`, commands, gates, commit messages, statuses, attempts, retry limits, prose outside the three dimensions.
-- Grill until valid, or halt without emitting.
-- `circuit_breaker.approved` is `false` at emission; approval is explicit user consent to the destructive rollback policy.
+- Unknown dimension → the batch asks; do not emit a guess.
+- `circuit_breaker.approved` is the batch answer. Unasked and ungranted → `false`.
 
 ## Halt and handoff
 
-Halt after emission; report the path and hand to `$dev plan`. Never dispatch workers, invoke `$dev implement`, start a loop, or mutate application code.
+Report the path and hand it to `$dev plan` in the same turn. Do not wait. Never implement application code here.

@@ -1,36 +1,36 @@
 ---
 name: orchestrator
 description: >-
-  Zero-trust sequential runner for .agents/plan/<slug>.md: spawns isolated $dev
-  implement workers, enforces file bounds and exit-0 gates, commits each green
-  phase, circuit breaks on repeated failure, runs one DAG-level review.gil
-  findings pass. Use to execute, run, or resume an approved plan.
+  Brain for .agents/plan/<slug>.md on one shared worktree: one $dev implement
+  hand at a time, file bounds, exit-0 gates, one commit per phase, circuit
+  break, one findings pass. Use to execute, run, or resume a plan when Cursor
+  multi-agent is not the runner.
 ---
 
 # Orchestrator
 
-Owns execution mechanics only — never intent specification, technical discovery, or application implementation.
+Brain only. It does not specify intent, discover files, or edit application code. It runs a plan the user enqueued. Multi-agent delivery stays in `$dev plan`.
 
 ## Pick branch
 
 Single branch **`run`**.
 
-| Signal                                          | Route                                  |
-| ----------------------------------------------- | -------------------------------------- |
-| execute / run / resume `.agents/plan/<slug>.md` | `run`                                  |
-| compile or refine intent                        | stop → `prompt-compiler` **`compile`** |
-| discover files, gates, or phases                | stop → `$dev` **`plan`**               |
-| implement one bounded change without a plan DAG | stop → `$dev` **`implement`**          |
-| "should we build X?"                            | stop → `product-owner`                 |
+| Signal                                                          | Route                                  |
+| --------------------------------------------------------------- | -------------------------------------- |
+| execute / run / resume `.agents/plan/<slug>.md` on one worktree | `run`                                  |
+| deliver a new plan with Cursor multi-agent                      | stop → `$dev` **`plan`**               |
+| compile or refine intent                                        | stop → `prompt-compiler` **`compile`** |
+| discover files, gates, or phases                                | stop → `$dev` **`plan`**               |
+| implement one bounded change without a plan                     | stop → `$dev` **`implement`**          |
+| "should we build X?"                                            | stop → `product-owner`                 |
 
 ## Shared prep
 
-1. Read repo `AGENTS.md` and the full plan.
-2. Require a clean starting worktree and explicit circuit-breaker consent.
-3. Phases run sequentially in document order; commits are progress state.
-4. Fresh `$dev implement` workers with `orchestrated: true`; workers never commit and skip per-phase Assure.
-5. Independently enforce exact path bounds and exit-0 gates after every attempt.
-6. Never push. Hard reset only under the approved circuit breaker, only to `last_green_commit`.
+1. Consent and admission already happened in the pipeline batch ([`../CONTEXT.md`](../CONTEXT.md)). Do not ask again.
+2. Read repo `AGENTS.md` and the next phase block only.
+3. One hand at a time on this worktree. `depends_on` chooses the next phase. Commits are progress.
+4. The hand prompt is the plan path and phase id. The brain checks bounds, runs the gate, and commits.
+5. Never push. Hard reset only under the approved circuit breaker, only to the last green commit.
 
 ## Branch reference
 
@@ -38,10 +38,10 @@ Single branch **`run`**.
 
 ## Handoff
 
-Per phase: plan block → fresh worker → bounds diff → independent gate → planned Conventional Commit. Full DAG: exactly one cumulative `review.gil findings` pass. Land requests continue to `pull-request open` only after readiness permits.
+Land was in the batch and findings readiness is Yes or Conditional → `pull-request open`. Otherwise stop.
 
 ## Completion criteria
 
-- Phase green: exact bounds pass, independent gate exit 0, phase commit authored.
-- Circuit break: reset to `last_green_commit`, halted.
-- Full DAG: all phases green; one cumulative `review.gil findings` audit completed.
+- Phase green: bounds match, gate exit 0, planned commit authored.
+- Circuit break: reset to the last green commit, halted.
+- Run green: all phases committed; one `review.gil findings` pass in `.agents/run/<slug>.md`.

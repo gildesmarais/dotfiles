@@ -62,6 +62,7 @@ Load only the matched branch; for the unblock chain, load each when its step run
 
 ## Handoff
 
+- Pipeline land (the batch included a PR, readiness Yes or Conditional) → **open**. Do not ask "want a PR?".
 - Read-only or end-to-end PR review (retrieve → review → reconcile → publish) → `review.gil`. Posting a supplied, verified ledger stays in **comment**; **reply** never adds findings or code.
 - Dependabot PR assessment → `dependabot` **triage** (may call back into **fix-ci**/**conflicts**).
 - Multi-repo attention list → `pr-sweep` (read-only).

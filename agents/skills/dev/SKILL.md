@@ -17,13 +17,13 @@ Single Build entry. Load packs/overlays by name; never paste their bodies. Craft
 
 Never ask the user to pick when signals are clear.
 
-| Signal                                             | Branch                                                                                                                               |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| implementation plan, plan mode, phased plan        | `plan` — Phase 0 gate: load [`reference/plan-pipeline.md`](reference/plan-pipeline.md); **no code** until the user approves the plan |
-| implement, fix, feature, change the code (default) | `implement`                                                                                                                          |
-| "should we build X?"                               | stop → `product-owner`                                                                                                               |
-| assure / findings / tests review / merge prep      | stop → `review.gil`                                                                                                                  |
-| open / slice / comment a PR                        | stop → `pull-request`                                                                                                                |
+| Signal                                             | Branch                                                                                                        |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| implementation plan, plan mode, phased plan        | `plan` — load [`reference/plan-pipeline.md`](reference/plan-pipeline.md); the planning session writes no code |
+| implement, fix, feature, change the code (default) | `implement`                                                                                                   |
+| "should we build X?"                               | stop → `product-owner`                                                                                        |
+| assure / findings / tests review / merge prep      | stop → `review.gil`                                                                                           |
+| open / slice / comment a PR                        | stop → `pull-request`                                                                                         |
 
 ## Shared prep
 
@@ -62,7 +62,7 @@ Never ask the user to pick when signals are clear.
 10. **Validation:** repo-native entrypoints, narrow → broad, per phase. Never claim green without an observed exit 0 for each cited command.
 11. **Phase commits:** detect the default branch early (`AGENTS.md` / remote HEAD).
     - Off default: after each plan phase or surgical milestone, validate → ≥1 Conventional Commit with a rationale body before the next. Format: [`CONTEXT.md`](../CONTEXT.md) (absent → conventionalcommits.org v1.0.0).
-    - On default: ask early whether to commit or defer; never silently commit on main/master.
+    - On default: commit only when the pipeline batch already said so. The batch has not run → ask once there, not mid-phase. Never silently commit on main/master.
     - `release` `notes` consumes history later — don't defer authoring. Overlays never restate this.
 
 ## Branch reference
@@ -90,5 +90,5 @@ Path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; never rever
 
 | Branch      | Done when                                                                                                                                                                                                                                             |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `plan`      | Ready checklist satisfied; no code before plan approval                                                                                                                                                                                               |
+| `plan`      | Ready checklist satisfied; planning session wrote no code; delivery offer shown, or skipped because the runner was already named                                                                                                                      |
 | `implement` | Classification stated with axioms loaded (+ `architecture` decisions documented if design); compat decided or asked; pack/overlay handoff fields; exit-0 honesty; commits made or deferred; Assure done or trivial skip stated before delivery report |
