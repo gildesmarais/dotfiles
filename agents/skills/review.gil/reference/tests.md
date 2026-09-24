@@ -52,6 +52,11 @@ After scope prep in `SKILL.md`, continue here.
 - Mirrored suite sections that look like “duplication debt”: classify before acting — **spec-only twin** (lib already single-owner → shared examples / table-drive / thin extra layers) vs **dual-ownership twin** (same algorithm in two production homes → extract a shared kernel, then collapse specs). Collapsing specs alone leaves drift risk.
 - Chasing branch-% or near-floor line misses with micro-units when coverage floors already pass and misses are defensive/coercion arms — prefer fixture-driven product edges and flight-level cleanup.
 - The same scenario asserted at three flight levels (unit + session + facade) without a discriminating difference — keep one authoritative layer plus one higher smoke.
+- **Screen tests that stub product hooks** (`useX` returns the arranged state, often via `as any`) — keep the real hook tree; fake HTTP (or injectable leaves) only.
+- **Dual transport fakes for one URL** (interceptor plus `fetch` spy serving the same body) — register the absolute URL once when raw `fetch` and an SDK share the path.
+- **Hook suites that re-walk a screen journey** — keep hooks for fake timers (debounce/retry); navigate/token/catalog outcomes belong on one integration render plus thin browser smoke.
+- **Browser-only assertions in a DOM shim** (`dialog` open, `inert`, autofocus, geometry) — move to the browser runner; keep status, headers, and copy in jsdom.
+- Naming the middle Vitest tier **“contract”** when OpenAPI already owns that word — prefer unit / integration / e2e (or Node / jsdom / browser).
 - Mounting surfaces the project bans from golden-path tests (read `AGENTS.md`; do not invent names here).
 - Helper/mapper production changes without colocated tests when the project enforces that pairing.
 

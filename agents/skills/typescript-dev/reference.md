@@ -35,3 +35,5 @@ Grow this file only for TypeScript-specific lessons that cannot be stated langua
 18. **Dual TypeScript graphs.** Document check CLI vs `require('typescript')` tooling resolution when the repo pins both — upgrading one must not silently break the other.
 19. **Lint the seam you keep forgetting.** Prefer error-level ACL for transport/SDK/UI boundaries when the project has them; warn-first for stylistic noise. Cite `AGENTS.md` for live rule names — do not invent rules here.
 20. **Generated trees are read-only** in the change; do not eslint-fix or hand-edit them.
+21. **Split Vitest by environment.** Pure modules: `environment: 'node'`, no MSW/jsdom setup. Screen and timer-hook files: jsdom + one interceptor (`onUnhandledRequest: 'error'`). Do not replace host `localStorage` with a hand-rolled Map in global setup.
+22. **Drive DOM as the framework listens.** Prefer `@testing-library/user-event` (`type`/`keyboard`) over `fireEvent` for `onInput` and listbox keys; submit the real form instead of casting `{ preventDefault }` bags.

@@ -39,6 +39,7 @@ Each item logged in `.agents/debt-ledger.md` follows this standard shape:
 
 ## Governance Ingress
 
+0. **Re-check inherited findings against HEAD before logging them.** A finding carried in from a prior review, plan, or session is a claim about a past tree, not the current one — re-run the gate or re-read the file first. Logging an already-resolved finding manufactures fake debt and buys a cleanup tranche that has nothing to clean.
 1. **Emit:** Append new items to `.agents/debt-ledger.md` with status `open`.
 2. **Prioritize:** `product-owner` consults this file when reviewing roadmap capacity.
 3. **Admit:** Under the **Health Capacity Budget** (default: ~20% capacity or 1 debt tranche per 3–4 feature tranches), `product-owner` admits high-friction items as `Build Now`.
