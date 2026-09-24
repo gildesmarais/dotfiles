@@ -42,11 +42,11 @@ Map the ask to one branch. Default: **`gate`**. Never ask the user to pick when 
 
 Stub rows are not authored. Do not invent branch content. If signals point only at a stub, stay on `gate` when admission applies, or stop and say the branch is not authored.
 
-| Signal                                                                              | Branch                       |
-| ----------------------------------------------------------------------------------- | ---------------------------- |
-| should we build, admit/defer, parity, UAT expansion                                 | `gate`                       |
-| user stories, GWT, story-slice, UX budgets, AC                                      | `story-slice` (after `gate`) |
-| doctrine feels stale, north star predates shipped product, many founder overrides   | `rebaseline`                 |
+| Signal                                                                            | Branch                       |
+| --------------------------------------------------------------------------------- | ---------------------------- |
+| should we build, admit/defer, parity, UAT expansion                               | `gate`                       |
+| user stories, GWT, story-slice, UX budgets, AC                                    | `story-slice` (after `gate`) |
+| doctrine feels stale, north star predates shipped product, many founder overrides | `rebaseline`                 |
 
 Raw idea → research → stories → UX-ready handoff is one pipeline (`gate` → `story-slice`). `rebaseline` is a separate authored branch: refresh the basis, then `gate` again.
 
@@ -247,12 +247,12 @@ Do not evaluate a feature on this branch. Procedure, output, and completion crit
 
 ## Completion criteria
 
-| Mode            | Done when                                                                                                                               |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Mode            | Done when                                                                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Gate**        | Step 0 ran; Doctrine Check answered; Forced Challenge stated; full Decision Output emitted including Doctrine delta; Evidence lists paths or gaps |
-| **Overlay**     | Step 0 ran (quiet overlay does not skip it); full Decision Output only if Reject / Build Later / Research Further; quiet Build Now has no block |
-| **story-slice** | Prerequisite gate/override cited; contraband stripped; each slice has a Story Card; Quality Gate Matrix filled; ready for `$dev` `plan` |
-| **rebaseline**  | [`reference/rebaseline.md`](reference/rebaseline.md) completion criteria met, including the falsification clause |
+| **Overlay**     | Step 0 ran (quiet overlay does not skip it); full Decision Output only if Reject / Build Later / Research Further; quiet Build Now has no block   |
+| **story-slice** | Prerequisite gate/override cited; contraband stripped; each slice has a Story Card; Quality Gate Matrix filled; ready for `$dev` `plan`           |
+| **rebaseline**  | [`reference/rebaseline.md`](reference/rebaseline.md) completion criteria met, including the falsification clause                                  |
 
 ## Handoff
 

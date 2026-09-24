@@ -16,12 +16,12 @@ Not this branch: “should we build X?” against a basis you still trust → **
 
 From the repo-local product-owner wrapper and the product docs it points at:
 
-| Input | Where |
-| ----- | ----- |
-| Doctrine ledger path | Wrapper line `Doctrine ledger: <path>`. If that line is absent, record `ledger absent`, recommend the wrapper declare one, and do not fabricate a path. |
-| Thresholds | Whatever the wrapper states. If the ledger exists but the wrapper states no thresholds, note the gap. Do not invent numbers. |
-| Have / shipped record | The status log, roadmap, or equivalent the repo already uses. |
-| Direction, anchors, reject registry | The files the wrapper or existing product docs already name. If a role has no file, name the gap. Do not create a new doc scheme. |
+| Input                               | Where                                                                                                                                                   |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Doctrine ledger path                | Wrapper line `Doctrine ledger: <path>`. If that line is absent, record `ledger absent`, recommend the wrapper declare one, and do not fabricate a path. |
+| Thresholds                          | Whatever the wrapper states. If the ledger exists but the wrapper states no thresholds, note the gap. Do not invent numbers.                            |
+| Have / shipped record               | The status log, roadmap, or equivalent the repo already uses.                                                                                           |
+| Direction, anchors, reject registry | The files the wrapper or existing product docs already name. If a role has no file, name the gap. Do not create a new doc scheme.                       |
 
 ## Procedure
 
