@@ -10,7 +10,7 @@ description: >-
 
 # Triage
 
-Incident/ops signals → evidence → Triage Ledger → exactly one next skill. Does not implement code, open PRs, or answer "should we build X?".
+Incident/ops signals → evidence → Triage Ledger → exactly one next skill. Does not implement, open PRs, or own product admission ([`../CONTEXT.md`](../CONTEXT.md)).
 
 ## Pick branch
 
@@ -23,8 +23,8 @@ Skip: approved plan / explicit go → `$dev` `implement`; Jira key/URL → `jira
 ## Shared prep
 
 1. Prefer repo law (`AGENTS.md` / `CONTEXT.md`).
-2. **Observability cue:** APM / error / log links or IDs → matching MCP when available; missing → say so, continue with ask text + codebase.
-3. Reproduce locally when cheap (health, control URL, failing URL). Label claims **Strong** / **Worth** / **Speculative**.
+2. Observability cue: [`../CONTEXT.md`](../CONTEXT.md); missing MCP → say so, continue with ask + codebase.
+3. Reproduce locally when cheap. Label claims **Strong** / **Worth** / **Speculative**.
 4. Never implement, open PRs, raise timeouts, or invent golden paths / click budgets.
 5. Max **2** clarifying questions, only if the route is blocked; else playbook/table defaults. Never re-grill locks an active playbook states.
 
@@ -48,7 +48,7 @@ triage intake
 
 **Continue policy:** user already said go / Shot 2 / "plan then implement" → after Build Now continue into `$dev` `plan` (`implement` only when explicitly approved). Shot 1 alone → stop after ledger + next skill loaded (or after PO + plan when class `both` and gate is Build Now).
 
-Non-trivial scope gets `product-owner` `gate` before `$dev`; `$dev` never answers "should we build X?". Triage never owns Assure/Ship. Hand off only — never paste `product-owner` doctrine or `$dev` plan-pipeline bodies.
+Lifecycle / product-before-Build: [`../CONTEXT.md`](../CONTEXT.md). Triage never owns Assure/Ship. Hand off only — never paste doctrine or plan-pipeline bodies.
 
 ## Completion criteria
 

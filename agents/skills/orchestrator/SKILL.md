@@ -15,14 +15,15 @@ Brain only. It does not specify intent, discover files, or edit application code
 
 Single branch **`run`**.
 
-| Signal                                                          | Route                                  |
-| --------------------------------------------------------------- | -------------------------------------- |
-| execute / run / resume `.agents/plan/<slug>.md` on one worktree | `run`                                  |
-| deliver a new plan with Cursor multi-agent                      | stop → `$dev` **`plan`**               |
-| compile or refine intent                                        | stop → `prompt-compiler` **`compile`** |
-| discover files, gates, or phases                                | stop → `$dev` **`plan`**               |
-| implement one bounded change without a plan                     | stop → `$dev` **`implement`**          |
-| "should we build X?"                                            | stop → `product-owner`                 |
+| Signal                                                          | Route                                   |
+| --------------------------------------------------------------- | --------------------------------------- |
+| execute / run / resume `.agents/plan/<slug>.md` on one worktree | `run`                                   |
+| multi-agent delivery when plan already exists                   | delivery offer — do not re-enter `plan` |
+| deliver a **new** plan with Cursor multi-agent                  | stop → `$dev` **`plan`**                |
+| compile or refine intent                                        | stop → `prompt-compiler` **`compile`**  |
+| discover files, gates, or phases (no plan yet)                  | stop → `$dev` **`plan`**                |
+| implement one bounded change without a plan                     | stop → `$dev` **`implement`**           |
+| "should we build X?"                                            | stop → `product-owner`                  |
 
 ## Shared prep
 

@@ -9,7 +9,7 @@ description: >-
 
 # Prompt Compiler
 
-Raw developer language in, one `intent_spec` DTO (`.agents/compile/<slug>.yaml`) out, then `$dev plan` in the same turn. Never executes implementation work; no executable task graph. DTO fields: [`../CONTEXT.md`](../CONTEXT.md) (Intent DTO fields).
+When asked to compile: raw language → one `intent_spec` DTO (`.agents/compile/<slug>.yaml`) → `$dev plan` same turn. Not on the default Build path (gate → `$dev plan`). Never executes. DTO fields: [`../CONTEXT.md`](../CONTEXT.md).
 
 ## Pick branch
 

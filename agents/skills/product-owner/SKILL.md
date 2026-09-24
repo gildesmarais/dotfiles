@@ -50,7 +50,6 @@ Evidence rules (all branches):
 - `gate`: [`reference/gate.md`](reference/gate.md) — staleness step 0, doctrine, Doctrine Check, Decision Output.
 - `story-slice`: [`reference/story-slice.md`](reference/story-slice.md) — Story Card, Quality Gate Matrix.
 - `rebaseline`: [`reference/rebaseline.md`](reference/rebaseline.md) — never evaluates a feature.
-- Promote / refine a repo-local wrapper: [`skill/authoring/product-owner-promote.md`](../../../skill/authoring/product-owner-promote.md).
 
 ## Handoff
 

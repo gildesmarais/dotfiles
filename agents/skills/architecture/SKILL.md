@@ -35,7 +35,7 @@ Never ask the user to pick when signals are clear; multi-load when signals combi
 | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | "review code", `/review.gil`, PR review, findings       | `review.gil` — co-load only when tree / layout / snowflake is also asked; then survey first → craft handoff, `findings` schema only if a findings report is also wanted |
 | Surgical language work only                             | `$dev` (routes `{lang}-dev` / overlay)                                                                                                                                  |
-| "should we build X?"                                    | `product-owner`                                                                                                                                                         |
+| "should we build X?"                                    | `product-owner` ([`../CONTEXT.md`](../CONTEXT.md))                                                                                                                      |
 | "promote" (release/product) / "unify" (UX copy, tokens) | `release` / product / design skills                                                                                                                                     |
 | Surgical deepen of one named module in hand             | `deep-modules` (+ siblings) — skip survey                                                                                                                               |
 
@@ -55,7 +55,7 @@ Bare "promote" / "unify" → one clarifying question, or stay on the skill in pl
 
 ## Handoff
 
-Return one ledger (required before coding continues via `$dev`) in **Delivery Ledger** shape ([`../CONTEXT.md`](../CONTEXT.md)) plus: branches loaded; craft decisions (structural / type / boundary / perf) implement must honor; residuals incl. dual ownership; commits made or deferred.
+Return one ledger (required before coding continues via `$dev`) in **Delivery Ledger** shape ([`../CONTEXT.md`](../CONTEXT.md)) plus craft deltas: branches loaded; craft decisions (structural / type / boundary / perf) implement must honor; residuals incl. dual ownership; commits made or deferred.
 
 - Craft touched code → re-route through `$dev` → `{lang}-dev` / overlay for validation before Assure / Ship.
 - Then `review.gil` / `pull-request` — never reverse; never skip `$dev` validation when code changed.

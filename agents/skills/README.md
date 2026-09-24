@@ -52,20 +52,17 @@ Build path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`. `$dev
 
 One-way rules:
 
-1. **Product before non-trivial scope** — feature / `jira-ticket` asks → `product-owner` `gate`. Build Now folds still-open consents into that same reply, then `$dev plan` in the same turn. The delivery offer comes after the plan, not here. Multi-slice / UX-mandated AC → `story-slice` → `$dev plan`. Skip the gate for a bugfix, refactor, or infra change. Incident/observability without Jira or an Intent DTO → `triage` first.
+1. **Product before non-trivial scope** — feature / `jira-ticket` → `product-owner` `gate` → `$dev plan` (same turn). Multi-slice / UX-mandated AC → `story-slice` → `$dev plan`. Skip gate for bug fix / refactor / infra. Incident without Jira → `triage` first. Lifecycle SoT: [`CONTEXT.md`](CONTEXT.md).
 2. **Craft ≠ product** — `architecture` / `dev` / `*-dev` / `review.gil` never answer "should we build X?".
-3. **Build entry is `$dev`** — classify / route / phase commits live there; [`architecture/reference/axioms.md`](architecture/reference/axioms.md) rides along on every `implement`; `architecture` branches load when `design` is earned. Multi-load `{lang}-dev` from touched-file evidence.
-4. **Plans → `$dev` `plan`** ([`dev/reference/plan-pipeline.md`](dev/reference/plan-pipeline.md)), including Cursor plan mode. Files: `.agents/compile/<slug>.yaml` → `.agents/plan/<slug>.md` (`depends_on` is the only wait edge) → `.agents/run/<slug>.md`. One pipeline batch ([`CONTEXT.md`](CONTEXT.md)) before those files. After the plan exists, one delivery offer: multi-agent now, or enqueue for `orchestrator run`. The plan file is the queue. Skip the offer when the opening prompt already named the runner.
-5. **Phase CC → merge → notes** — phases commit via `$dev` (Build) / `architecture` (Solution) Shared prep; `release` `notes` consumes merged history; `pull-request` `open` applies the format only to a still-dirty tree. Format: [`CONTEXT.md`](CONTEXT.md) § Phase commit.
-6. **Assure → Ship** — `findings` never posts; `publish` lives in `review.gil`; verified-ledger posting lives in `pull-request` `comment` — never reverse. Every Build delivery emits the Delivery Ledger and runs `review.gil` `findings` (procedure: `dev/SKILL.md` Handoff). Land ask + readiness Yes/Conditional → `pull-request` `open`.
-7. **Explain → docs** — `communication` → `docs` `editor` for README/runbook artifacts; never reverse.
-8. **Overlays via `$dev`** — `ruby-on-rails-dev` with `ruby-dev`; `swiftui-dev` with `swift-dev`; depth packs stay on pack Compose routes.
-9. **Decide** — `grilling` stress-tests; scope doctrine stays with `product-owner`.
-10. **API truth** — Dash and/or Context7 soft deps; ladder and warn-once live in `$dev` Shared prep.
-11. **Observability cue** — matching MCP when APM/error/log links appear; no vendor SoT.
-12. **Sweep never fixes** — `pr-sweep` rows route to `pull-request` / `dependabot` / `review.gil`.
-13. **Unblock chain** — `pull-request`: conflicts → resolve → fix-ci, live state each pass; never approve/merge.
-14. **Harvest loop** — `review.gil` / `pull-request` → `harvest` (`distill` → project rules or store references; `debt` → `<project>/.agents/debt-ledger.md` → `product-owner` Health Capacity Budget → `orchestrator` / `$dev`).
+3. **Build entry is `$dev`** — classify / route live there; axioms ride along on every `implement`; `{lang}-dev` from touched-file evidence.
+4. **Plans → `$dev` `plan`** — carrier format and delivery offer: [`dev/reference/plan-pipeline.md`](dev/reference/plan-pipeline.md). Pipeline batch / Lifecycle: [`CONTEXT.md`](CONTEXT.md).
+5. **Assure → Ship** — `findings` never posts; `publish` in `review.gil`; verified ledger → `pull-request` `comment`. Delivery Ledger + land: [`CONTEXT.md`](CONTEXT.md); Assure procedure: `dev/SKILL.md` Handoff.
+6. **Explain → docs** — `communication` → `docs` `editor`; never reverse.
+7. **Overlays via `$dev`** — `ruby-on-rails-dev` with `ruby-dev`; `swiftui-dev` with `swift-dev`.
+8. **Decide** — `grilling` stress-tests; scope doctrine with `product-owner`.
+9. **Sweep never fixes** — `pr-sweep` rows → `pull-request` / `dependabot` / `review.gil`.
+10. **Unblock chain** — `pull-request`: conflicts → resolve → fix-ci; never approve/merge.
+11. **Harvest loop** — `review.gil` / `pull-request` → `harvest` → rules or `.agents/debt-ledger.md` → `product-owner` Health Capacity Budget.
 
 ## Authoring laws
 
@@ -76,7 +73,7 @@ One-way rules:
 - **Zero backward compat** — delete superseded aliases, old execution names, and dual shims on cutover.
 - **Tokens are the currency** — single ownership, bounded Markdown DTOs for handoffs, no intermediate prompt layers.
 
-Router shape: `## Pick branch` → `## Shared prep` → `## Branch reference` → `## Handoff` → `## Completion criteria`; relative `reference/*.md` links; unnumbered `##` headers. Spec: [agentskills.io](https://agentskills.io/).
+Router shape: `## Pick branch` → `## Shared prep` (omit when empty) → `## Branch reference` → `## Handoff` → `## Completion criteria`; relative `reference/*.md` links; unnumbered `##` headers. Spec: [agentskills.io](https://agentskills.io/). Repo-only authoring notes (e.g. product-owner promote): [`skill/authoring/`](../../skill/authoring/) — never cite from installed skill routers.
 
 ## Operate the store
 

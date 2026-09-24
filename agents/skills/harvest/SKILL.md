@@ -21,7 +21,7 @@ Default **`distill`**.
 | `distill` | learn, distill, checklist update, anti-pattern, user correction, failure lesson          |
 | `debt`    | debt, architectural friction, tech debt, cleanup candidate, debt ledger, refactor sprint |
 
-Skip: zero corrections, no new failure class, no debt; trivial typo/rename/bump; "should we build X?" → `product-owner`; raw incident writeups/transcript dumps are rejected.
+Skip: zero corrections, no new failure class, no debt; trivial typo/rename/bump; product admission asks → `product-owner` ([`../CONTEXT.md`](../CONTEXT.md)); raw incident writeups/transcript dumps are rejected.
 
 ## Shared prep
 

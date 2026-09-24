@@ -21,8 +21,8 @@ description: >-
 - Normalize the key immediately; use it consistently in branch name, status, handoff.
 - Atlassian MCP is required — never rely on copied ticket text when Jira is accessible; never ask the user to restate fetchable details. Fetch summary, description, status, type, priority, labels, assignee, parent/epic, links, comments, attachments; read linked Confluence via MCP (not title snippets). Mark missing-AC assumptions.
 - Verify the correct repository before planning or editing (`AGENTS.md` is authoritative).
-- **Observability cue:** issue links APM/errors/logs → matching observability MCP (discover its tools). Datadog: incident → `get_datadog_incident`; notebook → `get_datadog_notebook`; trace → `get_datadog_trace`; error-tracking UUID → error-tracking tools or `search_datadog_spans` / logs with `@issue.id:<uuid>`. Fold into plan and test strategy.
-- **Product gate:** non-trivial user-facing scope → `product-owner` `gate`; continue on Build Now only (stop on Build Later / Research Further / Reject). Multi-slice / UX-mandated AC → `product-owner` `story-slice` → `$dev` `plan`. Skip for pure bugfix/refactor/infra.
+- Observability cue: [`../CONTEXT.md`](../CONTEXT.md); no vendor recipes. Fold evidence into plan and test strategy.
+- **Product gate:** non-trivial user-facing scope → `product-owner` `gate`; continue on Build Now only (stop on Build Later / Research Further / Reject). Multi-slice / UX-mandated AC → `product-owner` `story-slice` → `$dev` `plan`. Skip for pure bug fix/refactor/infra.
 - Everything else (security cue, Assure, phase commits, land) follows `$dev` Shared prep + Handoff.
 
 ## Branch reference
@@ -30,7 +30,7 @@ description: >-
 ### implement
 
 1. Fetch ticket + observability evidence; read code; gate if applicable.
-2. **Planning Checkpoint:** emit `$dev` `plan`, then `Ticket facts` · `Files read` · `Skills required` (gate skip/rationale, runtime, security review if needed) · `Branch name` · `Implementation plan` · `Assumptions`. **Wait for explicit agreement.**
+2. Emit `$dev` `plan` (include ticket facts, files read, skills required, branch name, assumptions in the plan or session notes). Delivery offer is the consent gate — [`../CONTEXT.md`](../CONTEXT.md).
 3. Fresh branch from the default branch named `TICKET-ID-short-kebab-summary` (exact key prefix, lowercase ASCII slug) → `$dev` `implement`. Interrupt only on real ambiguity, missing access, or risky guesses.
 4. Post-delivery Assure per `$dev` Handoff; PR ask → `pull-request` `open` → Post-PR sync.
 
@@ -69,6 +69,6 @@ Run in the same session as `pull-request` `open` (don't require the user to rest
 
 ## Completion criteria
 
-- implement: Planning Checkpoint agreed; delivered per `$dev`; Jira synced if a PR opened.
+- implement: `$dev` plan emitted; delivery offer handled; delivered per `$dev`; Jira synced if a PR opened.
 - create: issue created with verified parent/epic, correct links and status.
 - Post-PR sync: transitioned (or transitions listed) and reported.

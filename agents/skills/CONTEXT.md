@@ -54,7 +54,7 @@ Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 
 **Triage** (`triage`, branch `intake`): incident/ops evidence → **Triage Ledger** → `product-owner` `gate` and/or `$dev` `plan`. Playbooks under `reference/`. Never implements.
 
-**Prompt-compiler** (`prompt-compiler`, branch `compile`): raw intent → `.agents/compile/<slug>.yaml`, then `$dev plan` in the same turn. Never plans or executes.
+**Prompt-compiler** (`prompt-compiler`, branch `compile`): when asked to compile — raw intent → `.agents/compile/<slug>.yaml`, then `$dev plan` in the same turn. Not on the default Build path. Never plans or executes.
 
 **Intent DTO fields**: `intent_spec.version` · `slug` · `invariants` · `blast_radius.allowed_domains` · `trade_offs.breaking_changes` · `circuit_breaker.approved`. Not: tasks, files, commands, gates, retries, dependencies, statuses.
 
@@ -64,7 +64,7 @@ Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 
 **Delivery offer**: after `.agents/plan/<slug>.md` exists, one question — execute with multi-agent, or enqueue for the orchestrator? Skip it when the opening prompt already named the runner. Enqueue writes nothing further; the plan file is the queue.
 
-**Lifecycle**: `product-owner` gate when a feature is not already admitted → `prompt-compiler compile` → `$dev plan` → delivery offer → multi-agent (one agent per phase; `depends_on` waits; disjoint phases together) or a later `orchestrator run` → one `review.gil findings` pass in `.agents/run/<slug>.md` → `pull-request open` only when land was in the batch. Repeated failure: reset to the last green commit and halt.
+**Lifecycle**: `product-owner` gate when a feature is not already admitted → `$dev plan` (reads `.agents/compile/<slug>.yaml` when present; else the pipeline batch is the constraint source) → delivery offer → multi-agent (one agent per phase; `depends_on` waits; disjoint phases together) or a later `orchestrator run` → one `review.gil findings` pass in `.agents/run/<slug>.md` → `pull-request open` only when land was in the batch. `prompt-compiler` only when the user asks to compile. Repeated failure: reset to the last green commit and halt.
 
 ## Product
 
@@ -88,9 +88,9 @@ Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 
 **API truth**: ladder repo docs → Dash → Context7 → pack secondary → unknown; warn once on first material fallthrough per session.
 
-**Security cue**: authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, privileged ops → `review.gil` `security`.
+**Security cue**: authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, privileged ops → `review.gil` findings with the `security` lens (lens ≠ execution).
 
-**Observability cue**: APM / traces / error / log links → matching observability MCP when available.
+**Observability cue**: APM / traces / error / log links → matching observability MCP when available; no vendor recipes in routers.
 
 **Architecture** (`architecture`): language-free craft. Branches `philosophy` | `deep-modules` | `refactor-types` | `refactor-boundaries` | `performance` | `design-patterns`; **Structure-survey** is a discovery mode, not a craft branch. **Deepen** signals `deep-modules`. Refactor branches are only `refactor-<concern>`; expansion law: `architecture/reference/growth.md`.
 
