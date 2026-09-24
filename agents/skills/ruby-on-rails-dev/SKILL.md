@@ -15,8 +15,7 @@ description: >-
 - Overlay loaded via `$dev` with `$ruby-dev`; keep Ruby-general workflow in `$ruby-dev` and shared classify / one-surface / design / API truth / compat / git safety in `$dev`.
 - Apply to controllers, routes, models, services, policies, serializers, workers/mailers/jobs, migrations, framework config loaders, cache-key composition, and encryption cutovers.
 - Follow `AGENTS.md` routing and precedence.
-- Require `$review.gil` **`security`** when changes match the `AGENTS.md` `Security Trigger Matrix`.
-- Incident/fix postures in this overlay; one-surface and wrong-owner classify stay in `$dev` / `$ruby-dev`.
+- Require `$review.gil` **`security`** when authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, or privileged ops are in scope.
 - Design or private-seam cases → `$dev` → `$ruby-dev` → `architecture`. Do not invent adapter or regex craft here.
 
 ## Implementation Deltas
@@ -24,12 +23,9 @@ description: >-
 - Keep controllers thin: validate params, authorize, delegate, render.
 - Keep business logic in `app/services` with explicit entrypoints.
 - Keep strong params explicit and serializer output contract-driven.
-- Default new endpoints to `/api/v3` unless compatibility constraints require otherwise.
-- Preserve clinic/account scoping end-to-end and block cross-tenant leakage in queries, policies, responses, and logs.
 - Keep authorization deny-by-default; keep workers idempotent and retry-safe.
 - Avoid interpolated SQL; use parameter binding/Arel.
-- Use auditable `after_party` tasks for backfills or behavior-affecting data migrations.
-- If structured logging changes, verify redaction behavior and `LOG_LEVEL` semantics.
+- If structured logging changes, verify redaction behavior.
 - Name invisible lifecycle contracts (config variants, reload dependencies, cache identity) instead of silent skip.
 - Complete cutovers: replacement seam before removal.
 - Prefer closed-set access and audience-split payloads over presence and one-bag disclosure.
@@ -41,21 +37,33 @@ description: >-
 - Endpoint/controller changes: request specs; add policy coverage when authz changes.
 - Serializer changes: serializer specs.
 - Worker changes: worker specs with idempotency and retry assertions.
-- Query-heavy changes: at least one `:detect_nplusone` (`prosopite`) spec, or explicitly justify skipping.
 - If broader coverage is skipped, state the gap and risk explicitly.
-- Combine multiple examples rubocop-friendly using `:aggregate_failures`.
-- Use `match_array`, `include`, or `a_collection_including` for partial array matches to avoid brittle expectations.
 
 ## API Docs (`rswag`)
 
-- After request-spec changes, run `make rswag`.
-- Never edit `swagger/**/*.yaml` by hand; update request specs instead.
-- Provide multiple examples per response status; do not duplicate status blocks when examples fit.
-- For enums or constrained fields, document format/defaults/example payloads at schema level.
+One `response` per status code. Rswag stores responses in a map keyed by status, so a second `response` with the same code in that operation overwrites the first. Put every variant of that status inside the one block — each as a uniquely named example plus its own nested context, `let`s, and `run_test!`. The example name is the examples-map key; a duplicate name overwrites the earlier example.
+
+Declare the schema once on that shared response. If bodies differ, widen it (`additionalProperties` or `oneOf`) so every example still validates.
+
+```ruby
+response '422', 'Unprocessable Entity' do
+  schema type: :object, additionalProperties: true, properties: { ... }
+  example 'application/json', 'case a', { error: '...' }
+  example 'application/json', 'case b', { error: '...', detail: '...' }
+  context 'when case a' do
+    # lets / setup
+    run_test!
+  end
+  context 'when case b' do
+    # different lets / setup
+    run_test!
+  end
+end
+```
+
+A second `response` with the same code is only for a case that must stay out of the document (`document: false`). Different status codes stay as separate blocks. Regenerate generated OpenAPI from the request specs; do not hand-edit the generated file. For enums or constrained fields, document format/defaults/example payloads at schema level.
 
 ## Tooling and Completion
 
-- Run validation in Docker Compose test container; avoid host-local Ruby tooling unless explicitly approved.
-- If auth/integration behavior changes, verify services from `docker-compose.services.yml` or document validation limits.
-- In handoff, include:
-  Rails-layer impact, authz/tenancy impact, API contract impact, security-skill invocation status, and any validation gaps.
+- Prefer the repository's established validation entrypoints (same stance as `$ruby-dev`).
+- In handoff, include: Rails-layer impact, authz/tenancy impact, API contract impact, security-skill invocation status, and any validation gaps.
