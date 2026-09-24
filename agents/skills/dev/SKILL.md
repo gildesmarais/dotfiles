@@ -17,13 +17,13 @@ Single Build entry. Load packs/overlays by name; never paste their bodies. Craft
 
 Never ask the user to pick when signals are clear.
 
-| Signal | Branch |
-| --- | --- |
-| implementation plan, plan mode, phased plan | `plan` — Phase 0 gate: load [`reference/plan-pipeline.md`](reference/plan-pipeline.md); **no code** until the user approves the plan |
-| implement, fix, feature, change the code (default) | `implement` |
-| "should we build X?" | stop → `product-owner` |
-| assure / findings / tests review / merge prep | stop → `review.gil` |
-| open / slice / comment a PR | stop → `pull-request` |
+| Signal                                             | Branch                                                                                                                               |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| implementation plan, plan mode, phased plan        | `plan` — Phase 0 gate: load [`reference/plan-pipeline.md`](reference/plan-pipeline.md); **no code** until the user approves the plan |
+| implement, fix, feature, change the code (default) | `implement`                                                                                                                          |
+| "should we build X?"                               | stop → `product-owner`                                                                                                               |
+| assure / findings / tests review / merge prep      | stop → `review.gil`                                                                                                                  |
+| open / slice / comment a PR                        | stop → `pull-request`                                                                                                                |
 
 ## Shared prep
 
@@ -39,14 +39,14 @@ Never ask the user to pick when signals are clear.
    - `review-hand-off` → stop → `review.gil`.
 5. **Route by touched files** (not repo-wide presence); multi-load OK; validate per surface; clarify only when signals are absent or contradictory.
 
-   | Touched | Load |
-   | --- | --- |
-   | `.rb` / gem / plain Ruby | `ruby-dev` (+ `reference.md`) |
-   | Rails-shaped (controllers, policies, serializers, workers, migrations, …) | `ruby-dev` + `ruby-on-rails-dev` |
-   | `.rs` | `rust-dev` (+ `reference.md`) |
-   | `.swift` (non-UI) | `swift-dev` |
-   | SwiftUI / WidgetKit / AppKit UI | `swift-dev` + `swiftui-dev` |
-   | `.ts` / `.tsx` / `.js` / `.jsx` | `typescript-dev` (+ `reference.md`) |
+   | Touched                                                                   | Load                                |
+   | ------------------------------------------------------------------------- | ----------------------------------- |
+   | `.rb` / gem / plain Ruby                                                  | `ruby-dev` (+ `reference.md`)       |
+   | Rails-shaped (controllers, policies, serializers, workers, migrations, …) | `ruby-dev` + `ruby-on-rails-dev`    |
+   | `.rs`                                                                     | `rust-dev` (+ `reference.md`)       |
+   | `.swift` (non-UI)                                                         | `swift-dev`                         |
+   | SwiftUI / WidgetKit / AppKit UI                                           | `swift-dev` + `swiftui-dev`         |
+   | `.ts` / `.tsx` / `.js` / `.jsx`                                           | `typescript-dev` (+ `reference.md`) |
 
 6. **Surgical laws:**
    - Test flight height: pure unit for domain/math, focused fakes for components, real I/O for integration; frontend: real DOM/a11y via `modern-web-guidance` and `chrome-devtools` over mocks. Decompose suites by layer. No ad-hoc sleep polling — bounded condition waits. Test friction diagnoses a seam defect.
@@ -88,7 +88,7 @@ Path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; never rever
 
 ## Completion criteria
 
-| Branch | Done when |
-| --- | --- |
-| `plan` | Ready checklist satisfied; no code before plan approval |
+| Branch      | Done when                                                                                                                                                                                                                                             |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `plan`      | Ready checklist satisfied; no code before plan approval                                                                                                                                                                                               |
 | `implement` | Classification stated with axioms loaded (+ `architecture` decisions documented if design); compat decided or asked; pack/overlay handoff fields; exit-0 honesty; commits made or deferred; Assure done or trivial skip stated before delivery report |

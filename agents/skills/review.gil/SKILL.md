@@ -14,11 +14,11 @@ Findings-first review of a working tree, branch, commit range, or PR: the `finis
 
 ## Pick branch
 
-| Execution | Use when |
-| --- | --- |
+| Execution  | Use when                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------- |
 | `findings` | Default: non-interactive/orchestrated (PR targets too), non-PR targets, or publish declined |
-| `publish` | PR reviewed end to end, drafts reconciled, submitted as GitHub `COMMENT` |
-| `quality` | Explicit merge-prep: audit, boy-scout refactors, tests, repo gates; changes code |
+| `publish`  | PR reviewed end to end, drafts reconciled, submitted as GitHub `COMMENT`                    |
+| `quality`  | Explicit merge-prep: audit, boy-scout refactors, tests, repo gates; changes code            |
 
 - Ask exactly "Publish review on PR?" only in a top-level interactive human session targeting an existing PR with unspecified intent. Skip if already answered, read-only/draft findings requested or implied, publication requested, or no PR. The answer selects execution, not lenses.
 - "Review and publish/post/ship the review" → `publish`, no ask.
@@ -62,8 +62,8 @@ Resolve scripts relative to this skill directory. `quality` skips this and runs 
 
 ## Completion criteria
 
-| Execution | Done when |
-| --- | --- |
-| `findings` | Selected lenses applied; Critical empty or owned; Important owned/rationale; readiness Yes/No/Conditional; finish output shape; no GitHub writes |
-| `quality` | Audit table (legacy Find rows or explicit empty); commit stack executed (or explicit empty); gates green; P0/P1 fixed or listed for re-invoke |
-| `publish` | Fresh multi-lens ledger verified on PR head SHA; drafts reconciled; submitted `COMMENT` or left PENDING (explicit draft-only); URLs reported; no code changed |
+| Execution  | Done when                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `findings` | Selected lenses applied; Critical empty or owned; Important owned/rationale; readiness Yes/No/Conditional; finish output shape; no GitHub writes              |
+| `quality`  | Audit table (legacy Find rows or explicit empty); commit stack executed (or explicit empty); gates green; P0/P1 fixed or listed for re-invoke                 |
+| `publish`  | Fresh multi-lens ledger verified on PR head SHA; drafts reconciled; submitted `COMMENT` or left PENDING (explicit draft-only); URLs reported; no code changed |

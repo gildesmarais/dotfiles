@@ -29,15 +29,15 @@ Ruby/RSpec execution postures only; craft → `architecture`, test-quality judgm
 
 Default **4.0+, no 3.x compat** when `.tool-versions` / `AGENTS.md` are silent.
 
-| Check | Prefer | Avoid |
-| --- | --- | --- |
-| Frozen strings | `# frozen_string_literal: true` on every `.rb` | Per-file mutable string churn |
-| Block params | `it` for single-arg blocks | `{ \|x\| … }` when one arg only |
-| Condition wraps | Leading `&&` / `\|\|` at line start | Trailing operators on wrapped lines |
-| Shape dispatch | Pattern matching (`case … in`) | Deep `if/elsif` on structure |
-| Collections | Core `Set`, `filter_map`, `index_by` | `require 'set'`, verbose `map`/`compact` |
-| Structs | `Data.define` | OpenStruct / hand-rolled structs |
-| Regex | `match?` | `=~` for boolean checks |
-| Hot paths | Memoize pure/`ENV.fetch` work; one helper owner | Duplicated helpers split for metrics |
-| Specs | Table-drive; `:aggregate_failures` for discriminating multi-assert | `send(...)` to pin private behavior |
-| Extraction | Dedupe/unify before new files | Metric-driven micro-methods or files |
+| Check           | Prefer                                                             | Avoid                                    |
+| --------------- | ------------------------------------------------------------------ | ---------------------------------------- |
+| Frozen strings  | `# frozen_string_literal: true` on every `.rb`                     | Per-file mutable string churn            |
+| Block params    | `it` for single-arg blocks                                         | `{ \|x\| … }` when one arg only          |
+| Condition wraps | Leading `&&` / `\|\|` at line start                                | Trailing operators on wrapped lines      |
+| Shape dispatch  | Pattern matching (`case … in`)                                     | Deep `if/elsif` on structure             |
+| Collections     | Core `Set`, `filter_map`, `index_by`                               | `require 'set'`, verbose `map`/`compact` |
+| Structs         | `Data.define`                                                      | OpenStruct / hand-rolled structs         |
+| Regex           | `match?`                                                           | `=~` for boolean checks                  |
+| Hot paths       | Memoize pure/`ENV.fetch` work; one helper owner                    | Duplicated helpers split for metrics     |
+| Specs           | Table-drive; `:aggregate_failures` for discriminating multi-assert | `send(...)` to pin private behavior      |
+| Extraction      | Dedupe/unify before new files                                      | Metric-driven micro-methods or files     |

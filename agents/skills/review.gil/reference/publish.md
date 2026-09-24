@@ -16,14 +16,14 @@ Use the `pr-context.sh --publish` snapshot from Shared prep (or run `./scripts/p
 
 Apply `finish` + selected lenses. Prioritize correctness, regressions, security/privacy, data integrity, ops behavior, missing tests. No style preferences, speculation, or alternatives without material risk; CI failures only when proven PR-caused. Seek 0–2 earned `praise`.
 
-| Field | Values |
-| --- | --- |
-| Severity | Critical / Important / Nice-to-Have |
-| Confidence | High / Medium / Low + concrete impact |
-| Evidence | path + RIGHT-side diff line on verified head SHA |
-| Coverage | new thread / current-user draft / existing human or bot thread |
-| Action | `publish-inline` / `reply-existing` / `review-body-only` / `drop` |
-| Wording | Conventional Comments body |
+| Field      | Values                                                            |
+| ---------- | ----------------------------------------------------------------- |
+| Severity   | Critical / Important / Nice-to-Have                               |
+| Confidence | High / Medium / Low + concrete impact                             |
+| Evidence   | path + RIGHT-side diff line on verified head SHA                  |
+| Coverage   | new thread / current-user draft / existing human or bot thread    |
+| Action     | `publish-inline` / `reply-existing` / `review-body-only` / `drop` |
+| Wording    | Conventional Comments body                                        |
 
 Publish high-confidence Critical/Important; Nice-to-Have only if materially useful. Drop decline, soft, optional, speculative, duplicate, already-answered. Prefer a substantive reply on an existing thread over a duplicate inline; never a bare "agree". Regex-validate every inline comment and labeled reply before posting.
 

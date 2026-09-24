@@ -14,11 +14,11 @@ Rewrite docs to match what the repo actually does. Treat existing prose as unver
 
 ## Pick branch
 
-| Branch         | Use when                                                                                     | Signals                                                                                               |
-| -------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `editor`       | Public-facing or operational docs — README, contributor, operator, feature docs, runbooks    | "refresh the README", "docs are stale", "trim this doc", "a new reader can't follow this"             |
+| Branch         | Use when                                                                                     | Signals                                                                                              |
+| -------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `editor`       | Public-facing or operational docs — README, contributor, operator, feature docs, runbooks    | "refresh the README", "docs are stale", "trim this doc", "a new reader can't follow this"            |
 | `architecture` | Architecture-facing docs — ADRs, design notes, diagrams, system overviews, integration flows | "is this ADR still true", "document the real data flow", "update diagram", "verify the architecture" |
-| `evidence`     | Prove a stated control from the repo (auditor pack; Assessment / Evidence / Scope / Task)    | "auditor evidence", "provide the evidence", "control assessment"                                      |
+| `evidence`     | Prove a stated control from the repo (auditor pack; Assessment / Evidence / Scope / Task)    | "auditor evidence", "provide the evidence", "control assessment"                                     |
 
 - Use `architecture` whenever real architecture must be verified before a decision or change, even without a rewrite ask. It is **verify/rewrite only** — no net-new HLD/ADR.
 - "Is this branch ready to ship" → stop → `review.gil`.

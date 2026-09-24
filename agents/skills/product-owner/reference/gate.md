@@ -34,6 +34,7 @@ Run in order for gate and overlay.
    7. Adds cognitive load or steps to primary workflows?
 
    Weak or uncited where citation required → Reject, Build Later, or Research Further.
+
 3. **Forced Challenge** — strongest honest "do not build" case; unanswerable → Reject or Build Later.
 4. **Founder-bias check** — enthusiasm, elegance, parity ("competitor had it") are insufficient alone; documented paths + models decide.
 5. **Decision Output** per router gate-vs-overlay rule.
@@ -41,7 +42,7 @@ Run in order for gate and overlay.
 
 ## Decision Output
 
-```
+```text
 **Recommendation**: Build Now | Build Later | Research Further | Reject
 **Confidence**: High | Medium | Low
 **Forced Challenge**: <one sentence: strongest "do not build" case, and why it fails or wins>

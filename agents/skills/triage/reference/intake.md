@@ -12,14 +12,14 @@ Label each claim **Strong** / **Worth** / **Speculative**.
 
 ## Route table
 
-| Signal                                                              | Class               | Next                                                                        |
-| ------------------------------------------------------------------- | ------------------- | --------------------------------------------------------------------------- |
-| User-visible copy, journey chrome, retry false-hope, new concept    | `product` or `both` | `product-owner` `gate`                                                      |
-| Wrong classification, hang, worker queue, detector, timeouts as eng | `eng`               | `$dev` `plan` (skip PO if no UX/concept change)                             |
+| Signal                                                              | Class               | Next                                                                          |
+| ------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------- |
+| User-visible copy, journey chrome, retry false-hope, new concept    | `product` or `both` | `product-owner` `gate`                                                        |
+| Wrong classification, hang, worker queue, detector, timeouts as eng | `eng`               | `$dev` `plan` (skip PO if no UX/concept change)                               |
 | Signal fix **and** UX honesty                                       | `both`              | PO gate in-session; Build Now → `$dev` `plan` with eng+UX phases (one Shot 1) |
-| Ambiguous product vs eng                                            | prefer `product`    | PO gate (admit over guessing Build)                                         |
-| "Should we build X?" only                                           | `product`           | `product-owner` only                                                        |
-| Approved plan / explicit go / Shot 2                                | `stop`              | `$dev` `implement` (leave triage)                                           |
+| Ambiguous product vs eng                                            | prefer `product`    | PO gate (admit over guessing Build)                                           |
+| "Should we build X?" only                                           | `product`           | `product-owner` only                                                          |
+| Approved plan / explicit go / Shot 2                                | `stop`              | `$dev` `implement` (leave triage)                                             |
 
 ## Triage Ledger (required before handoff)
 

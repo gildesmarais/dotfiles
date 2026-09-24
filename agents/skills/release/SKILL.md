@@ -11,11 +11,11 @@ Notes-only: consumes merged history; never authors or rewrites it.
 
 ## Pick branch
 
-| Signal                                  | Branch                    |
-| --------------------------------------- | ------------------------- |
-| changelog, release notes, what shipped  | `notes`                   |
-| open/slice/resolve a PR                 | stop — use `pull-request` |
-| flag / promote / roll back a release    | out of scope — no branch  |
+| Signal                                 | Branch                    |
+| -------------------------------------- | ------------------------- |
+| changelog, release notes, what shipped | `notes`                   |
+| open/slice/resolve a PR                | stop — use `pull-request` |
+| flag / promote / roll back a release   | out of scope — no branch  |
 
 ## Shared prep
 

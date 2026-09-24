@@ -27,17 +27,17 @@ description: >-
 
 Ambiguous routing:
 
-| User says                                                                 | Route                                          |
-| ------------------------------------------------------------------------- | ---------------------------------------------- |
-| "address PR comments", "fix review feedback", "resolve comments"          | **resolve** (not reply)                        |
-| "update the PR" (no code change, no review-feedback ask)                  | **retitle** (not open)                         |
-| "why is CI failing?" (no fix ask)                                         | report only — do not push                      |
-| "post these already-verified findings"                                    | **comment** (submit `COMMENT`)                 |
-| "add these as pending/draft comments" (verified list supplied)            | **comment** (remain pending)                   |
-| "review the PR"                                                           | stop — `review.gil`                            |
-| "draft a review" (read-only findings)                                     | stop — `review.gil` `findings`                 |
-| "post review comments", "new findings on PR", "review and post on GitHub" | stop — `review.gil` `publish`                  |
-| "draft/pending a new review" (no supplied ledger)                         | stop — `review.gil` `publish` draft-only       |
+| User says                                                                 | Route                                    |
+| ------------------------------------------------------------------------- | ---------------------------------------- |
+| "address PR comments", "fix review feedback", "resolve comments"          | **resolve** (not reply)                  |
+| "update the PR" (no code change, no review-feedback ask)                  | **retitle** (not open)                   |
+| "why is CI failing?" (no fix ask)                                         | report only — do not push                |
+| "post these already-verified findings"                                    | **comment** (submit `COMMENT`)           |
+| "add these as pending/draft comments" (verified list supplied)            | **comment** (remain pending)             |
+| "review the PR"                                                           | stop — `review.gil`                      |
+| "draft a review" (read-only findings)                                     | stop — `review.gil` `findings`           |
+| "post review comments", "new findings on PR", "review and post on GitHub" | stop — `review.gil` `publish`            |
+| "draft/pending a new review" (no supplied ledger)                         | stop — `review.gil` `publish` draft-only |
 
 ## Shared prep
 

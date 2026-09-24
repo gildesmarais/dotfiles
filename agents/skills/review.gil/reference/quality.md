@@ -13,16 +13,16 @@ Merge-prep on the current branch (not feature delivery): what got worse or dupli
 
 Apply [`legacy.md`](legacy.md) Find table to the diff + auto-neighbors (always). Verify every smell by grep/read:
 
-| Smell | Look for |
-| --- | --- |
-| God file | Over project LOC threshold (`AGENTS.md`, else 400) mixing orchestration + logic + I/O |
-| DRY | Third+ copy of a handler/hook/factory/queue/cache pattern in one area |
-| Stability | Unstable inline config in callback deps; per-item factories in hot paths |
-| Layer breach | Presentation importing service/data layer |
-| Hot path | Per-row fetch, inline object creation in list renderers |
+| Smell          | Look for                                                                                 |
+| -------------- | ---------------------------------------------------------------------------------------- |
+| God file       | Over project LOC threshold (`AGENTS.md`, else 400) mixing orchestration + logic + I/O    |
+| DRY            | Third+ copy of a handler/hook/factory/queue/cache pattern in one area                    |
+| Stability      | Unstable inline config in callback deps; per-item factories in hot paths                 |
+| Layer breach   | Presentation importing service/data layer                                                |
+| Hot path       | Per-row fetch, inline object creation in list renderers                                  |
 | Untested logic | Branching helpers with no unit tests; 0%-coverage touched files (only if tooling exists) |
-| Legacy | Per [`legacy.md`](legacy.md) |
-| Invariants | Project-documented ones (auth, money, offline sync…) |
+| Legacy         | Per [`legacy.md`](legacy.md)                                                             |
+| Invariants     | Project-documented ones (auth, money, offline sync…)                                     |
 
 Recipes: `git diff --stat "$BASE"..HEAD`; `rg "eslint-disable|# noqa|allow\\(" <srcRoot>`; `rg "@deprecated|DEPRECATED|Obsolete|obsolete|backward compat|during refactor" <srcRoot>`.
 

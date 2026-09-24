@@ -10,11 +10,11 @@ description: >-
 
 ## Pick branch
 
-| Branch                 | Signals                                                 |
-| ---------------------- | ------------------------------------------------------- |
-| implement (default)    | Jira URL or key (`ABC-123`) to investigate / implement  |
-| create                 | "file a ticket", follow-up under an epic                |
-| Post-PR sync           | ticket has a new PR URL; "open PR + move to review"     |
+| Branch              | Signals                                                |
+| ------------------- | ------------------------------------------------------ |
+| implement (default) | Jira URL or key (`ABC-123`) to investigate / implement |
+| create              | "file a ticket", follow-up under an epic               |
+| Post-PR sync        | ticket has a new PR URL; "open PR + move to review"    |
 
 ## Shared prep
 
@@ -45,12 +45,12 @@ description: >-
 
 Transition without asking when unambiguous; ask once if transitions conflict. Always `getTransitionsForJiraIssue` for the issue first.
 
-| Event                             | Target                    |
-| --------------------------------- | ------------------------- |
-| Ticket created                    | **Ready** (or equivalent) |
+| Event                             | Target                                                  |
+| --------------------------------- | ------------------------------------------------------- |
+| Ticket created                    | **Ready** (or equivalent)                               |
 | Implementation started (optional) | **In Progress** — only if asked or the workflow uses it |
-| PR opened                         | **Ready for Review**      |
-| User asks Done / Won't Do         | As requested — never invent Done on merge |
+| PR opened                         | **Ready for Review**                                    |
+| User asks Done / Won't Do         | As requested — never invent Done on merge               |
 
 Review transition name order: `Ready for review` → `In Review` / `Code Review` → ask with the transition list.
 

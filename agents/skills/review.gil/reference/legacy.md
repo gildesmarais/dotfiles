@@ -10,21 +10,21 @@ One public name and one accepted shape per concept. `findings` / `publish`: repo
 
 ## Find (verify by search/read)
 
-| Class | Signal |
-| --- | --- |
-| Marker | `@deprecated`, `Obsolete`, `DEPRECATED`, "compat", "during refactor" comments |
-| Dual export | Two exported names for one schema/type/function; alias with both live |
-| Superseded hydrate | Parse-old → map-to-current beside a current-only path; unbounded old-shape accept |
-| Wrong type home | Shared kernel imports a re-export duplicating the owned type module |
-| Migration-only test | Suite whose only job is proving the old shape still loads |
+| Class               | Signal                                                                            |
+| ------------------- | --------------------------------------------------------------------------------- |
+| Marker              | `@deprecated`, `Obsolete`, `DEPRECATED`, "compat", "during refactor" comments     |
+| Dual export         | Two exported names for one schema/type/function; alias with both live             |
+| Superseded hydrate  | Parse-old → map-to-current beside a current-only path; unbounded old-shape accept |
+| Wrong type home     | Shared kernel imports a re-export duplicating the owned type module               |
+| Migration-only test | Suite whose only job is proving the old shape still loads                         |
 
 ## Severity
 
-| Finding | Findings | `quality` |
-| --- | --- | --- |
-| Dual live API / unbounded old-shape hydrate (correctness/security blast) | Critical or Important | P0 |
-| Dead export with retargetable in-repo callers | Important | P1 |
-| Unused deprecated export, zero callers | Nice-to-Have | P2 (delete) |
+| Finding                                                                  | Findings              | `quality`   |
+| ------------------------------------------------------------------------ | --------------------- | ----------- |
+| Dual live API / unbounded old-shape hydrate (correctness/security blast) | Critical or Important | P0          |
+| Dead export with retargetable in-repo callers                            | Important             | P1          |
+| Unused deprecated export, zero callers                                   | Nice-to-Have          | P2 (delete) |
 
 ## Before deleting (`quality` only)
 

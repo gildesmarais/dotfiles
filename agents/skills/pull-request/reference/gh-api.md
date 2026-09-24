@@ -66,8 +66,8 @@ gh api graphql -f query='mutation($threadId:ID!){ resolveReviewThread(input:{thr
 
 ## 422 recovery
 
-| Error                                                            | Recovery                                                                  |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `User can only have one pending review per pull request`         | Fetch pending node ID → `addPullRequestReviewThread`                      |
-| Pending-review conflict on `POST .../pulls/{pr}/comments`        | Draft was asked: don't fall back to standalone inline or regular comments |
-| GraphQL mutation rejects review id                               | Used REST numeric id — use GraphQL `id`                                   |
+| Error                                                     | Recovery                                                                  |
+| --------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `User can only have one pending review per pull request`  | Fetch pending node ID → `addPullRequestReviewThread`                      |
+| Pending-review conflict on `POST .../pulls/{pr}/comments` | Draft was asked: don't fall back to standalone inline or regular comments |
+| GraphQL mutation rejects review id                        | Used REST numeric id — use GraphQL `id`                                   |

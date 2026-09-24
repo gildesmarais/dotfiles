@@ -18,13 +18,13 @@ Debt that can't be fixed in the current scope goes to `<project>/.agents/debt-le
 
 ## Category → remediation route
 
-| Category   | Signal                                                         | Route                                                |
-| ---------- | -------------------------------------------------------------- | ---------------------------------------------------- |
-| `boundary` | Leaky seams, circular imports, god objects, multi-table queries | `architecture deep-modules` or `refactor-boundaries` |
-| `types`    | Primitive obsession, stringly-typed IDs, unsafe JSON bags      | `architecture refactor-types`                        |
-| `perf`     | Unmeasured hot paths, N+1, runaway allocations                 | `architecture performance`                           |
-| `legacy`   | Superseded models, deprecated APIs, dead compat shims          | `review.gil quality` (legacy lens)                   |
-| `test`     | Flaky tests, missing integration seams, implementation-detail tests | `review.gil quality` (tests lens)               |
+| Category   | Signal                                                              | Route                                                |
+| ---------- | ------------------------------------------------------------------- | ---------------------------------------------------- |
+| `boundary` | Leaky seams, circular imports, god objects, multi-table queries     | `architecture deep-modules` or `refactor-boundaries` |
+| `types`    | Primitive obsession, stringly-typed IDs, unsafe JSON bags           | `architecture refactor-types`                        |
+| `perf`     | Unmeasured hot paths, N+1, runaway allocations                      | `architecture performance`                           |
+| `legacy`   | Superseded models, deprecated APIs, dead compat shims               | `review.gil quality` (legacy lens)                   |
+| `test`     | Flaky tests, missing integration seams, implementation-detail tests | `review.gil quality` (tests lens)                    |
 
 ## Lifecycle
 

@@ -19,25 +19,25 @@ Structure, types, boundaries, measured perf — not whether to build, not langua
 
 Never ask the user to pick when signals are clear; multi-load when signals combine.
 
-| Branch                | Signals                                                                                                              |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `philosophy`          | tactical programming, cognitive load, tech debt, complex interface, obscure logic, information leakage, exception bloat |
-| `deep-modules`        | deepen, shallow modules, seams, locality, dual ownership                                                             |
-| `refactor-types`      | primitive obsession, stringly enums, logic-on-types                                                                  |
-| `refactor-boundaries` | wire/API maps, adapter contract shape, boundary serialize                                                            |
-| `performance`         | slow, hot path, allocate, profile, benchmark                                                                         |
-| `design-patterns`     | pattern names, "which pattern", decouple sender/receiver, pluggable strategies, undo/redo, creation flexibility      |
+| Branch                | Signals                                                                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `philosophy`          | tactical programming, cognitive load, tech debt, complex interface, obscure logic, information leakage, exception bloat            |
+| `deep-modules`        | deepen, shallow modules, seams, locality, dual ownership                                                                           |
+| `refactor-types`      | primitive obsession, stringly enums, logic-on-types                                                                                |
+| `refactor-boundaries` | wire/API maps, adapter contract shape, boundary serialize                                                                          |
+| `performance`         | slow, hot path, allocate, profile, benchmark                                                                                       |
+| `design-patterns`     | pattern names, "which pattern", decouple sender/receiver, pluggable strategies, undo/redo, creation flexibility                    |
 | `structure-survey`    | tree/directory/layout audit, peer conformity, snowflake, promote/relocate/fold/nest ownership moves, layer-wide layout unification |
 
 `structure-survey` is a discovery mode, not a craft branch: load it, then multi-load craft branches from its findings.
 
-| Ask                                              | Route instead                                                                 |
-| ------------------------------------------------ | ----------------------------------------------------------------------------- |
-| "review code", `/review.gil`, PR review, findings | `review.gil` — co-load only when tree / layout / snowflake is also asked; then survey first → craft handoff, `findings` schema only if a findings report is also wanted |
-| Surgical language work only                      | `$dev` (routes `{lang}-dev` / overlay)                                        |
-| "should we build X?"                             | `product-owner`                                                               |
-| "promote" (release/product) / "unify" (UX copy, tokens) | `release` / product / design skills                                    |
-| Surgical deepen of one named module in hand      | `deep-modules` (+ siblings) — skip survey                                     |
+| Ask                                                     | Route instead                                                                                                                                                           |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "review code", `/review.gil`, PR review, findings       | `review.gil` — co-load only when tree / layout / snowflake is also asked; then survey first → craft handoff, `findings` schema only if a findings report is also wanted |
+| Surgical language work only                             | `$dev` (routes `{lang}-dev` / overlay)                                                                                                                                  |
+| "should we build X?"                                    | `product-owner`                                                                                                                                                         |
+| "promote" (release/product) / "unify" (UX copy, tokens) | `release` / product / design skills                                                                                                                                     |
+| Surgical deepen of one named module in hand             | `deep-modules` (+ siblings) — skip survey                                                                                                                               |
 
 Bare "promote" / "unify" → one clarifying question, or stay on the skill in play.
 

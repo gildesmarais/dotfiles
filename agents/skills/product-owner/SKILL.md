@@ -18,14 +18,14 @@ Features must earn their existence; doctrine overrides enthusiasm, founder bias,
 
 Default **`gate`**. Never ask the user to pick when signals are clear.
 
-| Branch        | Status | Signals                                                                                         |
-| ------------- | ------ | ----------------------------------------------------------------------------------------------- |
-| `gate`        | active | should we build, admit/defer, parity, UI/API surface, UAT expansion, debt tranche admission     |
-| `story-slice` | active | user stories, GWT, UX budgets, AC — only after `gate` Build Now / founder override              |
-| `rebaseline`  | active | doctrine feels stale, north star predates shipped product, many founder overrides; step 0 `re-baseline` |
+| Branch        | Status | Signals                                                                                                                 |
+| ------------- | ------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `gate`        | active | should we build, admit/defer, parity, UI/API surface, UAT expansion, debt tranche admission                             |
+| `story-slice` | active | user stories, GWT, UX budgets, AC — only after `gate` Build Now / founder override                                      |
+| `rebaseline`  | active | doctrine feels stale, north star predates shipped product, many founder overrides; step 0 `re-baseline`                 |
 | `groom`       | active | groom backlog, epic cleanup, reparent orphans, board sync after sequencing → [`reference/groom.md`](reference/groom.md) |
-| `prioritize`  | stub   | backlog ranking                                                                                 |
-| `experiment`  | stub   | experiment / analytics design                                                                   |
+| `prioritize`  | stub   | backlog ranking                                                                                                         |
+| `experiment`  | stub   | experiment / analytics design                                                                                           |
 
 Stubs are not authored — never invent their content. Signals only at a stub: stay on `gate` when admission applies, else say the branch is not authored.
 

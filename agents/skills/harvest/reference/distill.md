@@ -8,13 +8,13 @@ Skill edits are clean cutovers: delete superseded aliases, old execution names, 
 
 ## Scope filter
 
-| Scope           | Condition                                              | Transform                                       | Destination                                                    |
-| --------------- | ------------------------------------------------------ | ----------------------------------------------- | -------------------------------------------------------------- |
-| Project-local   | This repo's scripts, internal API, build tool          | Keep exact paths, flags, names, invariants      | `<project>/AGENTS.md` or `<project>/.agents/rules/*.md`        |
-| Global arch     | Seam leakage, dual ownership, type modeling, perf      | Strip repo nouns; language-free law             | `~/.dotfiles/agents/skills/architecture/reference/<branch>.md` |
-| Global review   | Detection heuristic, security trap, test gap, dead compat | Inspection check / lens finding              | `~/.dotfiles/agents/skills/review.gil/reference/<lens>.md`     |
-| Global language | Idiom, compiler quirk, gem/crate/package behavior      | Runtime-specific checklist item                 | `~/.dotfiles/agents/skills/<lang>-dev/reference.md`            |
-| Global workflow | Git, PR sizing, CI triage, branch hygiene              | SDLC checklist item                             | `~/.dotfiles/agents/skills/<skill>/reference/...`              |
+| Scope           | Condition                                                 | Transform                                  | Destination                                                    |
+| --------------- | --------------------------------------------------------- | ------------------------------------------ | -------------------------------------------------------------- |
+| Project-local   | This repo's scripts, internal API, build tool             | Keep exact paths, flags, names, invariants | `<project>/AGENTS.md` or `<project>/.agents/rules/*.md`        |
+| Global arch     | Seam leakage, dual ownership, type modeling, perf         | Strip repo nouns; language-free law        | `~/.dotfiles/agents/skills/architecture/reference/<branch>.md` |
+| Global review   | Detection heuristic, security trap, test gap, dead compat | Inspection check / lens finding            | `~/.dotfiles/agents/skills/review.gil/reference/<lens>.md`     |
+| Global language | Idiom, compiler quirk, gem/crate/package behavior         | Runtime-specific checklist item            | `~/.dotfiles/agents/skills/<lang>-dev/reference.md`            |
+| Global workflow | Git, PR sizing, CI triage, branch hygiene                 | SDLC checklist item                        | `~/.dotfiles/agents/skills/<skill>/reference/...`              |
 
 ## Procedure
 
