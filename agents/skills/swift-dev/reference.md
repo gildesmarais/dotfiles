@@ -1,36 +1,30 @@
 # swift-dev reference
 
-Optional language-only harvest companion. Architecture craft lives on `architecture` branch refs via the harvest protocol (stage → sparse-promote → drop) — never duplicate it here as a parallel doctrine log.
-
-Grow this file only for Swift/Apple-specific lessons that cannot be stated language-free. Abstract product nouns out. Cap ~10 new bullets per harvest unless the user asks for more.
-
-Routine surgical fixes do not grow this file.
+Swift/Apple-only lessons; craft → `architecture`. ≤~10 bullets per harvest.
 
 ## Measured perf (Swift / Apple Silicon)
 
-Apply only after `$dev` → `architecture` **`performance`** stop rules hand off for language recipes. Measure first; these are not defaults.
+Only after `architecture` `performance` stop rules hand off. Measure first; not defaults.
 
-- **UMA / shared storage.** Prefer `MTLResourceStorageModeShared` or page-aligned VM buffers when CPU and GPU/ANE must see one physical buffer; prove no bounce copy in Metal System Trace.
-- **Numeric dispatch by workload shape.** Contiguous Accelerate / `vDSP` (AMX-backed where applicable) for BLAS-like work; custom `MTLComputePipelineState` when the kernel is not in Accelerate; Core ML `.cpuAndNeuralEngine` / `.all` only for model/tensor graphs that fit ANE constraints.
-- **Codegen as build contract.** `@inlinable` and whole-module / cross-module optimization are build settings — do not sprinkle `@inlinable` as cargo cult.
-- **Unsafe scope.** `withUnsafeBytes` / `UnsafeMutableBufferPointer` only on proven hot loops to enable LLVM autovec; keep unsafe regions tiny and tested.
-- **Concurrency & QoS.** Task groups on the cooperative pool; avoid thread explosion. Set QoS explicitly for P-core vs E-core intent (`.userInitiated` / `.userInteractive` for heavy compute; `.utility` / `.background` for background I/O).
-- **MainActor protection.** Coalesce high-frequency progress callbacks from background work so the main event loop is not saturated.
-- **Verification.** Instruments Time Profiler, Allocations, Metal System Trace — flame graphs should show reduced ARC retain/release and dynamic dispatch on the hot path.
+- **UMA / shared storage.** `MTLResourceStorageModeShared` or page-aligned VM buffers when CPU and GPU/ANE share one buffer; prove no bounce copy in Metal System Trace.
+- **Numeric dispatch by workload.** Accelerate / `vDSP` (AMX-backed) for contiguous BLAS-like work; custom `MTLComputePipelineState` when Accelerate lacks the kernel; Core ML `.cpuAndNeuralEngine` / `.all` only for graphs fitting ANE constraints.
+- **Codegen is a build contract.** `@inlinable` and whole-/cross-module optimization are build settings, not sprinkles.
+- **Unsafe scope.** `withUnsafeBytes` / `UnsafeMutableBufferPointer` only on proven hot loops for autovec; tiny and tested.
+- **Concurrency & QoS.** Task groups on the cooperative pool; no thread explosion. Explicit QoS: `.userInitiated` / `.userInteractive` for heavy compute, `.utility` / `.background` for I/O.
+- **MainActor protection.** Coalesce high-frequency background progress callbacks.
+- **Verification.** Time Profiler, Allocations, Metal System Trace — expect less ARC retain/release and dynamic dispatch on the hot path.
 
-## Optional shapes (examples, not law)
+Shapes (when the measured path matches, not blanket defaults):
 
-When the measured hot path looks like these patterns, prefer the matching posture — do not apply as blanket defaults:
+- Multi-channel distance / embeddings: `SIMD3`/`SIMD4` or `vDSP` over contiguous buffers.
+- Monotonic coordinate maps (scrubbing): sort on ingestion; binary search per tick.
+- Equatable / table diffing: compare contiguous storage; never allocate or flatten inside `==`.
 
-- **Multi-channel distance / embeddings:** `SIMD3`/`SIMD4` or Accelerate `vDSP` over contiguous buffers rather than scalar loops with formatting.
-- **Monotonic coordinate maps (scrubbing):** sort on ingestion; binary search on tick rather than re-sort or linear scan each frame.
-- **Equatable / table diffing:** compare contiguous underlying storage; never allocate or flatten inside `==`.
+## Concurrency, TLS & foreign-exception hardening
 
-## Concurrency, TLS & Foreign Exception Hardening
+Swift Concurrency keeps thread-local task state (`TPIDRRO_EL0 + 0x340` on ARM64). ObjC/foreign exceptions unwind frames without running its exit handlers, corrupting TLS when host runloops (AppKit/UIKit) swallow them.
 
-Swift Concurrency runtime maintains thread-local task state (`TPIDRRO_EL0 + 0x340` on ARM64) during actor and async execution. Objective-C / foreign exceptions unwind stack frames without running Swift Concurrency exit handlers, corrupting TLS if swallowed by host runloops (AppKit/UIKit event dispatch):
-
-- **Zero `assumeIsolated` / Thread sniffing theater:** Never sniff `Thread.isMainThread` to conditionally branch between `MainActor.assumeIsolated` and `Task`. If an unwound frame poisoned TLS, `assumeIsolated` reads unmapped memory and crashes with delayed `EXC_BAD_ACCESS` (e.g. in `objc_opt_class` or `swift_task_isCurrentExecutor`). Declare actor isolation natively or dispatch via `Task { @MainActor [weak self] in ... }`.
-- **Text storage bounds clamping:** Text storages can mutate across asynchronous runloop ticks. Guard all attribute removals and presentations with validated range clamps (`safeAttributeRange(for:)`, `safeFullRange`) to prevent `NSRangeException` unwinding.
-- **Storage delegate detachment during bulk edits & undo:** Detach `textStorage.delegate = nil` (restored via `defer`) across programmatic replaces and undo registrations so `didProcessEditing` cannot re-enter mid-mutation.
-- **Fail-fast on swallowed exceptions:** Register `"NSApplicationCrashOnExceptions": true` in `UserDefaults` and install `NSSetUncaughtExceptionHandler` in app delegates so foreign exceptions crash immediately at the offending callstack instead of being swallowed into silent concurrency corruption.
+- **No `Thread.isMainThread` sniffing** to branch between `MainActor.assumeIsolated` and `Task`: on poisoned TLS `assumeIsolated` crashes later with `EXC_BAD_ACCESS` (`objc_opt_class`, `swift_task_isCurrentExecutor`). Declare isolation natively or dispatch `Task { @MainActor [weak self] in ... }`.
+- **Clamp text-storage ranges.** Storage mutates across runloop ticks; guard attribute removals/presentations with validated clamps (`safeAttributeRange(for:)`, `safeFullRange`) to prevent `NSRangeException`.
+- **Detach the storage delegate during bulk edits & undo.** `textStorage.delegate = nil` (restored via `defer`) around programmatic replaces and undo registration so `didProcessEditing` cannot re-enter.
+- **Fail fast on swallowed exceptions.** `"NSApplicationCrashOnExceptions": true` in `UserDefaults` + `NSSetUncaughtExceptionHandler` in the app delegate.

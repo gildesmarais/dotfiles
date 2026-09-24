@@ -1,136 +1,50 @@
 # Publish
 
-End-to-end PR review publish: retrieve → fresh multi-lens review → reconcile drafts → submit a friendly GitHub `COMMENT` review.
-
-Load references progressively, not all up front:
-
-1. Use [`finish.md`](finish.md) as the baseline and load only the additional lenses selected by `SKILL.md`.
-2. Load [`conventional-comments.md`](conventional-comments.md) when drafting bodies.
-3. Load [`github-state.md`](github-state.md) immediately before reconciling or publishing GitHub state.
+End-to-end PR review: retrieve → fresh multi-lens ledger → reconcile drafts/threads → recheck SHA → submit one friendly `COMMENT` review → thread replies → verify URLs. Load [`conventional-comments.md`](conventional-comments.md) when drafting and [`github-state.md`](github-state.md) right before mutating.
 
 ## Hard rules
 
-- When submitting, always use `event: "COMMENT"`.
-- Never submit `REQUEST_CHANGES` or `APPROVE`, even for Critical findings.
-- Reject any generated payload whose event is `REQUEST_CHANGES` or `APPROVE`.
-- Always build a **fresh** finding ledger against the PR head. Existing pending drafts are input to reconcile, not the final source of truth.
-- Never alter another reviewer’s comments or resolve their threads.
-- Never publish against a stale head SHA or a guessed line.
-- Do not change application code in this branch.
+- Submit only `event: "COMMENT"`; never `REQUEST_CHANGES` or `APPROVE`, even for Critical. Reject any payload with another event.
+- Build a **fresh** ledger against the PR head; existing pending drafts are reconcile input, not truth.
+- Never edit others' comments or resolve their threads; never publish on a stale head SHA or guessed line; never change application code.
 
-## Workflow
+## 1. Retrieve
 
-```text
-retrieve → inspect → fresh ledger → reconcile drafts/threads → recheck SHA
-  → (no pending) create COMMENT review
-  → (pending) delete dropped own drafts → append kept/new → submit COMMENT
-  → useful thread replies → verify URLs
-```
+Use the `pr-context.sh --publish` snapshot from Shared prep (or run `./scripts/pr-context.sh --publish <pr>` once). It carries owner/repo/number, title/body, base/head, head SHA, commits, files, checks, `me`, current user's pending review + drafts, unresolved threads. Read patch + code at the PR head; record the verified head SHA. Apply target-repo `AGENTS.md` and any language skills it routes to.
 
-### 1. Retrieve one coherent snapshot
+## 2. Ledger
 
-Use the coherent publish snapshot captured during `SKILL.md` scope prep. If this execution was entered after prep, resolve the PR from URL, number, or current branch and run the skill-local helper once:
+Apply `finish` + selected lenses. Prioritize correctness, regressions, security/privacy, data integrity, ops behavior, missing tests. No style preferences, speculation, or alternatives without material risk; CI failures only when proven PR-caused. Seek 0–2 earned `praise`.
 
-```bash
-./scripts/pr-context.sh --publish <pr-url-or-number>
-```
+| Field | Values |
+| --- | --- |
+| Severity | Critical / Important / Nice-to-Have |
+| Confidence | High / Medium / Low + concrete impact |
+| Evidence | path + RIGHT-side diff line on verified head SHA |
+| Coverage | new thread / current-user draft / existing human or bot thread |
+| Action | `publish-inline` / `reply-existing` / `review-body-only` / `drop` |
+| Wording | Conventional Comments body |
 
-Capture at minimum: owner/repo/number/url, title/body, base/head, head SHA, commits, changed files, checks summary, current user login, current user’s pending review + draft comments, unresolved review threads.
+Publish high-confidence Critical/Important; Nice-to-Have only if materially useful. Drop decline, soft, optional, speculative, duplicate, already-answered. Prefer a substantive reply on an existing thread over a duplicate inline; never a bare "agree". Regex-validate every inline comment and labeled reply before posting.
 
-Read the PR patch and surrounding code from the **PR head**, not the local dirty tree. Record the head SHA every finding was verified against.
-Read `AGENTS.md` from the target repository when present and apply its project-specific guidance.
+## 3. Reconcile own drafts
 
-### 2. Review findings-first
+Snapshot pending review ID, body, all drafts before mutating. Keep verified drafts; delete only `drop` ones, per comment — never discard the whole pending review for convenience. If recreate is unavoidable, rebuild and verify the full preserved ledger first.
 
-- Apply the `finish` baseline and every additional lens selected from the scoped diff.
-- Load repo-specific language/framework skills when `AGENTS.md` routes to them.
-- Prioritize correctness, regressions, security/privacy, data integrity, operational behavior, and missing tests.
-- Do not post style preferences, speculative concerns, or implementation alternatives without material risk.
-- Include CI failures only after proving they are caused by the PR.
-- Actively look for 0–2 earned `praise` opportunities (see human touch in `conventional-comments.md`).
+## 4. Stale guard
 
-### 3. Build a fresh finding ledger
+Re-fetch head SHA immediately before the first mutation; if changed, stop, refresh diff, re-anchor, revalidate.
 
-Each candidate records:
+## 5. Publish
 
-| Field      | Values                                                            |
-| ---------- | ----------------------------------------------------------------- |
-| Severity   | Critical / Important / Nice-to-Have                               |
-| Confidence | High / Medium / Low + concrete impact                             |
-| Evidence   | path + RIGHT-side diff line on verified head SHA                  |
-| Coverage   | new thread / current-user draft / existing human or bot thread    |
-| Action     | `publish-inline` / `reply-existing` / `review-body-only` / `drop` |
-| Wording    | Conventional Comments body                                        |
+Per [`github-state.md`](github-state.md): no pending → one REST create with `COMMENT`; pending → delete dropped drafts, append new, submit `COMMENT` with final body. Thread replies only after the main review succeeds. Partial failure → inspect actual state before retry. Draft-only requested → stop at PENDING, do not submit. No valid findings → publish a short COMMENT summary only if publication was explicitly asked; else report "no findings".
 
-Triage:
+## 6. Verify
 
-- Publish Critical and Important findings with high confidence.
-- Publish Nice-to-Have only when materially useful and concise.
-- Drop decline, soft, optional, speculative, duplicate, and already-answered drafts.
-- Prefer a substantive reply on an existing thread over a duplicate inline comment.
-- Do not post a bare “agree.” Reply only when adding verified evidence, impact, or a precise remediation distinction.
-- Validate every inline comment and every labeled thread reply against the Conventional Comments regex before posting.
+Fetch the review + inline comments via API; confirm no pending review remains (unless draft-only); return review URL and every new comment/reply URL; state no code changed.
 
-### 4. Reconcile the current user’s draft review safely
+## Review body
 
-- Snapshot the pending review ID, body, and every draft comment before mutations.
-- Preserve verified draft comments; remove only comments classified `drop`.
-- Prefer deleting individual draft comments. Do not delete the whole pending review merely for convenience.
-- If GitHub requires deleting/recreating the pending review, reconstruct the complete preserved ledger and verify it before submission.
-
-### 5. Guard against stale publishing
-
-Immediately before the first mutation, fetch the head SHA again:
-
-- If unchanged, publish.
-- If changed, stop mutation, refresh the diff, re-anchor affected comments, and revalidate findings.
-
-### 6. Publish one friendly review
-
-Follow [`github-state.md`](github-state.md):
-
-- **No pending review:** create the review and inline comments in one REST request with `event: "COMMENT"`.
-- **Pending review exists:** remove discarded own drafts, append verified new comments, set the final body when submitting, submit with `event: "COMMENT"`.
-- Post existing-thread replies only after the main review succeeds.
-- If a partial write fails, inspect actual GitHub state before retrying to avoid duplicates.
-
-If the user asked only for GitHub-pending drafts, stop after creating/appending PENDING — do not submit.
-
-### 7. Verify and report
-
-- Fetch the submitted review and its inline comments through the API.
-- Confirm no pending review remains after publish (unless draft-only was requested).
-- Return the review URL and direct URLs for every new inline comment/reply.
-- Explicitly state that no code was changed.
-
-## Review body style
-
-- Start with `## Review findings`.
-- Short outcome sentence (e.g. “I found a few important issues worth addressing.”).
-- Severity-ordered findings with impact — do not paste full inline comments.
-- Short “What looks solid” when useful; mention one standout design choice when praise is earned.
-- Do not say “Request changes” or “blocking review.”
-- Conventional Comments are for inline comments and thread replies only.
-
-End with a short, natural handoff:
-
-- Invite re-request of review when ready: “When this is ready, feel free to re-request my review.”
-- If ambiguity/trade-offs would be faster live, offer one low-pressure route with one word (`sync`, `huddle`, or `chat`) — topic-specific, not canned.
-- Do not stack “sync/huddle/meet” or invite a meeting when fixes are straightforward.
-
-Example closing:
-
-```text
-The read-only support boundary and staged completion flow are thoughtfully separated. When the points above are ready, feel free to re-request my review. If the historical completion semantics would be easier to settle live, ping me for a quick huddle.
-```
-
-If no valid findings remain: publish a concise COMMENT summary only when the user explicitly asked to publish; otherwise return “no findings” without creating review noise.
-
-## Completion checklist
-
-- [ ] Fresh ledger verified on recorded head SHA
-- [ ] Drafts reconciled (kept / dropped / added)
-- [ ] Every posted body matches Conventional Comments
-- [ ] Submit event is `COMMENT` only, or explicit draft-only state remains PENDING
-- [ ] Review + discussion URLs reported
-- [ ] No application code changed
+- `## Review findings`, one outcome sentence, severity-ordered findings with impact (don't paste inline bodies), optional short "What looks solid".
+- Never "Request changes" / "blocking review". Conventional Comments only for inline comments and replies.
+- Close with "When this is ready, feel free to re-request my review." Offer at most one topic-specific live route (`sync`, `huddle`, or `chat`) only when trade-offs are faster live; none for straightforward fixes.

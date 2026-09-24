@@ -1,26 +1,15 @@
-# Dependabot PR commands
+# @dependabot commands
 
-Comment `@dependabot <command>` on the PR. Prefer native `gh pr merge` / auto-merge for merging — `@dependabot merge` (and close/reopen) were removed Jan 2026.
+`@dependabot merge`, `close`, `reopen` were removed (Jan 2026) — merging is a human `gh pr merge` / auto-merge action, never this skill's.
 
-## Individual PRs
+| Command                                                    | Effect                                                   |
+| ---------------------------------------------------------- | -------------------------------------------------------- |
+| `@dependabot rebase`                                       | Rebase onto target (prefer when review state matters)    |
+| `@dependabot recreate`                                     | Rebuild from scratch — overwrites manual edits           |
+| `@dependabot ignore this dependency`                       | Close + stop updates for that dep                        |
+| `@dependabot ignore this major/minor/patch version`        | Close + stop that version band                           |
+| `@dependabot show DEPENDENCY_NAME ignore conditions`       | Show stored ignores                                      |
+| `@dependabot ignore DEPENDENCY_NAME` [+ version band]      | Grouped PR: drop dep from the group                      |
+| `@dependabot unignore *` / `DEPENDENCY_NAME` [+ condition] | Grouped PR: clear ignores; bot closes and opens fresh PR |
 
-| Command                                              | Effect                                          |
-| ---------------------------------------------------- | ----------------------------------------------- |
-| `@dependabot rebase`                                 | Rebase onto target                              |
-| `@dependabot recreate`                               | Recreate from scratch (overwrites manual edits) |
-| `@dependabot ignore this dependency`                 | Close + stop future updates for that dep        |
-| `@dependabot ignore this major/minor/patch version`  | Close + stop that version band                  |
-| `@dependabot show DEPENDENCY_NAME ignore conditions` | Show stored ignores                             |
-
-## Grouped PRs
-
-| Command                                                    | Effect                                                |
-| ---------------------------------------------------------- | ----------------------------------------------------- |
-| `@dependabot ignore DEPENDENCY_NAME` [+ version band]      | Drop that dep from the group going forward            |
-| `@dependabot unignore *` / `DEPENDENCY_NAME` [+ condition] | Clear ignores; Dependabot closes and opens a fresh PR |
-
-## Tips
-
-- Prefer YAML `ignore` over comment ignores for team visibility.
-- Extra commits on the bot branch: include `[dependabot skip]` so Dependabot can rebase over them.
-- Prefer `rebase` over `recreate` when review state matters and there are no conflicting manual edits.
+Manual commits on the bot branch: include `[dependabot skip]` so Dependabot can still rebase.

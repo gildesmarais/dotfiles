@@ -1,48 +1,36 @@
 ---
 name: dependabot
-description: >
-  GitHub Dependabot configuration and PR triage. Use when creating or optimizing
-  dependabot.yml, grouping updates, or assessing/fixing fallout on a Dependabot PR.
-  Stops before approve/merge. Prefer repo-local ownership generators when the repo
-  already manages CODEOWNERS/Dependabot from a single source of truth.
+description: >-
+  GitHub Dependabot configuration and PR triage. Use to create or optimize
+  dependabot.yml, group updates, or assess/fix fallout on a Dependabot PR. Stops
+  before approve/merge.
 ---
 
 # Dependabot
 
-Ship-domain helper for Dependabot config and Dependabot PR triage.
-
 ## Pick branch
 
-| User intent                              | Branch        |
-| ---------------------------------------- | ------------- |
-| Create/optimize `.github/dependabot.yml` | **configure** |
-| Assess / fix fallout on a Dependabot PR  | **triage**    |
+| User intent                                                   | Branch        |
+| ------------------------------------------------------------- | ------------- |
+| Create/optimize `.github/dependabot.yml`, group updates       | **configure** |
+| Assess / fix fallout on a Dependabot PR ("bot bump broke CI") | **triage**    |
 
-Ambiguous routing:
+## Shared prep
 
-| User says                                             | Branch                                     |
-| ----------------------------------------------------- | ------------------------------------------ |
-| "dependabot.yml", "group updates", "ecosystem"        | **configure**                              |
-| "dependabot PR", "bot bump broke CI"                  | **triage**                                 |
-| "generate CODEOWNERS + dependabot" from ownership SoT | stop → repo's ownership tooling if present |
+- Repo already generates Dependabot/CODEOWNERS from one ownership SoT → use that repo-local generator; never hand-edit its output.
+- Never approve, enable auto-merge, or merge. Never rewrite/amend bot commits.
+- No raw JSON or full Actions logs in context.
 
-## Shared contract
+## Branch reference
 
-- Progressive load: only the matched branch reference.
-- Never paste raw JSON or full Actions logs into context.
-- Never approve or merge from this skill.
-- If the repo already generates Dependabot/CODEOWNERS from ownership config, prefer that tool over hand-editing.
-
-## Context pointers
-
-- **configure** — [`reference/configure.md`](reference/configure.md); load [`reference/yml-keys.md`](reference/yml-keys.md) only when editing keys.
-- **triage** — [`reference/triage.md`](reference/triage.md); load [`reference/pr-commands.md`](reference/pr-commands.md) only when posting `@dependabot` commands.
+- **configure** — [`reference/configure.md`](reference/configure.md); [`reference/yml-keys.md`](reference/yml-keys.md) only when editing keys.
+- **triage** — [`reference/triage.md`](reference/triage.md); [`reference/pr-commands.md`](reference/pr-commands.md) only when posting `@dependabot` commands.
 
 ## Handoff
 
-- CI fallout on a Dependabot PR → `pull-request` **fix-ci** (separate fix commits; never rewrite bot commits).
-- Conflicts on a Dependabot PR → `pull-request` **conflicts**, or `@dependabot rebase` per pr-commands when no manual commits yet.
-- Multi-repo discovery of stale Dependabot PRs → `pr-sweep` (read-only).
+- CI fallout → `pull-request` **fix-ci** (separate fix commits on top of bot commits).
+- Conflicts → `@dependabot rebase` when no manual commits yet; otherwise `pull-request` **conflicts**.
+- Multi-repo stale Dependabot discovery → `pr-sweep`.
 
 ## Completion criteria
 

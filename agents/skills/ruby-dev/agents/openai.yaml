@@ -1,4 +1,4 @@
 interface:
   display_name: "Ruby Dev"
-  short_description: "Ruby implementation and validation workflow"
-  default_prompt: "Use $ruby-dev to investigate, change, and validate Ruby code with small safe edits and repo-native commands. Route design to $architecture; route assure/ship asks to $review.gil; prefer review tests or finish when those are the ask."
+  short_description: "Ruby deltas for $dev"
+  default_prompt: "Use $dev to implement and validate this Ruby change; $ruby-dev adds Ruby deltas."

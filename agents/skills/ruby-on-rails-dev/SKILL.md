@@ -1,49 +1,37 @@
 ---
 name: ruby-on-rails-dev
 description: >-
-  Always load $dev first (with $ruby-dev); this overlay is deltas only. Rails
-  overlay for API/controller/service/policy/serializer/worker changes — Rails
-  architecture, tenancy, authz, and API contracts.
+  Rails overlay loaded by $dev with ruby-dev (deltas only): controllers, routes,
+  services, policies, serializers, workers, migrations, tenancy, authz, and API
+  contracts.
 ---
 
 # Ruby on Rails Dev
 
-**Stop:** read `$dev` Shared prep before any delta.
+**Stop:** read `$dev` Shared prep before any delta. Loaded with `ruby-dev`; design or private-seam cases → `$dev` → `architecture`.
 
-## Purpose and Routing
+Scope: controllers, routes, models, services, policies, serializers, workers/mailers/jobs, migrations, framework config loaders, cache-key composition, encryption cutovers. Require `review.gil` `security` when authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, or privileged ops are in scope.
 
-- Overlay loaded via `$dev` with `$ruby-dev`; keep Ruby-general workflow in `$ruby-dev` and shared classify / one-surface / design / API truth / compat / git safety in `$dev`.
-- Apply to controllers, routes, models, services, policies, serializers, workers/mailers/jobs, migrations, framework config loaders, cache-key composition, and encryption cutovers.
-- Follow `AGENTS.md` routing and precedence.
-- Require `$review.gil` **`security`** when authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, or privileged ops are in scope.
-- Design or private-seam cases → `$dev` → `$ruby-dev` → `architecture`. Do not invent adapter or regex craft here.
+## Implementation deltas
 
-## Implementation Deltas
-
-- Keep controllers thin: validate params, authorize, delegate, render.
-- Keep business logic in `app/services` with explicit entrypoints.
-- Keep strong params explicit and serializer output contract-driven.
-- Keep authorization deny-by-default; keep workers idempotent and retry-safe.
-- Avoid interpolated SQL; use parameter binding/Arel.
-- If structured logging changes, verify redaction behavior.
+- Controllers thin: validate params, authorize, delegate, render. Business logic in `app/services` with explicit entrypoints.
+- Strong params explicit; serializer output contract-driven.
+- Authorization deny-by-default; workers idempotent and retry-safe.
+- No interpolated SQL; bind parameters / Arel.
+- Structured logging changes → verify redaction.
 - Name invisible lifecycle contracts (config variants, reload dependencies, cache identity) instead of silent skip.
 - Complete cutovers: replacement seam before removal.
-- Prefer closed-set access and audience-split payloads over presence and one-bag disclosure.
-- Validation, execution, and the published API contract must see the same normalized input and accepted closed set.
+- Closed-set access and audience-split payloads over presence checks and one-bag disclosure.
+- Validation, execution, and the published API contract see the same normalized input and accepted closed set.
 
-## Rails Testing
+## Rails testing
 
-- Service changes: service specs.
-- Endpoint/controller changes: request specs; add policy coverage when authz changes.
-- Serializer changes: serializer specs.
-- Worker changes: worker specs with idempotency and retry assertions.
-- If broader coverage is skipped, state the gap and risk explicitly.
+- Service → service specs. Endpoint/controller → request specs (+ policy coverage when authz changes). Serializer → serializer specs. Worker → worker specs asserting idempotency and retry.
+- Skipped broader coverage → state the gap and risk.
 
-## API Docs (`rswag`)
+## API docs (`rswag`)
 
-One `response` per status code. Rswag stores responses in a map keyed by status, so a second `response` with the same code in that operation overwrites the first. Put every variant of that status inside the one block — each as a uniquely named example plus its own nested context, `let`s, and `run_test!`. The example name is the examples-map key; a duplicate name overwrites the earlier example.
-
-Declare the schema once on that shared response. If bodies differ, widen it (`additionalProperties` or `oneOf`) so every example still validates.
+One `response` per status code: rswag keys responses by status, so a second same-code `response` overwrites the first. Put every variant inside that one block — each a uniquely named example (the examples-map key; duplicate names overwrite) with its own nested context, `let`s, and `run_test!`. Declare the schema once; widen it (`additionalProperties` or `oneOf`) so every example validates.
 
 ```ruby
 response '422', 'Unprocessable Entity' do
@@ -61,9 +49,8 @@ response '422', 'Unprocessable Entity' do
 end
 ```
 
-A second `response` with the same code is only for a case that must stay out of the document (`document: false`). Different status codes stay as separate blocks. Regenerate generated OpenAPI from the request specs; do not hand-edit the generated file. For enums or constrained fields, document format/defaults/example payloads at schema level.
+A second same-code `response` only for a case kept out of the document (`document: false`). Regenerate OpenAPI from request specs; never hand-edit the generated file. Document format/defaults/example payloads for enums or constrained fields at schema level.
 
-## Tooling and Completion
+## Handoff deltas
 
-- Prefer the repository's established validation entrypoints (same stance as `$ruby-dev`).
-- In handoff, include: Rails-layer impact, authz/tenancy impact, API contract impact, security-skill invocation status, and any validation gaps.
+Rails-layer impact, authz/tenancy impact, API contract impact, security-skill invocation status, validation gaps.

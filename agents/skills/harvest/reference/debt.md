@@ -1,19 +1,8 @@
-# Debt Reference
+# Debt
 
-Log and maintain architectural friction, structural rot, and technical debt in `.agents/debt-ledger.md`.
+Debt that can't be fixed in the current scope goes to `<project>/.agents/debt-ledger.md` (create `.agents/` if missing), where `product-owner` admits it under the Health Capacity Budget ([`../../CONTEXT.md`](../../CONTEXT.md)).
 
-## Purpose
-
-When a session uncovers technical debt, leaky boundaries, unmeasured hot paths, or dead compatibility shims that cannot be fixed within the current task's scope, do not bury them in ephemeral chat. Log them into `.agents/debt-ledger.md` so they are visible to `Intent` (`orchestrator` / `triage`) and proactively admitted by `product-owner` under the **Health Capacity Budget**.
-
-## Ledger Location
-
-- File: `<project>/.agents/debt-ledger.md` (project root)
-- If `.agents/` directory does not exist in the project, create it.
-
-## Debt Entry Schema
-
-Each item logged in `.agents/debt-ledger.md` follows this standard shape:
+## Entry schema
 
 ```markdown
 ### [DEBT-<NUMBER>] <Short Imperative Title>
@@ -27,20 +16,19 @@ Each item logged in `.agents/debt-ledger.md` follows this standard shape:
 - **Status:** `open` | `admitted` | `resolved`
 ```
 
-## Categories
+## Category → remediation route
 
-| Category   | Typical Signal                                                         | Remediation Route                                    |
-| :--------- | :--------------------------------------------------------------------- | :--------------------------------------------------- |
-| `boundary` | Leaky module seams, circular imports, god objects, multi-table queries | `architecture deep-modules` or `refactor-boundaries` |
-| `types`    | Primitive obsession, stringly-typed IDs, unsafe JSON bags              | `architecture refactor-types`                        |
-| `perf`     | Unmeasured hot paths, N+1 queries, runaway allocations                 | `architecture performance`                           |
-| `legacy`   | Superseded models, deprecated APIs, dead compatibility shims           | `review.gil quality` (legacy lens)                   |
-| `test`     | Flaky tests, missing integration seams, testing implementation details | `review.gil quality` (tests lens)                    |
+| Category   | Signal                                                         | Route                                                |
+| ---------- | -------------------------------------------------------------- | ---------------------------------------------------- |
+| `boundary` | Leaky seams, circular imports, god objects, multi-table queries | `architecture deep-modules` or `refactor-boundaries` |
+| `types`    | Primitive obsession, stringly-typed IDs, unsafe JSON bags      | `architecture refactor-types`                        |
+| `perf`     | Unmeasured hot paths, N+1, runaway allocations                 | `architecture performance`                           |
+| `legacy`   | Superseded models, deprecated APIs, dead compat shims          | `review.gil quality` (legacy lens)                   |
+| `test`     | Flaky tests, missing integration seams, implementation-detail tests | `review.gil quality` (tests lens)               |
 
-## Governance Ingress
+## Lifecycle
 
-0. **Re-check inherited findings against HEAD before logging them.** A finding carried in from a prior review, plan, or session is a claim about a past tree, not the current one — re-run the gate or re-read the file first. Logging an already-resolved finding manufactures fake debt and buys a cleanup tranche that has nothing to clean.
-1. **Emit:** Append new items to `.agents/debt-ledger.md` with status `open`.
-2. **Prioritize:** `product-owner` consults this file when reviewing roadmap capacity.
-3. **Admit:** Under the **Health Capacity Budget** (default: ~20% capacity or 1 debt tranche per 3–4 feature tranches), `product-owner` admits high-friction items as `Build Now`.
-4. **Resolve:** When an admitted tranche is delivered by `$dev` and passes Assure, update status to `resolved` with commit SHA. When a commit or pull request references `Resolves: DEBT-<NUMBER>` or `Fixes [DEBT-<NUMBER>]`, `orchestrator run` and `pull-request resolve` automatically reconcile `<project>/.agents/debt-ledger.md`: find the matching entry, set **Status** to `resolved`, and record the associated commit hash. Halt only if the reference is ambiguous or no matching ledger entry exists; do not ask for a manual ledger edit.
+0. **Re-check inherited findings against HEAD** (re-run the gate or re-read the file) before logging — logging an already-resolved finding manufactures fake debt.
+1. Append with status `open`.
+2. `product-owner` admits high-friction items as Build Now under the Health Capacity Budget.
+3. Delivered + Assure passed → `resolved` with commit SHA. Commits/PRs referencing `Resolves: DEBT-<NUMBER>` or `Fixes [DEBT-<NUMBER>]` are reconciled automatically by `orchestrator run` and `pull-request resolve` (status `resolved` + commit hash); halt only on ambiguous or missing entries — never ask for a manual ledger edit.

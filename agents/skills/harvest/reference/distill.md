@@ -1,41 +1,25 @@
-# Distill Reference
+# Distill
 
-Turn session signals (user corrections, retry loops, review findings, unexpected pitfalls) into distilled preventive mantras.
+## Mantra standard
 
-## The Mantra Standard
+Format per [`../../CONTEXT.md`](../../CONTEXT.md) (Preventive Mantra): `"When X, always Y to prevent Z."` or `"Avoid X; use Y instead because Z."` — 1–2 sentences. Reject incident writeups, stack traces, debug stories, vague platitudes ("test edge cases").
 
-Every distilled lesson must be written as an **imperative preventive mantra**:
+Skill edits are clean cutovers: delete superseded aliases, old execution names, and compat wrappers immediately — never keep backward compat in skills.
 
-- **Checklist item:** `"When X, always Y to prevent Z."`
-- **Anti-pattern:** `"Avoid X; use Y instead because Z."`
-- **Zero backward compat in skills:** Clean cutovers only — delete superseded aliases, old execution names, and compat wrappers immediately to prevent prompt bloat and agent hesitation.
-- **Length:** 1–2 concise sentences maximum.
-- **Tone:** An instruction an expert engineer recalls before repeating the mistake.
-- **Reject:** Raw incident writeups, stack traces, step-by-step debug stories, or vague platitudes ("test edge cases").
+## Scope filter
 
-## Generalization & Scope Filter
+| Scope           | Condition                                              | Transform                                       | Destination                                                    |
+| --------------- | ------------------------------------------------------ | ----------------------------------------------- | -------------------------------------------------------------- |
+| Project-local   | This repo's scripts, internal API, build tool          | Keep exact paths, flags, names, invariants      | `<project>/AGENTS.md` or `<project>/.agents/rules/*.md`        |
+| Global arch     | Seam leakage, dual ownership, type modeling, perf      | Strip repo nouns; language-free law             | `~/.dotfiles/agents/skills/architecture/reference/<branch>.md` |
+| Global review   | Detection heuristic, security trap, test gap, dead compat | Inspection check / lens finding              | `~/.dotfiles/agents/skills/review.gil/reference/<lens>.md`     |
+| Global language | Idiom, compiler quirk, gem/crate/package behavior      | Runtime-specific checklist item                 | `~/.dotfiles/agents/skills/<lang>-dev/reference.md`            |
+| Global workflow | Git, PR sizing, CI triage, branch hygiene              | SDLC checklist item                             | `~/.dotfiles/agents/skills/<skill>/reference/...`              |
 
-Before placing an item, determine scope:
+## Procedure
 
-| Scope                   | Condition                                                         | Transformation                                                   | Destination                                                    |
-| :---------------------- | :---------------------------------------------------------------- | :--------------------------------------------------------------- | :------------------------------------------------------------- |
-| **Project-Local**       | Specific to this repo, custom script, internal API, or build tool | Keep exact paths, flags, file names, and domain invariants       | `<project>/AGENTS.md` or `<project>/.agents/rules/*.md`        |
-| **Global Architecture** | Seam leakage, dual ownership, type modeling, measured perf        | Strip all repo nouns; express as language-free architectural law | `~/.dotfiles/agents/skills/architecture/reference/<branch>.md` |
-| **Global Review**       | Detection heuristic, security trap, test gap, dead compat         | Express as inspection check / review lens finding                | `~/.dotfiles/agents/skills/review.gil/reference/<lens>.md`     |
-| **Global Language**     | Language idiom, compiler quirk, gem/crate/package behavior        | Express as runtime-specific syntax/perf checklist item           | `~/.dotfiles/agents/skills/<lang>-dev/reference.md`            |
-| **Global Workflow**     | Git, PR sizing, CI triage, branch hygiene                         | Express as SDLC checklist item                                   | `~/.dotfiles/agents/skills/<skill>/reference/...`              |
-
-## Ingress Procedure
-
-1. **Synthesize:** Draft the candidate mantra from the session signal.
-2. **Read Fresh:** View the target reference file to inspect current checklist/anti-patterns.
-3. **Deduplicate:** Search for existing coverage.
-   - If already covered or a near-clone: **DROP**.
-   - If too narrow/trivial: **DROP**.
-   - If genuine new wisdom: append to the appropriate `## Checklist` or `## Anti-patterns` section.
-4. **Cap:** At most 3 new mantras per session unless user explicitly asks for more.
-5. **Sync Store:** If editing global store files in `~/.dotfiles/agents/skills/`, run:
-   ```sh
-   skill doctor
-   rcup
-   ```
+1. Draft the mantra from the signal.
+2. Read the target fresh. Global arch / review targets: follow `architecture/reference/growth.md` / `review.gil/reference/growth.md` Harvest (stage in that skill's `learning-log.md` → promote or drop).
+3. Covered, near-clone, or too narrow → drop; else append to `## Checklist` or `## Anti-patterns`.
+4. Cap: ≤3 new mantras per session unless the user asks for more.
+5. Global store edit → `skill doctor`, then `rcup` (drift → `skill backfill <name>` → `rcup`).

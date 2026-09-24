@@ -1,66 +1,23 @@
 # Project Update
 
-Turn project notes into a short, comparable stakeholder update.
+Project notes, status reports, meeting outcomes, Jira updates → one short update comparable across projects for executives, managers, product owners, and engineers.
 
-## When to Use
-
-Use this branch when the user wants a project update distilled from:
-
-- project notes
-- status reports
-- meeting outcomes
-- Jira updates
-- bullet points
-
-Assume the audience includes executives, managers, product owners, and engineers.
-
-## Output Rules
-
-- Maximum 200 characters unless the user explicitly asks for a longer update.
-- Focus on outcomes, not activities.
-- Remove implementation detail.
-- Use plain business language.
-- Make updates comparable across projects.
-- Default to returning only the final distilled update.
-- Prefer concrete numbers when they materially improve scan value.
-- Keep the tone neutral and operational rather than persuasive or audience-calibrated.
-
-## Keep Only
-
-Retain only:
-
-- current status
-- key progress
-- major risk or blocker
-- next meaningful milestone
-
-If one of these elements is missing, omit unnecessary detail, infer cautiously, and keep the wording conservative.
-
-## Required Format
-
-Use this format:
+## Required format
 
 `<Project> | <Status> | <Progress> | <Risk/Blocker> | <Next>`
 
-Status values:
+Status: `🟢 On Track` | `🟡 Attention Needed` | `🔴 At Risk`
 
-- `🟢 On Track`
-- `🟡 Attention Needed`
-- `🔴 At Risk`
+## Rules
 
-## Distillation Standard
-
-- Prefer concrete business progress over engineering task lists.
-- Summarize the most decision-relevant blocker only.
-- Use the next milestone, not a generic next action.
-- Keep wording compact enough that multiple project updates can be scanned side by side.
-- Use the project name the input already uses unless the user asks to rename it.
-- If progress is real but a policy or dependency threatens the next batch or milestone, prefer `🟡 Attention Needed` over `🟢 On Track`.
-- Use blocker phrasing that reflects the operational constraint, for example "customer sign-off gating rollout" or "running short on rollout candidates".
-- Keep blocker language system-first where possible, but do not add diplomacy, manager-calming language, or long-form explanation.
+- ≤200 characters unless the user asks for longer.
+- Outcomes over activities; no implementation detail or engineering task lists; plain business language; concrete numbers when they aid scanning.
+- Keep only status, key progress, the single most decision-relevant blocker, and the next meaningful milestone (not a generic next action). Missing element → infer cautiously, conservative wording.
+- Use the input's project name unless asked to rename.
+- Real progress but a policy or dependency threatens the next batch/milestone → `🟡 Attention Needed`, not `🟢 On Track`.
+- Blocker phrasing is operational and system-first ("customer sign-off gating rollout", "running short on rollout candidates"); neutral tone — no diplomacy, manager-calming, or persuasion.
 
 ## Examples
 
 - `Identity | 🟡 Attention Needed | SSO complete, RBAC underway | Legacy integrations slowing rollout | Pilot in July`
 - `Platform | 🟢 On Track | CI/CD migration finished | No major risks | Decommission old runners`
-- `Security | 🔴 At Risk | Audit findings identified | Resource constraints | Remediation plan approval`

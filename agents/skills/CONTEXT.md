@@ -1,351 +1,115 @@
-# SDLC Skills Domain
+# Skills Store Vocabulary
 
-## Language
+Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 
-**Pull Request** (skill noun: `pull-request`):
-A GitHub pull request lifecycle action on a remote PR or branch destined to become one.
-Not: PR, gh-pr, open-pr
+**Branch** (skill-internal): a verb-path through a skill, selected from the prompt. Not a git branch.
 
-**Review** (skill noun: `review.gil`):
-Local analysis of a change (working tree, branch, or commit range) that produces findings or merge-prep work. Executions: `findings` (no GitHub) | `publish` (e2e → GitHub `COMMENT`) | `quality` (merge-prep code changes). Verified-ledger posting stays on `pull-request` **`comment`**.
-Not: review (common-tool name), code-review (external), gh-review, finish-review
+## Ship / Assure
 
-**Branch** (skill-internal):
-A distinct verb-path through a skill, selected from the user prompt. Not a git branch.
-Not: sub-skill, mode, sub-path
+**Pull Request** (`pull-request`): lifecycle action on a remote PR or branch destined to become one.
 
-**Comment** (`pull-request` branch):
-Post verified findings as new GitHub review comments (usually pending).
-Not: review.gil (skill noun), critique, feedback
+**Review** (`review.gil`): local analysis of a working tree, branch, or commit range. Executions: `findings` | `publish` | `quality`.
 
-**Reply** (`pull-request` branch):
-Respond on an existing review thread without introducing a new finding.
-Not: comment (reserved), resolve
+**Findings** (`review.gil`): read-only production-readiness report — no edits, no GitHub writes. Baseline: [`review.gil/reference/finish.md`](review.gil/reference/finish.md). Not: `finish` (baseline reference, not an execution).
 
-**Resolve** (`pull-request` branch):
-Close out review feedback: assess threads, change code when valid, push, mark threads resolved with commit refs.
-Not: address, closeout
+**Publish** (`review.gil`): end-to-end PR review → reconcile drafts → submit GitHub `COMMENT` (or leave PENDING when draft-only). Not: `pull-request` `comment`.
 
-**Open** / **Slice** (`pull-request` branches):
-Open = commit session work + push + create PR. Slice = rebuild one messy branch into intent-based smaller PRs.
-Not: pr-opener, pr-slicer, split-to-prs
+**Quality** (`review.gil`): merge-prep execution — audit → plan → boy-scout refactors + tests → repo gates. Changes code; never inferred from "review".
 
-**Fix-ci** (`pull-request` branch):
-Repair failing GitHub Actions on a PR — failing-job logs only, classify, fix+push, watch once.
-Not: explaining CI without a fix ask (report-only); whole-run log dumps
+**Lens** (`review.gil` `tests` / `perf` / `security` / `legacy`): findings rubric applied to the same diff prep. Not: a skill per lens.
 
-**Conflicts** (`pull-request` branch):
-Rebase/merge a PR branch onto its base; preserve intents; push (lease when rebase).
-Not: starting fix-ci or resolve from this branch
+**Legacy** (lens; always under `quality`): dead compat — dual public names, superseded store/wire hydrate, deprecated markers. Findings report it; `quality` deletes it without shims. Not: `refactor-legacy`.
 
-**Unblock chain** (`pull-request` routing rule, not a branch):
-conflicts → resolve → fix-ci in order; refresh live PR state each pass; never approve/merge.
-Not: a dedicated unblock-pr skill; autopilot that merges
+**Comment** (`pull-request`): post already-verified findings as review comments (usually pending). Not: `review.gil` `publish`.
 
-**Dependabot** (skill noun: `dependabot`):
-Store-owned Dependabot configure + PR triage. Branches: `configure` | `triage`.
-Not: third-party mega-guide; hand-editing when the repo already generates manifests from ownership config
+**Reply** (`pull-request`): respond on an existing thread; no new findings, no code.
 
-**Configure** / **Triage** (`dependabot` branches):
-Configure = draft/optimize `dependabot.yml`. Triage = risk skim + fallout via `pull-request` fix-ci/conflicts; report approve-readiness; stop before approve/merge.
-Not: rewriting Dependabot commits; auto-merge from triage
+**Resolve** (`pull-request`): assess threads, fix valid ones, push, mark resolved with commit refs.
 
-**PR Sweep** (skill noun: `pr-sweep`):
-Read-only multi-repo attention ledger (Intent). Branch: `report`. Compact rows: repo, PR, blocker, store invocation.
-Not: fixing, commenting, or inlining diffs/logs; a `pull-request` branch
+**Open** / **Slice** / **Retitle** (`pull-request`): commit + push + create PR | rebuild one branch into intent-based smaller PRs | narrative-only title/body update.
 
-**Sweep ledger**:
-One-row-per-item output from `pr-sweep`; invocations only — no diffs or CI excerpts.
-Not: a todo list the sweep itself executes
+**Fix-ci** (`pull-request`): repair failing Actions — failing-job logs only, classify, fix + push, watch once. Not: explaining CI without a fix ask (report-only).
 
-**Findings** (`review.gil` execution):
-Read-only production-readiness report — no boy-scout edits, no GitHub writes. Baseline lens: [`review.gil/reference/finish.md`](review.gil/reference/finish.md).
-Not: finish (old execution name), quality (changes code)
+**Conflicts** (`pull-request`): rebase/merge onto base; preserve intents; push (lease when rebased).
 
-**Publish** (`review.gil` execution):
-End-to-end PR review → reconcile drafts → submit GitHub `COMMENT` (or leave PENDING when draft-only). Owns Assure's GitHub path.
-Not: pull-request `comment` (posts an already-verified ledger)
+**Unblock chain** (`pull-request` routing rule, not a branch): conflicts → resolve → fix-ci; live PR state each pass; never approve/merge.
 
-**Quality** (`review.gil` execution):
-Merge-prep **execution** — audit → plan → boy-scout refactors + tests → repo gates.
-Not: findings (assessment-only), cleanup (too vague)
+**Dependabot** (`dependabot`): `configure` (draft/optimize `dependabot.yml`) | `triage` (risk skim + fallout via `pull-request` fix-ci/conflicts; approve-readiness only). Never auto-merge or rewrite bot commits.
 
-**Lens** (`review.gil` under `findings` / `quality`: `tests` / `perf` / `security` / `legacy`):
-A specialized findings rubric applied to the same local diff prep as `findings`.
-Not: dedicated skill per lens; treating `finish` as an execution
+**PR Sweep** (`pr-sweep`, branch `report`): read-only multi-repo attention ledger. **Sweep ledger** rows: repo, PR, blocker, store invocation — no diffs or CI excerpts. Not: a `pull-request` branch.
 
-**Legacy** (`review.gil` lens, always under `quality`):
-Dead compat — dual public names, superseded store/wire hydrate, deprecated markers. Findings report it; `quality` deletes it and invents no shims.
-Not: cleanup, tech-debt, dedicated legacy skill, `refactor-legacy` under `architecture`
+**Release** (`release`, branch `notes`): notes from Conventional Commits in a merged ship range, grouped Breaking → Features → Fixes → other. Notes-only.
 
-**Handoff**:
-`publish` → `review.gil`; verified-ledger posting → `pull-request` **`comment`** — never reverse. Structural findings may **name** an `architecture` craft branch as remediation — naming is not running. Land ask + readiness Yes/Conditional → `pull-request` **`open`**. Unblock → conflicts → resolve → fix-ci. `pr-sweep` → ledger only → `pull-request` / `dependabot` / `review.gil`. Dependabot CI fallout → `pull-request` **`fix-ci`**.
+## Explain
 
-# Communication Skills Domain
+**Communication** (`communication`): draft or distill a message for an audience. Branches: `one-on-one` | `slack-message` | `project-update` | `external-message` (no internal jargon, no unconfirmed commitments; marketing/press out of scope).
 
-## Language
+**Docs** (`docs`): verify and rewrite an existing document against the repo. Branches: `editor` (README, contributor, operator, feature docs, runbooks) | `architecture` (ADRs, design notes, diagrams — verify/rewrite only, no net-new HLD/ADR) | `evidence` (control/auditor packs). Not: the `architecture` skill.
 
-**Communication** (skill noun: `communication`):
-Drafting or distilling a written communication artifact for a specific audience and format.
-Not: comms, messaging
+**Doc-class** (shared by `docs` branches): `accurate` | `partial` | `misleading` | `obsolete`, classified before rewriting.
 
-**One-on-one** (`communication` branch):
-Summarize raw 1:1 notes into a compact, speaker-aware bullet list.
-Not: notes, minutes
+**Evidence ladder** (branch-local): ordered trusted sources; `editor` starts at code/tests, `architecture` at live runtime.
 
-**Slack-message** (`communication` branch):
-Refine rough notes into an internal Slack-ready message for a tech organization, including sensitive/escalation framing.
-Not: message (skill artifact), announcement
+## Intent
 
-**Project-update** (`communication` branch):
-Distill project notes into a single comparable status line.
-Not: status-report, update
+**Triage** (`triage`, branch `intake`): incident/ops evidence → **Triage Ledger** → `product-owner` `gate` and/or `$dev` `plan`. Playbooks under `reference/`. Never implements.
 
-**External-message** (`communication` branch):
-Draft a customer, partner, or public-facing message with no internal jargon, no unconfirmed commitments, legal-safe tone. Marketing/PR-press out of scope.
-Not: customer-message, support-reply
+**Prompt-compiler** (`prompt-compiler`, branch `compile`): raw intent → `.agents/compile/<slug>.yaml`, then stop. Never plans or executes.
 
-**Handoff**:
-`communication` → `docs` **`editor`** when the artifact is a README/runbook, not a message. Never reverse.
+**Intent DTO fields**: `intent_spec.version` · `slug` · `invariants` · `blast_radius.allowed_domains` · `trade_offs.breaking_changes` · `circuit_breaker.approved`. Not: tasks, files, commands, gates, retries, dependencies, statuses.
 
-# Docs Skills Domain
+**Orchestrator** (`orchestrator`, branch `run`): zero-trust execution of `.agents/plan/<slug>.md` phases via `$dev` `implement` workers; exact file bounds, exit-0 gates, one commit per phase, circuit break, one DAG-level Assure. Git commits are execution state; the plan stays immutable.
 
-## Language
+**Lifecycle**: ingest → grill owned intent gaps → `prompt-compiler compile` → `$dev plan` → `orchestrator run` → one DAG-level `review.gil findings`. Repeated failure: reset to last green phase commit and halt.
 
-**Docs** (skill noun: `docs`):
-Verifying and rewriting an existing document against the repository.
-Not: documentation, writing, docs-editor, docs-architecture
+## Product
 
-**Editor** (`docs` branch):
-Public-facing and operational docs — README, contributor, operator, feature docs, runbooks.
-Not: readme, writer
+**Product-owner** (`product-owner`): the only Product skill. Branches: `gate` (default) | `story-slice` | `rebaseline` | `groom`; stubs `prioritize`, `experiment`.
 
-**Architecture** (`docs` branch):
-Architecture-facing docs — ADRs, design notes, diagrams, system overviews. **Verify/rewrite only**; no net-new HLD/ADR author path.
-Not: adr, design (product), authoring greenfield HLD
+**Gate** decision vocabulary: **Build Now** | **Build Later** | **Research Further** | **Reject**, plus Confidence and Forced Challenge.
 
-**Doc-class** (shared):
-Four-way classification (`accurate`, `partial`, `misleading`, `obsolete`) before rewriting. Shared by both branches.
-Not: triage (Intent noun); per-branch classification vocabularies
+**Story-slice**: admitted scope (Build Now / founder override) → Given/When/Then stories with cited interaction budgets before `$dev` `plan`.
 
-**Evidence ladder** (branch-local):
-Ordered source list each branch trusts. `editor` starts at code/tests; `architecture` starts at live runtime.
-Not: one flattened ordering for both branches
+**Golden path** / **click budget** / **mental model** / **persona**: product constraints cited from repo docs — never invented.
 
-**Handoff**:
-`docs` **`architecture`** may precede craft when a mental model needs verifying. End-of-branch readiness → `review.gil`. HLD/ADR author deferred.
+**Health Capacity Budget**: ~20% capacity (or 1 debt tranche per 3–4 feature tranches) for high-friction items from `.agents/debt-ledger.md`.
 
-# Intent Skills Domain
+## Build / Solution
 
-## Language
+**Dev** (`dev`): Build router, branches `plan` | `implement`. Owns classify, route, validation, phase commits, API truth, observability/security cues, post-delivery Assure. `plan` procedure: `dev/reference/plan-pipeline.md`.
 
-**Triage** (skill noun: `triage`):
-Intent intake — incident/ops evidence → Triage Ledger → `product-owner` **`gate`** and/or `$dev` **`plan`**. Branch: **`intake`**; playbooks under `reference/`. Does not implement or answer "should we build X?".
-Not: Doc-class; implementing; conflating with `jira-ticket` / `prompt-compiler`
+**Classification**: `surgical` | `design` | `review-hand-off`. **Design** = structural/type/perf craft earned → `architecture`. Axioms ride along on every `implement`.
 
-**Intake** (`triage` branch):
-Default verb-path: evidence checklist, route table, required Triage Ledger, one-way handoff.
-Not: peer branches duplicating handoff
+**Language-runtime** (`ruby-dev`, `rust-dev`, `swift-dev`, `typescript-dev`) and **Overlay** (`ruby-on-rails-dev`, `swiftui-dev`): deltas loaded by `$dev`. Not: Build entries.
 
-**Prompt-compiler** (skill noun: `prompt-compiler`):
-Compiles raw intent into a persisted `intent_spec` DTO: invariants, allowed blast radius, breaking-change posture, and circuit-breaker consent state. It never plans or executes implementation work.
-Not: technical discovery; task graphs; worker dispatch
+**API truth**: ladder repo docs → Dash → Context7 → pack secondary → unknown; warn once on first material fallthrough per session.
 
-**Compile** (`prompt-compiler` branch):
-Writes `.agents/compile/<slug>.yaml` and stops. `$dev` **`plan`** consumes the DTO and writes `.agents/plan/<slug>.md`; `orchestrator` **`run`** alone dispatches phases.
-Not: task generation, commands, retries, or execution status
+**Security cue**: authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, privileged ops → `review.gil` `security`.
 
-**Intent DTO fields** (`prompt-compiler` emit):
-`intent_spec.version` · `slug` · `invariants` · `blast_radius.allowed_domains` · `trade_offs.breaking_changes` · `circuit_breaker.approved`.
-Not: tasks, files, commands, gates, retries, dependencies, or statuses
+**Observability cue**: APM / traces / error / log links → matching observability MCP when available.
 
-**Lifecycle**:
-Ingest → grill owned intent gaps → `prompt-compiler compile` → `$dev plan` technical discovery → `orchestrator run` via `$dev implement` → one DAG-level `review.gil findings`. On repeated execution failure: reset to the last green phase commit and halt.
-Not: compiler-owned execution mechanics; blind reset; trusting worker green claims; per-phase Assure
+**Architecture** (`architecture`): language-free craft. Branches `philosophy` | `deep-modules` | `refactor-types` | `refactor-boundaries` | `performance` | `design-patterns`; **Structure-survey** is a discovery mode, not a craft branch. **Deepen** signals `deep-modules`. Refactor branches are only `refactor-<concern>`; expansion law: `architecture/reference/growth.md`.
 
-**Handoff**:
-`triage` → `product-owner` **`gate`** and/or `$dev` **`plan`**. `prompt-compiler compile` stops at the Intent DTO; `$dev plan` emits the phase carrier; `orchestrator run` dispatches `$dev implement`. Jira entry → `jira-ticket`. Incident without Jira or Intent DTO → `triage` first. Morning PR attention → `pr-sweep` **`report`** (not `triage`).
-
-**Orchestrator** (skill noun: `orchestrator`):
-Zero-trust execution of `.agents/plan/<slug>.md` phases. Spawns `$dev implement` workers, enforces exact file bounds and exit-0 gates, commits each phase, circuit breaks, then runs one DAG-level Assure pass.
-Git commits are execution state; the plan remains immutable.
-Not: intent compilation; technical discovery; application implementation; mutable status files
-
-**Run** (`orchestrator` branch):
-Default and only branch. Read plan → dispatch → bounds and gate → commit → advance.
-
-**Handoff**:
-`run` → `$dev` `implement` per phase. Full completion → one `review.gil` **`findings`** pass across the cumulative diff.
-Land → `pull-request` **`open`**. Circuit break → halt.
-
-# Product Skills Domain
-
-## Language
-
-**Product-owner** (skill noun: `product-owner`):
-Product domain router — admit/defer/reject scope and protect golden paths. Exactly one Product skill.
-Not: product (parallel skill), product-gate, po
-
-**Gate** (`product-owner` branch, default):
-Admission before non-trivial user-facing scope: Build Now / Build Later / Research Further / Reject.
-Not: prioritize, experiment (stubs)
-
-**Story-slice** (`product-owner` branch):
-Admitted (`Build Now` / founder override) scope → Given/When/Then stories with cited interaction budgets before `$dev` `plan`.
-Not: slicing Rejected or uncited scope; inventing SLAs when docs are silent
-
-**Decision vocabulary** (`gate`):
-**Build Now** | **Build Later** | **Research Further** | **Reject** — plus Confidence and Forced Challenge. Cite repo product docs or `unknown`.
-Not: ship-it, defer, maybe
-
-**Golden path** / **click budget** / **mental model**:
-Product constraints from repo docs (`AGENTS.md`, `ROADMAP.md`, equivalents) — never invented.
-Not: inventing budgets when docs are silent
-
-**Handoff**:
-Intent entrypoints load `product-owner` **`gate`** before non-trivial scope. **Build Now** → `story-slice` when stories/UX AC are needed, else `$dev` only. Never let `architecture` / `dev` / `*-dev` / `review.gil` answer "should we build X?". `grilling` is Decide-only stress-test.
-
-# Dev Skills Domain
-
-## Language
-
-**Dev** (skill noun: `dev`):
-Build domain router — implementation plans and code changes. Branches `plan` | `implement`. Owns classify, route, validation, phase commits, API truth, observability/security cues, post-delivery Assure.
-Not: treating `{lang}-dev` as Build entry; inlining architecture craft
-
-**Plan** (`dev` branch):
-Implementation-plan carrier. Procedural SoT: `dev/reference/plan-pipeline.md`.
-Not: separate Solution plan skill; skipping classify/route
-
-**API truth** / **warn-once fallthrough**:
-Do not invent material APIs. Ladder: repo docs → Dash → Context7 → pack secondary → unknown. Warn once on first material fallthrough in session.
-Not: warn-at-load; inventing APIs; assuming Dash tool names
-
-**Observability cue**:
-APM / traces / error tracking / logging links → matching observability MCP when available.
-Not: vendor SoT under Build; inventing observability skill
-
-**Security cue**:
-Authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, privileged ops → `review.gil` **`security`** on Assure.
-Not: duplicating overlay security matrices in `$dev`
-
-**Post-delivery Assure**:
-Before delivery report on `$dev` `implement`: `review.gil` **`findings`** (procedure in `$dev` Handoff). Workers with `orchestrated: true` skip per-phase Assure.
-Not: implementer self-check as sole review; silent Assure skip
-
-**Architecture** (skill noun: `architecture`):
-Language-free Solution craft: structure, types, measured performance.
-Not: craft branches as top-level skills; docs `architecture`
-
-**Deep-modules** / **refactor-types** / **performance** / **refactor-boundaries** (`architecture` branches):
-Module depth & seams | type hygiene | measure→optimize | wire/adapter contracts.
-Not: bare `refactor`; language-named branches
-
-**Structure-survey** (`architecture` survey mode):
-Peer-directory discovery. Not a craft branch — findings multi-load craft branches.
-Not: treating survey as fifth craft branch; auto-loading on generic review
-
-**`refactor-<concern>`**:
-Only legal refactor branch form under `architecture`. Expansion law: `architecture/reference/growth.md`.
-Not: `refactor`, `refactor-misc`, `cleanup` as skill names
-
-**Language-runtime** / **`*-dev`**:
-Adapters loaded by `dev` (`ruby-dev`, `rust-dev`, `swift-dev`, `typescript-dev`). Deltas only.
-Not: competing Build entry; inlining craft in `*-dev`
-
-**Overlay**:
-Framework delta composed via `$dev` with one `*-dev`. Published: `ruby-on-rails-dev`, `swiftui-dev`.
-Not: standalone mega-router; duplicating phase-commit law
-
-**Design** (classification, not a skill):
-Structural/type/perf craft earned → hand off to `architecture`. Axioms ride along on every implement.
-Not: "design" as skill noun; defaulting to surgical to save a load
-
-**Delivery Ledger** (shared handoff shape):
-Markdown DTO passed across handoffs (`$dev` implement → `review.gil`, and `review.gil` → `pull-request` / `harvest`). Standardized fields:
+**Delivery Ledger** (the one handoff DTO; `$dev` → `review.gil` → `pull-request` / `harvest`):
 
 - `Classification / Branches`: `surgical` | `design` and active branches
-- `Target Files`: List of changed files; entries must be exact paths deterministically matchable against `git diff --name-only <task_baseline>`
-- `Verification`: Command executed + exit 0 observed
-- `Phase Commits`: Hashes & rationale (or explicit deferral on default branch)
-- `Active Lenses`: Triggered review lenses (`security`, `tests`, `perf`, `legacy`)
+- `Target Files`: exact paths matchable against `git diff --name-only <task_baseline>`
+- `Verification`: command executed + exit 0 observed
+- `Phase Commits`: hashes & rationale (or explicit deferral on default branch)
+- `Active Lenses`: `security`, `tests`, `perf`, `legacy`
 - `Readiness`: `Yes` | `No` | `Conditional`
-- `Residuals / Debt`: Deferred items, architectural debt, or N/A
-  Not: inventing a second handoff schema per skill; conversational prose handoffs without bounded fields
+- `Residuals / Debt`: deferred items or N/A
 
-**Deepen**:
-Signal for `architecture` **`deep-modules`** — not a skill name.
+**Phase commit**: after each plan phase, validate → ≥1 [Conventional Commit](https://www.conventionalcommits.org/) (v1.0.0) with a rationale body. Off the default branch by default; on the default branch ask early. Carriers: `$dev` Shared prep (Build), `architecture` Shared prep (Solution). `release` `notes` only consumes merged history.
 
-**Harvest**:
-Feedback loop via `harvest` skill (`distill` for preventive mantras, `debt` for `.agents/debt-ledger.md`). Sparse-promote into reference checklists/anti-patterns; drop weak candidates. After store edits: `skill doctor`; drift → `skill backfill` → `rcup`.
-Not: harvest on every implement; append-only forever logs
+## Harvest
 
-**Expansion law**:
-Seven rules in `architecture/reference/growth.md` before adding a branch. New langs/overlays = router contract edit on `dev/SKILL.md` + README/CONTEXT index.
+**Harvest** (`harvest`): `distill` (default; preventive mantras → project rules or store references) | `debt` (→ `<project>/.agents/debt-ledger.md`). After store edits: `skill doctor`; drift → `skill backfill` → `rcup`.
 
-**Phase commit**:
-After each plan phase: validate → ≥1 [Conventional Commit](https://www.conventionalcommits.org/) with rationale body — default off default branch; ask early on default branch. Carriers: `architecture` Shared prep and `$dev` Shared prep. `release` **`notes`** consumes merged history only. Procedure: `$dev` Handoff.
+**Preventive Mantra**: one imperative sentence — "When X, always Y to prevent Z" or "Avoid X; use Y instead because Z".
 
-**Handoff** (shape only — procedure in `$dev` / `architecture` SKILL.md):
-`dev` → `{lang}-dev` / overlay; `design` → `architecture` → continue `$dev`; Assure → `review.gil`; land → `pull-request` **`open`**; changelog → `release` **`notes`**; friction/learnings → `harvest`. No reverse: craft does not own Product gate.
+**Debt Ledger** (`.agents/debt-ledger.md`): project backlog of architectural friction; admitted by `product-owner` under the Health Capacity Budget, executed by `orchestrator` / `$dev`.
 
-# Ship Skills Domain
+## Decide
 
-## Language
-
-**Release** (skill noun: `release`):
-Changelog / release notes from Conventional Commits in a merged ship range. Notes-only.
-Not: release-ops, ship-notes, absorbing `pull-request` lifecycle
-
-**Notes** (`release` branch):
-Group Breaking → Features → Fixes → other from `git log` in ship range.
-Not: inventing commits; waiting until notes to write history
-
-**Handoff**:
-Compose with `pull-request` — never absorb PR lifecycle. Phase CC authoring lives on `architecture` / `dev`; dirty tree at PR open → `pull-request` **`open`**.
-
-# Decide Skills Domain
-
-## Language
-
-**Grilling** (third-party skill noun: `grilling`):
-Stress-test interview — one hard question at a time. Not a first-party store router.
-Not: using grilling for "should we build X?" (→ `product-owner` **`gate`**)
-
-**Handoff**:
-Decide-only. May stress Intent briefs, Product gate proposals, or Solution craft choices. Product doctrine stays with `product-owner` when topic is scope.
-
-# Harvest Skills Domain
-
-## Language
-
-**Harvest** (skill noun: `harvest`):
-Continuous learning and debt capture router. Turn session friction, user corrections, and review findings into durable system wisdom without polluting skills with raw noise. Branches: `distill` | `debt`.
-Not: raw incident dumps; append-only forever logs
-
-**Distill** (`harvest` branch, default):
-Extract imperative preventive mantras (checklist items and anti-patterns) from session corrections, test loops, and review findings. Deduplicate and sparse-promote to project-local rules or global skill references.
-Not: raw transcripts; incident postmortems; vague platitudes
-
-**Debt** (`harvest` branch):
-Log architectural friction, structural rot, leaky module seams, or performance traps to `<project>/.agents/debt-ledger.md`.
-Not: burying debt in ephemeral chat; unbounded boy-scout refactors mid-feature
-
-**Debt Ledger** (`.agents/debt-ledger.md`):
-Project-level backlog of identified architectural friction and structural debt. Consumed by `product-owner` under the Health Capacity Budget and executed by `orchestrator` / `$dev`.
-Not: Jira replacement; untracked todo comments
-
-**Health Budget**:
-`product-owner` capacity rule allocating ~20% capacity (or 1 debt tranche per 3–4 feature tranches) to admit high-friction items from `.agents/debt-ledger.md`.
-Not: uncontrolled gold-plating; ignoring debt until velocity halts
-
-**Preventive Mantra**:
-One imperative sentence an expert recalls before repeating a mistake. Format: checklist item ("When X, always Y to prevent Z") or anti-pattern ("Avoid X; use Y instead because Z").
-Not: conversational notes; multi-paragraph postmortems
-
-**Handoff**:
-`review.gil` / `pull-request` → `harvest` on non-obvious fixes, review findings, or deferred debt. `harvest debt` → `.agents/debt-ledger.md` → `product-owner` (Health Budget) → `orchestrator` / `$dev`. After global store edits: `skill doctor` → `rcup`.
-
-# Install
-
-Published store: `npx skills add gildesmarais/dotfiles/agents/skills` (browse `--list`). This machine (`rcm`): `rcup` → `~/.agents/skills/`. Optional third-party packs (`grilling`, `docs-sync`, `swift-*`, vendor React): separate `npx skills add` — see [`README.md`](README.md) Optional packs.
+**Grilling** (third-party `grilling`): one-hard-question stress-test. Not for "should we build X?" (→ `product-owner` `gate`).

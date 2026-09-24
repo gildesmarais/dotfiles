@@ -1,76 +1,44 @@
 ---
 name: docs
-description: >
-  Verify and rewrite existing documentation against the repository, or author a
-  control/auditor evidence pack. Use when refreshing a README, contributor,
-  operator, or feature doc, when reducing documentation bloat or fixing stale
-  and inaccurate docs, when aligning architecture docs, ADRs, design notes,
-  diagrams, and system overviews with actual runtime behavior, or when proving
-  a stated control from repo evidence.
+description: >-
+  Verify and rewrite existing docs against the repository, or author a
+  control/auditor evidence pack. Use to refresh a README, contributor, operator,
+  or feature doc; fix stale, inaccurate, or bloated docs; align ADRs, design
+  notes, diagrams, and system overviews with runtime behavior; or prove a stated
+  control from repo evidence.
 ---
 
 # Docs
 
-Rewrite documentation to match what the repository actually does, not what it was intended to do.
-
-Assume existing prose may be outdated until verified. Prefer improving an existing document over creating a new one.
+Rewrite docs to match what the repo actually does. Treat existing prose as unverified; improve an existing doc over creating a new one.
 
 ## Pick branch
 
-Map the user prompt to exactly one branch:
+| Branch         | Use when                                                                                     | Signals                                                                                               |
+| -------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `editor`       | Public-facing or operational docs — README, contributor, operator, feature docs, runbooks    | "refresh the README", "docs are stale", "trim this doc", "a new reader can't follow this"             |
+| `architecture` | Architecture-facing docs — ADRs, design notes, diagrams, system overviews, integration flows | "is this ADR still true", "document the real data flow", "update diagram", "verify the architecture" |
+| `evidence`     | Prove a stated control from the repo (auditor pack; Assessment / Evidence / Scope / Task)    | "auditor evidence", "provide the evidence", "control assessment"                                      |
 
-| Branch         | Use when                                                                                     |
-| -------------- | -------------------------------------------------------------------------------------------- |
-| `editor`       | Public-facing or operational docs — README, contributor, operator, feature docs, runbooks    |
-| `architecture` | Architecture-facing docs — ADRs, design notes, diagrams, system overviews, integration flows |
-| `evidence`     | Prove a stated control from the repo (auditor pack; Assessment / Evidence / Scope / Task)    |
-
-Routing signals:
-
-| User says                                                                 | Branch                            |
-| ------------------------------------------------------------------------- | --------------------------------- |
-| "refresh the README", "these docs are stale", "trim this doc"             | `editor`                          |
-| "clarity of usage", "a new reader can't follow this"                      | `editor`                          |
-| "is this ADR still true", "document the real data flow", "update diagram" | `architecture`                    |
-| "verify the architecture before we change it"                             | `architecture`                    |
-| "auditor evidence", "provide the evidence", "control assessment"          | `evidence`                        |
-| "is this branch ready to ship"                                            | stop — use the `review.gil` skill |
-
-Use `architecture` when a task requires verifying real architecture before a decision or change, even if the user did not ask for a document rewrite. This branch is Solution-adjacent **verify/rewrite only** — it does not author net-new HLD/ADR (author path deferred).
+- Use `architecture` whenever real architecture must be verified before a decision or change, even without a rewrite ask. It is **verify/rewrite only** — no net-new HLD/ADR.
+- "Is this branch ready to ship" → stop → `review.gil`.
 
 ## Shared prep
 
-Every branch:
+1. Identify the target doc and the decisions/actions it must support; `AGENTS.md` rules override defaults here.
+2. Read the doc if it exists, then build evidence from the repo before editing.
+3. Classify existing targets by doc-class ([`../CONTEXT.md`](../CONTEXT.md)); `evidence` net-new packs skip this. Effort: `accurate` → tighten · `partial` → prune, fill verified gaps · `misleading` → rewrite main path from verified sources · `obsolete` → remove or recommend removal.
 
-1. Identify the target document and the decisions or actions it must support.
-2. Read `AGENTS.md` if present and follow repo-specific rules over defaults here.
-3. Read the document if it exists, then build evidence from the repo before editing.
-4. Classify only when a target already exists (`evidence` net-new packs skip this), then match effort:
-   - `accurate`: tighten and clarify
-   - `partial`: prune, then fill verified gaps
-   - `misleading`: rewrite the main path from verified sources
-   - `obsolete`: remove or recommend removal
+Rules for every branch:
 
-Evidence rules that apply to every branch:
-
-- Prefer the source closest to runtime behavior; each branch reference defines its own evidence ladder.
-- When sources disagree, trust what is enforced at runtime and note the conflict in the handoff.
-- Do not describe behavior that is not implemented or enforced.
-- Remove stale, speculative, historical, or duplicate content unless it still changes a reader decision.
-- Prefer removal over preserving uncertain content.
-- Do not write absolute filesystem paths in published docs; prefer repo-relative or user-generic paths so docs do not reveal local identity details.
-- Keep terminology consistent with the system, and keep project-specific terms only when current and correct.
-- **Write forward** — teach the current system (what / when / how / success). State constraints as present facts; do not teach via eras, migrations, or expected-failure paths. Detail: `editor` [`reference/editor.md`](reference/editor.md).
-
-Uncertainty handling:
-
-- Do not present assumptions as facts.
-- On `editor` / `architecture`: remove unverified claims when they are not essential; report remaining gaps in the handoff unless the document is about a known limitation.
-- On `evidence`: publish Unverified and Not met in the document.
+- Evidence ladders are branch-local. When sources disagree, trust what runtime enforces and note the conflict in the handoff.
+- Only verified, implemented behavior; no assumptions as facts. `editor` / `architecture`: remove non-essential unverified or stale content, report remaining gaps in the handoff (unless the doc is about a known limitation). `evidence`: publish Unverified and Not met in the document.
+- No absolute filesystem paths in published docs — repo-relative or user-generic only.
+- **Write forward**: teach the current system; constraints as present facts; no eras, migrations, or expected-failure paths. Detail: [`reference/editor.md`](reference/editor.md).
 
 ## Branch reference
 
-Load exactly one disclosed reference file and follow it through completion:
+Load exactly one and follow it through completion:
 
 - **`editor`** → [`reference/editor.md`](reference/editor.md)
 - **`architecture`** → [`reference/architecture.md`](reference/architecture.md)
@@ -78,17 +46,9 @@ Load exactly one disclosed reference file and follow it through completion:
 
 ## Handoff
 
-Report for every branch:
+Report: target doc and its role · doc-class when classified · authoritative sources checked · what was removed or clarified · unresolved verification gaps — plus the branch's handoff additions.
 
-- the target document and its role
-- the doc-class (four-way classification) when classified
-- the authoritative sources checked
-- what was removed or clarified
-- unresolved verification gaps
-
-Each branch reference adds its own required handoff items.
-
-When the ask turns out to be a message rather than documentation, stop and continue with the `communication` skill.
+Ask is a message, not documentation → stop → `communication`.
 
 ## Completion criteria
 

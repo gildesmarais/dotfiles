@@ -1,82 +1,69 @@
 ---
 name: review.gil
-description: >
-  Review a local change, branch, or pull request for production readiness, tests,
-  performance, security, legacy/dead-compat debt, or merge-prep quality. Use when
-  the user wants a findings-ready review, a PR code review, to publish a review
-  to a PR, /code-review, /review.gil, or when another skill needs a
+description: >-
+  Review a local change, branch, or pull request for production readiness,
+  tests, performance, security, legacy/dead-compat debt, or merge-prep quality.
+  Use for a findings-ready review, a PR code review, publishing a review to a
+  PR, /code-review, /review.gil, or when another skill needs a
   production-readiness or test-quality pass.
 ---
 
 # Review
 
-Findings-first analysis of a working tree, branch, commit range, or pull request. A generic review runs the production-readiness baseline plus only the specialized lenses the diff warrants. It never asks the user to choose a review template.
+Findings-first review of a working tree, branch, commit range, or PR: the `finish` baseline plus only the lenses the diff warrants. Never ask the user to choose a template. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md).
 
-## Choose execution
+## Pick branch
 
-When the invocation is non-interactive or orchestrated, default to `findings` without asking, including for pull-request targets. In interactive contexts, prompts that do not explicitly request publication also default to `findings`, except for the narrow case below.
+| Execution | Use when |
+| --- | --- |
+| `findings` | Default: non-interactive/orchestrated (PR targets too), non-PR targets, or publish declined |
+| `publish` | PR reviewed end to end, drafts reconciled, submitted as GitHub `COMMENT` |
+| `quality` | Explicit merge-prep: audit, boy-scout refactors, tests, repo gates; changes code |
 
-Ask exactly the following only in a top-level interactive human session that targets an existing pull request and leaves execution intent unspecified:
+- Ask exactly "Publish review on PR?" only in a top-level interactive human session targeting an existing PR with unspecified intent. Skip if already answered, read-only/draft findings requested or implied, publication requested, or no PR. The answer selects execution, not lenses.
+- "Review and publish/post/ship the review" → `publish`, no ask.
+- "Post these findings" with an already-verified list → `pull-request` `comment`.
+- "Draft review" = read-only findings unless GitHub-pending comments are explicitly asked: end-to-end review drafts → `publish` stopping before submit; a supplied verified ledger → `pull-request` `comment` (even if it stays pending).
+- Never infer `quality` from "review"; it needs explicit permission to change code.
 
-> Publish review on PR?
+## Shared prep
 
-Skip the question when the user already answered it, requested or implied read-only/draft findings, explicitly requested publication, or the target has no pull request. The answer selects execution, not review lenses:
+Resolve scripts relative to this skill directory. `quality` skips this and runs its own Phase 0 (no `compare_default_branch.sh` first).
 
-| Execution  | Use when                                                                                       |
-| ---------- | ---------------------------------------------------------------------------------------------- |
-| `findings` | Read-only review; default for non-PR targets or when the user declines publishing              |
-| `publish`  | Review a PR end to end, reconcile drafts, and submit a friendly GitHub `COMMENT` review        |
-| `quality`  | Explicit merge-prep execution: audit, boy-scout refactors, tests, and repo gates; changes code |
+- **PR:** no local/default-branch comparison. `scripts/pr-context.sh <pr>` (findings) or `scripts/pr-context.sh --publish <pr>` (publish); review the PR patch and surrounding code at the recorded head SHA, never the local tree/`HEAD`.
+- **Local:** `scripts/compare_default_branch.sh` (fallback: diff `HEAD` vs `origin/<default>`).
+- **Every target:** read `AGENTS.md`; separate unrelated dirty changes; summarize scope + high-risk areas before selecting lenses.
 
-Routing rules:
+**Mandatory reference load (blocking — no findings before these are read):**
 
-- “Review and publish/post/ship the review” → `publish`; do not ask again.
-- “Post these findings” with an already-verified list → stop and use the `pull-request` skill `comment` branch.
-- “Draft review” means read-only findings unless the user explicitly asks for GitHub-pending review comments. End-to-end review drafts use `publish` and stop before submission; a supplied, already-verified ledger uses the `pull-request` skill `comment` branch even when it should remain pending.
-- Never infer `quality` from “review.” It requires explicit permission to change code.
+1. Always: [`reference/finish.md`](reference/finish.md) (baseline, output format, incident/fix-diff postures).
+2. Behavior or tests changed: [`reference/tests.md`](reference/tests.md).
+3. Auth, tenancy, sensitive data, secrets, APIs, SQL, boundaries: [`reference/security.md`](reference/security.md).
+4. Dead-compat signals (deprecated markers, dual exports, superseded hydrate): [`reference/legacy.md`](reference/legacy.md) — report only under `findings`/`publish`; deletion is `quality`-only.
+5. `quality`: [`reference/quality.md`](reference/quality.md) + [`reference/legacy.md`](reference/legacy.md) (always, even without signals).
+6. `publish`: [`reference/publish.md`](reference/publish.md), [`reference/conventional-comments.md`](reference/conventional-comments.md), [`reference/github-state.md`](reference/github-state.md).
+7. Hot path / allocations (any language): [`reference/perf.md`](reference/perf.md).
 
-## Scope prep
+## Branch reference
 
-Resolve bundled scripts relative to this installed skill directory.
-
-- **Pull request:** skip local/default-branch comparison. Run `scripts/pr-context.sh <pr-url-or-number>` for findings or `scripts/pr-context.sh --publish <pr-url-or-number>` for publish, fetch the PR patch, and inspect surrounding code at the recorded head SHA.
-- **Local branch/change:** identify repo root and default branch, then run `scripts/compare_default_branch.sh`. If unavailable, compare `HEAD` with `origin/<default>` directly.
-- **Every target:** read `AGENTS.md` when present, distinguish unrelated dirty changes, and summarize scope plus high-risk areas before selecting lenses.
-- **`quality`:** follow its Phase 0 instead of this prep.
-
-## Phase 0: Mandatory Context Pre-Flight (Blocking)
-
-Before evaluating code, drafting findings, or generating review output, execute `view_file` on the required reference files for this target:
-
-1. **Always (Baseline):** You MUST view [`reference/finish.md`](reference/finish.md).
-2. **Behavior or Tests Changed:** You MUST view [`reference/tests.md`](reference/tests.md).
-3. **Auth, Tenancy, Sensitive Data, Secrets, APIs, SQL, or Boundaries:** You MUST view [`reference/security.md`](reference/security.md).
-4. **Dead-compat signals** (deprecated markers, dual exports, superseded hydrate): You MUST view [`reference/legacy.md`](reference/legacy.md). Under `findings` / `publish`, report only — do not delete (deletion stays `quality`-only).
-5. **Execution is `quality`:** You MUST view [`reference/quality.md`](reference/quality.md) and [`reference/legacy.md`](reference/legacy.md) (always under `quality`, even without dead-compat signals).
-6. **Execution is `publish`:** You MUST view [`reference/publish.md`](reference/publish.md), [`reference/conventional-comments.md`](reference/conventional-comments.md), and [`reference/github-state.md`](reference/github-state.md).
-7. **Hot path / allocations (any language):** View [`reference/perf.md`](reference/perf.md).
-
-Do NOT generate findings until the appropriate reference files are loaded into your working context.
-
-Output shape: [`reference/finish.md`](reference/finish.md) § Output format.
-
-## Incident & Fix-Diff Postures
-
-When reviewing fixes, reverts, or incident-related changes, apply the incident / fix-diff postures in [`reference/finish.md`](reference/finish.md) (single SoT — do not duplicate the list here).
+- Output shape (all executions' findings): [`reference/finish.md`](reference/finish.md) § Output format.
+- Fixes, reverts, incident diffs: postures in [`reference/finish.md`](reference/finish.md) (single SoT).
+- Reviewing an implementation plan (not code) or embedding review gates in a `$dev` `plan`: [`reference/plan-checklists.md`](reference/plan-checklists.md).
+- Adding a lens or harvesting review lessons: [`reference/growth.md`](reference/growth.md).
 
 ## Handoff
 
-- **Structural findings name craft:** when a finding is structural (shallow module, dual ownership, primitive obsession, boundary leak, unmeasured hot path — not just legacy debt), name the matching `architecture` craft branch (`deep-modules` / `refactor-types` / `refactor-boundaries` / `performance`) as the remediation route. Naming is not running — remediation still enters via `$dev`.
-- End-to-end PR review + publish stays in this skill.
-- Posting an already-verified ledger continues with the `pull-request` skill `comment` branch.
-- Findings execution never posts to GitHub.
-- If user asked to land and readiness is Yes/Conditional (owned residuals) → continue with `pull-request` **`open`**. Never auto-open without that ask.
-- **Harvest feedback:** when review uncovers recurring failure classes, non-obvious security/perf traps, or deferred architectural friction that cannot be fixed in scope, hand off to `harvest` (`distill` for preventive mantras, `debt` for `.agents/debt-ledger.md`).
+- Structural findings (shallow module, dual ownership, primitive obsession, boundary leak, unmeasured hot path — not just legacy debt) **name** the `architecture` branch (`deep-modules` / `refactor-types` / `refactor-boundaries` / `performance`). Naming ≠ running; remediation enters via `$dev`.
+- End-to-end PR review + publish stays here; posting an already-verified ledger → `pull-request` `comment`. Never reverse.
+- `findings` never writes to GitHub.
+- Land asked + readiness Yes/Conditional (owned residuals) → `pull-request` `open`. Never auto-open.
+- Recurring failure classes, non-obvious security/perf traps, out-of-scope architectural friction → `harvest` (`distill` mantras; `debt` → `.agents/debt-ledger.md`).
+- Delivery Ledger fields: [`../CONTEXT.md`](../CONTEXT.md).
 
 ## Completion criteria
 
-| Execution  | Done when                                                                                                                                                               |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `findings` | Every selected lens applied; Critical empty or owned; Important owned/rationale; readiness Yes/No/Conditional; finish.md output shape satisfied; no GitHub writes       |
-| `quality`  | Audit table produced (legacy Find rows present or explicit empty); commit stack executed (or explicit empty); gates green; P0/P1 fixed or listed for re-invoke          |
-| `publish`  | Fresh multi-lens ledger verified on PR head SHA; drafts reconciled; submitted as `COMMENT` or left PENDING when draft-only was explicit; URLs reported; no code changed |
+| Execution | Done when |
+| --- | --- |
+| `findings` | Selected lenses applied; Critical empty or owned; Important owned/rationale; readiness Yes/No/Conditional; finish output shape; no GitHub writes |
+| `quality` | Audit table (legacy Find rows or explicit empty); commit stack executed (or explicit empty); gates green; P0/P1 fixed or listed for re-invoke |
+| `publish` | Fresh multi-lens ledger verified on PR head SHA; drafts reconciled; submitted `COMMENT` or left PENDING (explicit draft-only); URLs reported; no code changed |

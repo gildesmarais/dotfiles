@@ -1,46 +1,42 @@
 # deep-modules
 
-Module depth is the spine for structural design work. Prefer deep modules: small interface, substantial private behavior.
+Axioms: [`axioms.md`](axioms.md). Terms: [`glossary.md`](glossary.md).
 
 ## Earn this branch
 
-Dual ownership of one fact, passthrough bags, shallow multi-call husks, or the user asks for structural cleanup / deepen.
+Dual ownership of one fact, passthrough bags, shallow multi-call husks, or a structural cleanup / deepen ask.
 
 ## Checklist
 
-- Apply the deletion test to candidate modules and thin re-export bags.
-- Kill passthrough bags and dual ownership of the same fact.
-- One public name per schema or type — delete aliases that keep both live.
-- Shared kernels import the owning type module, not a duplicate re-export.
-- Prefer ownership and seam failure signals when surveying deepen work; ignore metric smell counts that do not name dual ownership, passthrough, or deletion-test failure.
-- When surveying many peers, infer canonical shape before proposing seams (survey mode when structural signals match).
-- Wrong-layer domain surfaces fail locality even if deep internally — relocate before deepening in place.
-- Narrow stage and dependency interfaces; one fact, one home.
-- Introduce seams only where they buy phased moves or testability — not for ceremony.
-- Share one expansion path between validate and run — dual ownership of expansion greenlights configs that fail later.
-- Own one remaining wall-clock across fallbacks and pagination; pass it down.
-- Give shared meters and policies one construction home; require them explicit at the pipeline boundary and prove omission fails with a discriminating test.
-- Name every dependency the path relies on — invisible contracts fail closed in production.
-- Cut over only after the replacement owns the implementation one-way — reverse calls into the old home are still dual ownership.
-- When relocating a predicate's ownership, verify each touched call site's argument shape still matches what the predicate inspects.
-- Fold detect-and-persist into one critical section — check-then-act across suspension points is dual ownership of uniqueness.
-- Keep freshness and sync as different jobs — do not gate identity reload or capture visibility behind work throttles meant for sync.
-- Quarantine permanent validation failures on one unit so sequential siblings still proceed.
-- Committed primary survives failed enrichment — nest enrichment status on the success value; retry enrichment on the already-committed resource; do not unwind the primary.
-- On conflict, revert to last-known-good — do not invent a new identity and retry.
-- Route key stale unless live state matches — if navigation names an entity the live result does not hold, fall back to create/list shell; never render a mismatched result.
-- When two runtimes encode the same closed decision, share one fixture corpus both assert against.
-- Hardcoded environment paths or uninjectable global stores force callers and tests into god-object orchestration — inject base directories, clocks, or storages to keep modules independently testable.
-- Trapped domain math in views or configuration structs distorts caller boundaries — extract pure calculation kernels to domain value objects before building view layers.
-- Views and delegate adapters with event callbacks must expose pure internal action handlers so logic can be tested directly without synthesizing heavy runtime framework event objects.
-- Delivery modes (live/cold/warm, sync/async, cached/uncached) are not schema authors — one construction path for each derived fact; modes only deliver it (co-load `refactor-types` when the fact is a closed set).
-- Side effects that advertise success (in-memory publish, derived indexes, sensory/UI confirmation) attach only after the authoritative durable operation succeeds — swallowed I/O plus publish is dual ownership of truth.
-- Multi-step durable work exposes three outcomes: committed; rejected when the durable store is proven unchanged; indeterminate when compensation cannot prove final state — then reconcile; do not swallow rollback failure (co-load `refactor-types` for the outcome closed set).
-- Anti-patterns: dump modules of unrelated helpers; twin structs that must stay in sync; adapters that grow domain branches; view bodies housing pure domain geometry or signal filtering; in agentic / prompt pipelines: multi-hop abstraction husks that pass user intent through repeated re-summarization layers (the telephone game), or brittle nested AST schemas where structured Markdown DTOs suffice.
+- Deletion-test candidates and thin re-export bags; one public name per schema/type (delete live aliases); shared kernels import the owning module, not a re-export.
+- Survey on ownership/seam failure signals, not metric smell counts; with many peers, infer canonical shape first (survey mode).
+- Wrong-layer domain surfaces: relocate before deepening in place.
+- Validate and run share one expansion path — dual expansion greenlights configs that fail later.
+- One remaining wall-clock across fallbacks and pagination, passed down.
+- Shared meters/policies: one construction home, explicit at the pipeline boundary; a discriminating test proves omission fails. Name every dependency — invisible contracts fail in production.
+- Cut over only once the replacement owns the implementation one-way; reverse calls into the old home are dual ownership.
+- Relocating a predicate: verify each call site's argument shape still matches what it inspects.
+- Detect-and-persist in one critical section; check-then-act across suspension points is dual ownership of uniqueness.
+- Freshness ≠ sync: never gate identity reload or capture visibility behind sync throttles.
+- Quarantine a permanently invalid unit so sequential siblings proceed.
+- Committed primary survives failed enrichment: nest enrichment status on the success value, retry on the committed resource, never unwind the primary.
+- On conflict revert to last-known-good; never mint a new identity and retry.
+- Route keys are stale unless live state matches; on mismatch fall back to create/list shell, never render a mismatched result.
+- Two runtimes encoding one closed decision share one fixture corpus.
+- Inject base dirs, clocks, storages — hardcoded paths / global stores force god-object orchestration.
+- Extract domain math trapped in views/config structs into pure value-object kernels before building views; views and delegate adapters expose pure action handlers testable without framework events.
+- Delivery modes (live/cold/warm, sync/async, cached) deliver facts, never author schema — one construction path per derived fact (co-load `refactor-types` for closed sets).
+- Success-advertising side effects (publish, derived indexes, UI confirmation) attach only after the durable op succeeds; swallowed I/O + publish is dual ownership of truth.
+- Multi-step durable work returns committed | rejected (store proven unchanged) | indeterminate (compensation unproven → reconcile); never swallow rollback failure (co-load `refactor-types`).
+
+## Anti-patterns
+
+- Dump modules of unrelated helpers; twin structs kept in sync; adapters growing domain branches; views housing domain geometry or signal filtering.
+- Agentic pipelines: multi-hop husks re-summarizing intent (telephone game); nested AST schemas where structured Markdown DTOs suffice.
 
 ## Sequencing
 
-Work in small phases. Validate after each phase before the next. Prefer co-loading `refactor-types` when closed sets or primitive obsession sit on the same seams; co-load `performance` only when a measured bottleneck drives a layout move.
+Small phases, validate each. Co-load `refactor-types` when closed sets / primitives sit on the same seams; `performance` only when a measured bottleneck drives a layout move.
 
 ## Done when
 

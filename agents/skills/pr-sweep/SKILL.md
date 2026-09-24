@@ -1,33 +1,32 @@
 ---
 name: pr-sweep
-description: >
+description: >-
   Read-only morning PR attention ledger across a GitHub org or owner the user
-  names. Use for /pr-sweep, "what PRs need me?", or weekday chore sweeps. Never
-  fixes anything — each row names the exact store skill invocation to run next.
+  names; each row names the store skill invocation to run next. Use for
+  /pr-sweep, "what PRs need me?", or weekday chore sweeps.
 ---
 
 # PR Sweep
 
-Intent-domain, read-only multi-repo attention report. Proliferation-guard exception: automation bootstrap needs a self-contained skill.
+Self-contained on purpose (automation bootstrap).
 
 ## Pick branch
 
 Single branch: **`report`**.
 
-## Shared contract
+## Shared prep
 
-- Tools: `gh`, `jq`. Escalate network when sandboxed.
-- Require an org/owner from the user (or automation prompt). Do not invent a default org.
-- Explicit `--json` field lists only. Never paste raw JSON, diffs, or CI logs into output.
-- **Never** checkout, push, comment, approve, or merge.
+- Never fixes anything: **never** checkout, push, comment, approve, or merge. Output is the ledger only.
+- Require an org/owner from the user or automation prompt; no default org.
+- Tools `gh`, `jq`; escalate network when sandboxed. Explicit `--json` field lists; no raw JSON, diffs, or CI logs in output.
 
-## Context pointers
+## Branch reference
 
 - **report** — [`reference/report.md`](reference/report.md)
 
 ## Handoff
 
-Ledger rows point at store skills only:
+Each row points at a store invocation:
 
 | Blocker                       | Invocation                               |
 | ----------------------------- | ---------------------------------------- |
@@ -37,8 +36,6 @@ Ledger rows point at store skills only:
 | Dependabot fallout            | `/dependabot triage <url>`               |
 | Review requested (you)        | `/review.gil <url>` (ask publish)        |
 | Unblock several blockers      | `/pull-request` unblock chain on `<url>` |
-
-Sweep never fixes — it only emits the ledger.
 
 ## Completion criteria
 

@@ -1,20 +1,16 @@
 ---
 name: pull-request
-description: >
-  Pull-request GitHub lifecycle. Use when the user wants to open a pull request,
-  slice one branch into smaller pull requests, update PR title or description,
-  post an already-verified finding ledger, resolve review feedback on the current
-  branch, reply on existing review threads, fix failing CI on a PR, resolve merge
-  conflicts / rebase a PR onto its base, or unblock / make a PR merge-ready.
+description: >-
+  Pull-request GitHub lifecycle. Use to open a pull request, slice one branch
+  into smaller PRs, update PR title or description, post an already-verified
+  finding ledger, resolve review feedback, reply on existing review threads, fix
+  failing CI on a PR, resolve merge conflicts / rebase onto base, or unblock /
+  make a PR merge-ready.
 ---
 
 # Pull Request
 
-GitHub pull request lifecycle on a remote PR or branch destined to become one.
-
 ## Pick branch
-
-Map the user prompt to exactly one branch (or the unblock chain):
 
 | User intent                                                  | Branch        |
 | ------------------------------------------------------------ | ------------- |
@@ -27,70 +23,49 @@ Map the user prompt to exactly one branch (or the unblock chain):
 | Fix failing CI on a PR / Actions run                         | **fix-ci**    |
 | Resolve merge conflicts / rebase PR onto base                | **conflicts** |
 
-**Unblock chain** (not a branch): "unblock this PR", "make merge-ready", "autopilot this PR" → refresh live PR state each pass; run **conflicts** → **resolve** → **fix-ci** in that order; stop for `needs-user`; never approve/merge.
+**Unblock chain** (not a branch): "unblock", "make merge-ready", "get this PR green", "autopilot this PR" → refresh live PR state each pass; run **conflicts** → **resolve** → **fix-ci** in that order; stop for `needs-user`; never approve/merge.
 
 Ambiguous routing:
 
-| User says                                                                                                             | Branch                                         |
-| --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| "address PR comments", "fix review feedback", "resolve comments"                                                      | **resolve**                                    |
-| "reply to comments", "respond on GitHub", "draft replies" (existing threads only)                                     | **reply**                                      |
-| "post these already-verified findings"                                                                                | **comment** (submit `COMMENT`)                 |
-| "add these as pending/draft comments" (verified list)                                                                 | **comment** (remain pending)                   |
-| "open a PR", "commit and create PR"                                                                                   | **open**                                       |
-| "split into PRs", "slice branch"                                                                                      | **slice**                                      |
-| "update title", "update description", "update PR title/desc", "refresh PR summary", "/pull-request update title+desc" | **retitle**                                    |
-| "update the PR" (no code change and no review-feedback ask)                                                           | **retitle**                                    |
-| "failing ci", "fix CI", Actions run URL + fix                                                                         | **fix-ci**                                     |
-| "why is CI failing?" (no fix ask)                                                                                     | report only — do not push                      |
-| "merge conflicts", "rebase on main", "rebase onto base"                                                               | **conflicts**                                  |
-| "unblock", "make merge-ready", "get this PR green"                                                                    | **unblock chain**                              |
-| "review the PR"                                                                                                       | stop — use the **review.gil** skill            |
-| "draft a review" (read-only findings)                                                                                 | stop — use **review.gil** `findings`           |
-| "post review comments", "new findings on PR", "review and post on GitHub"                                             | stop — use **review.gil** `publish`            |
-| "draft/pending a new review" (no supplied ledger)                                                                     | stop — use **review.gil** `publish` draft-only |
-| "publish review to PR" / end-to-end review+publish                                                                    | stop — use **review.gil** skill `publish`      |
+| User says                                                                 | Route                                          |
+| ------------------------------------------------------------------------- | ---------------------------------------------- |
+| "address PR comments", "fix review feedback", "resolve comments"          | **resolve** (not reply)                        |
+| "update the PR" (no code change, no review-feedback ask)                  | **retitle** (not open)                         |
+| "why is CI failing?" (no fix ask)                                         | report only — do not push                      |
+| "post these already-verified findings"                                    | **comment** (submit `COMMENT`)                 |
+| "add these as pending/draft comments" (verified list supplied)            | **comment** (remain pending)                   |
+| "review the PR"                                                           | stop — `review.gil`                            |
+| "draft a review" (read-only findings)                                     | stop — `review.gil` `findings`                 |
+| "post review comments", "new findings on PR", "review and post on GitHub" | stop — `review.gil` `publish`                  |
+| "draft/pending a new review" (no supplied ledger)                         | stop — `review.gil` `publish` draft-only       |
 
-**comment** vs **reply**: **comment** posts already-verified findings supplied by the user or another workflow. End-to-end retrieve → review → reconcile → publish belongs to **`review.gil` `publish`**, not this skill. **reply** answers an existing thread and must not add new findings or code changes.
+## Shared prep
 
-Default ambiguous "address comments" → **resolve**, not **reply**. Ambiguous "update the PR" with no code/feedback → **retitle**, not **open**.
+- Tools: `git`, `gh`, `jq`; non-interactive commands. Escalate network permissions for `gh` when sandboxing blocks GitHub API calls.
+- Resolve bundled script paths relative to this skill directory, not the repo. Thread data on **resolve**/**reply**: `./scripts/gh-review-comments --filter unresolved --format json <pr-url>`.
+- Frugal fetches: failing-job logs only (**fix-ci**); unresolved threads only (**resolve**/**reply**); explicit `--json` field lists; never paste raw JSON into context or output. Don't ask the user to fetch PR/thread data unless automated discovery fails.
+- **comment** submits GitHub `event: COMMENT` only — never `APPROVE` or `REQUEST_CHANGES`. Pending/draft → no `event`, no submission.
+- Never auto-approve or merge.
 
-## Shared contract
+## Branch reference
 
-- Required tools: `git`, `gh`, `jq`.
-- Use non-interactive commands and explicit flags.
-- Escalate network permissions for `gh` when sandboxing blocks GitHub API calls.
-- Resolve bundled script paths relative to this skill directory, not the repo working directory.
-- Prefer `./scripts/gh-review-comments --filter unresolved --format json <pr-url>` for structured thread data on **resolve** and **reply**.
-- Frugal fetches: failing-job logs only on **fix-ci**; unresolved threads only on **resolve**/**reply**; explicit `--json` field lists; never paste raw JSON payloads into context or output.
-- Do not ask the user to manually fetch PR or review-comment data unless automated discovery fails.
-- When **comment** submits, use GitHub `event: COMMENT` only; never submit `APPROVE` or `REQUEST_CHANGES`. Pending/draft language means no `event` and no submission.
-- Title/body narrative for **open** and **retitle** follows [`reference/pr-narrative.md`](reference/pr-narrative.md).
-- Never auto-approve or merge from this skill.
+Load only the matched branch; for the unblock chain, load each when its step runs.
 
-## Context pointers
-
-Load only the matched branch reference:
-
-- **open** — follow [`reference/open.md`](reference/open.md) until `gh pr view` confirms a PR (or browser flow confirmed created). Prefill title/body per [`reference/pr-narrative.md`](reference/pr-narrative.md).
-- **slice** — follow [`reference/slice.md`](reference/slice.md). Do not start open or resolve until the slice ledger marks that PR ready.
-- **retitle** — follow [`reference/retitle.md`](reference/retitle.md); load [`reference/pr-narrative.md`](reference/pr-narrative.md) for title/body.
-- **comment** — follow [`reference/comment.md`](reference/comment.md). Load [`reference/gh-api.md`](reference/gh-api.md) when posting.
-- **resolve** — follow [`reference/resolve.md`](reference/resolve.md). Load [`reference/gh-api.md`](reference/gh-api.md) when resolving threads.
-- **reply** — follow [`reference/reply.md`](reference/reply.md). Load [`reference/gh-api.md`](reference/gh-api.md) when posting replies.
-- **fix-ci** — follow [`reference/fix-ci.md`](reference/fix-ci.md).
-- **conflicts** — follow [`reference/conflicts.md`](reference/conflicts.md).
-- **unblock chain** — load each branch reference only when that step runs.
+- **open** — [`reference/open.md`](reference/open.md); title/body per [`reference/pr-narrative.md`](reference/pr-narrative.md).
+- **slice** — [`reference/slice.md`](reference/slice.md). No open/resolve for a slice until its ledger row marks it ready.
+- **retitle** — [`reference/retitle.md`](reference/retitle.md) + [`reference/pr-narrative.md`](reference/pr-narrative.md).
+- **comment** — [`reference/comment.md`](reference/comment.md); [`reference/gh-api.md`](reference/gh-api.md) when posting.
+- **resolve** — [`reference/resolve.md`](reference/resolve.md); [`reference/gh-api.md`](reference/gh-api.md) when resolving.
+- **reply** — [`reference/reply.md`](reference/reply.md); [`reference/gh-api.md`](reference/gh-api.md) when posting.
+- **fix-ci** — [`reference/fix-ci.md`](reference/fix-ci.md).
+- **conflicts** — [`reference/conflicts.md`](reference/conflicts.md).
 
 ## Handoff
 
-- Read-only or end-to-end PR review → the `review.gil` skill; it defaults to read-only findings unless publication is explicit or its narrow top-level interactive prompt applies.
-- Posting a supplied, already-verified ledger stays in **comment**.
-- Resolving or replying to existing feedback stays in this skill.
-- Narrative-only PR updates stay in **retitle**.
-- Dependabot PR assessment (changelog / approve-readiness) → `dependabot` **triage** (may call back into **fix-ci**).
-- Multi-repo attention list → `pr-sweep` (read-only; does not fix).
-- Harvest feedback: after landing a PR, resolving non-obvious review comments, or fixing systemic CI failures, hand off to `harvest` (`distill` for preventive mantras, `debt` for `.agents/debt-ledger.md`).
+- Read-only or end-to-end PR review (retrieve → review → reconcile → publish) → `review.gil`. Posting a supplied, verified ledger stays in **comment**; **reply** never adds findings or code.
+- Dependabot PR assessment → `dependabot` **triage** (may call back into **fix-ci**/**conflicts**).
+- Multi-repo attention list → `pr-sweep` (read-only).
+- After landing a PR, resolving non-obvious review comments, or fixing systemic CI → `harvest` (`distill` mantras; `debt` → `.agents/debt-ledger.md`).
 
 ## Completion criteria
 

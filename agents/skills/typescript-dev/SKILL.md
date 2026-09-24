@@ -1,24 +1,14 @@
 ---
 name: typescript-dev
 description: >-
-  Always load $dev first; this pack is deltas only. Language-runtime adapter
-  loaded by $dev — not the Build entry. Use when $dev routed here or the user
-  names this skill with $dev already loaded. TypeScript deltas: named types over
-  string/object soup, green≠correct, one runtime truth.
+  TypeScript/JavaScript deltas loaded by $dev (load $dev first; not a Build
+  entry): named types over string/object soup, green ≠ correct, one runtime
+  truth for closed sets.
 ---
 
 # TypeScript Dev
 
-**Stop:** read `$dev` Shared prep before any delta.
-
-Follow `$dev` for classify, shared stance, API truth / Dash recipe, compat ask, no-destructive git, workflow/plan, validation law, phase commits, and handoff skeleton. This pack adds TypeScript deltas only. Craft (modules, types, measured perf) lives in `architecture` — do not inline it here.
-
-## When to use
-
-- Loaded by `$dev` for TypeScript/JavaScript packages, apps, CLIs, and adapters.
-- Explicit `@typescript-dev` / `$typescript-dev` compose when `$dev` is already loaded.
-- Compose sibling guideline or domain skills when they apply; never paste their contents into this workflow.
-- Framework overlays (e.g. React Native) stay in project skills/`AGENTS.md` — compose them; do not invent framework recipes here.
+**Stop:** read `$dev` Shared prep before any delta. Craft lives in `architecture`; compose sibling skills by name, never paste them. Framework overlays (e.g. React Native) stay in project skills / `AGENTS.md`.
 
 ## Also earn `design` when
 
@@ -26,62 +16,40 @@ Generated client or wire types leaking past the adapter / parse-unwrap outside t
 
 ## Docsets
 
-- Prefer Dash docsets: **TypeScript** / **MDN** / **Node** as installed. Secondary: repo/`node_modules` types and package docs.
+Dash: **TypeScript** / **MDN** / **Node** as installed. Secondary: repo/`node_modules` types and package docs.
 
-## Stable-surface hints
+## Stable surfaces
 
-- Treat exported package/public module types and published API contracts as stable unless the ask or `AGENTS.md` says otherwise.
+Exported package/public module types and published API contracts — unless the ask or `AGENTS.md` says otherwise.
 
-## Stance deltas
+## Stance
 
-- **Named types with judgment.** Prefer closed sets, domain types, and precise records over bare `string`, `object`, `any`, or `Record<string, unknown>` at module boundaries and for decisions that cross seams. Do **not** brand every id, invent generics for one call site, or build type-level scaffolding where inference and a local named alias suffice. Plain serializable shapes at rest (cache/wire/forms) are intentional — rehydrate at the read seam rather than forcing class instances everywhere.
-- **A green compile is not a correct change.** `as`, `!`, and suppressions that only silence the checker are failed surgical work — prefer parse, narrow, or restructure until the type is earned. Suppressions need an owned reason and a removal condition; bare `@ts-ignore` is banned.
-- **One runtime truth for a closed set.** Do not maintain parallel hand interfaces, schemas, and ad-hoc guards that can disagree. Infer or generate one direction; map at the boundary when wire and domain must differ.
-- Evidence: touched modules, public contracts, real call sites, existing tests, generated vs hand types, compat posture (ask via `$dev` if unclear).
+- **Named types with judgment.** Closed sets, domain types, precise records over bare `string` / `object` / `any` / `Record<string, unknown>` at module boundaries and cross-seam decisions. Don't brand every id, add generics for one call site, or build type-level scaffolding where inference + a local alias suffice. Plain shapes at rest (cache/wire/forms) are intentional — rehydrate at the read seam.
+- **Green compile ≠ correct change.** `as`, `!`, and checker-silencing suppressions are failed surgical work — parse, narrow, or restructure. Suppressions need an owned reason + removal condition; bare `@ts-ignore` banned.
+- **One runtime truth for a closed set.** No parallel hand interfaces, schemas, and guards that can disagree; infer/generate one direction, map at the boundary.
 
 ## Surgical posture
 
-- **Optional-field soup is not a state machine.** Mutually exclusive variants belong in discriminated unions (or equivalent closed sets).
-- **Narrow by restructuring, not by assertion.** When control flow will not narrow, rewrite for the checker (`const`, predicate, discriminant) — do not win with `!` / `as`.
-- **Generics must earn the parameter.** Prefer named domain types; introduce `<T>` only when two+ real call sites share structure.
-- **Errors are `unknown` until narrowed** at an edge that owns the closed error set.
-- **Export surface is a contract.** Do not export “for tests” or leak generated types into UI; prefer `import type` on type-only edges.
-- Prefer `satisfies` when checking a value against a type without widening.
-- Tests may cast fixtures; production must not inherit that weakness.
-- Floating async needs an owner — who awaits, cancels, or swallows with cause.
-- Load thin postures in [`reference.md`](reference.md) when boundary typing, dual compilers, or schema ownership is in play.
-
-## Tooling
-
-- Use repo-native entrypoints (`typecheck`, `lint`, `test`, Make/`mise` targets). Prefer a ready, documented target over inventing one-off commands.
-- Start narrow (touched package/module/tests), then broaden when the change crosses seams.
-- When the repo pins separate **check** and **tooling API** TypeScript versions, treat both as contracts — do not “upgrade TypeScript” by breaking programmatic consumers.
-- Prefer project law for `strict-type-checked` on app sources vs relaxed tests when documented.
-
-## Contracts
-
-- Preserve existing repo conventions for contracts and docs.
-- Do not invent a new global docs regime.
-- If a touched public API already has docs or contract comments, keep them accurate in scope.
-- Generated clients and OpenAPI output are read-only in the change — regenerate; never hand-edit.
+- Mutually exclusive variants → discriminated unions, not optional-field soup.
+- Won't narrow → restructure (`const`, predicate, discriminant), not `!` / `as`.
+- `<T>` only when 2+ real call sites share structure.
+- Errors are `unknown` until narrowed at the edge owning the closed error set.
+- Export surface is a contract: no exports "for tests", no generated types in UI; `import type` on type-only edges.
+- `satisfies` to check without widening. Tests may cast fixtures; production may not.
+- Floating async needs an owner (await, cancel, or swallow with cause).
+- Generated clients / OpenAPI output: regenerate, never hand-edit.
+- Separate pinned **check** vs **tooling API** TypeScript versions are both contracts — don't break programmatic consumers when upgrading.
+- Follow project law for `strict-type-checked` on app sources vs relaxed tests.
+- Load [`reference.md`](reference.md) for boundary typing, dual compilers, schema ownership, Vitest/DOM testing.
 
 ## Compose routes
 
-Pointers only — load when present; do not paste their bodies here:
+- React / Next performance → `vercel-react-best-practices` when installed.
 
-- React / Next performance depth → `vercel-react-best-practices` when installed.
-- Project RN/UI overlays and `AGENTS.md` when present.
+## Non-goals
 
-## Explicit non-goals
-
-- Type-level programming encyclopedias, utility-type golf, branded-type theater by default.
-- Portable ESLint rule dumps or inventing local rules inside this skill — cite project `AGENTS.md`.
-- Framework list/scroll/UI recipes (overlays).
-- Inlining architecture craft checklists here.
+Type-level golf and default branded-type theater; inventing ESLint rules (cite `AGENTS.md`); framework list/scroll/UI recipes (overlays).
 
 ## Handoff deltas
 
-Before handoff (on top of `$dev` skeleton), confirm:
-
-- Boundary typing judgment stated when string/object/`any` appeared at a seam (named type, intentional plain-at-rest, or explicit deferral).
-- Residual risk, unverified paths, and intentional out-of-scope work called out.
+Boundary typing judgment when string/object/`any` appeared at a seam: named type, intentional plain-at-rest, or explicit deferral.

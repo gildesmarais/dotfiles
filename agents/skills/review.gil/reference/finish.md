@@ -1,87 +1,46 @@
 # Finish
 
-Production-readiness baseline for a local change, branch, commit range, or pull request. Findings report only — no boy-scout edits.
+Production-readiness baseline. Report only — no boy-scout edits. PR targets: PR patch + surrounding code at the recorded head SHA, never the local tree or `HEAD`.
 
-After scope prep in `SKILL.md`, continue here. For a pull request, review the PR patch and surrounding code at the recorded head SHA; never substitute the local working tree or local `HEAD`.
+## Review
 
-## Workflow
-
-1. Establish scope and assumptions
-
-- Capture explicit assumptions and missing context.
-
-2. Review in priority order
-
-- Production readiness
-- Industry-standard patterns
-- Maintainability and ownership transfer
-- Risk identification and due diligence
-- Compliance posture clarity
-
-3. Apply the review workflow
-
-- Assess architecture, boundaries, responsibilities against the `architecture` Core Axioms (deep modules, single ownership, wire-vs-domain) — axioms only; do not load craft branch refs unless the finding names a remediation branch.
-- Evaluate code quality, failure modes, edge cases.
-- Validate config, logging, security, and ops concerns.
-- Enumerate risks, debt, limitations, and compliance gaps.
-
-4. Use the autonomous review loop until convergence or blocked
-
-- Scan → Evaluate → Decide → Document → Re-check.
-- Stop only when Critical is empty and Important has owners or rationale.
+- Priority: production readiness → industry-standard patterns → maintainability/ownership transfer → risk & due diligence → compliance posture.
+- Judge boundaries against the `architecture` Core Axioms (deep modules, single ownership, wire-vs-domain) only; load craft branch refs only when a finding names that remediation branch.
+- Cover failure modes, edge cases, config, logging, security, ops; treat undocumented behavior as a defect.
+- No features or redesign unless the current design creates material risk; justify any deviation from standards.
+- Loop scan → evaluate → decide → document → re-check until Critical is empty and Important has owners or rationale.
 
 ## Output format (required)
 
-**Findings**
+All lenses fold into this single report.
 
-- Categorize as Critical / Important / Nice-to-Have.
-- Each finding includes impact and recommended action.
+**Findings** — Critical / Important / Nice-to-Have; each with impact + recommended action.
 
-**Non-Goals**
+**Non-Goals** — explicit exclusions and intentionally unaddressed areas.
 
-- List explicit exclusions and intentionally unaddressed areas.
+**Confidence & Uncertainty** — known facts vs inferred/unverified.
 
-**Confidence & Uncertainty**
+**Compliance & Risk Posture** — what passes, what gets flagged, minimum viable remediation or compensating controls.
 
-- Separate known facts from inferred or unverified items.
-
-**Compliance & Risk Posture**
-
-- What would pass review.
-- What would be flagged.
-- Minimum viable remediation or compensating controls.
-
-**Executive Summary**
-
-- Production readiness: Yes / No / Conditional.
-- Top risks.
-- Immediate actions.
-
-## Guardrails
-
-- Do not add features or redesign unless current design creates material risk.
-- Prefer proven, conventional solutions.
-- Optimize for clarity over novelty.
-- Treat undocumented behavior as a defect.
-- If deviating from standards, write explicit justification.
+**Executive Summary** — Production readiness: Yes / No / Conditional; top risks; immediate actions.
 
 ## Incident / fix-diff postures
 
-When the target is a `fix`, `Revert`, or production-incident shaped diff, ask:
+For `fix`, `Revert`, or production-incident diffs, ask:
 
-1. Did this fix wander onto a second surface? → remediate via `$dev` → routed `{lang}-dev` (one-surface; overlay `$dev` loaded for this change when applicable).
-2. Is a neighboring layer absorbing a boundary failure? → `$dev` → routed `{lang}-dev` → `architecture`.
-3. Does the path assume an invisible contract (shape, reload, cache identity, cutover successor)? → active framework overlay if present (overlay `$dev` loaded for this change), else `architecture`.
-4. Is disclosure or access treated as mere presence? → overlay when present (+ **security** when sensitive), else `architecture` / **security**.
+1. Fix wandered onto a second surface? → `$dev` → routed `{lang}-dev` (one surface; overlay when applicable).
+2. Neighboring layer absorbing a boundary failure? → `$dev` → `{lang}-dev` → `architecture`.
+3. Path assumes an invisible contract (shape, reload, cache identity, cutover successor)? → active framework overlay, else `architecture`.
+4. Disclosure/access treated as mere presence? → overlay (+ `security` when sensitive), else `architecture` / `security`.
 5. Did validate and execute see the same truth?
-6. Is each guard or policy owned at one lifecycle point?
+6. Is each guard/policy owned at one lifecycle point?
 7. Does the published contract accept only what runtime accepts?
-8. Do repeated harden / review-follow-up commits hint a missing principle rather than noise?
-9. Dual public API or silent old-shape hydrate without user-required compat? → load [`legacy.md`](legacy.md); flag as debt (findings) or delete under `quality`.
-10. Did uniqueness or readiness race across a suspension/startup gate?
-11. Did a durable/plain bag get treated as a live domain object without rehydrate?
-12. Did parse/unwrap or generated-client types escape the transport/adapter edge?
-13. Was a wire enum renamed in app code instead of normalized once?
-14. Did the change silence the checker with `as` / `!` / bare suppression instead of earning the type? → `$dev` → routed `typescript-dev`.
+8. Repeated harden/review-follow-up commits hinting a missing principle?
+9. Dual public API or silent old-shape hydrate without user-required compat? → [`legacy.md`](legacy.md): debt (findings) or delete (`quality`).
+10. Uniqueness/readiness race across a suspension/startup gate?
+11. Durable/plain bag treated as a live domain object without rehydrate?
+12. Parse/unwrap or generated-client types escaping the transport/adapter edge?
+13. Wire enum renamed in app code instead of normalized once?
+14. Checker silenced with `as` / `!` / bare suppression instead of earning the type? → `$dev` → `typescript-dev`.
 
-Fold answers into the single Findings report; do not invent a separate review lens beyond the selected table in `SKILL.md`.
+Fold answers into Findings; no extra lens beyond those selected in `SKILL.md`.

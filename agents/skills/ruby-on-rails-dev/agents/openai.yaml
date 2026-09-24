@@ -1,4 +1,4 @@
 interface:
   display_name: "Ruby on Rails Dev"
-  short_description: "Rails overlay: API, authz, tenancy, observability, and testing."
-  default_prompt: "Use $ruby-on-rails-dev with $ruby-dev to implement or review Rails changes with thin controllers, service boundaries, and policy checks."
+  short_description: "Rails overlay for $dev: API, authz, tenancy, testing."
+  default_prompt: "Use $dev to implement this Rails change; $ruby-dev and $ruby-on-rails-dev add Ruby and Rails deltas."

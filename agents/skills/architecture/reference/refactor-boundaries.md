@@ -1,44 +1,22 @@
 # refactor-boundaries
 
-Map wire/API/adapter contracts at boundary shells. Keep domain logic out of those shells; serialize and deserialize at the edge.
+Map wire/API/adapter contracts at boundary shells; keep domain out of them. Wire vs domain axiom: [`axioms.md`](axioms.md).
 
 ## Earn this branch
 
-Wire/API contract redesign, adapter shells that grew domain branches, dual ownership of serialize/deserialize, or an explicit boundary-map ask.
+Wire/API contract redesign, adapter shells that grew domain branches, dual serialize/deserialize ownership, or a boundary-map ask.
 
 ## Checklist
 
-1. **Contract map**
-   - List inbound and outbound edges: HTTP/RPC handlers, CLI parsers, DB/ORM mappers, queue/event codecs, file/CSV readers.
-   - For each edge: raw shape in → domain types at the shell → domain work inward; reverse outbound.
-   - Name the owner of each map (one module or type family per edge — no twin mappers).
-   - Keep published contract and runtime acceptance on one closed set — options accepted at runtime but absent from the published contract (or the reverse) are dual ownership of the contract.
-
-2. **Domain out of shells**
-   - Boundary shells parse, validate shape, map to/from domain types, and forward.
-   - No business rules, policy branches, or multi-step workflows inside adapters.
-   - If a shell already owns domain logic, extract before widening the contract.
-   - Foreign exception / unwinding containment: Adapters wrapping foreign, legacy, or system event loops (e.g. C/C++ runtimes, OS event dispatchers, foreign exception boundaries) must contain and normalize unwinding faults at the boundary. Never allow foreign unwinding to bypass language concurrency state machines, task runners, or resource cleanup routines without fail-fast containment.
-
-3. **Serialize ownership**
-   - One fact, one serializer home. Kill parallel encode/decode paths for the same wire shape.
-   - Ephemeral cache or derived-store freshness must bind content identity (or equivalent), not only size/time heuristics that accept same-size rapid rewrites.
-   - Keeping a derived export outside the primary transaction does not authorize drop-on-error — if the vendor reports not accepted/journaled, retain and retry with coalescing (cue `deep-modules` for outbox ownership).
-
-- Prefer thin maps; do not invent a second abstraction layer for ceremony.
-- Breaking wire changes: call out versioning or explicit migration — do not silent-shim forever.
-- When compat is waived, delete the superseded hydrate, deprecation shims, and backward-compatibility alias constants — do not leave parallel old-shape paths beside the current path.
-- Envelope variance (flat vs wrapped) is one parse concern — explicit modes, characterize both; keep the first parse permissive and harden inward.
-- Alias tables at the edge beat renaming wire fields to match app vocabulary.
-
-4. **Overlap routing**
-   - Module depth / dual ownership of behavior → co-load `deep-modules`.
-   - Primitive obsession / closed sets on the same seams → co-load `refactor-types`.
-   - Measured hot path on a boundary → co-load `performance` only with a baseline.
+1. **Contract map** — list inbound/outbound edges (HTTP/RPC, CLI, DB/ORM, queue/event codecs, file/CSV); per edge: raw in → domain at the shell → reverse outbound; one named map owner per edge (no twin mappers). Published contract and runtime acceptance are one closed set — options accepted but unpublished (or the reverse) are dual ownership.
+2. **Domain out of shells** — shells parse, shape-validate, map, forward; no rules, policy branches, or workflows. Extract existing domain logic before widening the contract. Adapters wrapping foreign/legacy/system event loops contain and normalize unwinding faults at the boundary; foreign unwinding never bypasses concurrency state machines, task runners, or cleanup.
+3. **Serialize ownership** — one serializer home per wire shape. Derived-cache freshness binds content identity, not size/time heuristics. A derived export outside the primary transaction still may not drop on error: if the vendor didn't accept/journal it, retain and retry with coalescing (cue `deep-modules` for outbox ownership).
+4. **Compat** — breaking wire changes name versioning or explicit migration, never silent permanent shims. When compat is waived, delete superseded hydrate, deprecation shims, and alias constants — no parallel old-shape path.
+5. **Edges** — envelope variance (flat vs wrapped) is one parse concern: explicit modes, characterize both, permissive first parse hardened inward. Alias tables at the edge beat renaming wire fields to app vocabulary.
 
 ## Sequencing
 
-Work one edge (or one owned map) per phase. Validate after each phase → ≥1 Conventional Commit (format and phase law: [`CONTEXT.md`](../../CONTEXT.md)) before the next edge. Prefer co-loading `refactor-types` when maps still pass primitives deep; co-load `deep-modules` when adapters are shallow passthrough bags.
+One edge (or owned map) per phase; validate → ≥1 Conventional Commit ([`../../CONTEXT.md`](../../CONTEXT.md)) before the next. Co-load `refactor-types` when maps pass primitives deep; `deep-modules` for passthrough adapters or behavior dual ownership; `performance` only with a baseline.
 
 ## Done when
 

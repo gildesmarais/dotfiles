@@ -1,8 +1,6 @@
 # Learning log
 
-Same-event staging for review.gil harvest candidates. Not progressive-load doctrine.
-
-Protocol: [`growth.md`](growth.md). Stage → filter → sparse-promote into matching lens ref, or drop. Leave this file empty/thin. No permanent archive of rejects.
+Same-event staging for review.gil harvest candidates; protocol in [`growth.md`](growth.md). Keep empty.
 
 ## Open candidates
 

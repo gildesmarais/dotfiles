@@ -1,39 +1,30 @@
 # performance
 
-Measure → baseline → optimize. Language-free stop rules only. No SIMD, allocator, or framework recipes here.
+Measure → baseline → optimize. Language-free stop rules; no SIMD, allocator, or framework recipes here.
 
 ## Earn this branch
 
-User asks for speed/allocations, a clear hot path exists, or measured evidence shows a bottleneck. Do not co-load on speculation alone.
+Speed/allocation ask, an evidenced hot path, or a measured bottleneck. Never co-load on speculation.
 
 ## Checklist
 
-1. **Measure first.** No “make it faster” without a baseline, profile, or an identified hot path from evidence.
-2. **Isolate the bottleneck.** Prefer the narrowest reproduction (one path, one stage) before changing shared layout.
-3. **Name the bottleneck class before the accelerator.** Classify the scarce resource: algorithm, data layout, allocation/ownership traffic, memory bandwidth & cache, syscall & I/O wait, compute-offload setup & transfer, or scheduler / core-class misfit. Do not pick SIMD, ring buffers, GPU, NPU, or similar until the class is evidenced.
-4. **Prefer leverage over micro-tweaks.** Algorithm, data layout, and allocation cuts before low-level tricks.
-5. **Treat hardware affinity as layout + seam work.** Zero-copy and unified-memory wins need one buffer ownership and contiguous lifetime across producers/consumers. Co-load `deep-modules` when CPU and an accelerator would each own a copy or a forked algorithm.
-6. **Offload only when work ≫ setup.** Measure end-to-end including map, submit, sync, and readback. Tiny stages that lose to setup stay on the portable CPU path.
-7. **Keep changes local** to the measured bottleneck unless a co-loaded `deep-modules` move already requires a layout change.
-8. **Fidelity over reckless approximation** on correctness-sensitive paths.
-9. **Do not meet a latency or throughput SLA by omitting semantic fields** from a fast path that claims parity with the authoritative path — change scheduling or placement, never meaning (cue `deep-modules` when delivery modes forked the schema).
-10. **Verify two layers.** (a) Evidence the intended path ran (vectorized loop, shared buffer, correct core class). (b) End-to-end budget vs baseline. Naming an accelerator is neither layer.
-11. **Stop when:** the measured goal is met; further gains need language/runtime recipes (hand off to `$dev` → `{lang}-dev` / overlay, project `AGENTS.md`, or optional third-party packs — do not paste those recipes into this file); or evidence does not support the change. Keep the portable path default; accelerate behind explicit opt-in and compare both (adapters, not domain).
+1. Baseline, profile, or evidenced hot path before any change; narrowest reproduction (one path, one stage) before touching shared layout.
+2. Name the bottleneck class before the accelerator: algorithm, data layout, alloc/ownership traffic, bandwidth & cache, syscall & I/O wait, offload setup & transfer, scheduler / core-class misfit. No SIMD, ring buffers, GPU, NPU until the class is evidenced; algorithm/layout/alloc cuts before low-level tricks.
+3. Hardware affinity is layout + seam work: zero-copy / unified memory needs one buffer owner and contiguous lifetime. Co-load `deep-modules` when CPU and accelerator would each own a copy or a forked algorithm.
+4. Offload only when work ≫ setup, measured end-to-end (map, submit, sync, readback).
+5. Stay local to the measured bottleneck unless a co-loaded `deep-modules` move requires layout change; no "while we're here" cleanups.
+6. Fidelity over approximation on correctness-sensitive paths. Never meet an SLA by omitting semantic fields from a fast path claiming parity — change scheduling or placement, never meaning (cue `deep-modules` when delivery modes forked the schema).
+7. Verify two layers: (a) evidence the intended path ran (vectorized loop, shared buffer, core class); (b) end-to-end budget vs baseline.
+8. Stop when the goal is met, evidence doesn't support the change, or gains need language/runtime recipes → `$dev` → `{lang}-dev` / overlay / `AGENTS.md` (never paste recipes here). Portable path stays default; acceleration behind explicit opt-in, compared against it.
 
 ## Anti-patterns
 
-- Optimizing without a baseline.
-- Starting from a platform capability checklist instead of a measured bottleneck class.
-- Inventing language-specific recipe dumps in this skill.
-- Expanding scope to “while we’re here” cleanups that are not on the measured path (route those to other branches or surgical `$dev` work).
-- Refreshing published baselines outside a harness that actually updates them.
-- Shipping unstable acceleration as the default — keep the portable path default; accelerate behind explicit opt-in and compare both.
-- Forking scalar and accelerated copies of one hot-path algorithm (cue `deep-modules`).
-- Winning a benchmark by dropping fields the slow/authoritative path still computes while advertising parity.
-- Counting “zero-copy” when a hidden serialize, format convert, or retain storm still crosses the seam.
-- Optimizing for peak FLOPS while bandwidth-, alloc-, or scheduler-bound.
-- Telemetry on the critical path you measure.
-- Gating identity refresh or capture visibility behind sync/work throttles (cue `deep-modules`: freshness ≠ sync).
+- Starting from a platform capability checklist instead of a measured bottleneck class; peak-FLOPS work while bandwidth-, alloc-, or scheduler-bound.
+- Refreshing published baselines outside the harness that owns them.
+- Forking scalar and accelerated copies of one algorithm (cue `deep-modules`).
+- Claiming zero-copy while a hidden serialize, format convert, or retain storm crosses the seam.
+- Telemetry on the measured critical path.
+- Gating identity refresh or capture visibility behind sync throttles (cue `deep-modules`: freshness ≠ sync).
 
 ## Done when
 

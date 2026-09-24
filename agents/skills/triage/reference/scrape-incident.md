@@ -1,8 +1,6 @@
 # Scrape incident playbook
 
-Load when signals match Botasaurus, scrape-api, `challenge_block`, `timeout/work`, fail-closed scrape UX, or SoundCloud-shaped hostile hosts.
-
-Do **not** re-grill these locks unless new evidence contradicts them.
+Signals: Botasaurus, scrape-api, `challenge_block`, `timeout/work`, fail-closed scrape UX, SoundCloud-shaped hostile hosts. Never re-grill these locks unless new evidence contradicts them.
 
 ## Locks
 
@@ -16,13 +14,11 @@ Do **not** re-grill these locks unless new evidence contradicts them.
 
 ## Shots
 
-| Shot  | Owner                              | Job                                                                                                                 |
-| ----- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| **1** | `triage` → PO and/or `$dev` `plan` | Sentry → local reproduce → ledger → admit/plan                                                                      |
-| **2** | `$dev` `implement` (after approve) | Phase A scrape-api fail-faster → Phase B web copy/chrome → Phase C journey matrix → `review.gil` **quality** per PR |
+- **Shot 1** (`triage` → PO and/or `$dev` `plan`): Sentry → local reproduce → ledger → admit/plan.
+- **Shot 2** (`$dev` `implement`, after approval): Phase A scrape-api fail-faster → Phase B web copy/chrome → Phase C journey matrix → `review.gil` **quality** per PR.
 
-Triage names Shot 2 in the ledger **Next** / residuals; it does **not** execute implement or Assure.
+Triage names Shot 2 in ledger **Next** / Residuals; never executes implement or Assure.
 
 ## Default class
 
-Prefer **`both`** when prod shows timeout false-hope **and** create UX needs fail-closed copy; prefer **`eng`** when only scraper classification/queue is wrong and wire Decision already honest.
+`both` when prod shows timeout false-hope **and** create UX needs fail-closed copy; `eng` when only scraper classification/queue is wrong and wire Decision is already honest.

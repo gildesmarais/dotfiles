@@ -1,19 +1,19 @@
 ---
 name: orchestrator
 description: >-
-  Zero-trust sequential execution runner. Consumes implementation phases from
-  .agents/plan/<slug>.md, spawns isolated $dev implement workers, independently
-  enforces file bounds and verification gates, commits each green phase, circuit
-  breaks on repeated failure, and runs one DAG-level review.gil findings pass.
+  Zero-trust sequential runner for .agents/plan/<slug>.md: spawns isolated $dev
+  implement workers, enforces file bounds and exit-0 gates, commits each green
+  phase, circuit breaks on repeated failure, runs one DAG-level review.gil
+  findings pass. Use to execute, run, or resume an approved plan.
 ---
 
 # Orchestrator
 
-Executes approved implementation plans. It owns execution mechanics and never owns intent specification, technical discovery, or application implementation.
+Owns execution mechanics only — never intent specification, technical discovery, or application implementation.
 
 ## Pick branch
 
-Single branch. Default: **`run`**.
+Single branch **`run`**.
 
 | Signal                                          | Route                                  |
 | ----------------------------------------------- | -------------------------------------- |
@@ -25,25 +25,23 @@ Single branch. Default: **`run`**.
 
 ## Shared prep
 
-1. Read repository `AGENTS.md` and the complete plan carrier.
+1. Read repo `AGENTS.md` and the full plan.
 2. Require a clean starting worktree and explicit circuit-breaker consent.
-3. Execute phases sequentially in document order; commits are progress state.
-4. Dispatch fresh `$dev implement` workers. Workers never commit and skip per-phase Assure.
+3. Phases run sequentially in document order; commits are progress state.
+4. Fresh `$dev implement` workers with `orchestrated: true`; workers never commit and skip per-phase Assure.
 5. Independently enforce exact path bounds and exit-0 gates after every attempt.
-6. Never push. Hard reset is legal only for the approved circuit breaker and only to `last_green_commit`.
+6. Never push. Hard reset only under the approved circuit breaker, only to `last_green_commit`.
 
 ## Branch reference
 
-- **`run`** → [`reference/run.md`](reference/run.md)
+- `run` → [`reference/run.md`](reference/run.md)
 
 ## Handoff
 
-Per phase: plan block → fresh `$dev implement` worker → bounds diff → independent gate → planned Conventional Commit. Full DAG: exactly one cumulative `review.gil findings` pass. Land requests continue to `pull-request open` only after readiness permits.
+Per phase: plan block → fresh worker → bounds diff → independent gate → planned Conventional Commit. Full DAG: exactly one cumulative `review.gil findings` pass. Land requests continue to `pull-request open` only after readiness permits.
 
 ## Completion criteria
 
-| Path          | Done when                                                                 |
-| ------------- | ------------------------------------------------------------------------- |
-| phase green   | Exact bounds pass, independent verification exit 0, phase commit authored |
-| circuit break | Reset to last green commit and halt after retries are exhausted           |
-| full DAG      | All phases green and one cumulative `review.gil findings` audit completed |
+- Phase green: exact bounds pass, independent gate exit 0, phase commit authored.
+- Circuit break: reset to `last_green_commit`, halted.
+- Full DAG: all phases green; one cumulative `review.gil findings` audit completed.

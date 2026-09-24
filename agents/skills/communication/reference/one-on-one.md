@@ -1,58 +1,24 @@
 # One-on-One
 
-Turn raw 1:1 notes into a shared post-meeting summary readable by both participants. The note taker sends this to the other person after the 1:1 so both can verify and recall what was said.
+Raw 1:1 notes (markdown, blockquotes, shorthand, `Q:`/`A:`/`q:` markers) → post-meeting summary the note taker sends to the other person so both can verify what was said.
 
-## When to Use
+## Output
 
-Use this branch when the user wants a summary distilled from:
+- Two-person voice: **I** = note taker, **You** = other person; both must recognize themselves.
+- One flat bullet list, one bullet per question/topic, no cap, no grouped sections or paragraphs. Completeness beats brevity — drop nothing substantive; merge only fragments that restate the same point.
+- Bullets typically open with the note taker's action ("I asked about X.", "I showed Y.", "I offered Z.") then the response. Keep the note taker's own remarks, offers, and asks as "I …".
+- Other person: "You: …" for multi-part answers; woven prose ("You'll …", "You want …", "You think …") for single points.
+- Keep unresolved questions, concerns, commitments, and process friction inline. No editorializing, invented certainty, or fabricated takeaways.
+- Fix shorthand and typos in ordinary words only ("mentatilty" → "mentality"). Carry proper nouns, ticket IDs, and codenames verbatim — never expand, explain, or "correct" them.
 
-- raw one-on-one notes
-- markdown notes with blockquotes
-- shorthand or fragmented note-taking
-- `Q:` / `A:` / `q:` markers
-- speaker-directed notes where who said what matters
+## Steno notation
 
-## Output Rules
+- Any line whose marker chain contains `>` → other person (**You**). Lines without `>` — including `-` sub-points indented under their answers — → note taker (**I**).
+- `> Q:` = other person asked; bare `Q:`/`q:` = note taker asked. `A:` = note taker's answer; `> A:` = other person's.
+- Indented follow-ups belong to the item above unless context clearly breaks.
+- Genuinely unclear attribution → "we discussed X". Wrong attribution in a shared note is worse than vague.
 
-- Default to returning only the final summary.
-- Write in two-person voice: **I** is the note taker, **You** is the other person. Both must recognize themselves in the output.
-- One bullet per question or topic — no bullet cap. Merge only fragments that clearly restate the same point; drop nothing substantive.
-- Default to one flat bullet list rather than grouped sections.
-- Each bullet typically opens with what the note taker did ("I asked about X.", "I showed Y.", "I offered Z.") followed by the other person's response.
-- Preserve the note taker's own remarks, offers, and asks as "I …" statements.
-- Render the other person's side as "You: …" for multi-part answers, or woven prose ("You'll …", "You want …", "You think …") for single points.
-- Lightly clean up shorthand, fragments, and typos in ordinary words — never expand, explain, or "correct" proper nouns, ticket IDs, or internal codenames.
-- Do not rewrite the notes into paragraphs by default.
-- Do not editorialize beyond what was said. Do not invent certainty or fabricate takeaways.
-
-## Steno Notation
-
-Interpret the raw markdown using these direction and attribution rules:
-
-### Voice mapping
-
-- Any line whose marker chain contains `>` belongs to the other person → **You** in the output.
-- Lines without `>` — including `-` sub-points indented under the other person's answers — belong to the note taker → **I** in the output.
-- `> Q:` means the other person asked the question.
-- Bare `Q:` or `q:` means the note taker asked the question.
-- `A:` without `>` means the note taker's answer; `> A:` means the other person's answer.
-- Lowercase `q:` is equivalent to `Q:`.
-- Indented follow-up lines belong to the item immediately above unless the notes clearly break context.
-
-### Ambiguity
-
-- If attribution is genuinely unclear, phrase it as "we discussed X" rather than guessing. Wrong attribution in a shared note is worse than vague attribution.
-
-## Fidelity Rules
-
-- Completeness beats brevity — the other person must recognize everything they said.
-- Merge repeated fragments into one clean bullet only when they clearly describe the same point.
-- Preserve unresolved questions, concerns, commitments, and process friction inline.
-- Carry proper nouns, ticket IDs, and internal codenames verbatim — never expand, explain, translate, or "correct" them, even when they look misspelled.
-- Spelling cleanup applies only to ordinary words (e.g. "mentatilty" → "mentality").
-- If no clear takeaway exists, do not fabricate one.
-
-## Examples
+## Example
 
 Input:
 
@@ -61,41 +27,19 @@ Q: noshow on quarterly leadership sync?
 
 > took part in the beginning
 > catched up via meeting notes
-> Q: catchup on townhall?
-> translated slides to english.
-> no further questions
-> I offered explanation and ask for attention when work is not contributing to goals, or we overlook opportunities.
 > Q: project-northstar - we had team meeting last week to align on approach. are next steps clear?
 > is clear.
 > work started.
 > sync with alex
 
 - tickets are high level, align before work early i.e. in deep dive
-- great to see stacked PRs of the PRJ-204 already up; great way to keep delivering and slice the delivers
-  q: i showed jira timeline. this view used over manual figma
-- epic based
-- templates for figma to track projects
-  > AI topic: thinks best is tool-alpha right now, tool-beta, tool-gamma. example. switched thru some tools.
-- > proposed tool-beta project overview / autogenerated / sharing via tool-beta / manual publish / mcp.
-  > I replied it's great example for info sharing, accessibility needs some work (to be accessible for all team members)
+- great to see stacked PRs of the PRJ-204 already up
+  > AI topic: thinks best is tool-alpha right now, tool-beta. switched thru some tools.
+  > I replied it's great example for info sharing, accessibility needs some work
 ```
 
 Output:
 
 - I asked about the no-show at the quarterly leadership sync. You took part at the beginning and caught up via meeting notes.
-- I asked about the townhall catch-up. You translated the slides to English and had no further questions. I offered an explanation and asked you to pay attention when work isn't contributing to the goals, or when we overlook opportunities.
-- I asked whether next steps on project-northstar are clear after last week's team alignment. You: it's clear, work has started, and you'll sync with Alex. I noted that tickets are high-level, so align before work starts — e.g. in a deep dive. Great to see stacked PRs for PRJ-204 already up; a good way to keep delivering in slices.
-- I showed the Jira timeline: epic-based, and the view to use instead of tracking projects manually in Figma (Figma templates still exist for that).
-- You on AI: tool-alpha feels best right now, then tool-beta and tool-gamma; you've switched through some tools. You proposed a tool-beta project overview — autogenerated, shared via tool-beta, with manual publish and MCP. I replied that it's a great example of info sharing; accessibility still needs work so it's usable for all team members.
-
-Input:
-
-```markdown
-> unclear who owns the rollout once it spans squads
-> Q: where does confusion start?
-> usually after first escalation
-```
-
-Output:
-
-- We discussed rollout ownership once it spans squads — confusion usually starts after the first escalation.
+- I asked whether next steps on project-northstar are clear after last week's team alignment. You: it's clear, work has started, and you'll sync with Alex. I noted that tickets are high-level, so align before work starts — e.g. in a deep dive. Great to see stacked PRs for PRJ-204 already up.
+- You on AI: tool-alpha feels best right now, then tool-beta; you've switched through some tools. I replied that it's a great example of info sharing; accessibility still needs work.
