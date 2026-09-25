@@ -252,6 +252,6 @@ printf '%s' "$filtered_threads" | jq -r \
         ("\n" + ($t.comments | sort_by(.created_at) | map(
           "  - \(.user.login) @ \(.created_at)\n    " + (body_text | gsub("\\n"; "\\n    "))
         ) | join("\n"))) end) + "\n"
-    ) | .[] 
+    ) | join("\n")
   )
 '

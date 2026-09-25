@@ -12,6 +12,7 @@ module Skill
     COMMANDS = {
       "list" => :run_list,
       "doctor" => :run_doctor,
+      "prune" => :run_prune,
       "backfill" => :run_backfill,
       "promote" => :run_promote,
       "rename" => :run_rename,
@@ -21,6 +22,7 @@ module Skill
     USAGE_EXAMPLES = [
       "skill list",
       "skill doctor",
+      "skill prune",
       "skill backfill my-skill",
       "skill promote my-skill",
       "skill rename ruby-dev ruby"
@@ -78,6 +80,7 @@ module Skill
         Commands:
           list                         List skills available in #{paths.store_dir}
           doctor                       Report store vs ~/.agents/skills status
+          prune                        Remove orphan rcup links whose store source is gone
           backfill <name>              Copy drifted agent files into the store
           promote <name>               Move .agents/skills/<name> into the store
           rename <old> <new>           Rename a stored skill
@@ -99,6 +102,11 @@ module Skill
     def run_doctor(args)
       ui.reject_extra_args("doctor", args)
       operations.doctor_skills
+    end
+
+    def run_prune(args)
+      ui.reject_extra_args("prune", args)
+      operations.prune_skills
     end
 
     def run_backfill(args)

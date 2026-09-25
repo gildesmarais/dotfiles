@@ -131,7 +131,7 @@ class SkillUnitTest < Minitest::Test
   end
 
   def test_classifier_statuses_are_frozen_closed_set
-    assert_equal(%w[ok drift home-only broken], Skill::Classifier::STATUSES)
+    assert_equal(%w[ok drift home-only broken orphan], Skill::Classifier::STATUSES)
     assert(Skill::Classifier::STATUSES.frozen?)
   end
 
@@ -216,6 +216,117 @@ class SkillUnitTest < Minitest::Test
 
     assert_equal(%w[SKILL.md], classifier.drift_paths("noisy"))
     assert_equal("drift", classifier.status_for("noisy"))
+  end
+
+  def test_classifier_orphan_inside_store_backed_skill
+    create_store_skill("linked")
+    store_file = File.join(@paths.store_skill_path("linked"), "SKILL.md")
+    File.write(store_file, "# Linked\n")
+    FileUtils.mkdir_p(File.join(@paths.agents_skill_path("linked"), "reference"))
+    FileUtils.ln_s(store_file, File.join(@paths.agents_skill_path("linked"), "SKILL.md"))
+    FileUtils.ln_s(
+      File.join(@paths.store_skill_path("linked"), "reference", "gone.md"),
+      File.join(@paths.agents_skill_path("linked"), "reference", "gone.md")
+    )
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal(%w[reference/gone.md], classifier.orphan_paths("linked"))
+    assert_equal("orphan", classifier.status_for("linked"))
+  end
+
+  def test_classifier_orphan_when_directory_contains_only_store_orphans
+    FileUtils.mkdir_p(File.join(@paths.agents_skill_path("dead"), "nested"))
+    FileUtils.ln_s(
+      File.join(@paths.store_dir, "dead", "SKILL.md"),
+      File.join(@paths.agents_skill_path("dead"), "SKILL.md")
+    )
+    FileUtils.ln_s(
+      File.join(@paths.store_dir, "dead", "nested", "x.md"),
+      File.join(@paths.agents_skill_path("dead"), "nested", "x.md")
+    )
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal(%w[SKILL.md nested/x.md], classifier.orphan_paths("dead"))
+    assert_equal("orphan", classifier.status_for("dead"))
+  end
+
+  def test_classifier_orphan_ignores_dead_link_outside_store
+    FileUtils.mkdir_p(@paths.agents_skill_path("third-party"))
+    File.write(File.join(@paths.agents_skill_path("third-party"), "SKILL.md"), "# Home\n")
+    FileUtils.ln_s(
+      File.join(@tmpdir, "elsewhere", "missing.md"),
+      File.join(@paths.agents_skill_path("third-party"), "extra.md")
+    )
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal([], classifier.orphan_paths("third-party"))
+    assert_equal("home-only", classifier.status_for("third-party"))
+  end
+
+  def test_classifier_orphan_skips_hidden_paths
+    create_store_skill("linked")
+    store_file = File.join(@paths.store_skill_path("linked"), "SKILL.md")
+    File.write(store_file, "# Linked\n")
+    FileUtils.mkdir_p(@paths.agents_skill_path("linked"))
+    FileUtils.ln_s(store_file, File.join(@paths.agents_skill_path("linked"), "SKILL.md"))
+    FileUtils.mkdir_p(File.join(@paths.agents_skill_path("linked"), ".cache"))
+    FileUtils.ln_s(
+      File.join(@paths.store_skill_path("linked"), "gone.md"),
+      File.join(@paths.agents_skill_path("linked"), ".cache", "gone.md")
+    )
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal([], classifier.orphan_paths("linked"))
+    assert_equal("ok", classifier.status_for("linked"))
+  end
+
+  def test_classifier_drift_takes_precedence_over_orphan
+    create_paired_skill("both", store_body: "# Store\n", agent_body: "# Agent\n")
+    FileUtils.ln_s(
+      File.join(@paths.store_skill_path("both"), "gone.md"),
+      File.join(@paths.agents_skill_path("both"), "gone.md")
+    )
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal("drift", classifier.status_for("both"))
+    assert_equal(%w[gone.md], classifier.orphan_paths("both"))
+  end
+
+  def test_prune_skills_removes_orphans_and_empty_dirs
+    create_store_skill("linked")
+    store_file = File.join(@paths.store_skill_path("linked"), "SKILL.md")
+    File.write(store_file, "# Linked\n")
+    FileUtils.mkdir_p(File.join(@paths.agents_skill_path("linked"), "reference"))
+    FileUtils.ln_s(store_file, File.join(@paths.agents_skill_path("linked"), "SKILL.md"))
+    FileUtils.ln_s(
+      File.join(@paths.store_skill_path("linked"), "reference", "gone.md"),
+      File.join(@paths.agents_skill_path("linked"), "reference", "gone.md")
+    )
+    FileUtils.mkdir_p(File.join(@paths.agents_skill_path("dead"), "nested"))
+    FileUtils.ln_s(
+      File.join(@paths.store_dir, "dead", "SKILL.md"),
+      File.join(@paths.agents_skill_path("dead"), "SKILL.md")
+    )
+
+    out, = capture_io { @operations.prune_skills }
+
+    assert_includes(out, "linked/reference/gone.md")
+    assert_includes(out, "dead/SKILL.md")
+    assert_includes(@ui.notes, "pruned 2 orphan links")
+    refute(File.exist?(File.join(@paths.agents_skill_path("linked"), "reference", "gone.md")))
+    assert(File.symlink?(File.join(@paths.agents_skill_path("linked"), "SKILL.md")))
+    refute(File.exist?(File.join(@paths.agents_skill_path("linked"), "reference")))
+    refute(File.exist?(@paths.agents_skill_path("dead")))
+
+    @ui.notes.clear
+    out2, = capture_io { @operations.prune_skills }
+    assert_equal("", out2)
+    assert_includes(@ui.notes, "no orphans to prune")
   end
 
   def test_classifier_report_entries_sorted_union

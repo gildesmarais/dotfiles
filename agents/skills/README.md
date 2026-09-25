@@ -84,10 +84,11 @@ Git-tracked `agents/skills/<name>/` is the source of truth. `rcup` installs file
 | Command                    | Role                                                                  |
 | -------------------------- | --------------------------------------------------------------------- |
 | `skill list`               | List non-hidden store skills                                          |
-| `skill doctor`             | Report `ok` / `drift` / `home-only` / `broken` for store vs install   |
+| `skill doctor`             | Report `ok` / `drift` / `home-only` / `broken` / `orphan`             |
+| `skill prune`              | Remove orphan rcup links whose store source is gone                   |
 | `skill backfill <name>`    | Copy drifted real files from `~/.agents/skills/<name>` into the store |
 | `skill promote <name>`     | Move `<project>/.agents/skills/<name>` into the store                 |
 | `skill rename <old> <new>` | Rename in the store                                                   |
 | `rcup`                     | Install store skills into `~/.agents/skills`                          |
 
-`drift` → `skill backfill <name>` → `rcup`. Project drafts live in `<repo>/.agents/skills/<name>/` (promote source).
+`drift` → `skill backfill <name>` → `rcup`. `orphan` → `skill prune`. Project drafts live in `<repo>/.agents/skills/<name>/` (promote source).

@@ -256,6 +256,65 @@ class SkillCliTest < Minitest::Test
     assert_equal("", result.output)
   end
 
+  def test_doctor_orphan_exits_one
+    create_store_skill("linked")
+    store_file = File.join(@skills_dir, "linked", "SKILL.md")
+    File.write(store_file, "# Linked\n")
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "linked", "reference"))
+    FileUtils.ln_s(store_file, File.join(@agents_skills_dir, "linked", "SKILL.md"))
+    FileUtils.ln_s(
+      File.join(@skills_dir, "linked", "reference", "gone.md"),
+      File.join(@agents_skills_dir, "linked", "reference", "gone.md")
+    )
+
+    result = run_skill("doctor")
+
+    assert_equal(1, result.exitstatus)
+    assert_match(/^linked\s+orphan$/m, result.output)
+  end
+
+  def test_prune_removes_orphan_links_and_empty_dirs
+    create_store_skill("linked")
+    store_file = File.join(@skills_dir, "linked", "SKILL.md")
+    File.write(store_file, "# Linked\n")
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "linked", "reference"))
+    FileUtils.ln_s(store_file, File.join(@agents_skills_dir, "linked", "SKILL.md"))
+    FileUtils.ln_s(
+      File.join(@skills_dir, "linked", "reference", "gone.md"),
+      File.join(@agents_skills_dir, "linked", "reference", "gone.md")
+    )
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "dead"))
+    FileUtils.ln_s(
+      File.join(@skills_dir, "dead", "SKILL.md"),
+      File.join(@agents_skills_dir, "dead", "SKILL.md")
+    )
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "third-party"))
+    File.write(File.join(@agents_skills_dir, "third-party", "SKILL.md"), "# Home\n")
+    FileUtils.ln_s(
+      File.join(@tmpdir, "elsewhere", "missing.md"),
+      File.join(@agents_skills_dir, "third-party", "extra.md")
+    )
+
+    result = run_skill("prune")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "linked/reference/gone.md")
+    assert_includes(result.output, "dead/SKILL.md")
+    assert_includes(result.output, "pruned 2 orphan links")
+    refute_path_exists(File.join(@agents_skills_dir, "linked", "reference"))
+    assert(File.symlink?(File.join(@agents_skills_dir, "linked", "SKILL.md")))
+    refute_path_exists(File.join(@agents_skills_dir, "dead"))
+    assert(
+      File.exist?(File.join(@agents_skills_dir, "third-party", "extra.md")) ||
+        File.symlink?(File.join(@agents_skills_dir, "third-party", "extra.md"))
+    )
+    assert(File.symlink?(File.join(@agents_skills_dir, "third-party", "extra.md")))
+
+    second = run_skill("prune")
+    assert_equal(0, second.exitstatus)
+    assert_includes(second.output, "no orphans to prune")
+  end
+
   def test_backfill_copies_drifted_files_and_preserves_store_only
     create_store_skill("drifted")
     File.write(File.join(@skills_dir, "drifted", "SKILL.md"), "# Store\n")

@@ -4,7 +4,7 @@
 
 `skill/` owns the implementation and tests for the `skill` command used to manage the dotfiles skill store (`~/.dotfiles/agents/skills`).
 
-Install first-party skills into agents with [`rcup`](https://github.com/thoughtbot/rcm) (repo `agents/skills/<name>/` → `~/.agents/skills/<name>/`). This CLI handles store hygiene only: `list`, `doctor`, `backfill`, `promote`, and `rename`.
+Install first-party skills into agents with [`rcup`](https://github.com/thoughtbot/rcm) (repo `agents/skills/<name>/` → `~/.agents/skills/<name>/`). This CLI handles store hygiene only: `list`, `doctor`, `prune`, `backfill`, `promote`, and `rename`.
 
 ## Key Decision
 
@@ -35,7 +35,7 @@ Do not optimize for:
 - external services
 - non-stdlib Ruby dependencies
 - broad cross-platform abstractions unless they are required by an actual use case
-- agent install management (use `rcup` / topgrade instead)
+- agent install management beyond orphan prune (use `rcup` / topgrade instead)
 - third-party skill install (use manual `npx skills` for optional packs)
 
 ## Operating Constraints
@@ -47,7 +47,8 @@ Do not optimize for:
 - The tool manages local directories in the dotfiles store; it should fail closed rather than overwrite unexpected paths.
 - Behavior should remain understandable from CLI output alone. Errors should be explicit and actionable.
 - Do not create agent install links. Print an `rcup` hint after promote/rename/backfill.
-- `Skill::Classifier` owns status and drift; doctor and backfill must not reimplement those rules.
+- `prune` only removes rcup links under `~/.agents/skills` whose store source is gone; it never creates links.
+- `Skill::Classifier` owns status, drift, and orphan detection; doctor/backfill/prune must not reimplement those rules.
 
 ## Canonical Paths
 
@@ -89,5 +90,5 @@ When reviewing changes here, prioritize:
 - argument parsing regressions
 - drift between README, tests, and executable behavior
 - accidental reintroduction of `skill sync` or `.codex/skills` promote workflows
-- dual ownership of status/drift outside `Skill::Classifier`
-- doctor exit-on-drift (`1` when any `drift` row is printed)
+- dual ownership of status/drift/orphan outside `Skill::Classifier`
+- doctor exit-on-failure (`1` when any `drift` or `orphan` row is printed)

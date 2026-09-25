@@ -20,16 +20,13 @@ Inside the heredoc, a JS newline escape is `\\n`.
 
 ## Lookup
 
-`flattenedTags` / `flattenedProjects` / `flattenedFolders` are array-like. `byName` may return one object or an array — require length 1 or match `id.primaryKey`.
+`flattenedTags` / `flattenedProjects` / `flattenedFolders` are array-like. Prefer `byIdentifier` over scanning those arrays. `byName` may return one object or an array — require length 1 or match `id.primaryKey`.
 
 ```javascript
-function byId(list, id) {
-  for (let i = 0; i < list.length; i++) {
-    if (list[i].id.primaryKey === id) return list[i];
-  }
-  return null;
-}
 const task = Task.byIdentifier(id); // id is the primaryKey string
+const project = Project.byIdentifier(id);
+const tag = Tag.byIdentifier(id);
+const folder = Folder.byIdentifier(id);
 ```
 
 `tag.remainingTasks.length` is the emptiness check. `tag.status` string contains `Active`, `OnHold`, or `Dropped`.
