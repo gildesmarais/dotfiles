@@ -2,9 +2,9 @@
 name: orchestrator
 description: >-
   Brain for .agents/plan/<slug>.md on one shared worktree: one $dev implement
-  hand at a time, file bounds, exit-0 gates, one commit per phase, circuit
-  break, one findings pass. Use to execute, run, or resume a plan when Cursor
-  multi-agent is not the runner.
+  hand at a time, file bounds, exit-0 gates, one commit per phase,
+  stash-and-halt, one findings pass. Use to execute, run, or resume a plan when
+  Cursor multi-agent is not the runner.
 ---
 
 # Orchestrator
@@ -27,11 +27,11 @@ Single branch **`run`**.
 
 ## Shared prep
 
-1. Consent and admission already happened in the pipeline batch ([`../CONTEXT.md`](../CONTEXT.md)). Do not ask again.
+1. Admission already happened in the pipeline batch ([`../CONTEXT.md`](../CONTEXT.md)). Do not ask again.
 2. Read repo `AGENTS.md` and the next phase block only.
 3. One hand at a time on this worktree. `depends_on` chooses the next phase. Commits are progress.
-4. The hand prompt is the plan path and phase id. The brain checks bounds, runs the gate, and commits.
-5. Never push. Hard reset only under the approved circuit breaker, only to the last green commit.
+4. The brain checks bounds, runs the gate, and commits.
+5. Never push. Failed attempts are stashed, never reset.
 
 ## Branch reference
 
@@ -44,5 +44,5 @@ Land was in the batch and findings readiness is Yes or Conditional → `pull-req
 ## Completion criteria
 
 - Phase green: bounds match, gate exit 0, planned commit authored.
-- Circuit break: reset to the last green commit, halted.
+- Halt: failed attempt stashed, run stopped.
 - Run green: all phases committed; one `review.gil findings` pass in `.agents/run/<slug>.md`.

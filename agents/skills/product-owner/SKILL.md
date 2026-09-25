@@ -56,7 +56,7 @@ Evidence rules (all branches):
 ```text
 product-owner gate
   Build Now       → fold still-open consents into this same reply
-                    (circuit breaker, commit on the default branch, land).
+                    (commit on the default branch, land).
                     Do not ask how to run the plan yet.
                     story-slice when the ask is stories / multi-slice /
                     UX-mandated AC; else $dev plan. After the plan file

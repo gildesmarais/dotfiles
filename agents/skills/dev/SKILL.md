@@ -32,7 +32,7 @@ Never ask the user to pick when signals are clear.
 3. **Classify:** `surgical` | `design` | `review-hand-off`.
    - Load [`architecture/reference/axioms.md`](../architecture/reference/axioms.md) on **every** `implement`, surgical included. Load `architecture` `SKILL.md` + matched references only when `design` is earned.
    - Earn `design` on the core six: dual ownership / shallow modules / primitive obsession across boundaries / structural cleanup ask / measured perf / type-driven refactor; also named GoF / which-pattern asks (`design-patterns`). Ambiguous → prefer `design`.
-   - **Approved-plan inheritance:** executing from `.agents/plan/<slug>.md` that records a completed architecture pass or declares `orchestrated: true` → inherit its decisions; don't re-run an interactive pass; axioms stay active.
+   - **Plan inheritance:** `orchestrated: true` (a phase of `.agents/plan/<slug>.md`) → inherit its classification and architecture decisions; no second pass; axioms stay active.
    - **Gated:** `design` earned without inheritance → invoke `architecture` and document seam decisions in the plan or milestone ledger **before** writing code.
    - Packs may only append "also earn when…" lists.
    - `review-hand-off` → stop → `review.gil`.
@@ -68,7 +68,7 @@ Path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; never rever
   - Prefer spawning a new agent running `review.gil` `findings` (+ warranted lenses; `security` lens when the cue matched) with the Delivery Ledger.
   - Small single-surface surgical → fresh in-session pass OK; spawn preferred for plan-driven, multi-phase, or security-cue work.
   - Trivial diff (docs-only, comment/typo, single-line config) may skip — state skip + reason; never silent.
-  - `orchestrated: true` → emit the ledger, skip `findings` (orchestrator runs one DAG-level pass).
+  - `orchestrated: true` → emit the ledger, skip `findings` (the runner runs one DAG-level pass).
   - `quality` only on explicit merge-prep / boy-scout ask or already-authorized P0/P1 fixes; never from bare "review".
   - No subagent → fresh in-session pass (reload the skill; implementer self-check is not the review).
   - Report delivery only after the pass returns; no ship-ready claim without it. Land ask + readiness Yes/Conditional → `pull-request` `open`.

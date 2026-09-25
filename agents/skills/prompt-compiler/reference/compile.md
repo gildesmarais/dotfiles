@@ -27,13 +27,10 @@ intent_spec:
       - "<path-or-domain>"
   trade_offs:
     breaking_changes: forbidden # forbidden | allowed | ask
-  circuit_breaker:
-    approved: false
 ```
 
 - Forbidden: task IDs/DAGs, dependencies, `target_files`, `read_context`, commands, gates, commit messages, statuses, attempts, retry limits, prose outside the three dimensions.
 - Unknown dimension → the batch asks; do not emit a guess.
-- `circuit_breaker.approved` is the batch answer. Unasked and ungranted → `false`.
 
 ## Halt and handoff
 

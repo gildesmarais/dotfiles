@@ -2,9 +2,9 @@
 name: prompt-compiler
 description: >-
   Compile raw or ambiguous developer prompts into a persisted intent_spec DTO:
-  invariants, allowed blast radius, breaking-change posture, circuit-breaker
-  consent. Use for /prompt-compiler, "compile this prompt", "refine prompt", or
-  "structure this prompt".
+  invariants, allowed blast radius, breaking-change posture. Use for
+  /prompt-compiler, "compile this prompt", "refine prompt", or "structure this
+  prompt".
 ---
 
 # Prompt Compiler
@@ -29,7 +29,6 @@ Single branch **`compile`**.
 2. **Read-only** except the one DTO file. Never inspect repo mechanics to speculate about files, commands, phases, or tests.
 3. **Owned gaps join the pipeline batch** ([`../CONTEXT.md`](../CONTEXT.md)): invariants, `allowed_domains`, breaking-change posture. One message, then write the DTO. Do not grill one question at a time on this path.
 4. **No execution schema:** task DAGs, dependencies, statuses, retries, commands, verification gates, worker prompts are forbidden.
-5. **Consent:** `circuit_breaker.approved` records the batch. The opening prompt did not grant it → the batch asks once. Never invent approval.
 
 ## Branch reference
 

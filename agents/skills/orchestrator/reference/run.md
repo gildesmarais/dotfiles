@@ -4,15 +4,15 @@ The plan `.agents/plan/<slug>.md` is immutable. Commits are progress. The brain 
 
 ## Brain
 
-Halt unless the plan has `target_files`, `read_context`, one `verification_gate`, one `commit_message`, and `depends_on` on every phase, circuit-breaker consent is already given, and the worktree is clean.
+Halt unless every phase block parses with the five required keys (`target_files`, `read_context`, `verification_gate`, `commit_message`, `depends_on`), and the worktree is clean.
 
 1. Next phase = first incomplete block whose `depends_on` ids already have commits. Read that block only.
 2. Spawn one hand. Prompt: plan path, phase id, and on retry the one error line in gitignored `.agents/run/<slug>.md`. Do not paste the plan or prior transcripts.
-3. Ignore the hand's transcript. `git diff --name-only` plus untracked files must be exactly `target_files` (the run log is exempt and never staged). Run `verification_gate`. Exit 0 → stage only `target_files`, commit with `commit_message`. Otherwise restore to that phase's baseline.
+3. Ignore the hand's transcript. `git diff --name-only` plus untracked files must be exactly `target_files` (the run log is exempt and never staged). Run `verification_gate`. Exit 0 → stage only `target_files`, commit with `commit_message`. Otherwise `git stash push --include-untracked -m "orchestrator/<slug>/<phase>"` and record the stash ref in the run log.
 4. Append `phase id, exit code, one-line error` to the run log.
-5. A second failure resets with `git reset --hard` to the last green commit and stops the run.
+5. A second failure on the same phase stashes the same way and stops the run.
 
-After a commit whose message resolves `DEBT-<NUMBER>`, mark that ledger row resolved and commit `chore(debt): resolve DEBT-<NUMBER>`. Missing row → stop.
+After a commit whose message resolves `DEBT-<NUMBER>`, follow [`../../harvest/reference/debt.md`](../../harvest/reference/debt.md).
 
 Then one `review.gil findings` pass on the range. Append the findings to the run log. Findings that need code → one list, then stop for a follow-up plan.
 
@@ -31,5 +31,5 @@ Skip review.gil.
 ## Completion
 
 - Phase green: bounds match, gate exit 0, planned commit exists.
-- Circuit break: hard reset to the last green commit, run stopped.
+- Halt: failed attempt stashed, run stopped.
 - Run green: every phase committed, one findings pass in the run log.

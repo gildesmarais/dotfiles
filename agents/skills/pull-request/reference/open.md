@@ -21,7 +21,7 @@ type(scope): [ABC-123] summary
 type(scope): summary
 ```
 
-Also satisfy repo-local commit conventions/body sections.
+Also satisfy repo-local commit conventions/body sections. `Resolves: DEBT-<NUMBER>` closure: [`../../harvest/reference/debt.md`](../../harvest/reference/debt.md).
 
 ## PR
 

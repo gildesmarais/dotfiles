@@ -55,7 +55,7 @@ Bare "promote" / "unify" → one clarifying question, or stay on the skill in pl
 
 ## Handoff
 
-Return one ledger (required before coding continues via `$dev`) in **Delivery Ledger** shape ([`../CONTEXT.md`](../CONTEXT.md)) plus craft deltas: branches loaded; craft decisions (structural / type / boundary / perf) implement must honor; residuals incl. dual ownership; commits made or deferred.
+Return one ledger (required before coding continues via `$dev`) in **Delivery Ledger** shape ([`../CONTEXT.md`](../CONTEXT.md)) plus craft deltas: branches loaded; craft decisions (structural / type / boundary / perf), each with the rejected alternative, implement must honor; residuals incl. dual ownership; commits made or deferred.
 
 - Craft touched code → re-route through `$dev` → `{lang}-dev` / overlay for validation before Assure / Ship.
 - Then `review.gil` / `pull-request` — never reverse; never skip `$dev` validation when code changed.

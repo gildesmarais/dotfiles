@@ -13,8 +13,7 @@ Own the loop: discover PR → fetch unresolved threads → assess in code → pl
 4. **Plan** — stop and present before coding: thread → change, commit grouping by concern, threads left open + why, blocking questions. Always when 2+ actionable, any `needs user decision`, conflicts, or non-obvious tradeoffs. Fast-path: exactly one obvious fix (typo, one-line guard, clear rename) → implement; note the skipped plan in the summary.
 5. **Implement** — group commits by concern; run the repo's own gates; no commit/push until gates pass or the blocker is reported.
 6. **Push**.
-7. **Debt reconciliation** — scan pushed commit subjects/bodies and PR title/body for `Resolves: DEBT-<NUMBER>` / `Fixes [DEBT-<NUMBER>]`. For each unique entry in `<project>/.agents/debt-ledger.md` set **Status** `resolved` + pushed commit hash; commit and push that ledger-only change before resolving threads. Missing/ambiguous entry → halt (don't ask the user to edit it).
-8. **Resolve** — only after push, only threads clearly addressed; reply `Addressed in <hash>: <precise change summary>.` Partial → leave open, explain in summary.
+7. **Resolve** — only after push, only threads clearly addressed; reply `Addressed in <hash>: <precise change summary>.` Partial → leave open, explain in summary.
 
 ## Summary
 

@@ -56,15 +56,15 @@ Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 
 **Prompt-compiler** (`prompt-compiler`, branch `compile`): when asked to compile — raw intent → `.agents/compile/<slug>.yaml`, then `$dev plan` in the same turn. Not on the default Build path. Never plans or executes.
 
-**Intent DTO fields**: `intent_spec.version` · `slug` · `invariants` · `blast_radius.allowed_domains` · `trade_offs.breaking_changes` · `circuit_breaker.approved`. Not: tasks, files, commands, gates, retries, dependencies, statuses.
+**Intent DTO fields**: `intent_spec.version` · `slug` · `invariants` · `blast_radius.allowed_domains` · `trade_offs.breaking_changes`. Not: tasks, files, commands, gates, retries, dependencies, statuses.
 
-**Orchestrator** (`orchestrator`, branch `run`): brain for a plan already enqueued at `.agents/plan/<slug>.md`. One `$dev implement` hand at a time on one worktree; the hand prompt is the plan path and phase id. Brain checks bounds, runs the gate, commits. Plan stays immutable.
+**Orchestrator** (`orchestrator`, branch `run`): brain for a plan already enqueued at `.agents/plan/<slug>.md`. One `$dev implement` hand at a time on one worktree. Brain checks bounds, runs the gate, commits. Plan stays immutable.
 
-**Pipeline batch**: one message before any pipeline file is written, asking only what the opening prompt left open — product admission when a feature needs it, intent gaps, circuit-breaker consent, commit on the default branch, land a PR. Answered once.
+**Pipeline batch**: one message before any pipeline file is written, asking only what the opening prompt left open — product admission when a feature needs it, intent gaps, commit on the default branch, land a PR. Answered once.
 
 **Delivery offer**: after `.agents/plan/<slug>.md` exists, one question — execute with multi-agent, or enqueue for the orchestrator? Skip it when the opening prompt already named the runner. Enqueue writes nothing further; the plan file is the queue.
 
-**Lifecycle**: `product-owner` gate when a feature is not already admitted → `$dev plan` (reads `.agents/compile/<slug>.yaml` when present; else the pipeline batch is the constraint source) → delivery offer → multi-agent (one agent per phase; `depends_on` waits; disjoint phases together) or a later `orchestrator run` → one `review.gil findings` pass in `.agents/run/<slug>.md` → `pull-request open` only when land was in the batch. `prompt-compiler` only when the user asks to compile. Repeated failure: reset to the last green commit and halt.
+**Lifecycle**: `product-owner` gate when a feature is not already admitted → `$dev plan` (reads `.agents/compile/<slug>.yaml` when present; else the pipeline batch is the constraint source) → delivery offer → multi-agent (one agent per phase; `depends_on` waits; disjoint phases together) or a later `orchestrator run` → one `review.gil findings` pass in `.agents/run/<slug>.md` → `pull-request open` only when land was in the batch. `prompt-compiler` only when the user asks to compile. Repeated failure: stash and halt.
 
 ## Product
 
