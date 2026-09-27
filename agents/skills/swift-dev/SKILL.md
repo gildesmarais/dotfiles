@@ -5,6 +5,7 @@ description: >-
   MainActor/@Observable, Apple docsets, Swift Testing hygiene, UI overlay
   compose; after a measured-perf handoff, ARC/QoS and Metal / Accelerate / ANE
   recipes.
+disable-model-invocation: true
 ---
 
 # Swift Dev

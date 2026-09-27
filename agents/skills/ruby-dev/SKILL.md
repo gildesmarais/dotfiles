@@ -4,6 +4,7 @@ description: >-
   Ruby deltas loaded by $dev (load $dev first; not a Build entry): TDD posture,
   Ruby 4 baseline, gem/CLI/adapter work, RSpec suite hygiene, Rails overlay
   compose.
+disable-model-invocation: true
 ---
 
 # Ruby Dev

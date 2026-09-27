@@ -9,6 +9,7 @@ description: >-
   placement, measured hot-path work, which GoF pattern fits, directory/tree
   survey, peer-folder conformity, snowflake placement, promote/relocate/fold
   modules.
+disable-model-invocation: true
 ---
 
 # Architecture

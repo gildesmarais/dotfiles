@@ -4,6 +4,7 @@ description: >-
   TypeScript/JavaScript deltas loaded by $dev (load $dev first; not a Build
   entry): named types over string/object soup, green ≠ correct, one runtime
   truth for closed sets.
+disable-model-invocation: true
 ---
 
 # TypeScript Dev

@@ -4,6 +4,7 @@ description: >-
   Rails overlay loaded by $dev with ruby-dev (deltas only): controllers, routes,
   services, policies, serializers, workers, migrations, tenancy, authz, and API
   contracts.
+disable-model-invocation: true
 ---
 
 # Ruby on Rails Dev

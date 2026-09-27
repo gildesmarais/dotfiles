@@ -3,6 +3,7 @@ name: swiftui-dev
 description: >-
   SwiftUI overlay loaded by $dev with swift-dev (deltas only): views,
   navigation, WidgetKit, and AppKit bridges.
+disable-model-invocation: true
 ---
 
 # SwiftUI Dev

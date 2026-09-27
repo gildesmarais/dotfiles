@@ -72,6 +72,7 @@ One-way rules:
 - **Proliferation guard** — new top-level skill only if it cannot be a branch of an existing router (`refactor-<concern>` under `architecture`, never bare `refactor` or a parallel product skill). Runtime route table stays in `dev/SKILL.md`.
 - **Zero backward compat** — delete superseded aliases, old execution names, and dual shims on cutover.
 - **Tokens are the currency** — single ownership, bounded Markdown DTOs for handoffs, no intermediate prompt layers.
+- **Invocation** — new skills default to `disable-model-invocation: true` unless they are an ambient router.
 
 Router shape: `## Pick branch` → `## Shared prep` (omit when empty) → `## Branch reference` → `## Handoff` → `## Completion criteria`; relative `reference/*.md` links; unnumbered `##` headers. Spec: [agentskills.io](https://agentskills.io/). Repo-only authoring notes (e.g. product-owner promote): [`skill/authoring/`](../../skill/authoring/) — never cite from installed skill routers.
 
