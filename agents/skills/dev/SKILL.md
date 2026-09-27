@@ -27,7 +27,7 @@ Never ask the user to pick when signals are clear.
 
 ## Shared prep
 
-1. Read `AGENTS.md`. Label survey claims Strong / Worth / Speculative.
+1. **AGENTS.md load** ([`../CONTEXT.md`](../CONTEXT.md)): already injected; nearest file wins; do not re-read or paste unless citing a line. Label survey claims Strong / Worth / Speculative.
 2. Observability / security cues: [`../CONTEXT.md`](../CONTEXT.md). Security cue → `security` lens on Assure; co-load during implement when clearly needed. Rails matrix stays in the overlay / `AGENTS.md`. No vendor recipes.
 3. **Classify:** `surgical` | `design` | `review-hand-off`.
    - Load [`architecture/reference/axioms.md`](../architecture/reference/axioms.md) on **every** `implement`, surgical included. Load `architecture` `SKILL.md` + matched references only when `design` is earned.

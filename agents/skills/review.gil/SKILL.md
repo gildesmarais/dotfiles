@@ -32,7 +32,7 @@ Resolve scripts relative to this skill directory. `quality` skips this and runs 
 
 - **PR:** no local/default-branch comparison. `scripts/pr-context.sh <pr>` (findings) or `scripts/pr-context.sh --publish <pr>` (publish); review the PR patch and surrounding code at the recorded head SHA, never the local tree/`HEAD`.
 - **Local:** `scripts/compare_default_branch.sh` (fallback: diff `HEAD` vs `origin/<default>`).
-- **Every target:** read `AGENTS.md`; separate unrelated dirty changes; summarize scope + high-risk areas before selecting lenses.
+- **Every target:** **AGENTS.md load** ([`../CONTEXT.md`](../CONTEXT.md)): already injected; nearest file wins; do not re-read or paste unless citing a line. Separate unrelated dirty changes; summarize scope + high-risk areas before selecting lenses.
 
 **Mandatory reference load (blocking — no findings before these are read):**
 
@@ -43,6 +43,7 @@ Resolve scripts relative to this skill directory. `quality` skips this and runs 
 5. `quality`: [`reference/quality.md`](reference/quality.md) + [`reference/legacy.md`](reference/legacy.md) (always, even without signals).
 6. `publish`: [`reference/publish.md`](reference/publish.md), [`reference/conventional-comments.md`](reference/conventional-comments.md), [`reference/github-state.md`](reference/github-state.md).
 7. Hot path / allocations (any language): [`reference/perf.md`](reference/perf.md).
+8. `findings` and `publish` with a code diff: [`reference/surfaces.md`](reference/surfaces.md). `quality` does not launch these subagents.
 
 ## Branch reference
 
@@ -53,6 +54,7 @@ Resolve scripts relative to this skill directory. `quality` skips this and runs 
 
 ## Handoff
 
+- Surfaces fold into the finish report; they do not publish or fix.
 - Structural findings (shallow module, dual ownership, primitive obsession, boundary leak, unmeasured hot path — not just legacy debt) **name** the `architecture` branch (`deep-modules` / `refactor-types` / `refactor-boundaries` / `performance`). Naming ≠ running; remediation enters via `$dev`.
 - End-to-end PR review + publish stays here; posting an already-verified ledger → `pull-request` `comment`. Never reverse.
 - `findings` never writes to GitHub. Orchestrated / multi-agent DAG: append findings to `.agents/run/<slug>.md` and return (no publish ask). Land + readiness Yes/Conditional → `pull-request` `open` only when land was in the batch ([`../CONTEXT.md`](../CONTEXT.md)).

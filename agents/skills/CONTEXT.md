@@ -4,6 +4,8 @@ Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 
 **Branch** (skill-internal): a verb-path through a skill, selected from the prompt. Not a git branch.
 
+**AGENTS.md load**: Cursor already injects every `AGENTS.md` from the workspace root upward; nearest file wins; do not re-read or paste unless citing a line. Global identity is `~/.cursor/rules/000-rules.mdc`, installed by `rcup` from `cursor/rules/`.
+
 ## Ship / Assure
 
 **Pull Request** (`pull-request`): lifecycle action on a remote PR or branch destined to become one.
@@ -17,6 +19,8 @@ Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 **Quality** (`review.gil`): merge-prep execution — audit → plan → boy-scout refactors + tests → repo gates. Changes code; never inferred from "review".
 
 **Lens** (`review.gil` `tests` / `perf` / `security` / `legacy`): findings rubric applied to the same diff prep. Not: a skill per lens.
+
+**Surface**: a Cursor subagent whose output folds into the one finish report. Not a lens, not an execution.
 
 **Legacy** (lens; always under `quality`): dead compat — dual public names, superseded store/wire hydrate, deprecated markers. Findings report it; `quality` deletes it without shims. Not: `refactor-legacy`.
 
