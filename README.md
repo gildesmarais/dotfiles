@@ -23,9 +23,8 @@ Maintained by [Gil Desmarais](https://gil.desmarais.de) (Berlin). Profile, proje
 
 | Script                           | What it does                                                                                                                                | Prerequisites                                                         |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `./scripts/macos-defaults-apply` | Guided wizard that applies my preferred macOS defaults and prompts for the manual tweaks listed below.                                      | macOS, `sudo` access for protected settings.                          |
-| `./scripts/wiki`                 | `fzf`-powered browser for the local wiki directory that opens files in your preferred editor.                                               | `fzf`, `git`, `rg`, optional `VISUAL`/`EDITOR` or `WIKI_*` overrides. |
-| `./scripts/download-audio`       | Fetches remote audio (e.g., YouTube URLs) and normalises them via the `process-audio` pipeline for library-ready files.                     | `aria2`, `ffmpeg`, `yt-dlp`; installs live in the Brewfile.           |
+| `./scripts/macos-defaults-apply` | Guided wizard that applies my preferred macOS defaults and prompts for the manual tweaks listed below. | macOS, `sudo` access for protected settings. |
+| `./scripts/download-audio`       | Fetches audio from a URL with yt-dlp.                                                                    | `yt-dlp`, `ffmpeg`; both in the Brewfile.    |
 | `./scripts/skill`                | Store hygiene for `agents/skills` (`list`, `promote`, `rename`). Agent install on this machine is `rcup`; any machine can use `npx skills`. | Ruby 2.6+, optional `git` for auto-detecting the project root.        |
 | `./scripts/playground`           | Picks or creates playground projects for `pg`; interactive mode supports `Ctrl-O` to open the highlighted folder in Finder.                 | `fzf`, `rg`; macOS `open` for Finder shortcut.                        |
 
@@ -110,7 +109,7 @@ This step pulls down the command-line helpers the shell expects to find:
 
 ## VSCode
 
-Key repeat on hold is enabled via the `macos-defaults` script.
+Key repeat on hold is enabled via `macos-defaults-apply`.
 
 ## macOS: use another default text editor
 
