@@ -78,7 +78,7 @@ Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 
 **Story-slice**: admitted scope (Build Now / founder override) → Given/When/Then stories with cited interaction budgets before `$dev` `plan`.
 
-**Golden path** / **click budget** / **mental model** / **persona**: product constraints cited from repo docs — never invented.
+**Golden path** / **click budget** / **mental model** / **persona** / **doctrine ledger**: sections of `<project>/.agents/product.md`. Cite that file only; never invent. Absent file or section → `unknown`.
 
 **Health Capacity Budget**: ~20% capacity (or 1 debt tranche per 3–4 feature tranches) for high-friction items from `.agents/debt-ledger.md`.
 

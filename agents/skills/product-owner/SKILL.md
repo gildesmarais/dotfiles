@@ -40,10 +40,9 @@ Skip: routine surgical bugfix / single-slice cleanup with no user-facing concept
 
 Evidence rules (all branches):
 
-- Discover golden paths, click budgets, personas, mental models only from existing repo docs (`AGENTS.md`, `ROADMAP.md`, `CONTEXT.md`, `docs/personas.md`, repo-local product-owner wrapper, or equivalents). Cite the path for every such claim; uncited → `unknown`.
-- Never invent golden paths, step counts, budgets, SLAs, personas, or preserved/prohibited models. Docs silent → Confidence ≤ Medium; prefer Research Further or one clarifying question.
-- No documented personas → don't evaluate against a "general user"; prompt to set up `docs/personas.md` with concrete candidates synthesized from local history (ADRs, git log, README, evaluations, stories).
-- No documented step budget → report deltas qualitatively (`adds friction` / `removes friction` / `unclear`).
+- Cite personas, golden paths, click budgets, mental models, and the doctrine ledger only from `<project>/.agents/product.md` ([`../CONTEXT.md`](../CONTEXT.md)). Uncited or absent section → `unknown`. Never invent. Silent → Confidence ≤ Medium; prefer Research Further or one clarifying question.
+- Upgrade: move personas, paths, budgets, models, and the doctrine ledger into `.agents/product.md`; this skill no longer reads them from `docs/`, `ROADMAP.md`, `AGENTS.md`, or a wrapper path.
+- No personas section → don't use a "general user"; add that section from local history. No step budget → qualitative delta (`adds friction` / `removes friction` / `unclear`).
 
 ## Branch reference
 
