@@ -1,6 +1,6 @@
 # Glossary
 
-Craft terms for every architecture branch and survey mode. Store vocabulary: [`../../CONTEXT.md`](../../CONTEXT.md).
+Craft terms for every architecture branch and survey mode. Store vocabulary: `CONTEXT.md`.
 
 - **module**: one coherent unit of ownership with one job.
 - **interface**: the narrow contract callers depend on (types, functions, errors).

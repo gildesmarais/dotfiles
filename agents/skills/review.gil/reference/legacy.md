@@ -30,6 +30,6 @@ One public name and one accepted shape per concept. `findings` / `publish`: repo
 
 1. Search the whole repo (source, tests, fixtures, docs, generated clients, config), not just the diff.
 2. Published surface (package export, wire contract, semver'd API) or unknown external consumers → report only.
-3. Deletion is its own commit; a removed published name carries `!` / `BREAKING CHANGE` per [`../../CONTEXT.md`](../../CONTEXT.md) Phase commit law — never buried in a `refactor:` boy-scout commit.
+3. Deletion is its own commit; a removed published name carries `!` / `BREAKING CHANGE` per the Phase commit law (`CONTEXT.md` / `dev/reference/phase-commits.md`) — never buried in a `refactor:` boy-scout commit.
 
 Output folds into the `finish` report (a focused legacy review may use the tables directly). Dual type homes / layer inversion → name `architecture` `refactor-types` / `deep-modules` / `refactor-boundaries`; review never runs them. Out of scope: unrelated renames, a third compat layer.

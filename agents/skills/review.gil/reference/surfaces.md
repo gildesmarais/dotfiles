@@ -1,6 +1,6 @@
 # Surfaces
 
-Cursor subagents folded into the one finish report ([`finish.md`](finish.md)). Not lenses, not executions. `quality` does not launch them.
+Cursor subagents folded into the one finish report (`finish.md`). Not lenses, not executions. `quality` does not launch them.
 
 Launch only for a code diff. Skip docs-only and trivial diffs (comment, typo, single-line config) and say so.
 

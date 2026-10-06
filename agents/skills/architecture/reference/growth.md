@@ -18,5 +18,5 @@ Stage when a design or recurring failure class left a lesson that prevents the n
 2. Generalize before ingress: strip product nouns, paths, schemas, language APIs — a stranger must not infer the source codebase. One imperative sentence applicable in any language.
 3. Drop restatements of checklist / anti-pattern / glossary lines and near-clones (a narrower failure class may specialize). Dropping weak harvests is required; no archive of rejects.
 4. Tag one primary branch (overlap rule 4); other tags become co-load cues inside the bullet — no duplicate copies. Survey lessons go to `structure-survey.md` or glossary, never a new craft branch.
-5. Cap ~10 candidates per harvest event unless asked; noise-pass for product leakage.
-6. Write only from a fresh read of `learning-log.md` (concurrent shared state); promote or drop within the same event and leave the log thin.
+5. Net-zero promote: follow `harvest/reference/distill.md` Procedure step 5 (replace or delete a covered line; `skill lint`).
+6. Cap ~10 candidates per harvest event unless asked; noise-pass for product leakage. Write only from a fresh read of `learning-log.md` (concurrent shared state); promote or drop within the same event and leave the log thin.

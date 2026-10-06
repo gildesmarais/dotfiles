@@ -2,6 +2,18 @@
 
 `$dev plan` turns admitted intent into repository-native phases. It writes no application code.
 
+## Pipeline batch
+
+One message before any pipeline file is written, asking only what the opening prompt left open — product admission when a feature needs it, intent gaps, commit on the default branch, land a PR. Answered once.
+
+## Delivery offer
+
+After `.agents/plan/<slug>.md` exists, one question — execute with multi-agent, or enqueue for the orchestrator? Skip it when the opening prompt already named the runner. Enqueue writes nothing further; the plan file is the queue.
+
+## Lifecycle
+
+`product-owner` gate when a feature is not already admitted → `$dev plan` (reads `.agents/compile/<slug>.yaml` when present; else the pipeline batch is the constraint source) → delivery offer → multi-agent (one agent per phase; `depends_on` waits; disjoint phases together) or a later `orchestrator run` → one `review.gil findings` pass in `.agents/run/<slug>.md` → `pull-request open` only when land was in the batch. `prompt-compiler` only when the user asks to compile. Repeated failure: stash and halt.
+
 ## Phase 0: ingress
 
 1. Resolve the slug.
@@ -55,7 +67,7 @@ Carrier laws:
 - Phases that do not depend on each other keep disjoint `target_files`, so multi-agent merges stay trivial.
 - Commands are exact strings runnable on their own.
 - `commit_message` may be a `|` block so it can carry a body and a `Resolves: DEBT-<NUMBER>` trailer.
-- `decisions` records the chosen seam/contract and the rejected alternative with rationale (see [`architecture`](../../architecture/SKILL.md) Handoff).
+- `decisions` records the chosen seam/contract and the rejected alternative with rationale (see `architecture` Handoff).
 - No mutable status, attempt counters, worker transcripts, or retry state. Git commits are execution progress.
 
 ## Ready checklist

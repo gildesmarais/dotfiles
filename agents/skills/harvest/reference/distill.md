@@ -22,4 +22,5 @@ Skill edits are clean cutovers: delete superseded aliases, old execution names, 
 2. Read the target fresh. Global arch / review targets: follow `architecture/reference/growth.md` / `review.gil/reference/growth.md` Harvest (stage in that skill's `learning-log.md` → promote or drop).
 3. Covered, near-clone, or too narrow → drop; else append to `## Checklist` or `## Anti-patterns`.
 4. Cap: ≤3 new mantras per session unless the user asks for more.
-5. Global store edit → `skill doctor`, then `rcup` (drift → `skill backfill <name>` → `rcup`).
+5. Target at budget → promote only by replacing or deleting a covered or obsolete line in the same edit; run `skill lint`.
+6. Global store edit → `skill doctor`, then `rcup` (drift → `skill backfill <name>` → `rcup`).
