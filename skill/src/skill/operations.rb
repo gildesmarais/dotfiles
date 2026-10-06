@@ -6,6 +6,7 @@ require "find"
 require_relative "classifier"
 require_relative "error"
 require_relative "filesystem"
+require_relative "linter"
 
 module Skill
   class Operations
@@ -46,6 +47,18 @@ module Skill
       end
 
       raise ExitError.new(status: 1) if failed
+    end
+
+    def lint_skills
+      @paths.ensure_store!
+      errors = Linter.new(paths: @paths).run
+      if errors.empty?
+        @shell_ui.note("lint ok")
+        return
+      end
+
+      errors.each { |message| puts(message) }
+      raise ExitError.new(status: 1)
     end
 
     def prune_skills

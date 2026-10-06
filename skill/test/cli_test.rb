@@ -167,6 +167,72 @@ class SkillCliTest < Minitest::Test
     refute_includes(result.output, "Skill::ExitError")
   end
 
+  def test_lint_help_lists_command
+    result = run_skill("help")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "lint")
+  end
+
+  def test_lint_clean_fixture_exits_zero
+    require "yaml"
+    skill_body = <<~MD
+      ---
+      name: demo
+      description: fixture router skill used by cli lint test
+      ---
+
+      # Demo
+
+      ## Pick branch
+
+      default
+
+      ## Branch reference
+
+      - none
+
+      ## Handoff
+
+      done
+
+      ## Completion criteria
+
+      | Branch | Done when |
+      | ------ | --------- |
+      | x | y |
+    MD
+    FileUtils.mkdir_p(File.join(@skills_dir, "demo"))
+    File.write(File.join(@skills_dir, "demo", "SKILL.md"), skill_body)
+    words = { "demo/SKILL.md" => skill_body.split(/\s+/).reject(&:empty?).size }
+    File.write(
+      File.join(@skills_dir, ".budgets.yml"),
+      YAML.dump(
+        "description_max_words" => 80,
+        "learning_log_max_lines" => 20,
+        "line_cap" => 100,
+        "words" => words,
+        "pinned_headers" => {},
+        "duplicate_owners" => []
+      )
+    )
+
+    result = run_skill("lint")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "lint ok")
+  end
+
+  def test_lint_fails_without_budgets
+    create_store_skill("demo")
+    File.write(File.join(@skills_dir, "demo", "SKILL.md"), "# Demo\n")
+
+    result = run_skill("lint")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "missing budgets file")
+  end
+
   def test_backfill_help_after_command_exits_zero
     result = run_skill("backfill", "-h")
 

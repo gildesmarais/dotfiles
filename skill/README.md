@@ -13,6 +13,7 @@ skill/
       classifier.rb
       error.rb
       filesystem.rb
+      linter.rb
       operations.rb
       paths.rb
       ui.rb
@@ -24,12 +25,13 @@ skill/
 - `src/cli.rb`: command parsing, dispatch, and help output
 - `src/skill/paths.rb`: canonical store, home, and project path resolution
 - `src/skill/classifier.rb`: closed status set, real-file drift, and orphan-link detection
+- `src/skill/linter.rb`: store shape, word ratchet, link graph, and related lint checks
 - `src/skill/filesystem.rb`: shared skill-name safety helpers
 - `src/skill/error.rb`: shared CLI exit/error object used below the entrypoint
-- `src/skill/operations.rb`: list / doctor / prune / backfill / promote / rename behavior
+- `src/skill/operations.rb`: list / doctor / lint / prune / backfill / promote / rename behavior
 - `src/skill/ui.rb`: CLI output and fatal error helpers
 - `test/cli_test.rb`: characterization tests for command parsing and filesystem behavior
-- `test/unit_test.rb`: direct object tests for classifier and operation edge cases
+- `test/unit_test.rb`: direct object tests for classifier, linter, and operation edge cases
 - `../scripts/skill`: thin executable entrypoint
 
 ## Useful Commands
@@ -40,6 +42,7 @@ Run the CLI entrypoint:
 ./scripts/skill help
 ./scripts/skill list
 ./scripts/skill doctor
+./scripts/skill lint
 ./scripts/skill prune
 ./scripts/skill backfill my-skill
 ./scripts/skill promote my-skill
@@ -48,6 +51,7 @@ Run the CLI entrypoint:
 
 Expected results:
 
+- `lint` checks store Markdown against `agents/skills/.budgets.yml` (word ratchet, description budget, 100-line hard cap), router/pinned headers, link resolve, link graph (acyclic, ≤2 hops from each `SKILL.md`, no router-to-router links), duplicate lines, and thin `learning-log.md`; exits `0` with `lint ok`, else `1` with one finding per line
 - `doctor` prints aligned columns (padded name, then status: `ok`, `drift`, `home-only`, `broken`, `orphan`); exits `0` when no `drift` or `orphan`, else `1`
 - An **orphan** is a symlink under `~/.agents/skills/<name>/` whose target is inside the store and no longer exists; links pointing elsewhere are never orphans
 - `prune` deletes orphan links (and emptied directories), prints each `name/relative` path, and notes the count; a second run notes `no orphans to prune`
@@ -61,12 +65,19 @@ Run the implementation directly:
 ruby skill/src/cli.rb help
 ruby skill/src/cli.rb list
 ruby skill/src/cli.rb doctor
+ruby skill/src/cli.rb lint
 ```
 
 Lint and tests (quality gate):
 
 ```sh
-make lint test
+make check
+```
+
+Pre-PR gate (includes `skill lint` on the real store):
+
+```sh
+make ready
 ```
 
 Syntax check:
@@ -77,6 +88,7 @@ ruby -c skill/src/cli.rb
 ruby -c skill/src/skill/classifier.rb
 ruby -c skill/src/skill/error.rb
 ruby -c skill/src/skill/filesystem.rb
+ruby -c skill/src/skill/linter.rb
 ruby -c skill/src/skill/operations.rb
 ruby -c skill/src/skill/paths.rb
 ruby -c skill/src/skill/ui.rb
@@ -102,6 +114,7 @@ Run tests with the macOS system Ruby 2.6:
 - Keep `skill/src/cli.rb` as the CLI shell and put reusable behavior in `skill/src/skill/*.rb`.
 - Keep process exits in the CLI layer; lower-level classes should raise `Skill::ExitError`.
 - Status, drift, and orphan detection live only in `Skill::Classifier`; doctor/backfill/prune must not re-derive them.
+- Store Markdown cost checks live only in `Skill::Linter`; budgets live in `agents/skills/.budgets.yml`.
 - When changing command behavior, update or add tests in `skill/test/cli_test.rb` first when practical.
 - Preserve Ruby 2.6 compatibility.
 - Prefer stdlib-only dependencies unless there is a strong reason not to.

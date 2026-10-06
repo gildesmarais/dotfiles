@@ -4,7 +4,7 @@
 
 `skill/` owns the implementation and tests for the `skill` command used to manage the dotfiles skill store (`~/.dotfiles/agents/skills`).
 
-Install first-party skills into agents with [`rcup`](https://github.com/thoughtbot/rcm) (repo `agents/skills/<name>/` → `~/.agents/skills/<name>/`). This CLI handles store hygiene only: `list`, `doctor`, `prune`, `backfill`, `promote`, and `rename`.
+Install first-party skills into agents with [`rcup`](https://github.com/thoughtbot/rcm) (repo `agents/skills/<name>/` → `~/.agents/skills/<name>/`). This CLI handles store hygiene only: `list`, `doctor`, `lint`, `prune`, `backfill`, `promote`, and `rename`.
 
 ## Key Decision
 
@@ -74,10 +74,10 @@ Do not optimize for:
 Run:
 
 ```sh
-make lint test
+make check
 ```
 
-Quality gate: `make lint test` must pass before handoff.
+Quality gate: `make check` must pass before handoff. Pre-PR: `make ready` (includes `skill lint` on the store).
 
 `make test` is the compatibility gate because it uses macOS system Ruby 2.6.
 

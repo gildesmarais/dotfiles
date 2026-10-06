@@ -7,6 +7,7 @@ require "tmpdir"
 require_relative "../src/skill/classifier"
 require_relative "../src/skill/error"
 require_relative "../src/skill/filesystem"
+require_relative "../src/skill/linter"
 require_relative "../src/skill/operations"
 require_relative "../src/skill/paths"
 
@@ -393,6 +394,216 @@ class SkillUnitTest < Minitest::Test
     assert(File.directory?(dest))
   end
 
+  def test_linter_passes_clean_fixture_store
+    write_budgets("demo/SKILL.md" => 50, "demo/reference/a.md" => 20)
+    write_router_skill("demo", links: ["[a](reference/a.md)"])
+    write_store_file("demo/reference/a.md", "# A\n\nLeaf content here.\n")
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert_equal([], errors)
+  end
+
+  def test_linter_rejects_line_cap_breach
+    write_budgets("demo/SKILL.md" => 500)
+    lines = ["---", "name: demo", "description: short", "---", "", "# Demo"]
+    lines.concat((1..100).map { |i| "line #{i}" })
+    write_store_file("demo/SKILL.md", "#{lines.join("\n")}\n")
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert(errors.any? { |e| e.include?("exceeds hard cap") })
+  end
+
+  def test_linter_rejects_word_ratchet_breach
+    write_budgets("demo/SKILL.md" => 5)
+    write_router_skill("demo")
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert(errors.any? { |e| e.include?("exceeds budget") })
+  end
+
+  def test_linter_rejects_description_budget
+    write_budgets("demo/SKILL.md" => 200, description_max_words: 3)
+    write_router_skill("demo", description: "one two three four five")
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert(errors.any? { |e| e.include?("description has") })
+  end
+
+  def test_linter_rejects_bad_router_shape
+    write_budgets("demo/SKILL.md" => 200)
+    write_store_file(
+      "demo/SKILL.md",
+      <<~MD
+        ---
+        name: demo
+        description: demo skill router for lint fixtures
+        ---
+
+        # Demo
+
+        ## Pick branch
+
+        x
+
+        ## Handoff
+
+        y
+      MD
+    )
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert(errors.any? { |e| e.include?("router headers") })
+  end
+
+  def test_linter_accepts_pinned_pack_headers
+    write_budgets(
+      "pack-dev/SKILL.md" => 80,
+      pinned_headers: { "pack-dev" => %w[Docsets Deltas] }
+    )
+    write_store_file(
+      "pack-dev/SKILL.md",
+      <<~MD
+        ---
+        name: pack-dev
+        description: pack
+        ---
+
+        # Pack
+
+        ## Docsets
+
+        d
+
+        ## Deltas
+
+        e
+      MD
+    )
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert_equal([], errors)
+  end
+
+  def test_linter_rejects_broken_link
+    write_budgets("demo/SKILL.md" => 200)
+    write_router_skill("demo", links: ["[missing](reference/nope.md)"])
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert(errors.any? { |e| e.include?("broken link") })
+  end
+
+  def test_linter_rejects_cycle
+    write_budgets(
+      "demo/SKILL.md" => 200,
+      "demo/reference/a.md" => 40,
+      "demo/reference/b.md" => 40
+    )
+    write_router_skill("demo", links: ["[a](reference/a.md)"])
+    write_store_file("demo/reference/a.md", "# A\n\nSee [b](b.md).\n")
+    write_store_file("demo/reference/b.md", "# B\n\nBack to [a](a.md).\n")
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert(errors.any? { |e| e.start_with?("cycle:") })
+  end
+
+  def test_linter_rejects_path_over_two_hops
+    write_budgets(
+      "demo/SKILL.md" => 200,
+      "demo/reference/a.md" => 40,
+      "demo/reference/b.md" => 40,
+      "demo/reference/c.md" => 40
+    )
+    write_router_skill("demo", links: ["[a](reference/a.md)"])
+    write_store_file("demo/reference/a.md", "# A\n\nSee [b](b.md).\n")
+    write_store_file("demo/reference/b.md", "# B\n\nSee [c](c.md).\n")
+    write_store_file("demo/reference/c.md", "# C\n\nLeaf.\n")
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert(errors.any? { |e| e.include?("exceeds 2 hops") })
+  end
+
+  def test_linter_rejects_router_to_router_link
+    write_budgets("alpha/SKILL.md" => 200, "beta/SKILL.md" => 200)
+    write_router_skill("alpha", links: ["[beta](../beta/SKILL.md)"])
+    write_router_skill("beta")
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert(errors.any? { |e| e.include?("router-to-router") })
+  end
+
+  def test_linter_rejects_unallowlisted_duplicate_line
+    sentence = "When the same twelve word sentence appears twice it must fail lint."
+    write_budgets("a/SKILL.md" => 200, "b/SKILL.md" => 200)
+    write_router_skill("a", extra: sentence)
+    write_router_skill("b", extra: sentence)
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert(errors.any? { |e| e.include?("duplicate line") })
+  end
+
+  def test_linter_allows_allowlisted_duplicate_line
+    sentence = "When the same twelve word sentence appears twice it must fail lint."
+    write_budgets(
+      "a/SKILL.md" => 200,
+      "b/SKILL.md" => 200,
+      duplicate_owners: [{ "owner" => "a/SKILL.md", "text" => sentence }]
+    )
+    write_router_skill("a", extra: sentence)
+    write_router_skill("b", extra: sentence)
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    refute(errors.any? { |e| e.include?("duplicate line") })
+  end
+
+  def test_linter_rejects_fat_learning_log
+    write_budgets(
+      "demo/SKILL.md" => 200,
+      "demo/reference/learning-log.md" => 80,
+      learning_log_max_lines: 5
+    )
+    write_router_skill("demo", links: ["[log](reference/learning-log.md)"])
+    write_store_file(
+      "demo/reference/learning-log.md",
+      "#{(1..8).map { |i| "candidate #{i}" }.join("\n")}\n"
+    )
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert(errors.any? { |e| e.include?("learning-log cap") })
+  end
+
+  def test_lint_skills_notes_ok
+    write_budgets("demo/SKILL.md" => 200)
+    write_router_skill("demo")
+
+    @operations.lint_skills
+
+    assert_includes(@ui.notes, "lint ok")
+  end
+
+  def test_lint_skills_raises_on_failure
+    write_budgets("demo/SKILL.md" => 1)
+    write_router_skill("demo")
+
+    error = assert_raises(Skill::ExitError) do
+      @operations.lint_skills
+    end
+
+    assert_equal(1, error.status)
+  end
+
   private
 
   def create_store_skill(name)
@@ -404,5 +615,80 @@ class SkillUnitTest < Minitest::Test
     File.write(File.join(@paths.store_skill_path(name), "SKILL.md"), store_body)
     FileUtils.mkdir_p(@paths.agents_skill_path(name))
     File.write(File.join(@paths.agents_skill_path(name), "SKILL.md"), agent_body)
+  end
+
+  def write_store_file(rel, body)
+    path = File.join(@skills_dir, rel)
+    FileUtils.mkdir_p(File.dirname(path))
+    File.write(path, body)
+  end
+
+  def write_budgets(words_and_opts)
+    words = {}
+    opts = {
+      "description_max_words" => 80,
+      "learning_log_max_lines" => 20,
+      "line_cap" => 100,
+      "pinned_headers" => {},
+      "duplicate_owners" => []
+    }
+    words_and_opts.each do |key, value|
+      case key
+      when :description_max_words, "description_max_words"
+        opts["description_max_words"] = value
+      when :learning_log_max_lines, "learning_log_max_lines"
+        opts["learning_log_max_lines"] = value
+      when :line_cap, "line_cap"
+        opts["line_cap"] = value
+      when :pinned_headers, "pinned_headers"
+        opts["pinned_headers"] = value
+      when :duplicate_owners, "duplicate_owners"
+        opts["duplicate_owners"] = value
+      else
+        words[key.to_s] = value
+      end
+    end
+
+    require "yaml"
+    payload = opts.merge("words" => words)
+    File.write(File.join(@skills_dir, ".budgets.yml"), YAML.dump(payload))
+  end
+
+  def write_router_skill(name, links: [], description: nil, extra: nil)
+    desc = description || "fixture router skill used by unit tests only"
+    link_lines = links.map { |l| "- #{l}" }
+    link_lines << "- none" if link_lines.empty?
+    body = <<~MD
+      ---
+      name: #{name}
+      description: #{desc}
+      ---
+
+      # #{name}
+
+      ## Pick branch
+
+      default
+
+      ## Shared prep
+
+      prep
+
+      ## Branch reference
+
+      #{link_lines.join("\n")}
+
+      ## Handoff
+
+      done
+
+      ## Completion criteria
+
+      | Branch | Done when |
+      | ------ | --------- |
+      | x | y |
+    MD
+    body += "\n#{extra}\n" if extra
+    write_store_file("#{name}/SKILL.md", body)
   end
 end
