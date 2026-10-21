@@ -30,14 +30,10 @@ Published gem APIs, public service/CLI entrypoints, versioned HTTP contracts —
 
 ## Deltas
 
-- TDD for behavior changes: focused failing test first.
-- Modern idioms and LOC reduction are fine on the surgical path; never a substitute for `design`.
 - Behavior-preserving moves: characterization or boundary coverage before moving code.
-- Small unified methods over helper-hell; data-driven maps over repetitive branches when that is the whole ask.
 - Mirrored specs: classify **spec-only twin** vs **dual-ownership twin** before editing ([`reference.md`](reference.md)); dual ownership earns `design` + `deep-modules`.
 - Framework-lifecycle-shaped failure → load `ruby-on-rails-dev` in the same change.
-- Service objects, jobs, CLI, library code: make input/output expectations discoverable in code or tests.
-- Load [`reference.md`](reference.md) for RSpec hygiene, SimpleCov floors, spec-twin probe, CLI/config construction homes. Test-quality judgment → `review.gil` `tests`.
+- Load [`reference.md`](reference.md) for RSpec hygiene, SimpleCov floors, spec-twin probe, CLI/config homes. Test-quality → `review.gil` `tests`.
 - Entrypoints: `bin/rspec`, `bundle exec rspec`, `bin/rubocop`, or project wrappers; lint changed files.
 
 ## Compose routes

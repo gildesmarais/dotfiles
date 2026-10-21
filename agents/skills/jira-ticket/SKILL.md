@@ -29,9 +29,8 @@ description: >-
 ### implement
 
 1. Fetch ticket + observability evidence; read code; gate if applicable.
-2. Emit `$dev` `plan` (ticket facts, files read, skills required, branch name, assumptions).
-3. Fresh branch from default named `TICKET-ID-short-kebab-summary` (exact key prefix, lowercase ASCII slug) → `$dev` `implement`. Interrupt only on real ambiguity, missing access, or risky guesses.
-4. Post-delivery Assure per `$dev` Handoff; PR ask → `pull-request` `open` → Post-PR sync.
+2. Emit `$dev` `plan` → fresh branch `TICKET-ID-short-kebab-summary` → `$dev` `implement` → Handoff (Assure / land).
+3. PR ask → `pull-request` `open` → Post-PR sync. Interrupt only on real ambiguity, missing access, or risky guesses.
 
 ### create
 

@@ -31,7 +31,7 @@ Resolve scripts relative to this skill directory. `quality` skips this and runs 
 
 - **PR:** no local/default-branch comparison. `scripts/pr-context.sh <pr>` (findings) or `scripts/pr-context.sh --publish <pr>` (publish); review the PR patch at the recorded head SHA, never the local tree/`HEAD`.
 - **Local:** `scripts/compare_default_branch.sh` (fallback: diff `HEAD` vs `origin/<default>`).
-- **Every target:** **AGENTS.md load** ([`../CONTEXT.md`](../CONTEXT.md)). Separate unrelated dirty changes; summarize scope + high-risk areas before selecting lenses.
+- **Every target:** **AGENTS.md load** ([`../CONTEXT.md`](../CONTEXT.md)). Separate unrelated dirty changes before selecting lenses.
 
 **Mandatory reference load (blocking — no findings before these are read):**
 
@@ -42,26 +42,23 @@ Resolve scripts relative to this skill directory. `quality` skips this and runs 
 5. `quality`: [`reference/quality.md`](reference/quality.md) + [`reference/legacy.md`](reference/legacy.md) (always).
 6. `publish`: [`reference/publish.md`](reference/publish.md), [`reference/conventional-comments.md`](reference/conventional-comments.md), [`reference/github-state.md`](reference/github-state.md).
 7. Hot path / allocations: [`reference/perf.md`](reference/perf.md).
-8. `findings` and `publish` with a code diff: [`reference/surfaces.md`](reference/surfaces.md). `quality` does not launch these subagents.
+8. `findings`/`publish` with a code diff: [`reference/surfaces.md`](reference/surfaces.md). `quality` does not launch these subagents.
 
 ## Branch reference
 
-- Output shape / incident postures: [`reference/finish.md`](reference/finish.md).
-- Plan review or embedding gates in a `$dev` `plan`: [`reference/plan-checklists.md`](reference/plan-checklists.md).
-- Adding a lens or harvesting review lessons: [`reference/growth.md`](reference/growth.md).
+- Plan gates: [`reference/plan-checklists.md`](reference/plan-checklists.md).
+- New lens / harvest: [`reference/growth.md`](reference/growth.md).
 
 ## Handoff
 
 - Surfaces fold into the finish report; they do not publish or fix.
-- Structural findings (shallow module, dual ownership, primitive obsession, boundary leak, unmeasured hot path) **name** the `architecture` branch. Naming ≠ running; remediation enters via `$dev`.
-- End-to-end PR review + publish stays here; posting a verified ledger → `pull-request` `comment`. Never reverse.
-- `findings` never writes to GitHub. Land + readiness Yes/Conditional → `pull-request` `open` only when land was asked.
+- Structural findings **name** the `architecture` branch; remediation enters via `$dev`.
+- End-to-end PR review + publish stays here; verified ledger → `pull-request` `comment`. Never reverse.
+- `findings` never writes to GitHub. Land + Yes/Conditional → `pull-request` `open` only when land was asked.
 - Recurring failure classes → `harvest`. Delivery Ledger fields: `$dev` Handoff.
 
 ## Completion criteria
 
-| Execution  | Done when                                                                                                                                                     |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `findings` | Selected lenses applied; Critical empty or owned; Important owned/rationale; readiness Yes/No/Conditional; finish output shape; no GitHub writes              |
-| `quality`  | Audit table (legacy Find rows or explicit empty); commit stack executed (or explicit empty); gates green; P0/P1 fixed or listed for re-invoke                 |
-| `publish`  | Fresh multi-lens ledger verified on PR head SHA; drafts reconciled; submitted `COMMENT` or left PENDING (explicit draft-only); URLs reported; no code changed |
+- **`findings`**: lenses applied; Critical empty/owned; Important owned/rationale; readiness Yes/No/Conditional; finish shape; no GitHub writes.
+- **`quality`**: audit table (or empty); commit stack done/empty; gates green; P0/P1 fixed or listed.
+- **`publish`**: fresh ledger on PR head SHA; drafts reconciled; `COMMENT` or PENDING (draft-only); URLs; no code.

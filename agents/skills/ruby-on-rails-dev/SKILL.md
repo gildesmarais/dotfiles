@@ -14,15 +14,11 @@ Scope: controllers, routes, models, services, policies, serializers, workers/mai
 
 ## Implementation deltas
 
-- Controllers thin: validate params, authorize, delegate, render. Business logic in `app/services` with explicit entrypoints.
-- Strong params explicit; serializer output contract-driven.
-- Authorization deny-by-default; workers idempotent and retry-safe.
-- No interpolated SQL; bind parameters / Arel.
-- Structured logging changes → verify redaction.
 - Name invisible lifecycle contracts (config variants, reload dependencies, cache identity) instead of silent skip.
 - Complete cutovers: replacement seam before removal.
 - Closed-set access and audience-split payloads over presence checks and one-bag disclosure.
 - Validation, execution, and the published API contract see the same normalized input and accepted closed set.
+- Structured logging changes → verify redaction.
 
 ## Rails testing
 

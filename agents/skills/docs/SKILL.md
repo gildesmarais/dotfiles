@@ -1,10 +1,9 @@
 ---
 name: docs
 description: >-
-  Verify and rewrite existing docs against the repository, or author a
-  control/auditor evidence pack. Use to refresh a README, contributor, operator,
-  or feature doc; fix stale or bloated docs; align ADRs and diagrams with
-  runtime; or prove a stated control from repo evidence.
+  Verify/rewrite docs against the repo, or author a control evidence pack. Use
+  for README, contributor, operator, or feature docs; stale ADRs/diagrams; or
+  prove a stated control from repo evidence.
 ---
 
 # Docs
@@ -24,19 +23,14 @@ Rewrite docs to match what the repo actually does. Treat existing prose as unver
 
 ## Shared prep
 
-1. Identify the target doc and the decisions/actions it must support; `AGENTS.md` rules override defaults here.
-2. Classify existing targets by doc-class ([`../CONTEXT.md`](../CONTEXT.md)); `evidence` net-new packs skip this. Effort: `accurate` → tighten · `partial` → prune, fill verified gaps · `misleading` → rewrite main path from verified sources · `obsolete` → remove or recommend removal.
+1. Identify the target doc and decisions it must support; `AGENTS.md` overrides defaults.
+2. Classify by doc-class ([`../CONTEXT.md`](../CONTEXT.md)); effort verbs live in the matched branch. `evidence` net-new packs skip classification.
 
-Rules for every branch:
-
-- Evidence ladders are branch-local. When sources disagree, trust what runtime enforces and note the conflict in the handoff.
-- Only verified, implemented behavior; no assumptions as facts. `editor` / `architecture`: remove non-essential unverified or stale content, report remaining gaps in the handoff. `evidence`: publish Unverified and Not met in the document.
-- No absolute filesystem paths in published docs — repo-relative or user-generic only.
-- **Write forward**: teach the current system; constraints as present facts; no eras, migrations, or expected-failure paths. Detail: [`reference/editor.md`](reference/editor.md).
+Every branch: ladders are branch-local; only verified behavior; no absolute filesystem paths; **Write forward** once in [`reference/editor.md`](reference/editor.md).
 
 ## Branch reference
 
-Load exactly one and follow it through completion:
+Load exactly one:
 
 - **`editor`** → [`reference/editor.md`](reference/editor.md)
 - **`architecture`** → [`reference/architecture.md`](reference/architecture.md)
@@ -44,14 +38,8 @@ Load exactly one and follow it through completion:
 
 ## Handoff
 
-Report: target doc and its role · doc-class when classified · authoritative sources checked · what was removed or clarified · unresolved verification gaps — plus the branch's handoff additions.
-
-Ask is a message, not documentation → stop → `communication`.
+Report: target + role · doc-class · sources checked · removed/clarified · gaps — plus branch handoff additions. Message ask → `communication`.
 
 ## Completion criteria
 
-| Branch         | Done when                                                                                                                                         |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `editor`       | Every technical claim re-checked against the repo; main path obvious; outdated content removed; next action explicit; prose forward-facing        |
-| `architecture` | Flows, boundaries, and constraints verified as enforced; verification tier reached is stated; unknowns isolated instead of narrated               |
-| `evidence`     | Control answer and verdict table stand alone; gaps explicit; verification tier stated; no invented live config; system under assessment unchanged |
+Per-branch Done when in the matched reference.

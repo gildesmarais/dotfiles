@@ -1,10 +1,9 @@
 ---
 name: harvest
 description: >-
-  Distill session corrections, review findings, and tricky fixes into imperative
-  preventive mantras for project rules or store skill references, and log
-  architectural debt to .agents/debt-ledger.md. Use after Assure or Ship with
-  friction, a new failure class, or when asked to harvest, distill, or record debt.
+  Distill corrections and fixes into preventive mantras for project rules or
+  skill references; log architectural debt. Use after Assure/Ship friction, a
+  new failure class, or when asked to harvest, distill, or record debt.
 ---
 
 # Harvest
@@ -24,11 +23,7 @@ Skip: zero corrections, no new failure class, no debt; trivial typo/rename/bump;
 
 ## Shared prep
 
-1. **Never raw logs:** strip transcripts, stack traces, conversational prose, temporary workarounds.
-2. **Fresh read** the target file immediately before editing.
-3. **Scope:** project-local → `<project>/AGENTS.md` or `<project>/.agents/rules/*.md`; global → `~/.dotfiles/agents/skills/<skill>/reference/<branch>.md`.
-4. **Distillation test:** must be a Preventive Mantra an expert recalls before repeating the mistake.
-5. **Dedupe:** search the target; drop duplicates, near-clones, platitudes, weak candidates.
+Scope destinations and procedure: [`reference/distill.md`](reference/distill.md) / [`reference/debt.md`](reference/debt.md). Never paste raw logs. Fresh-read target before edit. Distillation test: [`../CONTEXT.md`](../CONTEXT.md) Preventive Mantra.
 
 ## Branch reference
 
@@ -43,11 +38,9 @@ harvest distill
   global → ~/.dotfiles/agents/skills/<skill>/reference/
            → `skill doctor`, then `rcup` (drift → `skill backfill <name>` → `rcup`)
 harvest debt
-  → <project>/.agents/debt-ledger.md
-  → feeds triage and product-owner Health Capacity Budget
+  → <project>/.agents/debt-ledger.md (Health Capacity: CONTEXT; admit: product-owner)
 ```
 
 ## Completion criteria
 
-- `distill`: mantras distilled; repo nouns stripped if global; target read fresh; deduplicated; placed in the right section; store synced if global.
-- `debt`: category + concrete blast radius + evidence cited; entry added to `.agents/debt-ledger.md`; no raw diff blobs.
+Per-branch Done when in the matched reference.

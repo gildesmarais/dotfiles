@@ -6,9 +6,8 @@ Security/compliance lens. Apply when the change touches authn/authz, sessions, s
 
 1. Threat context: actors, asset sensitivity, exposure. State assumptions when incomplete.
 2. Map changed assets, trust boundaries, entry points; check whether tests, policies, validation, logging, rate limits, retries, config changed together.
-3. STRIDE abuse paths: spoofing, tampering, repudiation, disclosure, DoS, privilege escalation.
-4. Controls: least privilege / deny-by-default; input validation and safe queries; untrusted-text matching and follow-up request policy as abuse surface; data minimization/redaction; audit readiness; retries, timeouts, rate limits.
-5. No exploitability or control claims without code evidence; missing context → lower confidence, record in `Assumptions / Gaps`. No code edits unless fixes are asked after review.
+3. Abuse paths via STRIDE categories; controls: least privilege / deny-by-default; input validation and safe queries; untrusted-text matching; data minimization/redaction; audit readiness; retries, timeouts, rate limits.
+4. No exploitability or control claims without code evidence; missing context → lower confidence, record in `Assumptions / Gaps`. No code edits unless fixes are asked after review.
 
 ## Severity
 
@@ -18,7 +17,7 @@ Security/compliance lens. Apply when the change touches authn/authz, sessions, s
 
 ## Control mapping (not legal advice)
 
-Frameworks: `ISO 27001`, `BSI C5`; `NIS2`, `DORA`, `KRITIS`; `EU MDR`, `IEC 62304`, `ISO 13485`. Decide applicability per framework; insufficient evidence → `Assessed: No` + reason. Non-EU scope → say so. Tags only on clear mapping (e.g. `ISO27001-AccessControl`, `BSI-C5-IAM`, `NIS2-IncidentHandling`).
+Frameworks: `ISO 27001`, `BSI C5`; `NIS2`, `DORA`, `KRITIS`; `EU MDR`, `IEC 62304`, `ISO 13485`. Decide applicability per framework; insufficient evidence → `Assessed: No` + reason. Non-EU scope → say so. Tags only on clear mapping.
 
 ## Output
 

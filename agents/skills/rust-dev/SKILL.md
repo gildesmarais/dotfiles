@@ -1,8 +1,8 @@
 ---
 name: rust-dev
 description: >-
-  Rust deltas: cargo validation, crate docsets, depth-pack compose, cargo-asm,
-  Criterion, target-cpu, io_uring recipes.
+  Rust deltas: cargo validation, crate docsets, depth-pack compose, Criterion.
+  Perf recipes in reference.md.
 disable-model-invocation: true
 ---
 

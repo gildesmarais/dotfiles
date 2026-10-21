@@ -1,10 +1,9 @@
 ---
 name: dev
 description: >-
-  Build-domain router for implementation plans and code changes: classify, route
-  language packs and overlays, phase commits, validation, API truth. Use for
-  implement, fix, feature, change the code, implementation plan, phased plan,
-  surgical or design-shaped coding; also optimize, hot path, profile, benchmark.
+  Build router: classify, route language packs/overlays, phase commits, API
+  truth. Use for implement, fix, feature, change the code, implementation plan,
+  phased plan, surgical or design coding; also optimize, hot path, profile.
 ---
 
 # Dev
@@ -57,9 +56,9 @@ Never ask the user to pick when signals are clear.
 
 ## Handoff
 
-Path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; never reverse. Emit the **Delivery Ledger** at delivery and pass it to `review.gil`; state phase commits made or deferred.
+Path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; never reverse. Emit the **Delivery Ledger** at delivery → `review.gil`.
 
-**Delivery Ledger** (handoff DTO; `$dev` → `review.gil` → `pull-request` / `harvest`):
+**Delivery Ledger** (DTO SoT; `$dev` → `review.gil` → `pull-request` / `harvest`):
 
 - `Classification / Branches`: `surgical` | `design` and active branches
 - `Target Files`: exact paths matchable against `git diff --name-only <task_baseline>`
@@ -70,17 +69,11 @@ Path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; never rever
 - `Residuals / Debt`: deferred items or N/A
 
 - `design` → `architecture` (branch pick inside), then continue implement here.
-- **Post-delivery Assure** (every `implement` delivery), before reporting delivery:
-  - Prefer a subagent running `review.gil` `findings` (+ warranted lenses; `security` when the cue matched) with the Delivery Ledger; reload in-session if no subagent (implementer self-check is not the review).
-  - Trivial diff (docs-only, comment/typo, single-line config) may skip — state skip + reason; never silent.
-  - `quality` only on explicit merge-prep / boy-scout ask or already-authorized P0/P1 fixes; never from bare "review".
-  - Report delivery only after the pass returns. Land ask + readiness Yes/Conditional → `pull-request` `open`.
-- Harvest → `harvest` (`distill` | `debt`) when pain repeats, a fix was non-obvious, or the user asked.
-- Forward doc (post-Assure, Yes/Conditional): capture non-obvious maintenance in repo `AGENTS.md`; skip if self-documenting and say so.
+- **Post-delivery Assure** (every `implement`, before delivery report): prefer subagent `review.gil` `findings` (+ warranted lenses; `security` when cue matched) with the Ledger; reload in-session if no subagent. Trivial diffs may skip (state reason). `quality` only on explicit merge-prep / boy-scout / authorized P0/P1. Land ask + Yes/Conditional → `pull-request` `open`.
+- Harvest → `harvest` when pain repeats, fix was non-obvious, or asked.
+- Forward doc (post-Assure, Yes/Conditional): non-obvious maintenance → repo `AGENTS.md`; skip if self-documenting.
 
 ## Completion criteria
 
-| Branch      | Done when                                                                                                                                                                                                                                             |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `plan`      | Each todo names exact files, one discovered gate, and a Conventional Commit message; planning session wrote no code                                                                                                                                   |
-| `implement` | Classification stated with axioms loaded (+ `architecture` decisions documented if design); compat decided or asked; pack/overlay handoff fields; exit-0 honesty; commits made or deferred; Assure done or trivial skip stated before delivery report |
+- **`plan`**: each todo names exact files, one discovered gate, Conventional Commit message; session wrote no code.
+- **`implement`**: classification + axioms (+ architecture decisions if design); compat decided/asked; pack handoff fields; exit-0 honesty; commits made/deferred; Assure done or trivial skip stated.

@@ -2,7 +2,7 @@
 
 Post **already-verified** findings as review comments. End-to-end retrieve → review → publish → stop, use `review.gil` `publish`.
 
-Policy: "post"/"submit" → one review, `event: "COMMENT"`, all inline comments. "Draft"/"pending" → no event, never submit unless later asked explicitly. Never `APPROVE` / `REQUEST_CHANGES`. Label/decoration grammar → [`../../review.gil/reference/conventional-comments.md`](../../review.gil/reference/conventional-comments.md). API mechanics: [`gh-api.md`](gh-api.md).
+Event/approve policy + API: [`gh-api.md`](gh-api.md). Label grammar → [`../../review.gil/reference/conventional-comments.md`](../../review.gil/reference/conventional-comments.md).
 
 ## Sequence
 

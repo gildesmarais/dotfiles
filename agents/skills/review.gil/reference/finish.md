@@ -2,14 +2,6 @@
 
 Production-readiness baseline. Report only — no boy-scout edits. PR targets: PR patch + surrounding code at the recorded head SHA, never the local tree or `HEAD`.
 
-## Review
-
-- Priority: production readiness → industry-standard patterns → maintainability/ownership transfer → risk & due diligence → compliance posture.
-- Judge boundaries against the `architecture` Core Axioms only; load craft branch refs only when a finding names that remediation branch.
-- Cover failure modes, edge cases, config, logging, security, ops; treat undocumented behavior as a defect.
-- No features or redesign unless the current design creates material risk; justify any deviation from standards.
-- Loop scan → evaluate → decide → document → re-check until Critical is empty and Important has owners or rationale.
-
 ## Output format (required)
 
 All lenses fold into this single report.

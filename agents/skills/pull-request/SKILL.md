@@ -22,33 +22,29 @@ description: >-
 | Fix failing CI on a PR / Actions run                         | **fix-ci**    |
 | Resolve merge conflicts / rebase PR onto base                | **conflicts** |
 
-**Unblock chain** (not a branch): "unblock", "make merge-ready", "get this PR green", "autopilot this PR" → refresh live PR state each pass; run **conflicts** → **resolve** → **fix-ci**; stop for `needs-user`; never approve/merge.
+**Unblock chain** (not a branch; order: [`../CONTEXT.md`](../CONTEXT.md)): "unblock", "make merge-ready", "get this PR green", "autopilot this PR" → refresh live PR state each pass; **conflicts** → **resolve** → **fix-ci**; stop for `needs-user`; never approve/merge.
 
-Ambiguous routing (state once here):
+Ambiguous routing:
 
-| User says                                                                 | Route                                    |
-| ------------------------------------------------------------------------- | ---------------------------------------- |
-| "address PR comments", "fix review feedback", "resolve comments"          | **resolve** (not reply)                  |
-| "update the PR" (no code change, no review-feedback ask)                  | **retitle** (not open)                   |
-| "why is CI failing?" (no fix ask)                                         | report only — do not push                |
-| "post these already-verified findings" / "add as pending" (ledger given)  | **comment** (submit or remain pending)  |
-| "review the PR" / "draft a review" (read-only findings)                   | stop — `review.gil` (`findings`)         |
-| "post review comments", "new findings on PR", "review and post"           | stop — `review.gil` `publish`            |
-| "draft/pending a new review" (no supplied ledger)                         | stop — `review.gil` `publish` draft-only |
+| User says | Route |
+| --------- | ----- |
+| "address/fix/resolve PR comments" (code ok) | **resolve** (not reply) |
+| "update the PR" (no code, no review-feedback) | **retitle** |
+| "post these already-verified findings" (ledger given) | **comment** |
+| "review the PR" / "post review" / draft without ledger | stop — `review.gil` (`findings` or `publish`) |
 
-`comment` = verified ledger only. End-to-end review → `review.gil` `publish`. **reply** = existing threads, no code, no new findings.
+`comment` = verified ledger only. End-to-end review → `review.gil` `publish`. **reply** = existing threads, no code, no new findings. "why is CI failing?" (no fix) → report only.
 
 ## Shared prep
 
 - Tools: `git`, `gh`, `jq`; non-interactive. Escalate network for `gh` when sandboxed.
 - Resolve scripts relative to this skill directory. Thread data on **resolve**/**reply**: `./scripts/gh-review-comments --filter unresolved --format json <pr-url>`.
-- Frugal fetches: failing-job logs only (**fix-ci**); unresolved threads only (**resolve**/**reply**); explicit `--json` fields; never paste raw JSON. Don't ask the user to fetch PR/thread data unless discovery fails.
-- **comment** submits `event: COMMENT` only — never `APPROVE` or `REQUEST_CHANGES`. Pending/draft → no `event`, no submission.
-- Never auto-approve or merge.
+- Frugal fetches: failing-job logs only (**fix-ci**); unresolved threads only (**resolve**/**reply**); explicit `--json` fields; never paste raw JSON.
+- Comment/event policy: [`reference/gh-api.md`](reference/gh-api.md). Never auto-approve or merge.
 
 ## Branch reference
 
-Load only the matched branch; for the unblock chain, load each when its step runs.
+Load only the matched branch; unblock chain loads each step when it runs.
 
 - **open** — [`reference/open.md`](reference/open.md); title/body per [`reference/pr-narrative.md`](reference/pr-narrative.md).
 - **slice** — [`reference/slice.md`](reference/slice.md). No open/resolve until its ledger row marks ready.
@@ -64,18 +60,8 @@ Load only the matched branch; for the unblock chain, load each when its step run
 - Land ask + Assure readiness Yes/Conditional → **open** (do not re-ask "want a PR?").
 - Dependabot PR assessment → `dependabot` **triage** (may call back into **fix-ci**/**conflicts**).
 - Multi-repo attention list → `pr-sweep` (read-only).
-- After landing a PR, resolving non-obvious review comments, or fixing systemic CI → `harvest` (`distill`; `debt` → `.agents/debt-ledger.md`).
+- After landing, non-obvious review fixes, or systemic CI → `harvest` (`distill`; `debt` → `.agents/debt-ledger.md`).
 
 ## Completion criteria
 
-| Branch            | Done when                                                                                                                          |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| **open**          | Session-touched commits pushed; `gh pr view` shows PR; ticket in title when branch encodes one; body matches `pr-narrative.md`     |
-| **slice**         | Every planned slice has ledger row (branch, commits, validation, PR URL or deferred); worktrees cleaned only after user ok         |
-| **retitle**       | `gh pr edit` applied; narrative rebuilt from full `base...HEAD`; Review map obeys size gates and tests-first ordering              |
-| **comment**       | Every finding verified against PR head SHA + diff line; pending/submitted state matches ask; landed comments verified via API      |
-| **resolve**       | Every unresolved thread assessed; valid ones fixed+pushed; resolved threads cite commit hash or left open with reason              |
-| **reply**         | Every requested thread has a reply; no new inline findings; no code changes                                                        |
-| **fix-ci**        | Failures classified; caused-by-PR fixed+pushed or flake/infra/needs-user reported; checks watched once after push                  |
-| **conflicts**     | Rebased/merged onto base; intents preserved or user asked; `mergeable` (or only CI-dirty); pushed with lease when rebase required  |
-| **unblock chain** | Conflicts clear, unresolved threads triaged, CI green or blockers reported; no approve/merge                                       |
+Per-branch **Done when** in the matched reference. Unblock: conflicts clear, threads triaged, CI green or blockers reported; no approve/merge.

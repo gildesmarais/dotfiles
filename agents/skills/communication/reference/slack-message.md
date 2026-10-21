@@ -8,7 +8,6 @@ Notes, bullets, or a rough draft → Slack-ready internal message for engineerin
 - Substantial messages: Context → What is changing → Why → Impact / expectations → Next steps. Compress for short announcements or direct asks.
 - Lead with why it's sent and the business/operational intent. Name the accountable role instead of "we decided". State who is affected, what changes, what stays, what action is expected; end with next steps, timing, docs, or contacts.
 - Frame standards, governance, capacity, compliance, or ops changes as delivery predictability, sustainability, risk reduction, quality, or customer outcomes.
-- Prefer: "Following up from…", "To support…", "Going forward…", "This means…", "Teams should…". Avoid: "Just a quick note…", "Exciting announcement…", "Please be advised…", "Hope this makes sense.", commanding openings ("Need you to…").
 - Direct business phrasing over vague. Default close: "Thanks in advance. Please reply here if you have a preference or concerns." unless a stronger ask is requested.
 
 ## Sensitive messages

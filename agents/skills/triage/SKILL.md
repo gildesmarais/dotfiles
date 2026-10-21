@@ -21,37 +21,26 @@ Skip: approved plan / explicit go → `$dev` `implement`; Jira key/URL → `jira
 
 ## Shared prep
 
-1. Prefer repo law (`AGENTS.md` / `CONTEXT.md`).
-2. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md) (Observability cue).
-3. Reproduce locally when cheap. Label claims **Strong** / **Worth** / **Speculative**.
-4. Never implement, open PRs, raise timeouts, or invent golden paths / click budgets.
-5. Max **2** clarifying questions, only if the route is blocked; else playbook/table defaults. Never re-grill locks an active playbook states.
+Observability cue: [`../CONTEXT.md`](../CONTEXT.md). Reproduce when cheap; label Strong / Worth / Speculative (see [`reference/intake.md`](reference/intake.md)). Never implement, open PRs, raise timeouts, or invent golden paths. Max **2** clarifying questions when route blocked. Never re-grill playbook locks.
 
 ## Branch reference
 
-- `intake` → [`reference/intake.md`](reference/intake.md) — evidence checklist, route table, Triage Ledger schema.
+- `intake` → [`reference/intake.md`](reference/intake.md)
 
 ## Handoff
 
-Emit the Triage Ledger, then load exactly one next skill:
+Emit the Triage Ledger, then load exactly one next skill (route table in `intake.md`):
 
 ```text
 triage intake
-  product | both     → product-owner gate
-                         Build Now → $dev plan
-                         Build Later | Research Further | Reject → stop
+  product | both     → product-owner gate → Build Now → $dev plan; else stop
   eng only           → $dev plan
   should-we-build    → product-owner only
   approved plan / go → stop triage; $dev implement
 ```
 
-**Continue policy:** user already said go / Shot 2 / "plan then implement" → after Build Now continue into `$dev` `plan` (`implement` only when explicitly approved). Shot 1 alone → stop after ledger + next skill loaded (or after PO + plan when class `both` and gate is Build Now).
-
-Product before Build when scope is product-shaped. Triage never owns Assure/Ship. Hand off only — never paste doctrine or `$dev` plan bodies.
+**Continue policy:** go / Shot 2 / "plan then implement" → after Build Now continue `$dev` `plan` (`implement` only when explicitly approved). Shot 1 alone → stop after ledger + next skill. Hand off only — never paste doctrine or `$dev` plan bodies.
 
 ## Completion criteria
 
-- `intake` (+ playbook): evidence listed; Triage Ledger emitted; route chosen with rationale; next skill loaded or explicit stop.
-- Handoff PO: gate runs (or prior gate summarized); no application code.
-- Handoff `$dev` plan: product stance noted (`Build Now` / `skip`+why / pending).
-- Stop: approved plan present, PO not Build Now, or should-we-build-only resolved.
+Triage Ledger emitted; route chosen; next skill loaded or explicit stop. Never owns Assure/Ship or application code.

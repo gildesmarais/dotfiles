@@ -16,7 +16,7 @@ Wire/API contract redesign, adapter shells that grew domain branches, dual seria
 
 ## Sequencing
 
-One edge (or owned map) per phase; validate → ≥1 Conventional Commit ([`../../CONTEXT.md`](../../CONTEXT.md)) before the next. Co-load `refactor-types` when maps pass primitives deep; `deep-modules` for passthrough adapters or behavior dual ownership; `performance` only with a baseline.
+One edge (or owned map) per phase; validate → ≥1 Conventional Commit ([`../../dev/reference/phase-commits.md`](../../dev/reference/phase-commits.md)) before the next. Co-load `refactor-types` when maps pass primitives deep; `deep-modules` for passthrough adapters or behavior dual ownership; `performance` only with a baseline.
 
 ## Done when
 

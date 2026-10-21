@@ -20,8 +20,4 @@ Rewrite for action: a new reader can act without guessing. Recommend a new doc o
 
 ## Structure
 
-Default order, cutting what doesn't serve the job: what this is → when/why → prerequisites → quick start or exact procedure → expected result → next step or deeper reference.
-
-- **README**: first success in minutes; copy-paste startup steps.
-- **Change/feature docs**: what changed, who it affects, how to enable, actual selection/fallback/precedence, constraints/migration/rollout impact, link to current source of truth.
-- **Contributor/operator docs**: setup, exact commands, verification points, important failure modes, troubleshooting refs. Runbooks keep rollback notes and decision-critical edge cases even at the cost of brevity.
+Order by the doc's job: what → when/why → prerequisites → procedure → expected result → next step. Runbooks keep rollback notes and decision-critical edge cases.

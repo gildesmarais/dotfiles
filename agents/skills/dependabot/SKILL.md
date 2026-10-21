@@ -33,7 +33,4 @@ description: >-
 
 ## Completion criteria
 
-| Branch        | Done when                                                                               |
-| ------------- | --------------------------------------------------------------------------------------- |
-| **configure** | Valid `dependabot.yml` written or reviewed; ecosystems/directories match repo           |
-| **triage**    | Risk assessed; CI fallout fixed or reported; approve-readiness stated; no approve/merge |
+Per-branch Done when in the matched reference. Never approve/merge.

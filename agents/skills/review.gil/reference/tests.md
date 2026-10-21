@@ -4,11 +4,10 @@ Lens for changed tests/specs: over-mocking, hidden regressions, contract gaps, w
 
 ## Method
 
-1. Read the implementation diff before judging its tests; never assess mocking in isolation.
-2. Classify flight height (default check): **Pure unit** (one decision/VO/parse; <10ms, in-memory) · **Component** (multi-collaborator with in-memory fakes; never top-level god orchestrators) · **Integration** (real wiring — persistence, HTTP, jobs, CLI, disk/FFI) · **UI smoke** (thin e2e journey) · **Regression / characterization** (locks a bug trigger or pre-refactor behavior).
-3. Coverage shape for risky behavior: happy, error/fallback, nil/empty/malformed, authz/validation boundary, transport boundary, state before/after.
-4. Useful isolation removes nondeterminism/expense while keeping the contract; harmful mocking reimplements production, drives private callbacks, or asserts sequencing over outcomes. Mock only slow, nondeterministic, hard-to-trigger, or external boundaries.
-5. Tie findings to a production defect or bug risk; suggest architecture only when it lowers flight height, clarifies contracts, removes duplicated behavior, or improves mutation/regression detection.
+1. Read the implementation diff before judging its tests.
+2. Classify flight height: **Pure unit** · **Component** · **Integration** · **UI smoke** · **Regression / characterization**. Pyramid definition → `$dev` [`../dev/reference/surgical-laws.md`](../../dev/reference/surgical-laws.md).
+3. Useful isolation removes nondeterminism/expense while keeping the contract; harmful mocking reimplements production or asserts sequencing over outcomes.
+4. Tie findings to a production defect or bug risk.
 
 Probe: What bug does this catch? What bug in this diff still passes? Would it pass with the key production branch deleted? Is the seam the narrowest public one?
 
@@ -26,21 +25,11 @@ Probe: What bug does this catch? What bug in this diff still passes? Would it pa
 - Lifecycle/race fixes never replaying the broken storage or unhydrated-cache state.
 - Dual-runtime encode asserted on one side only → shared fixture vectors both runtimes check.
 - Per-feature unwrap/parse copies where one shared envelope characterization exists or should.
-- Mirrored suites: classify **spec-only twin** vs **dual-ownership twin** before editing (probe detail → `ruby-dev`); never invent a second lib fold to tidy specs.
+- Mirrored suites: classify **spec-only twin** vs **dual-ownership twin** (probe → `ruby-dev`); never invent a second lib fold to tidy specs.
 - Micro-units chasing branch-% when floors already pass → fixture-driven product edges.
 - Same scenario at three levels without a discriminating difference → one authoritative layer + one smoke.
-- Screen tests stubbing product hooks → real hook tree, fake HTTP/injectable leaves only.
-- Dual transport fakes for one URL → register the absolute URL once.
-- Hook suites re-walking a screen journey → hooks only for fake timers; outcomes on one integration render + thin browser smoke.
-- Browser-only assertions in a DOM shim → browser runner; status/headers/copy stay in jsdom.
-- Middle Vitest tier named "contract" when OpenAPI owns that word → unit/integration/e2e.
+- Language-named Vitest/DOM/OpenAPI/hook-tree patterns → `typescript-dev` `reference.md`.
 - Surfaces the project bans from golden-path tests, or helper/mapper changes without colocated tests where enforced (per `AGENTS.md`).
-
-## Prefer / recommend
-
-- Pyramid: pure VOs at base, component fakes, narrow real-I/O integration; fewer higher-flight behavioral outcomes over collaborator choreography.
-- Painful setup → refactor the production seam (extract trapped view math; inject root dirs, clocks, clients, fetchers, random, queues, parsers).
-- Assert returns, persisted state, emitted output, serialized payloads, domain errors; adapters/serializers proven against the real contract at least once.
 
 ## Output
 

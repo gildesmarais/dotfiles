@@ -1,6 +1,6 @@
 # @dependabot commands
 
-`@dependabot merge`, `close`, `reopen` were removed (Jan 2026) — merging is a human `gh pr merge` / auto-merge action, never this skill's.
+`@dependabot merge` / `close` / `reopen` unavailable — merge via human `gh pr merge` / auto-merge, never this skill.
 
 | Command                                                    | Effect                                                   |
 | ---------------------------------------------------------- | -------------------------------------------------------- |

@@ -10,11 +10,11 @@ End-to-end PR review: retrieve → fresh multi-lens ledger → reconcile drafts/
 
 ## 1. Retrieve
 
-Use the `pr-context.sh --publish` snapshot from Shared prep (or run `./scripts/pr-context.sh --publish <pr>` once). It carries owner/repo/number, title/body, base/head, head SHA, commits, files, checks, `me`, current user's pending review + drafts, unresolved threads. Read patch + code at the PR head; record the verified head SHA. Apply target-repo `AGENTS.md`.
+Use the `pr-context.sh --publish` snapshot from Shared prep (or run `./scripts/pr-context.sh --publish <pr>` once). Read patch + code at the PR head; record the verified head SHA. Apply target-repo `AGENTS.md`.
 
 ## 2. Ledger
 
-Apply `finish` + selected lenses. Prioritize correctness, regressions, security/privacy, data integrity, ops behavior, missing tests. No style preferences or speculation; CI failures only when proven PR-caused. Seek 0–2 earned `praise`.
+Apply `finish` + selected lenses. Publish high-confidence Critical/Important; Nice-to-Have only if materially useful. Drop decline, soft, optional, speculative, duplicate, already-answered. Prefer a substantive reply on an existing thread over a duplicate inline. Seek 0–2 earned `praise`.
 
 | Field      | Values                                                            |
 | ---------- | ----------------------------------------------------------------- |
@@ -25,19 +25,14 @@ Apply `finish` + selected lenses. Prioritize correctness, regressions, security/
 | Action     | `publish-inline` / `reply-existing` / `review-body-only` / `drop` |
 | Wording    | Conventional Comments body                                        |
 
-Publish high-confidence Critical/Important; Nice-to-Have only if materially useful. Drop decline, soft, optional, speculative, duplicate, already-answered. Prefer a substantive reply on an existing thread over a duplicate inline. Regex-validate every inline comment and labeled reply before posting.
+Regex-validate every inline comment and labeled reply before posting.
 
 ## 3. Reconcile → stale guard → publish → verify
 
-Per [`github-state.md`](github-state.md):
-
-1. Snapshot own pending review + drafts; keep verified drafts; delete only `drop` drafts (never discard the whole pending review for convenience).
-2. Re-fetch head SHA immediately before the first mutation; if changed, stop, refresh diff, re-anchor, revalidate.
-3. No pending → one REST create with `COMMENT`; pending → delete dropped drafts, append new, submit `COMMENT` with final body. Thread replies only after the main review succeeds. Partial failure → inspect actual state before retry. Draft-only → stop at PENDING. No valid findings → short COMMENT summary only if publication was explicitly asked; else report "no findings".
-4. Verify review + inline comments via API; confirm no pending remains (unless draft-only); return review URL and every new comment/reply URL; state no code changed.
+Fail-closed procedure: [`github-state.md`](github-state.md) — keep verified drafts; re-fetch head SHA before first mutation (stale → abort/re-anchor); submit `COMMENT` only; draft-only → stop at PENDING; verify URLs; state no code changed.
 
 ## Review body
 
 - `## Review findings`, one outcome sentence, severity-ordered findings with impact (don't paste inline bodies), optional short "What looks solid".
 - Never "Request changes" / "blocking review". Conventional Comments only for inline comments and replies.
-- Close with "When this is ready, feel free to re-request my review." Offer at most one topic-specific live route only when trade-offs are faster live.
+- Close with "When this is ready, feel free to re-request my review."

@@ -6,22 +6,21 @@ GoF patterns are named forces, not recipes. Earn a pattern from forces, then map
 
 User names a GoF pattern / asks which fits, or forces match: creation flexibility, decoupled notification, pluggable behavior, undo/history.
 
-## Forces → pattern → co-load
+## Forces → co-load
 
-- Creator must not hard-code concretes → Factory Method / Abstract Factory (families); stepwise multi-representation build → Builder.
-- Expensive/variant-rich construction → Prototype; shared fine-grained state → Flyweight — both `performance`, measure first.
-- Singleton: almost never earned — an uninjectable global unless construction stays explicit and testable (`deep-modules`).
-- Wrap/narrow a foreign or subsystem interface → Adapter / Facade / Proxy (`refactor-boundaries`).
-- Vary abstraction vs implementation, part-whole trees, add responsibilities, replace a colleague mesh → Bridge / Composite / Decorator / Mediator (`deep-modules`).
-- Behavior varies by internal state or call-site-selected algorithm → State / Strategy (`refactor-types` — often a closed set suffices).
-- Queue/undo/log requests → Command; restore state → Memento; decoupled notification → Observer; handler chain → Chain of Responsibility.
+- Creation flexibility / families / stepwise build → Factory / Abstract Factory / Builder; expensive construction → Prototype (+ `performance`).
+- Shared fine-grained state → Flyweight (+ `performance`). Singleton: almost never — uninjectable global unless construction stays explicit (`deep-modules`).
+- Wrap/narrow foreign interface → Adapter / Facade / Proxy (`refactor-boundaries`).
+- Abstraction vs implementation, part-whole, responsibilities, colleague mesh → Bridge / Composite / Decorator / Mediator (`deep-modules`).
+- Behavior by state or call-site algorithm → State / Strategy (`refactor-types`).
+- Queue/undo/log → Command; restore → Memento; notification → Observer; handler chain → Chain of Responsibility.
 
 ## Guardrails
 
 - Forces first, name second — no pattern-shopping.
-- Any new pattern layer must pass the deletion test; forwarding-only ceremony is a shallow module.
+- New pattern layer must pass the deletion test; forwarding-only ceremony is a shallow module.
 - Idiomatic realizations belong in `{lang}-dev` / overlays / project `AGENTS.md`.
 
 ## Done when
 
-Pattern choice justified by named forces, or rejected; deletion test upheld on any new layer; co-load branch named when structure / type / boundary / perf work follows.
+Pattern choice justified by named forces, or rejected; deletion test upheld; co-load branch named when structure / type / boundary / perf work follows.

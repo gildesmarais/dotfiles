@@ -12,17 +12,11 @@ Mandatory for every new inline comment from `publish`; for thread replies only w
 - First line must match `^[a-z][a-z-]*( \([a-z-]+(, [a-z-]+)*\))?: .+`.
 - Reject any `blocking` decoration — importance lives in severity and discussion. Severity decides whether to publish; the label says what kind of comment it is.
 
-Labels: `issue` (bug, regression, security/privacy, contract mismatch, test gap letting wrong behavior pass) · `suggestion` (non-required improvement) · `question` (answer could change the conclusion) · `note` (verified context, no action) · `nitpick` (normally dropped) · `praise` (specific, outstanding).
+Labels: `issue` (bug, regression, security/privacy, contract mismatch, test gap) · `suggestion` · `question` · `note` · `nitpick` (normally dropped) · `praise` (specific, outstanding).
 
 Decorations: `security` · `test` · `performance` · `non-blocking` (safe to defer).
 
-```text
-issue (security, test): scope the lookup to the authorized tenant
-
-The unscoped lookup accepts any record ID before policy evaluation, creating an IDOR path for authenticated users. Resolve the record through the policy scope and add a cross-tenant request spec.
-```
-
 ## Tone
 
-- `praise:` only when specific and earned (boundary design, strong tests, careful compat, failure handling, data minimization, risk-removing simplification) — say what and why. Zero is valid; never generic "looks good" or praise as a cushion.
+- `praise:` only when specific and earned — say what and why. Zero is valid; never generic "looks good".
 - Teammate voice ("Could we…", "Please…"), direct, no excessive hedging.

@@ -1,8 +1,8 @@
 ---
 name: swift-dev
 description: >-
-  Swift deltas: MainActor/@Observable, Apple docsets, Swift Testing hygiene, UI
-  overlay, ARC/QoS, Metal / Accelerate / ANE recipes.
+  Swift deltas: MainActor/@Observable, Apple docsets, Swift Testing, UI overlay.
+  Perf recipes in reference.md.
 disable-model-invocation: true
 ---
 
@@ -28,13 +28,7 @@ Apple public APIs and shipped module public interfaces — unless the ask or `AG
 
 ## Performance & allocation hygiene
 
-Hot path → `$dev` `design` → `architecture` `performance` first; these recipes apply after its stop rules. Depth: [`reference.md`](reference.md).
-
-- Value types / `final` / `@frozen` to cut ARC and witness traffic; `Unsafe*` only on a profiled loop.
-- No string formatting, regex, or allocating computed properties inside `==` or other hot equality/diff paths.
-- Apple Silicon: design shared-memory stages (CPU ↔ GPU ↔ ANE) before copies; pick Accelerate/AMX vs Metal vs Core ML by workload shape.
-- Structured concurrency with correct QoS — wrong QoS is a throughput bug.
-- Verify with Instruments (Time Profiler, Allocations, Metal System Trace).
+Hot path → `$dev` `design` → `architecture` `performance` first; recipes after its stop rules: [`reference.md`](reference.md).
 
 ## Compose routes
 
