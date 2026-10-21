@@ -45,7 +45,7 @@ harvest distill
            → `skill doctor`, then `rcup` (drift → `skill backfill <name>` → `rcup`)
 harvest debt
   → <project>/.agents/debt-ledger.md
-  → feeds orchestrator / triage and product-owner Health Capacity Budget
+  → feeds triage and product-owner Health Capacity Budget
 ```
 
 ## Completion criteria

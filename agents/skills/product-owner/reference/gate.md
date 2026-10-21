@@ -13,7 +13,7 @@ When doctrine conflicts with a proposal: cut, defer, or redesign — never debat
 - **Concept budget:** >1 new concept needs explicit justification.
 - **Cost-to-value:** new surface (UI, API, compute, copy) must justify customer value; reject elegant work that doesn't reduce golden-path friction.
 - **Pragmatic subservience:** capabilities (search, links, tags, tasks) are fine while subservient to the primary surface and plain data models; drift once they demand secondary containers, isolated dashboards, or DB sidecars.
-- **Health Capacity Budget** (share per [`../../CONTEXT.md`](../../CONTEXT.md)): read `<project>/.agents/debt-ledger.md` before admitting scope; high-friction debt blocking/slowing golden paths qualifies for Build Now without a new feature.
+- **Health Capacity Budget** (~20% capacity, or 1 debt tranche per 3–4 feature tranches): read `<project>/.agents/debt-ledger.md` before admitting scope; high-friction debt blocking/slowing golden paths qualifies for Build Now without a new feature.
 
 ## Workflow
 

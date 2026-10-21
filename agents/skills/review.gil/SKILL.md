@@ -57,8 +57,8 @@ Resolve scripts relative to this skill directory. `quality` skips this and runs 
 - Surfaces fold into the finish report; they do not publish or fix.
 - Structural findings (shallow module, dual ownership, primitive obsession, boundary leak, unmeasured hot path — not just legacy debt) **name** the `architecture` branch (`deep-modules` / `refactor-types` / `refactor-boundaries` / `performance`). Naming ≠ running; remediation enters via `$dev`.
 - End-to-end PR review + publish stays here; posting an already-verified ledger → `pull-request` `comment`. Never reverse.
-- `findings` never writes to GitHub. Orchestrated / multi-agent DAG: append findings to `.agents/run/<slug>.md` and return (no publish ask). Land + readiness Yes/Conditional → `pull-request` `open` only when land was in the batch ([`../CONTEXT.md`](../CONTEXT.md)).
-- Recurring failure classes → `harvest`. Delivery Ledger fields: [`../CONTEXT.md`](../CONTEXT.md).
+- `findings` never writes to GitHub; return findings in chat (no publish ask). Land + readiness Yes/Conditional → `pull-request` `open` only when land was asked.
+- Recurring failure classes → `harvest`. Delivery Ledger fields: `$dev` Handoff.
 
 ## Completion criteria
 

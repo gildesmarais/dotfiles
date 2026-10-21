@@ -32,10 +32,6 @@ Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 ## Intent
 
 **Triage** (`triage`, `intake`): incident/ops evidence → **Triage Ledger** → `product-owner` `gate` and/or `$dev` `plan`. Never implements.
-**Prompt-compiler** (`prompt-compiler`, `compile`): raw intent → `.agents/compile/<slug>.yaml`, then `$dev plan` same turn. Only when asked to compile.
-**Intent DTO fields**: `intent_spec.version` · `slug` · `invariants` · `blast_radius.allowed_domains` · `trade_offs.breaking_changes`. Not tasks/files/commands/gates/retries.
-**Orchestrator** (`orchestrator`, `run`): brain for `.agents/plan/<slug>.md`. One `$dev implement` hand at a time; bounds, gate, commit. Plan immutable.
-**Pipeline batch** / **Delivery offer** / **Lifecycle**: `$dev` `plan` procedures — `dev/reference/plan-pipeline.md`.
 
 ## Product
 
@@ -47,28 +43,20 @@ Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 
 ## Build / Solution
 
-**Dev** (`dev`): Build router (`plan` | `implement`). Classify, route, validation, phase commits, API truth, cues, post-delivery Assure. Plan: `dev/reference/plan-pipeline.md`.
+**Dev** (`dev`): Build router (`plan` | `implement`). Classify, route, validation, phase commits, API truth, cues, post-delivery Assure. Plan todos + execute: `dev/SKILL.md` `plan` branch + `dev/reference/phase-commits.md`.
 **Classification**: `surgical` | `design` | `review-hand-off`. **Design** → `architecture`. Axioms on every `implement`.
 **Language-runtime** / **Overlay** (`ruby-dev`, `rust-dev`, `swift-dev`, `typescript-dev`; `ruby-on-rails-dev`, `swiftui-dev`): deltas loaded by `$dev`. Not Build entries.
 **API truth**: repo docs → Dash → Context7 → pack secondary → unknown; warn once on first material fallthrough per session.
 **Security cue** / **Observability cue**: sensitive surfaces → `review.gil` `security` lens; APM/trace/error/log links → matching observability MCP. No vendor recipes in routers.
 **Architecture** (`architecture`): language-free craft (`philosophy` | `deep-modules` | `refactor-types` | `refactor-boundaries` | `performance` | `design-patterns`); **Structure-survey** is discovery. Expansion: `architecture/reference/growth.md`.
-**Delivery Ledger** (handoff DTO; `$dev` → `review.gil` → `pull-request` / `harvest`):
-
-- `Classification / Branches`: `surgical` | `design` and active branches
-- `Target Files`: exact paths matchable against `git diff --name-only <task_baseline>`
-- `Verification`: command executed + exit 0 observed
-- `Phase Commits`: hashes & rationale (or explicit deferral on default branch)
-- `Active Lenses`: `security`, `tests`, `perf`, `legacy`
-- `Readiness`: `Yes` | `No` | `Conditional`
-- `Residuals / Debt`: deferred items or N/A
-  **Phase commit**: `$dev` procedure — `dev/reference/phase-commits.md`.
+**Delivery Ledger**: handoff DTO emitted by `$dev` Handoff → `review.gil` → `pull-request` / `harvest`.
+**Phase commit**: `$dev` procedure — `dev/reference/phase-commits.md`.
 
 ## Harvest
 
 **Harvest** (`harvest`): `distill` (preventive mantras → project rules or store references) | `debt` (→ `<project>/.agents/debt-ledger.md`). After store edits: `skill doctor`; drift → `skill backfill` → `rcup`.
 **Preventive Mantra**: one imperative sentence — "When X, always Y to prevent Z" or "Avoid X; use Y instead because Z".
-**Debt Ledger** (`.agents/debt-ledger.md`): architectural friction backlog; admitted by `product-owner` under Health Capacity Budget; executed by `orchestrator` / `$dev`.
+**Debt Ledger** (`.agents/debt-ledger.md`): architectural friction backlog; admitted by `product-owner` under Health Capacity Budget; executed by `$dev`.
 
 ## Decide
 

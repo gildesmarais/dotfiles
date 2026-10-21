@@ -18,12 +18,12 @@ Default and only branch: **`intake`**. Never ask the user to pick.
 
 Playbook (load after intake.md on signal; not a peer branch): Botasaurus, scrape-api, `challenge_block`, `timeout/work`, fail-closed scrape UX → [`reference/scrape-incident.md`](reference/scrape-incident.md).
 
-Skip: approved plan / explicit go → `$dev` `implement`; Jira key/URL → `jira-ticket`; pure intent compilation → `prompt-compiler`; stress-test → `grilling`; morning PR attention → `pr-sweep`.
+Skip: approved plan / explicit go → `$dev` `implement`; Jira key/URL → `jira-ticket`; stress-test → `grilling`; morning PR attention → `pr-sweep`.
 
 ## Shared prep
 
 1. Prefer repo law (`AGENTS.md` / `CONTEXT.md`).
-2. Observability cue: [`../CONTEXT.md`](../CONTEXT.md); missing MCP → say so, continue with ask + codebase.
+2. Observability cue: APM/trace/error/log links → matching observability MCP; missing MCP → say so, continue with ask + codebase. No vendor recipes.
 3. Reproduce locally when cheap. Label claims **Strong** / **Worth** / **Speculative**.
 4. Never implement, open PRs, raise timeouts, or invent golden paths / click budgets.
 5. Max **2** clarifying questions, only if the route is blocked; else playbook/table defaults. Never re-grill locks an active playbook states.
@@ -48,7 +48,7 @@ triage intake
 
 **Continue policy:** user already said go / Shot 2 / "plan then implement" → after Build Now continue into `$dev` `plan` (`implement` only when explicitly approved). Shot 1 alone → stop after ledger + next skill loaded (or after PO + plan when class `both` and gate is Build Now).
 
-Lifecycle / product-before-Build: [`../CONTEXT.md`](../CONTEXT.md). Triage never owns Assure/Ship. Hand off only — never paste doctrine or plan-pipeline bodies.
+Product before Build when scope is product-shaped. Triage never owns Assure/Ship. Hand off only — never paste doctrine or `$dev` plan bodies.
 
 ## Completion criteria
 

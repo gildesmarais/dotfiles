@@ -69,7 +69,7 @@ product-owner gate
 product-owner story-slice
   ready cards     → $dev plan in the same turn (planning session writes no code)
   ungated/reject  → stop; do not invent stories
-  Plan mode       → explicit /product-owner; product stance in dev/reference/plan-pipeline.md
+  Plan mode       → explicit /product-owner; product stance in `$dev` `plan`
 product-owner rebaseline
   done            → gate can run again against the new basis
 grilling          → Decide only (stress-test interview); this skill keeps doctrine + evidence rules if topic is scope

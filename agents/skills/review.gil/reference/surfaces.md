@@ -35,4 +35,4 @@ Wrong invocation or other failure: retry once, then stop and name the blocker.
 
 ## Fold
 
-Fold both into that single finish report. Do not fix, publish, or launch a second review from their output. Orchestrated runs append the same report to `.agents/run/<slug>.md`.
+Fold both into that single finish report. Do not fix, publish, or launch a second review from their output. Return findings in chat.

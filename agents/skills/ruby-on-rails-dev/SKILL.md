@@ -11,7 +11,7 @@ disable-model-invocation: true
 
 **Stop:** read `$dev` Shared prep before any delta. Loaded with `ruby-dev`; design or private-seam cases → `$dev` → `architecture`.
 
-Scope: controllers, routes, models, services, policies, serializers, workers/mailers/jobs, migrations, framework config loaders, cache-key composition, encryption cutovers. Require the `security` lens on Assure when authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, or privileged ops are in scope ([`../CONTEXT.md`](../CONTEXT.md)).
+Scope: controllers, routes, models, services, policies, serializers, workers/mailers/jobs, migrations, framework config loaders, cache-key composition, encryption cutovers. Require the `security` lens on Assure when authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, or privileged ops are in scope (sensitive surfaces → `review.gil` `security` lens).
 
 ## Implementation deltas
 
