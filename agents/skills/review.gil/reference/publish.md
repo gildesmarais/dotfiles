@@ -27,21 +27,14 @@ Apply `finish` + selected lenses. Prioritize correctness, regressions, security/
 
 Publish high-confidence Critical/Important; Nice-to-Have only if materially useful. Drop decline, soft, optional, speculative, duplicate, already-answered. Prefer a substantive reply on an existing thread over a duplicate inline. Regex-validate every inline comment and labeled reply before posting.
 
-## 3. Reconcile own drafts
+## 3. Reconcile → stale guard → publish → verify
 
-Snapshot pending review ID, body, all drafts before mutating. Keep verified drafts; delete only `drop` ones, per comment — never discard the whole pending review for convenience. If recreate is unavoidable, rebuild and verify the full preserved ledger first.
+Per [`github-state.md`](github-state.md):
 
-## 4. Stale guard
-
-Re-fetch head SHA immediately before the first mutation; if changed, stop, refresh diff, re-anchor, revalidate.
-
-## 5. Publish
-
-Per [`github-state.md`](github-state.md): no pending → one REST create with `COMMENT`; pending → delete dropped drafts, append new, submit `COMMENT` with final body. Thread replies only after the main review succeeds. Partial failure → inspect actual state before retry. Draft-only requested → stop at PENDING, do not submit. No valid findings → publish a short COMMENT summary only if publication was explicitly asked; else report "no findings".
-
-## 6. Verify
-
-Fetch the review + inline comments via API; confirm no pending review remains (unless draft-only); return review URL and every new comment/reply URL; state no code changed.
+1. Snapshot own pending review + drafts; keep verified drafts; delete only `drop` drafts (never discard the whole pending review for convenience).
+2. Re-fetch head SHA immediately before the first mutation; if changed, stop, refresh diff, re-anchor, revalidate.
+3. No pending → one REST create with `COMMENT`; pending → delete dropped drafts, append new, submit `COMMENT` with final body. Thread replies only after the main review succeeds. Partial failure → inspect actual state before retry. Draft-only → stop at PENDING. No valid findings → short COMMENT summary only if publication was explicitly asked; else report "no findings".
+4. Verify review + inline comments via API; confirm no pending remains (unless draft-only); return review URL and every new comment/reply URL; state no code changed.
 
 ## Review body
 

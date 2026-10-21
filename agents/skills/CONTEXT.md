@@ -7,54 +7,35 @@ Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 
 ## Ship / Assure
 
-**Pull Request** (`pull-request`): lifecycle on a remote PR or branch destined to become one.
-**Review** (`review.gil`): local analysis. Executions: `findings` | `publish` | `quality`.
-**Findings**: read-only production-readiness report — no edits, no GitHub writes. Baseline: `review.gil/reference/finish.md`.
-**Publish**: end-to-end PR review → reconcile drafts → submit GitHub `COMMENT` (or leave PENDING when draft-only).
-**Quality**: merge-prep — audit → plan → boy-scout refactors + tests → repo gates. Changes code; never inferred from "review".
 **Lens** (`tests` / `perf` / `security` / `legacy`): findings rubric on the same diff prep.
 **Surface**: Cursor subagent whose output folds into the one finish report.
 **Legacy** (lens; always under `quality`): dead compat — dual public names, superseded hydrate, deprecated markers. Findings report it; `quality` deletes without shims.
-**Comment** / **Reply** / **Resolve** (`pull-request`): post verified findings | respond on a thread | assess, fix, push, mark resolved with commit refs.
-**Open** / **Slice** / **Retitle**: commit + push + create PR | rebuild into intent-based smaller PRs | narrative-only title/body update.
-**Fix-ci**: repair failing Actions — failing-job logs only, classify, fix + push, watch once.
-**Conflicts** / **Unblock chain**: rebase/merge onto base; preserve intents; push (lease when rebased). Unblock = conflicts → resolve → fix-ci; never approve/merge.
-**Dependabot**: `configure` | `triage` (risk skim + fallout via fix-ci/conflicts; approve-readiness only). Never auto-merge or rewrite bot commits.
-**PR Sweep** (`pr-sweep`, `report`): read-only multi-repo attention ledger (repo, PR, blocker, store invocation).
-**Release** (`notes`): Conventional Commits notes in a merged ship range (Breaking → Features → Fixes → other).
+**Unblock chain**: conflicts → resolve → fix-ci; never approve/merge. Preserve intents; push (lease when rebased).
 
 ## Explain
 
-**Communication**: draft or distill a message. Branches: `one-on-one` | `slack-message` | `project-update` | `external-message` (no internal jargon / unconfirmed commitments; marketing out of scope).
-**Docs**: verify/rewrite an existing document. Branches: `editor` | `architecture` (verify-only; no net-new HLD/ADR) | `evidence`.
 **Doc-class** / **Evidence ladder**: `accurate` | `partial` | `misleading` | `obsolete`; `editor` starts at code/tests, `architecture` at live runtime.
 
 ## Intent
 
-**Triage** (`intake`): incident/ops evidence → **Triage Ledger** → `product-owner` `gate` and/or `$dev` `plan`. Never implements.
+**Triage Ledger**: incident/ops evidence DTO → product-owner `gate` and/or `$dev` `plan`. Never implements.
 
 ## Product
 
-**Product-owner**: only Product skill. Branches: `gate` (default) | `story-slice` | `rebaseline` | `groom`; stubs `prioritize`, `experiment`.
 **Gate** vocabulary: **Build Now** | **Build Later** | **Research Further** | **Reject**, plus Confidence and Forced Challenge.
-**Story-slice**: admitted scope → Given/When/Then stories with cited interaction budgets before `$dev` `plan`.
 **Golden path** / **click budget** / **mental model** / **persona** / **doctrine ledger**: sections of `<project>/.agents/product.md`. Cite only; absent → `unknown`.
 **Health Capacity Budget**: ~20% capacity (or 1 debt tranche per 3–4 feature tranches) for high-friction items from `.agents/debt-ledger.md`.
 
 ## Build / Solution
 
-**Dev**: Build router (`plan` | `implement`). Classify, route, validation, phase commits, API truth, cues, post-delivery Assure. Plan todos + execute: `dev/SKILL.md` `plan` + `dev/reference/phase-commits.md`.
 **Classification**: `surgical` | `design` | `review-hand-off`. **Design** → `architecture`. Axioms on every `implement`.
-**Language-runtime** / **Overlay** (`ruby-dev`, `rust-dev`, `swift-dev`, `typescript-dev`; `ruby-on-rails-dev`, `swiftui-dev`): deltas loaded by `$dev`.
 **API truth**: repo docs → Dash → Context7 → pack secondary → unknown; warn once on first material fallthrough per session.
 **Security cue** / **Observability cue**: sensitive surfaces → `review.gil` `security` lens; APM/trace/error/log links → matching observability MCP. No vendor recipes in routers.
-**Architecture**: language-free craft (`philosophy` | `deep-modules` | `refactor-types` | `refactor-boundaries` | `performance` | `design-patterns`); **Structure-survey** is discovery. Expansion: `architecture/reference/growth.md`.
 **Delivery Ledger**: handoff DTO emitted by `$dev` Handoff → `review.gil` → `pull-request` / `harvest`.
 **Phase commit**: `$dev` procedure — `dev/reference/phase-commits.md`.
 
 ## Harvest
 
-**Harvest**: `distill` (preventive mantras → project rules or store references) | `debt` (→ `<project>/.agents/debt-ledger.md`). After store edits: `skill doctor`; drift → `skill backfill` → `rcup`.
 **Preventive Mantra**: one imperative sentence — "When X, always Y to prevent Z" or "Avoid X; use Y instead because Z".
 **Debt Ledger** (`.agents/debt-ledger.md`): architectural friction backlog; admitted by `product-owner` under Health Capacity Budget; executed by `$dev`.
 

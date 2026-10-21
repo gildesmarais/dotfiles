@@ -1,8 +1,8 @@
 ---
 name: ruby-on-rails-dev
 description: >-
-  Rails overlay loaded by $dev with ruby-dev: controllers, routes, services,
-  policies, serializers, workers, migrations, tenancy, authz, and API contracts.
+  Rails overlay: controllers, routes, services, policies, serializers, workers,
+  migrations, tenancy, authz, and API contracts.
 disable-model-invocation: true
 ---
 

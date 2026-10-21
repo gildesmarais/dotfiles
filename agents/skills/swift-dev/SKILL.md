@@ -1,9 +1,8 @@
 ---
 name: swift-dev
 description: >-
-  Swift deltas loaded by $dev: MainActor/@Observable, Apple docsets, Swift
-  Testing hygiene, UI overlay compose; after a measured-perf handoff, ARC/QoS
-  and Metal / Accelerate / ANE recipes.
+  Swift deltas: MainActor/@Observable, Apple docsets, Swift Testing hygiene, UI
+  overlay, ARC/QoS, Metal / Accelerate / ANE recipes.
 disable-model-invocation: true
 ---
 

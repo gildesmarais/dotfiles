@@ -5,13 +5,13 @@ description_max_words: 45
 learning_log_max_lines: 20
 line_cap: 100
 words:
-  CONTEXT.md: 690
+  CONTEXT.md: 354
   architecture/SKILL.md: 562
   architecture/reference/axioms.md: 128
   architecture/reference/deep-modules.md: 404
   architecture/reference/design-patterns.md: 240
   architecture/reference/glossary.md: 235
-  architecture/reference/growth.md: 345
+  architecture/reference/growth.md: 194
   architecture/reference/learning-log.md: 22
   architecture/reference/performance.md: 363
   architecture/reference/philosophy.md: 269
@@ -23,7 +23,7 @@ words:
   communication/reference/one-on-one.md: 285
   communication/reference/project-update.md: 134
   communication/reference/slack-message.md: 327
-  dependabot/SKILL.md: 211
+  dependabot/SKILL.md: 208
   dependabot/reference/configure.md: 95
   dependabot/reference/pr-commands.md: 149
   dependabot/reference/triage.md: 153
@@ -38,7 +38,7 @@ words:
   docs/reference/evidence.md: 277
   harvest/SKILL.md: 287
   harvest/reference/debt.md: 307
-  harvest/reference/distill.md: 281
+  harvest/reference/distill.md: 320
   jira-ticket/SKILL.md: 561
   omnifocus/SKILL.md: 307
   omnifocus/reference/applescript.md: 254
@@ -50,10 +50,10 @@ words:
   product-owner/reference/rebaseline.md: 353
   product-owner/reference/story-slice.md: 159
   pull-request/SKILL.md: 740
-  pull-request/reference/comment.md: 263
+  pull-request/reference/comment.md: 261
   pull-request/reference/conflicts.md: 187
   pull-request/reference/fix-ci.md: 204
-  pull-request/reference/gh-api.md: 455
+  pull-request/reference/gh-api.md: 271
   pull-request/reference/open.md: 311
   pull-request/reference/pr-narrative.md: 236
   pull-request/reference/reply.md: 143
@@ -66,28 +66,28 @@ words:
   review.gil/reference/conventional-comments.md: 241
   review.gil/reference/finish.md: 363
   review.gil/reference/github-state.md: 372
-  review.gil/reference/growth.md: 148
+  review.gil/reference/growth.md: 118
   review.gil/reference/learning-log.md: 20
   review.gil/reference/legacy.md: 357
   review.gil/reference/perf.md: 325
   review.gil/reference/plan-checklists.md: 104
-  review.gil/reference/publish.md: 521
+  review.gil/reference/publish.md: 494
   review.gil/reference/quality.md: 607
   review.gil/reference/security.md: 300
   review.gil/reference/surfaces.md: 314
   review.gil/reference/tests.md: 583
-  ruby-dev/SKILL.md: 372
+  ruby-dev/SKILL.md: 368
   ruby-dev/reference.md: 419
-  ruby-on-rails-dev/SKILL.md: 317
-  rust-dev/SKILL.md: 125
+  ruby-on-rails-dev/SKILL.md: 312
+  rust-dev/SKILL.md: 118
   rust-dev/reference.md: 190
-  swift-dev/SKILL.md: 301
+  swift-dev/SKILL.md: 292
   swift-dev/reference.md: 315
-  swiftui-dev/SKILL.md: 186
-  triage/SKILL.md: 398
+  swiftui-dev/SKILL.md: 181
+  triage/SKILL.md: 373
   triage/reference/intake.md: 266
   triage/reference/scrape-incident.md: 192
-  typescript-dev/SKILL.md: 473
+  typescript-dev/SKILL.md: 470
   typescript-dev/reference.md: 360
 pinned_headers:
   omnifocus:

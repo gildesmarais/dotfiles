@@ -1,8 +1,7 @@
 ---
 name: swiftui-dev
 description: >-
-  SwiftUI overlay loaded by $dev with swift-dev: views, navigation, WidgetKit,
-  and AppKit bridges.
+  SwiftUI overlay: views, navigation, WidgetKit, and AppKit bridges.
 disable-model-invocation: true
 ---
 

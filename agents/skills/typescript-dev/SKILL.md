@@ -1,8 +1,8 @@
 ---
 name: typescript-dev
 description: >-
-  TypeScript/JavaScript deltas loaded by $dev: named types over string/object
-  soup, green ≠ correct, one runtime truth for closed sets.
+  TypeScript/JavaScript deltas: named types over string/object soup, green ≠
+  correct, one runtime truth for closed sets.
 disable-model-invocation: true
 ---
 

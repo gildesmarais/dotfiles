@@ -2,9 +2,9 @@
 name: triage
 description: >-
   Intent intake for incidents and fuzzy ops asks: gather evidence, classify
-  product vs eng scope, emit a Triage Ledger, hand off to product-owner gate or
-  $dev plan. Use for Sentry/errors/timeouts, scrape failures, fail-closed UX,
-  /triage, /intake, or unclear admit-scope vs plan.
+  product vs eng scope, emit a Triage Ledger. Use for Sentry/errors/timeouts,
+  scrape failures, fail-closed UX, /triage, /intake, or unclear admit-scope vs
+  plan.
 ---
 
 # Triage
@@ -22,7 +22,7 @@ Skip: approved plan / explicit go → `$dev` `implement`; Jira key/URL → `jira
 ## Shared prep
 
 1. Prefer repo law (`AGENTS.md` / `CONTEXT.md`).
-2. Observability cue: APM/trace/error/log links → matching observability MCP; missing MCP → say so, continue with ask + codebase. No vendor recipes.
+2. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md) (Observability cue).
 3. Reproduce locally when cheap. Label claims **Strong** / **Worth** / **Speculative**.
 4. Never implement, open PRs, raise timeouts, or invent golden paths / click budgets.
 5. Max **2** clarifying questions, only if the route is blocked; else playbook/table defaults. Never re-grill locks an active playbook states.

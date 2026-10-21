@@ -1,8 +1,8 @@
 ---
 name: ruby-dev
 description: >-
-  Ruby deltas loaded by $dev: TDD posture, Ruby 4 baseline, gem/CLI/adapter
-  work, RSpec suite hygiene, Rails overlay compose.
+  Ruby deltas: TDD posture, Ruby 4 baseline, gem/CLI/adapter work, RSpec suite
+  hygiene, Rails overlay.
 disable-model-invocation: true
 ---
 
