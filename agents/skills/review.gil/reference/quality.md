@@ -1,11 +1,11 @@
 # Quality
 
-Merge-prep on the current branch (not feature delivery): what got worse or duplicated while shipping, and what tests prove it still works? Phase 0 supersedes `SKILL.md` Shared prep.
+Merge-prep on the current branch (not feature delivery): what got worse or duplicated while shipping, and what tests prove it still works? Phase 0 supersedes `SKILL.md` Shared prep. Flight-height definitions → `dev/reference/surgical-laws.md`. Legacy Find rows → [`legacy.md`](legacy.md).
 
 ## Phase 0 — Bootstrap (read-only)
 
 - Read `AGENTS.md`, `CONTRIBUTING.md`, `.cursor/rules`, CI workflows.
-- Gate recipe (one line, first match wins): `Makefile` (`lint`/`lintfix`/`test`/`ready`/`check`/`ci`) → manifest scripts → CI job commands. E.g. `make lintfix && make ready`, `pnpm lint && pnpm test`, `cargo clippy -- -D warnings && cargo test`. Version-manager wrappers only when documented.
+- Gate recipe (one line, first match wins): `Makefile` (`lint`/`lintfix`/`test`/`ready`/`check`/`ci`) → manifest scripts → CI job commands. Version-manager wrappers only when documented.
 - Test stack + whether coverage is configured; resolve `<srcRoot>`, `<testRoot>`, globs.
 - Base: `BASE="$(git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null || git merge-base HEAD origin/HEAD)"`.
 
@@ -28,16 +28,16 @@ Recipes: `git diff --stat "$BASE"..HEAD`; `rg "eslint-disable|# noqa|allow\\(" <
 
 Output: findings table prioritized **P0** correctness/sync, **P1** large untested logic, **P2** DRY/KISS + recommended commit themes.
 
-**Scope gate:** in-scope = `git diff --name-only "$BASE"..HEAD`. Auto-include files that import a touched module, duplicate the same pattern in the area, or are one hop away as orchestrator. Ask before cross-module service decomposition, files >2 import hops away, or abstractions not in the audit. Nothing unrelated.
+**Scope gate:** in-scope = `git diff --name-only "$BASE"..HEAD`. Auto-include files that import a touched module, duplicate the same pattern, or are one hop away as orchestrator. Ask before cross-module service decomposition, files >2 import hops away, or abstractions not in the audit.
 
 ## Phase 2 — Plan
 
-CreatePlan unless the user says "just do it". Include: commit stack in dependency order (single commit if small), per-commit files + boy-scout items + named test files, explicit out-of-scope list, success = gate recipe green.
+CreatePlan unless the user says "just do it". Include: commit stack in dependency order, per-commit files + boy-scout items + named test files, explicit out-of-scope list, success = gate recipe green.
 
 - Order: extract pure utils + tests → refactor consumers → unify factories → slim UI/models → test hygiene → last, separate `chore(test): raise coverage thresholds + verify` (skip without coverage tooling).
-- Prefer extract pure util → unit test → thin consumer over new abstractions; one factory per repeated pattern.
+- Prefer extract pure util → unit test → thin consumer; one factory per repeated pattern.
 - Dead compat: delete, no shims (stop only if the user required backward compatibility).
-- Tests: pure utils → unit, no mocks; stateful hooks/use-cases → framework utils + mocked deps; read/API → integration with project fixtures; screens → mock providers, honor `AGENTS.md` bans on heavy surfaces.
+- Tests: pure utils → unit, no mocks; stateful hooks/use-cases → framework utils + mocked deps; read/API → integration with project fixtures; screens → mock providers, honor `AGENTS.md` bans.
 - Commits: `refactor` / `test` / `chore` only (no `feat`); `type(scope): why`, body names the test locking behavior.
 
 ## Phase 3 — Execute
@@ -46,7 +46,7 @@ Stacked commits when ≥2 independent themes. Per commit: smallest behavior-pres
 
 - Gate failure mid-stack: fix forward; if it belongs to an earlier commit, `git commit --fixup=<sha>` (user may `git rebase -i --autosquash <base>` later).
 - ≥3 commits: prefer a background `Task` subagent with the commit list + branch; parent verifies final gates.
-- Never lower coverage thresholds without approval; threshold changes only in the final `chore(test)` commit; no coverage for dev/static screens unless asked.
+- Never lower coverage thresholds without approval; threshold changes only in the final `chore(test)` commit.
 
 ## Phase 4 — Verify
 

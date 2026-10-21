@@ -1,9 +1,9 @@
 ---
 name: rust-dev
 description: >-
-  Rust deltas loaded by $dev (load $dev first; not a Build entry): cargo
-  validation, crate docsets, depth-pack compose; after a measured-perf handoff,
-  cargo-asm, Criterion, target-cpu, io_uring recipes.
+  Rust deltas loaded by $dev: cargo validation, crate docsets, depth-pack
+  compose; after a measured-perf handoff, cargo-asm, Criterion, target-cpu,
+  io_uring recipes.
 disable-model-invocation: true
 ---
 

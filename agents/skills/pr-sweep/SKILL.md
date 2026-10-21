@@ -26,8 +26,6 @@ Single branch: **`report`**.
 
 ## Handoff
 
-Each row points at a store invocation:
-
 | Blocker                       | Invocation                               |
 | ----------------------------- | ---------------------------------------- |
 | Failing CI                    | `/pull-request fix-ci <url>`             |

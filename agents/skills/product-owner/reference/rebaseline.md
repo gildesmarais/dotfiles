@@ -11,9 +11,9 @@ Not this branch: "should we build X?" on a trusted basis → `gate`; slicing →
 - **Have / shipped record:** the repo's existing shipped record.
 - **Direction, anchors, reject registry:** sections of `.agents/product.md`; a missing section → name the gap, add no new file.
 
-## Procedure
+## Procedure + Output
 
-Cite paths; silent source → `unknown`.
+Cite paths; silent source → `unknown`. Emit numbered steps as both procedure and output:
 
 1. **Have since baseline:** shipped-and-kept since the ledger's last re-baseline date (no date → say so). Every row cites a path.
 2. **Overrides:** founder overrides since baseline, each cited; flag mismatch with the ledger's override count.
@@ -25,20 +25,8 @@ Cite paths; silent source → `unknown`.
 8. **Removal shortlist:** ≥3 candidates, each with cited surface, evidence it doesn't serve the direction, and what would be lost.
 9. **Reset ledger** (if `.agents/product.md` exists): set last re-baseline date (or the repo's tranche id) and override count `0`. Section absent → stop at the `ledger absent` note.
 
-## Output
-
-1. Have-since-baseline (cited) 2. Overrides (cited, or explicitly none) 3. Direction delta (one paragraph) 4. Anchor delta (changed/dropped) 5. Registry disposition (kept-with-citation / deleted / flipped to Have) 6. Admitted-not-Have re-gate results 7. Unexplained-by-direction list 8. Removal shortlist (≥3, evidence) 9. Ledger reset note (or `ledger absent`)
-
 ## Completion criteria
 
 Steps 1–9 emitted; doctrine edits land only in `.agents/product.md`.
 
 **Falsification:** zero registry rows flipped/deleted **and** zero removal candidates **fails** unless an explicit "why nothing changed" paragraph is written. A date bump with no delta is not a re-baseline.
-
-## Handoff
-
-```text
-product-owner rebaseline
-  done → gate can run again against the new basis
-  feature that tripped staleness → do not evaluate it until this branch is done
-```

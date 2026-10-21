@@ -1,6 +1,6 @@
 # Publish
 
-End-to-end PR review: retrieve → fresh multi-lens ledger → reconcile drafts/threads → recheck SHA → submit one friendly `COMMENT` review → thread replies → verify URLs. Load [`conventional-comments.md`](conventional-comments.md) when drafting and [`github-state.md`](github-state.md) right before mutating.
+End-to-end PR review: retrieve → fresh multi-lens ledger → reconcile drafts/threads → recheck SHA → submit one friendly `COMMENT` review → thread replies → verify URLs. Load [`conventional-comments.md`](conventional-comments.md) when drafting. Mutation steps → [`github-state.md`](github-state.md).
 
 ## Hard rules
 
@@ -10,11 +10,11 @@ End-to-end PR review: retrieve → fresh multi-lens ledger → reconcile drafts/
 
 ## 1. Retrieve
 
-Use the `pr-context.sh --publish` snapshot from Shared prep (or run `./scripts/pr-context.sh --publish <pr>` once). It carries owner/repo/number, title/body, base/head, head SHA, commits, files, checks, `me`, current user's pending review + drafts, unresolved threads. Read patch + code at the PR head; record the verified head SHA. Apply target-repo `AGENTS.md` and any language skills it routes to.
+Use the `pr-context.sh --publish` snapshot from Shared prep (or run `./scripts/pr-context.sh --publish <pr>` once). It carries owner/repo/number, title/body, base/head, head SHA, commits, files, checks, `me`, current user's pending review + drafts, unresolved threads. Read patch + code at the PR head; record the verified head SHA. Apply target-repo `AGENTS.md`.
 
 ## 2. Ledger
 
-Apply `finish` + selected lenses. Prioritize correctness, regressions, security/privacy, data integrity, ops behavior, missing tests. No style preferences, speculation, or alternatives without material risk; CI failures only when proven PR-caused. Seek 0–2 earned `praise`.
+Apply `finish` + selected lenses. Prioritize correctness, regressions, security/privacy, data integrity, ops behavior, missing tests. No style preferences or speculation; CI failures only when proven PR-caused. Seek 0–2 earned `praise`.
 
 | Field      | Values                                                            |
 | ---------- | ----------------------------------------------------------------- |
@@ -25,7 +25,7 @@ Apply `finish` + selected lenses. Prioritize correctness, regressions, security/
 | Action     | `publish-inline` / `reply-existing` / `review-body-only` / `drop` |
 | Wording    | Conventional Comments body                                        |
 
-Publish high-confidence Critical/Important; Nice-to-Have only if materially useful. Drop decline, soft, optional, speculative, duplicate, already-answered. Prefer a substantive reply on an existing thread over a duplicate inline; never a bare "agree". Regex-validate every inline comment and labeled reply before posting.
+Publish high-confidence Critical/Important; Nice-to-Have only if materially useful. Drop decline, soft, optional, speculative, duplicate, already-answered. Prefer a substantive reply on an existing thread over a duplicate inline. Regex-validate every inline comment and labeled reply before posting.
 
 ## 3. Reconcile own drafts
 
@@ -47,4 +47,4 @@ Fetch the review + inline comments via API; confirm no pending review remains (u
 
 - `## Review findings`, one outcome sentence, severity-ordered findings with impact (don't paste inline bodies), optional short "What looks solid".
 - Never "Request changes" / "blocking review". Conventional Comments only for inline comments and replies.
-- Close with "When this is ready, feel free to re-request my review." Offer at most one topic-specific live route (`sync`, `huddle`, or `chat`) only when trade-offs are faster live; none for straightforward fixes.
+- Close with "When this is ready, feel free to re-request my review." Offer at most one topic-specific live route only when trade-offs are faster live.

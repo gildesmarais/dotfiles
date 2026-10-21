@@ -1,6 +1,6 @@
 # GitHub API patterns (comment / resolve / reply)
 
-Prefer `scripts/gh-review-comments`; use these for fallback and mutations. End-to-end review publishing is owned by `review.gil` `publish` and its `review.gil/reference/github-state.md`; this file only covers posting verified findings, resolve, and reply.
+Prefer `scripts/gh-review-comments`; use these for fallback and mutations. End-to-end review publishing is owned by `review.gil` `publish` / `github-state.md`; this file covers posting verified findings, resolve, and reply.
 
 Policy: post/submit → one review with `event: COMMENT`. Draft/pending → omit `event`. Never `APPROVE` / `REQUEST_CHANGES`.
 
@@ -14,7 +14,6 @@ gh pr view --json number,url,headRefName,baseRefName,headRefOid,title
 
 ```bash
 ./scripts/gh-review-comments --filter unresolved --format json <pr-url>
-# → {pr:{owner,repo,number,url}, threads:[{thread_id,resolved,path,line,html_url,comments:[{user:{login},created_at,body,html_url}]}]}
 ```
 
 GraphQL fallback (paginate with `after` while `pageInfo.hasNextPage`):
@@ -27,18 +26,16 @@ gh api graphql -f query='query($owner:String!, $repo:String!, $number:Int!){ rep
 
 One pending review per user per PR.
 
-1. No pending review → `POST repos/OWNER/REPO/pulls/PR/reviews` with inline `comments`, **no `event`** (`"event": "COMMENT"` submits immediately).
+1. No pending → `POST repos/OWNER/REPO/pulls/PR/reviews` with inline `comments`, **no `event`** (`"event": "COMMENT"` submits immediately).
 2. Pending exists → `addPullRequestReviewThread` with the pending review **node ID** (GraphQL `id`, not REST numeric id). Never create a second.
 3. Submit only on explicit ask → `POST .../reviews/{id}/events` with `event: COMMENT`.
 
 ```bash
-# fetch pending
 gh api graphql -f query='query($owner:String!, $repo:String!, $number:Int!){ repository(owner:$owner, name:$repo){ pullRequest(number:$number){ id reviews(first:50, states:[PENDING]){ nodes { id databaseId state body } } } } }' -F owner=OWNER -F repo=REPO -F number=PR
 
 # create pending: review.json = {"body":"…","comments":[{"path":"…","line":123,"side":"RIGHT","body":"issue: …"}]}
 gh api repos/OWNER/REPO/pulls/PR/reviews --input review.json
 
-# append to pending
 gh api graphql -f query='mutation($reviewId:ID!, $path:String!, $line:Int!, $body:String!){ addPullRequestReviewThread(input:{pullRequestReviewId:$reviewId, path:$path, line:$line, side:RIGHT, body:$body}) { thread { id comments(first:1){ nodes { url body } } } } }' -F reviewId=REVIEW_NODE_ID -F path='path/to/file.rb' -F line=123 -F body=$'issue: ...'
 ```
 

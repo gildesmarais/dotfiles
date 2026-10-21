@@ -4,8 +4,7 @@ description: >-
   Build-domain router for implementation plans and code changes: classify, route
   language packs and overlays, phase commits, validation, API truth. Use for
   implement, fix, feature, change the code, implementation plan, phased plan,
-  surgical or design-shaped coding; also optimize, hot path, throughput,
-  latency, allocate, profile, benchmark, Apple Silicon / SIMD as coding work.
+  surgical or design-shaped coding; also optimize, hot path, profile, benchmark.
 ---
 
 # Dev
@@ -26,16 +25,14 @@ Never ask the user to pick when signals are clear.
 
 ## Shared prep
 
-1. **AGENTS.md load**: already injected; nearest file wins; do not re-read or paste unless citing a line. Label survey claims Strong / Worth / Speculative.
-2. Observability / security cues: sensitive surfaces → `security` lens on Assure; APM/trace/error/log links → matching observability MCP. Co-load the security lens during implement when clearly needed. Rails matrix stays in the overlay / `AGENTS.md`. No vendor recipes.
-3. **Classify:** `surgical` | `design` | `review-hand-off`.
-   - Load [`architecture/reference/axioms.md`](../architecture/reference/axioms.md) on **every** `implement`, surgical included. Load `architecture` `SKILL.md` + matched references only when `design` is earned.
-   - Earn `design` on the core six: dual ownership / shallow modules / primitive obsession across boundaries / structural cleanup ask / measured perf / type-driven refactor; also named GoF / which-pattern asks (`design-patterns`). Ambiguous → prefer `design`.
+1. **AGENTS.md load** / observability / security cues: [`../CONTEXT.md`](../CONTEXT.md). Co-load the security lens during implement when clearly needed. Rails matrix stays in the overlay / `AGENTS.md`.
+2. **Classify:** `surgical` | `design` | `review-hand-off`.
+   - Load [`architecture/reference/axioms.md`](../architecture/reference/axioms.md) on **every** `implement`. Load `architecture` `SKILL.md` + matched references only when `design` is earned.
+   - Earn `design` on: dual ownership / shallow modules / primitive obsession across boundaries / structural cleanup ask / measured perf / type-driven refactor; also named GoF / which-pattern asks. Ambiguous → prefer `design`.
    - **Plan inheritance:** prompt names a plan path and phase id → inherit its classification and architecture decisions; no second pass; axioms stay active.
    - **Gated:** `design` earned without inheritance → invoke `architecture` and document seam decisions in the plan or milestone ledger **before** writing code.
-   - Packs may only append "also earn when…" lists.
-   - `review-hand-off` → stop → `review.gil`.
-4. **Route by touched files** (not repo-wide presence); multi-load OK; validate per surface; clarify only when signals are absent or contradictory.
+   - Packs may only append "also earn when…" lists. `review-hand-off` → stop → `review.gil`.
+3. **Route by touched files** (not repo-wide presence); multi-load OK; validate per surface; clarify only when signals are absent or contradictory.
 
    | Touched                                                                   | Load                                |
    | ------------------------------------------------------------------------- | ----------------------------------- |
@@ -46,12 +43,12 @@ Never ask the user to pick when signals are clear.
    | SwiftUI / WidgetKit / AppKit UI                                           | `swift-dev` + `swiftui-dev`         |
    | `.ts` / `.tsx` / `.js` / `.jsx`                                           | `typescript-dev` (+ `reference.md`) |
 
-5. Tests / dual paths / acceptance → load [`reference/surgical-laws.md`](reference/surgical-laws.md).
-6. **Compat ask:** classify internal vs stable public. Possibly-breaking change to a stable surface with unclear permission → ask first. No silent shims, no silent breaks. Packs only name what counts as stable.
-7. **No destructive git:** never `push --force`, hard reset, or other irreversible git unless explicitly asked.
-8. Material API claim → load [`reference/api-truth.md`](reference/api-truth.md).
-9. **Validation:** repo-native entrypoints, narrow → broad, per phase. Never claim green without an observed exit 0 for each cited command.
-10. Committing → load [`reference/phase-commits.md`](reference/phase-commits.md).
+4. Tests / dual paths / acceptance → load [`reference/surgical-laws.md`](reference/surgical-laws.md).
+5. **Compat ask:** classify internal vs stable public. Possibly-breaking change to a stable surface with unclear permission → ask first. No silent shims, no silent breaks. Packs only name what counts as stable.
+6. **No destructive git:** never `push --force`, hard reset, or other irreversible git unless explicitly asked.
+7. Material API claim → load [`reference/api-truth.md`](reference/api-truth.md).
+8. **Validation:** repo-native entrypoints, narrow → broad, per phase. Never claim green without an observed exit 0 for each cited command.
+9. Committing → load [`reference/phase-commits.md`](reference/phase-commits.md).
 
 ## Branch reference
 
@@ -73,14 +70,12 @@ Path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; never rever
 - `Residuals / Debt`: deferred items or N/A
 
 - `design` → `architecture` (branch pick inside), then continue implement here.
-- **Post-delivery Assure** (every `implement` delivery, plan-driven or surgical), before reporting delivery:
-  - Prefer spawning a new agent running `review.gil` `findings` (+ warranted lenses; `security` lens when the cue matched) with the Delivery Ledger.
-  - Small single-surface surgical → fresh in-session pass OK; spawn preferred for plan-driven, multi-phase, or security-cue work.
+- **Post-delivery Assure** (every `implement` delivery), before reporting delivery:
+  - Prefer a subagent running `review.gil` `findings` (+ warranted lenses; `security` when the cue matched) with the Delivery Ledger; reload in-session if no subagent (implementer self-check is not the review).
   - Trivial diff (docs-only, comment/typo, single-line config) may skip — state skip + reason; never silent.
   - `quality` only on explicit merge-prep / boy-scout ask or already-authorized P0/P1 fixes; never from bare "review".
-  - No subagent → fresh in-session pass (reload the skill; implementer self-check is not the review).
-  - Report delivery only after the pass returns; no ship-ready claim without it. Land ask + readiness Yes/Conditional → `pull-request` `open`.
-- Harvest → `harvest` (`distill` mantras | `debt` → `.agents/debt-ledger.md`) when pain repeats, a fix was non-obvious, or the user asked — not on every implement.
+  - Report delivery only after the pass returns. Land ask + readiness Yes/Conditional → `pull-request` `open`.
+- Harvest → `harvest` (`distill` | `debt`) when pain repeats, a fix was non-obvious, or the user asked.
 - Forward doc (post-Assure, Yes/Conditional): capture non-obvious maintenance in repo `AGENTS.md`; skip if self-documenting and say so.
 
 ## Completion criteria

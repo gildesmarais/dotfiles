@@ -1,9 +1,8 @@
 ---
 name: ruby-dev
 description: >-
-  Ruby deltas loaded by $dev (load $dev first; not a Build entry): TDD posture,
-  Ruby 4 baseline, gem/CLI/adapter work, RSpec suite hygiene, Rails overlay
-  compose.
+  Ruby deltas loaded by $dev: TDD posture, Ruby 4 baseline, gem/CLI/adapter
+  work, RSpec suite hygiene, Rails overlay compose.
 disable-model-invocation: true
 ---
 
@@ -32,10 +31,9 @@ Published gem APIs, public service/CLI entrypoints, versioned HTTP contracts —
 ## Deltas
 
 - TDD for behavior changes: focused failing test first.
-- Modern idioms and LOC reduction (dedupe/unify before new files) are fine on the surgical path; never a substitute for `design`.
+- Modern idioms and LOC reduction are fine on the surgical path; never a substitute for `design`.
 - Behavior-preserving moves: characterization or boundary coverage before moving code.
 - Small unified methods over helper-hell; data-driven maps over repetitive branches when that is the whole ask.
-- Immutability/adapter honesty and untrusted-text handling stay surgical until dual ownership appears.
 - Mirrored specs: classify **spec-only twin** vs **dual-ownership twin** before editing ([`reference.md`](reference.md)); dual ownership earns `design` + `deep-modules`.
 - Framework-lifecycle-shaped failure → load `ruby-on-rails-dev` in the same change.
 - Service objects, jobs, CLI, library code: make input/output expectations discoverable in code or tests.

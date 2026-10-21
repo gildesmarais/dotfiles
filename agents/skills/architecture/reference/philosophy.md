@@ -30,4 +30,4 @@ Apply at design/plan time (`$dev plan`) before mutating code. Unavoidable tactic
 
 ## Done when
 
-Chosen design plus ≥1 rejected alternative recorded (the `decisions` field on each plan phase); interfaces simplified; error states structurally minimized; cognitive load and tech debt explicitly addressed.
+Chosen design plus ≥1 rejected alternative recorded (in the plan or milestone ledger); interfaces simplified; error states structurally minimized; cognitive load and tech debt explicitly addressed.

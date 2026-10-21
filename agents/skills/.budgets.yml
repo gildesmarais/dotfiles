@@ -1,0 +1,136 @@
+# Word-budget ratchet for `skill lint`.
+# Lower an entry in the same change when content shrinks; never raise without cause.
+
+description_max_words: 45
+learning_log_max_lines: 20
+line_cap: 100
+words:
+  CONTEXT.md: 690
+  architecture/SKILL.md: 562
+  architecture/reference/axioms.md: 128
+  architecture/reference/deep-modules.md: 404
+  architecture/reference/design-patterns.md: 240
+  architecture/reference/glossary.md: 235
+  architecture/reference/growth.md: 345
+  architecture/reference/learning-log.md: 22
+  architecture/reference/performance.md: 363
+  architecture/reference/philosophy.md: 269
+  architecture/reference/refactor-boundaries.md: 313
+  architecture/reference/refactor-types.md: 280
+  architecture/reference/structure-survey.md: 340
+  communication/SKILL.md: 251
+  communication/reference/external-message.md: 139
+  communication/reference/one-on-one.md: 285
+  communication/reference/project-update.md: 134
+  communication/reference/slack-message.md: 327
+  dependabot/SKILL.md: 211
+  dependabot/reference/configure.md: 95
+  dependabot/reference/pr-commands.md: 149
+  dependabot/reference/triage.md: 153
+  dependabot/reference/yml-keys.md: 84
+  dev/SKILL.md: 880
+  dev/reference/api-truth.md: 101
+  dev/reference/phase-commits.md: 262
+  dev/reference/surgical-laws.md: 101
+  docs/SKILL.md: 512
+  docs/reference/architecture.md: 254
+  docs/reference/editor.md: 300
+  docs/reference/evidence.md: 277
+  harvest/SKILL.md: 287
+  harvest/reference/debt.md: 307
+  harvest/reference/distill.md: 281
+  jira-ticket/SKILL.md: 561
+  omnifocus/SKILL.md: 307
+  omnifocus/reference/applescript.md: 254
+  pr-sweep/SKILL.md: 216
+  pr-sweep/reference/report.md: 166
+  product-owner/SKILL.md: 634
+  product-owner/reference/gate.md: 551
+  product-owner/reference/groom.md: 544
+  product-owner/reference/rebaseline.md: 353
+  product-owner/reference/story-slice.md: 159
+  pull-request/SKILL.md: 740
+  pull-request/reference/comment.md: 263
+  pull-request/reference/conflicts.md: 187
+  pull-request/reference/fix-ci.md: 204
+  pull-request/reference/gh-api.md: 455
+  pull-request/reference/open.md: 311
+  pull-request/reference/pr-narrative.md: 236
+  pull-request/reference/reply.md: 143
+  pull-request/reference/resolve.md: 306
+  pull-request/reference/retitle.md: 129
+  pull-request/reference/slice.md: 417
+  release/SKILL.md: 185
+  release/reference/notes.md: 94
+  review.gil/SKILL.md: 577
+  review.gil/reference/conventional-comments.md: 241
+  review.gil/reference/finish.md: 363
+  review.gil/reference/github-state.md: 372
+  review.gil/reference/growth.md: 148
+  review.gil/reference/learning-log.md: 20
+  review.gil/reference/legacy.md: 357
+  review.gil/reference/perf.md: 325
+  review.gil/reference/plan-checklists.md: 104
+  review.gil/reference/publish.md: 521
+  review.gil/reference/quality.md: 607
+  review.gil/reference/security.md: 300
+  review.gil/reference/surfaces.md: 314
+  review.gil/reference/tests.md: 583
+  ruby-dev/SKILL.md: 372
+  ruby-dev/reference.md: 419
+  ruby-on-rails-dev/SKILL.md: 317
+  rust-dev/SKILL.md: 125
+  rust-dev/reference.md: 190
+  swift-dev/SKILL.md: 301
+  swift-dev/reference.md: 315
+  swiftui-dev/SKILL.md: 186
+  triage/SKILL.md: 398
+  triage/reference/intake.md: 266
+  triage/reference/scrape-incident.md: 192
+  typescript-dev/SKILL.md: 473
+  typescript-dev/reference.md: 360
+pinned_headers:
+  omnifocus:
+    - Load
+    - Laws
+    - Gaps
+  ruby-dev:
+    - "Also earn `design` when"
+    - Docsets
+    - "Stable surfaces"
+    - "Ruby 4 baseline"
+    - Deltas
+    - "Compose routes"
+    - "Handoff deltas"
+  rust-dev:
+    - Docsets
+    - "Stable surfaces"
+    - Deltas
+  swift-dev:
+    - Docsets
+    - "Stable surfaces"
+    - Deltas
+    - "Performance & allocation hygiene"
+    - "Compose routes"
+  typescript-dev:
+    - "Also earn `design` when"
+    - Docsets
+    - "Stable surfaces"
+    - Stance
+    - "Surgical posture"
+    - "Compose routes"
+    - Non-goals
+    - "Handoff deltas"
+  ruby-on-rails-dev:
+    - "Implementation deltas"
+    - "Rails testing"
+    - "API docs (`rswag`)"
+    - "Handoff deltas"
+  swiftui-dev:
+    - "Implementation deltas"
+    - "Handoff deltas"
+duplicate_owners:
+  - owner: ruby-dev/SKILL.md
+    text: "**Stop:** read `$dev` Shared prep before any delta. Craft lives in `architecture`; compose sibling skills by name, never paste them."
+  - owner: rust-dev/reference.md
+    text: "Only after `architecture` `performance` stop rules hand off. Measure first; not defaults."

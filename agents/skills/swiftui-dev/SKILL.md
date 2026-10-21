@@ -1,8 +1,8 @@
 ---
 name: swiftui-dev
 description: >-
-  SwiftUI overlay loaded by $dev with swift-dev (deltas only): views,
-  navigation, WidgetKit, and AppKit bridges.
+  SwiftUI overlay loaded by $dev with swift-dev: views, navigation, WidgetKit,
+  and AppKit bridges.
 disable-model-invocation: true
 ---
 
@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 **Stop:** read `$dev` Shared prep before any delta. Loaded with `swift-dev`; design or private-seam cases → `$dev` → `architecture`.
 
-Scope: views, navigation, layout, WidgetKit, AppKit bridges, Transferable, presentation/chrome. Optional packs by name when installed (never inline their checklists): `swiftui-pro` (review depth), `swiftui-design-principles` (spacing, typography, materials); testing depth → `swift-testing-pro` via `swift-dev`.
+Scope: views, navigation, layout, WidgetKit, AppKit bridges, Transferable, presentation/chrome. Optional packs by name when installed (never inline): `swiftui-pro`, `swiftui-design-principles`; testing depth → `swift-testing-pro` via `swift-dev`.
 
 ## Implementation deltas
 

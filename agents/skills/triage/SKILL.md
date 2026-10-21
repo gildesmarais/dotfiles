@@ -3,9 +3,8 @@ name: triage
 description: >-
   Intent intake for incidents and fuzzy ops asks: gather evidence, classify
   product vs eng scope, emit a Triage Ledger, hand off to product-owner gate or
-  $dev plan. Use for Sentry/errors/timeouts, scrape failures, fail-closed UX
-  after outages, /triage, /intake, or when the next step is unclear between
-  admit-scope and implementation plan.
+  $dev plan. Use for Sentry/errors/timeouts, scrape failures, fail-closed UX,
+  /triage, /intake, or unclear admit-scope vs plan.
 ---
 
 # Triage
@@ -14,7 +13,7 @@ Incident/ops signals → evidence → Triage Ledger → exactly one next skill. 
 
 ## Pick branch
 
-Default and only branch: **`intake`**. Never ask the user to pick.
+Default and only branch: **`intake`**.
 
 Playbook (load after intake.md on signal; not a peer branch): Botasaurus, scrape-api, `challenge_block`, `timeout/work`, fail-closed scrape UX → [`reference/scrape-incident.md`](reference/scrape-incident.md).
 

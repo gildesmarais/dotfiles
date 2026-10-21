@@ -1,9 +1,8 @@
 ---
 name: typescript-dev
 description: >-
-  TypeScript/JavaScript deltas loaded by $dev (load $dev first; not a Build
-  entry): named types over string/object soup, green ≠ correct, one runtime
-  truth for closed sets.
+  TypeScript/JavaScript deltas loaded by $dev: named types over string/object
+  soup, green ≠ correct, one runtime truth for closed sets.
 disable-model-invocation: true
 ---
 
@@ -25,7 +24,7 @@ Exported package/public module types and published API contracts — unless the 
 
 ## Stance
 
-- **Named types with judgment.** Closed sets, domain types, precise records over bare `string` / `object` / `any` / `Record<string, unknown>` at module boundaries and cross-seam decisions. Don't brand every id, add generics for one call site, or build type-level scaffolding where inference + a local alias suffice. Plain shapes at rest (cache/wire/forms) are intentional — rehydrate at the read seam.
+- **Named types with judgment.** Closed sets, domain types, precise records over bare `string` / `object` / `any` / `Record<string, unknown>` at module boundaries. Don't brand every id or add generics for one call site. Plain shapes at rest (cache/wire/forms) are intentional — rehydrate at the read seam.
 - **Green compile ≠ correct change.** `as`, `!`, and checker-silencing suppressions are failed surgical work — parse, narrow, or restructure. Suppressions need an owned reason + removal condition; bare `@ts-ignore` banned.
 - **One runtime truth for a closed set.** No parallel hand interfaces, schemas, and guards that can disagree; infer/generate one direction, map at the boundary.
 
@@ -39,7 +38,7 @@ Exported package/public module types and published API contracts — unless the 
 - `satisfies` to check without widening. Tests may cast fixtures; production may not.
 - Floating async needs an owner (await, cancel, or swallow with cause).
 - Generated clients / OpenAPI output: regenerate, never hand-edit.
-- Separate pinned **check** vs **tooling API** TypeScript versions are both contracts — don't break programmatic consumers when upgrading.
+- Separate pinned **check** vs **tooling API** TypeScript versions are both contracts.
 - Follow project law for `strict-type-checked` on app sources vs relaxed tests.
 - Load [`reference.md`](reference.md) for boundary typing, dual compilers, schema ownership, Vitest/DOM testing.
 

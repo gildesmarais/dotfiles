@@ -3,9 +3,8 @@ name: docs
 description: >-
   Verify and rewrite existing docs against the repository, or author a
   control/auditor evidence pack. Use to refresh a README, contributor, operator,
-  or feature doc; fix stale, inaccurate, or bloated docs; align ADRs, design
-  notes, diagrams, and system overviews with runtime behavior; or prove a stated
-  control from repo evidence.
+  or feature doc; fix stale or bloated docs; align ADRs and diagrams with
+  runtime; or prove a stated control from repo evidence.
 ---
 
 # Docs
@@ -26,13 +25,12 @@ Rewrite docs to match what the repo actually does. Treat existing prose as unver
 ## Shared prep
 
 1. Identify the target doc and the decisions/actions it must support; `AGENTS.md` rules override defaults here.
-2. Read the doc if it exists, then build evidence from the repo before editing.
-3. Classify existing targets by doc-class ([`../CONTEXT.md`](../CONTEXT.md)); `evidence` net-new packs skip this. Effort: `accurate` → tighten · `partial` → prune, fill verified gaps · `misleading` → rewrite main path from verified sources · `obsolete` → remove or recommend removal.
+2. Classify existing targets by doc-class ([`../CONTEXT.md`](../CONTEXT.md)); `evidence` net-new packs skip this. Effort: `accurate` → tighten · `partial` → prune, fill verified gaps · `misleading` → rewrite main path from verified sources · `obsolete` → remove or recommend removal.
 
 Rules for every branch:
 
 - Evidence ladders are branch-local. When sources disagree, trust what runtime enforces and note the conflict in the handoff.
-- Only verified, implemented behavior; no assumptions as facts. `editor` / `architecture`: remove non-essential unverified or stale content, report remaining gaps in the handoff (unless the doc is about a known limitation). `evidence`: publish Unverified and Not met in the document.
+- Only verified, implemented behavior; no assumptions as facts. `editor` / `architecture`: remove non-essential unverified or stale content, report remaining gaps in the handoff. `evidence`: publish Unverified and Not met in the document.
 - No absolute filesystem paths in published docs — repo-relative or user-generic only.
 - **Write forward**: teach the current system; constraints as present facts; no eras, migrations, or expected-failure paths. Detail: [`reference/editor.md`](reference/editor.md).
 

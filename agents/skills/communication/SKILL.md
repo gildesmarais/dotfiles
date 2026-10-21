@@ -20,7 +20,7 @@ description: >-
 
 ## Branch reference
 
-Load exactly one and follow it through completion:
+Load exactly one:
 
 - **`one-on-one`** → [`reference/one-on-one.md`](reference/one-on-one.md)
 - **`slack-message`** → [`reference/slack-message.md`](reference/slack-message.md)
@@ -31,7 +31,7 @@ Every branch returns only the final artifact; add improvement notes only when as
 
 ## Handoff
 
-README, runbook, or product doc rather than a message → stop → `docs` **`editor`** (never reverse; no long-form docs from this skill).
+README, runbook, or product doc rather than a message → stop → `docs` **`editor`** (never reverse).
 
 ## Completion criteria
 

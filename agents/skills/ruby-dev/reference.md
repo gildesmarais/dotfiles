@@ -4,14 +4,14 @@ Ruby/RSpec execution postures only; craft → `architecture`, test-quality judgm
 
 ## Spec twins → lib probe
 
-1. **Classify before collapsing.** Mirrored `describe` blocks / option-forwarding matrices are **spec-only** (production already single-path → shared_examples / table-drive / thin the extra layer) or **dual-ownership** (two production homes encode the same rules → shared kernel + thin adapters, shared fixtures). Don't invent a production fold when the lib is single-owner.
-2. **Shared rule kernel, not a mega-class.** Pure field rules in one module; adapters only traverse and call; one fixture corpus asserted by both (see architecture `deep-modules`).
+1. **Classify before collapsing.** Mirrored `describe` blocks are **spec-only** (production already single-path → shared_examples / table-drive) or **dual-ownership** (two production homes → shared kernel + thin adapters, shared fixtures). Don't invent a production fold when the lib is single-owner.
+2. **Shared rule kernel, not a mega-class.** Pure field rules in one module; adapters only traverse and call; one fixture corpus asserted by both.
 3. **Raise flight before adding doubles.** Fixture/HTML/JSON → observable outcomes over `have_received(:new)` skip-graphs and `instance_variable_get` / `send` pins.
 
 ## RSpec suite hygiene
 
-4. Matrices (option-forwarding, routing URL contracts, twin asserts) → table rows or `it_behaves_like`, not copy-paste contexts.
-5. Same scenario across layers: one authoritative unit (or pipeline) plus at most one higher smoke (facade/exe/VCR); delete the third.
+4. Matrices → table rows or `it_behaves_like`, not copy-paste contexts.
+5. Same scenario across layers: one authoritative unit plus at most one higher smoke; delete the third.
 6. RuboCop `ExampleLength` / `MultipleExpectations` on a discriminating multi-assert → tag `:aggregate_failures`; don't split.
 7. `Dir.glob` loader for a missing `spec/support/shared_examples` → add real examples or remove the loader.
 
@@ -23,7 +23,7 @@ Ruby/RSpec execution postures only; craft → `architecture`, test-quality judgm
 
 ## Construction homes (gem/CLI)
 
-11. CLI and public API shortcuts building the same controls object with differing "explicit" semantics → one builder on the config/type (`from_shortcut` / `from_cli_options`); Thor/option parsing stays thin.
+11. CLI and public API shortcuts building the same controls object with differing "explicit" semantics → one builder on the config/type; Thor/option parsing stays thin.
 
 ## Ruby 4 baseline (harvest)
 

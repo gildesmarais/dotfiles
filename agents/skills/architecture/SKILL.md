@@ -1,14 +1,10 @@
 ---
 name: architecture
 description: >-
-  Language-free solution craft: module depth and seams, type-driven refactors,
-  wire/adapter boundaries, measured performance, GoF pattern selection, and
-  structural tree surveys. Use when $dev classifies design, or for deepen
-  modules, shallow modules, dual ownership, replace primitives with domain
-  types, optimize with a baseline, bottleneck class, zero-copy / heterogeneous
-  placement, measured hot-path work, which GoF pattern fits, directory/tree
-  survey, peer-folder conformity, snowflake placement, promote/relocate/fold
-  modules.
+  Language-free solution craft: module depth, type-driven refactors, wire/adapter
+  boundaries, measured performance, GoF patterns, tree surveys. Use when $dev
+  classifies design, or for deepen/shallow modules, dual ownership, domain types,
+  measured hot-path work, which GoF pattern fits, promote/relocate/fold modules.
 disable-model-invocation: true
 ---
 
@@ -18,7 +14,7 @@ Structure, types, boundaries, measured perf — not whether to build, not langua
 
 ## Pick branch
 
-Never ask the user to pick when signals are clear; multi-load when signals combine.
+Multi-load when signals combine.
 
 | Branch                | Signals                                                                                                                            |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
@@ -30,7 +26,7 @@ Never ask the user to pick when signals are clear; multi-load when signals combi
 | `design-patterns`     | pattern names, "which pattern", decouple sender/receiver, pluggable strategies, undo/redo, creation flexibility                    |
 | `structure-survey`    | tree/directory/layout audit, peer conformity, snowflake, promote/relocate/fold/nest ownership moves, layer-wide layout unification |
 
-`structure-survey` is a discovery mode, not a craft branch: load it, then multi-load craft branches from its findings.
+`structure-survey` is discovery, not craft: load it, then multi-load craft branches from its findings.
 
 | Ask                                                     | Route instead                                                                                                                                                           |
 | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -47,7 +43,7 @@ Bare "promote" / "unify" → one clarifying question, or stay on the skill in pl
 1. Evidence labels when surveying: Strong / Worth / Speculative.
 2. Craft stays language-free; recipes live in `{lang}-dev`, overlays, third-party packs, or project `AGENTS.md` (via `$dev`).
 3. Structural signals → survey before or with craft.
-4. Phase → validate → commit: Solution craft phase commits follow [`../dev/reference/phase-commits.md`](../dev/reference/phase-commits.md). During an implementation run, dirty-tree git interactions and default-branch commit prompts are owned exclusively by `$dev`.
+4. Phase → validate → commit: follow [`../dev/reference/phase-commits.md`](../dev/reference/phase-commits.md). During an implementation run, dirty-tree git and default-branch commit prompts are owned by `$dev`.
 5. **Blocking:** before designing, refactoring, or restructuring, read each matched branch reference (+ [`reference/glossary.md`](reference/glossary.md) for terms).
 
 ## Branch reference

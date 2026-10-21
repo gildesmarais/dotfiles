@@ -1,9 +1,8 @@
 ---
 name: ruby-on-rails-dev
 description: >-
-  Rails overlay loaded by $dev with ruby-dev (deltas only): controllers, routes,
-  services, policies, serializers, workers, migrations, tenancy, authz, and API
-  contracts.
+  Rails overlay loaded by $dev with ruby-dev: controllers, routes, services,
+  policies, serializers, workers, migrations, tenancy, authz, and API contracts.
 disable-model-invocation: true
 ---
 
@@ -11,7 +10,7 @@ disable-model-invocation: true
 
 **Stop:** read `$dev` Shared prep before any delta. Loaded with `ruby-dev`; design or private-seam cases → `$dev` → `architecture`.
 
-Scope: controllers, routes, models, services, policies, serializers, workers/mailers/jobs, migrations, framework config loaders, cache-key composition, encryption cutovers. Require the `security` lens on Assure when authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, or privileged ops are in scope (sensitive surfaces → `review.gil` `security` lens).
+Scope: controllers, routes, models, services, policies, serializers, workers/mailers/jobs, migrations, framework config loaders, cache-key composition, encryption cutovers. Require the `security` lens on Assure when authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, or privileged ops are in scope.
 
 ## Implementation deltas
 
@@ -32,25 +31,7 @@ Scope: controllers, routes, models, services, policies, serializers, workers/mai
 
 ## API docs (`rswag`)
 
-One `response` per status code: rswag keys responses by status, so a second same-code `response` overwrites the first. Put every variant inside that one block — each a uniquely named example (the examples-map key; duplicate names overwrite) with its own nested context, `let`s, and `run_test!`. Declare the schema once; widen it (`additionalProperties` or `oneOf`) so every example validates.
-
-```ruby
-response '422', 'Unprocessable Entity' do
-  schema type: :object, additionalProperties: true, properties: { ... }
-  example 'application/json', 'case a', { error: '...' }
-  example 'application/json', 'case b', { error: '...', detail: '...' }
-  context 'when case a' do
-    # lets / setup
-    run_test!
-  end
-  context 'when case b' do
-    # different lets / setup
-    run_test!
-  end
-end
-```
-
-A second same-code `response` only for a case kept out of the document (`document: false`). Regenerate OpenAPI from request specs; never hand-edit the generated file. Document format/defaults/example payloads for enums or constrained fields at schema level.
+One `response` per status code — rswag keys by status, so a second same-code `response` overwrites. Put every variant inside that one block: uniquely named examples (duplicate names overwrite) each with nested context, `let`s, and `run_test!`. Declare the schema once; widen it (`additionalProperties` or `oneOf`) so every example validates. A second same-code `response` only for `document: false`. Regenerate OpenAPI from request specs; never hand-edit. Document format/defaults/example payloads for enums at schema level.
 
 ## Handoff deltas
 
