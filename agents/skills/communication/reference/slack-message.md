@@ -5,19 +5,22 @@ Notes, bullets, or a rough draft → Slack-ready internal message for engineerin
 ## Output
 
 - Slack scanning: short paragraphs, bullets, light headings. Calm, deliberate, professional. Keep the user's intent, ask, and audience unless asked to reposition.
-- Substantial messages: Context → What is changing → Why → Impact / expectations → Next steps. Compress for short announcements or direct asks.
-- Lead with why it's sent and the business/operational intent. Name the accountable role instead of "we decided". State who is affected, what changes, what stays, what action is expected; end with next steps, timing, docs, or contacts.
+- Flow: intent → changes → audience impact → action. Compress short announcements.
+- Lead with why; name the accountable role. Translate mechanisms into audience consequences; keep mechanics only for scope, confidence, or required action.
 - Frame standards, governance, capacity, compliance, or ops changes as delivery predictability, sustainability, risk reduction, quality, or customer outcomes.
-- Direct business phrasing over vague. Default close: "Thanks in advance. Please reply here if you have a preference or concerns." unless a stronger ask is requested.
+- Predictable objection (friction, delay): evidence beside the change — bounded scope, what does not happen, practical benefit. No absolutes.
+- Security or operational risk: consequence + completed mitigation; omit sensitive detail that does not aid action.
+- Enablement (tools, AI, context): capability/context, workflows, quality/velocity outcome — not generic "use X".
+- CTA: affected role, concrete action, timing when material, low-friction feedback path.
 
 ## Sensitive messages
 
 Line managers, leadership, escalations, blockers, policy friction:
 
 - Open with context and operational intent — not "We have a problem with…" / "You need to…".
-- Frame as a delivery, coordination, policy, or operational constraint before any team or role. System-first over person-first blame; name the consequence before any failure.
+- Frame as a delivery, coordination, policy, or operational constraint before any team or role. System-first; name the consequence before any failure.
 - Alignment/confirmation/decision asks — not directives unless explicitly wanted.
-- Explain why it matters with the ask; consequence phrasing ("Without this decision, we risk…") — not status-heavy. Direct attribution only when the user asks for sharper ownership.
+- Why it matters with the ask; consequence phrasing ("Without this decision, we risk…") — not status-heavy. Direct attribution only when asked.
 
 ## Decision requests
 
