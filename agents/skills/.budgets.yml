@@ -2,93 +2,92 @@
 # Lower an entry in the same change when content shrinks; never raise without cause.
 
 description_max_words: 45
-learning_log_max_lines: 20
 line_cap: 100
 words:
-  CONTEXT.md: 354
-  architecture/SKILL.md: 473
-  architecture/reference/axioms.md: 128
+  CONTEXT.md: 219
+  architecture/SKILL.md: 442
+  architecture/reference/axioms.md: 127
   architecture/reference/deep-modules.md: 404
-  architecture/reference/design-patterns.md: 205
-  architecture/reference/glossary.md: 235
-  architecture/reference/growth.md: 127
-  architecture/reference/learning-log.md: 22
-  architecture/reference/performance.md: 363
-  architecture/reference/philosophy.md: 209
+  architecture/reference/design-patterns.md: 202
+  architecture/reference/glossary.md: 209
+  architecture/reference/growth.md: 113
+  architecture/reference/performance.md: 346
+  architecture/reference/philosophy.md: 199
   architecture/reference/refactor-boundaries.md: 313
   architecture/reference/refactor-types.md: 280
-  architecture/reference/structure-survey.md: 340
-  communication/SKILL.md: 185
-  communication/reference/external-message.md: 139
-  communication/reference/one-on-one.md: 285
-  communication/reference/project-update.md: 134
-  communication/reference/slack-message.md: 295
-  dependabot/SKILL.md: 179
-  dependabot/reference/configure.md: 95
+  architecture/reference/structure-survey.md: 326
+  communication/SKILL.md: 181
+  communication/reference/external-message.md: 107
+  communication/reference/one-on-one.md: 262
+  communication/reference/project-update.md: 105
+  communication/reference/slack-message.md: 281
+  dependabot/SKILL.md: 167
+  dependabot/reference/configure.md: 87
   dependabot/reference/pr-commands.md: 146
-  dependabot/reference/triage.md: 153
-  dependabot/reference/yml-keys.md: 84
-  dev/SKILL.md: 785
-  dev/reference/api-truth.md: 101
-  dev/reference/phase-commits.md: 223
-  dev/reference/surgical-laws.md: 101
-  docs/SKILL.md: 308
-  docs/reference/architecture.md: 254
-  docs/reference/editor.md: 239
-  docs/reference/evidence.md: 277
-  harvest/SKILL.md: 202
-  harvest/reference/debt.md: 301
-  harvest/reference/distill.md: 301
-  jira-ticket/SKILL.md: 543
-  omnifocus/SKILL.md: 307
-  omnifocus/reference/applescript.md: 254
-  pr-sweep/SKILL.md: 216
-  pr-sweep/reference/report.md: 166
-  product-owner/SKILL.md: 434
-  product-owner/reference/gate.md: 441
-  product-owner/reference/groom.md: 544
-  product-owner/reference/rebaseline.md: 353
-  product-owner/reference/story-slice.md: 154
-  pull-request/SKILL.md: 482
-  pull-request/reference/comment.md: 239
-  pull-request/reference/conflicts.md: 187
-  pull-request/reference/fix-ci.md: 204
-  pull-request/reference/gh-api.md: 271
-  pull-request/reference/open.md: 309
-  pull-request/reference/pr-narrative.md: 236
-  pull-request/reference/reply.md: 107
-  pull-request/reference/resolve.md: 255
-  pull-request/reference/retitle.md: 129
-  pull-request/reference/slice.md: 417
-  release/SKILL.md: 156
-  release/reference/notes.md: 94
-  review.gil/SKILL.md: 499
-  review.gil/reference/conventional-comments.md: 167
-  review.gil/reference/finish.md: 268
-  review.gil/reference/github-state.md: 372
-  review.gil/reference/growth.md: 93
-  review.gil/reference/learning-log.md: 20
-  review.gil/reference/legacy.md: 351
-  review.gil/reference/perf.md: 138
-  review.gil/reference/plan-checklists.md: 104
-  review.gil/reference/publish.md: 346
-  review.gil/reference/quality.md: 463
-  review.gil/reference/security.md: 283
-  review.gil/reference/surfaces.md: 314
-  review.gil/reference/tests.md: 373
-  ruby-dev/SKILL.md: 308
-  ruby-dev/reference.md: 419
-  ruby-on-rails-dev/SKILL.md: 275
-  rust-dev/SKILL.md: 118
-  rust-dev/reference.md: 190
-  swift-dev/SKILL.md: 204
-  swift-dev/reference.md: 315
-  swiftui-dev/SKILL.md: 139
-  triage/SKILL.md: 271
-  triage/reference/intake.md: 266
-  triage/reference/scrape-incident.md: 192
-  typescript-dev/SKILL.md: 353
-  typescript-dev/reference.md: 360
+  dependabot/reference/triage.md: 142
+  dependabot/reference/yml-keys.md: 81
+  dev/SKILL.md: 626
+  dev/reference/api-truth.md: 99
+  dev/reference/plan.md: 306
+  dev/reference/surgical-laws.md: 96
+  docs/SKILL.md: 298
+  docs/reference/architecture.md: 227
+  docs/reference/editor.md: 212
+  docs/reference/evidence.md: 250
+  harvest/SKILL.md: 213
+  harvest/reference/debt.md: 281
+  harvest/reference/distill.md: 273
+  jira-ticket/SKILL.md: 481
+  omnifocus/SKILL.md: 292
+  omnifocus/reference/applescript.md: 241
+  ops-chore/SKILL.md: 301
+  ops-chore/reference/hard-stops.md: 133
+  ops-chore/reference/ledger.md: 130
+  ops-chore/reference/playbook.md: 369
+  pr-sweep/SKILL.md: 201
+  pr-sweep/reference/report.md: 160
+  product-owner/SKILL.md: 365
+  product-owner/reference/gate.md: 456
+  product-owner/reference/groom.md: 514
+  product-owner/reference/rebaseline.md: 317
+  product-owner/reference/story-slice.md: 147
+  pull-request/SKILL.md: 398
+  pull-request/reference/comment.md: 224
+  pull-request/reference/conflicts.md: 167
+  pull-request/reference/fix-ci.md: 192
+  pull-request/reference/gh-api.md: 244
+  pull-request/reference/open.md: 294
+  pull-request/reference/pr-narrative.md: 222
+  pull-request/reference/reply.md: 93
+  pull-request/reference/resolve.md: 234
+  pull-request/reference/retitle.md: 116
+  pull-request/reference/slice.md: 375
+  release/SKILL.md: 124
+  release/reference/notes.md: 84
+  review.gil/SKILL.md: 456
+  review.gil/reference/conventional-comments.md: 157
+  review.gil/reference/finish.md: 351
+  review.gil/reference/github-state.md: 363
+  review.gil/reference/growth.md: 73
+  review.gil/reference/legacy.md: 338
+  review.gil/reference/perf.md: 129
+  review.gil/reference/publish.md: 333
+  review.gil/reference/quality.md: 456
+  review.gil/reference/security.md: 278
+  review.gil/reference/tests.md: 369
+  ruby-dev/SKILL.md: 266
+  ruby-dev/reference.md: 233
+  ruby-on-rails-dev/SKILL.md: 267
+  rust-dev/SKILL.md: 107
+  rust-dev/reference.md: 178
+  swift-dev/SKILL.md: 200
+  swift-dev/reference.md: 294
+  swiftui-dev/SKILL.md: 140
+  triage/SKILL.md: 277
+  triage/reference/intake.md: 260
+  triage/reference/scrape-incident.md: 188
+  typescript-dev/SKILL.md: 300
+  typescript-dev/reference.md: 271
 pinned_headers:
   omnifocus:
     - Load
@@ -131,6 +130,6 @@ pinned_headers:
     - "Handoff deltas"
 duplicate_owners:
   - owner: ruby-dev/SKILL.md
-    text: "**Stop:** read `$dev` Shared prep before any delta. Craft lives in `architecture`; compose sibling skills by name, never paste them."
+    text: "**Stop:** apply `$dev` Shared prep first; skip if already read. Craft lives in `architecture`; compose sibling skills by name, never paste them."
   - owner: rust-dev/reference.md
     text: "Only after `architecture` `performance` stop rules hand off. Measure first; not defaults."

@@ -2,7 +2,7 @@
 
 ## Evidence checklist
 
-- Symptom + when (user text)
+- Symptom + when
 - Observability: issue IDs, `error_category`, `timeout_phase`, host, `warm_hit`, release/environment
 - Local: health, control success, failing reproduce (or blocked reason)
 - Surface: API only / web create UX / gem CLI / docs
@@ -16,12 +16,12 @@ Label each claim **Strong** / **Worth** / **Speculative**.
 | ------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------- |
 | User-visible copy, journey chrome, retry false-hope, new concept    | `product` or `both` | `product-owner` `gate`                                                        |
 | Wrong classification, hang, worker queue, detector, timeouts as eng | `eng`               | `$dev` `plan` (skip PO if no UX/concept change)                               |
-| Signal fix **and** UX honesty                                       | `both`              | PO gate in-session; Build Now → `$dev` `plan` with eng+UX phases (one Shot 1) |
+| Signal fix **and** UX honesty                                       | `both`              | PO gate in-session; Build Now → `$dev` `plan` with eng+UX phases |
 | Ambiguous product vs eng                                            | prefer `product`    | PO gate (admit over guessing Build)                                           |
 | "Should we build X?" only                                           | `product`           | `product-owner` only                                                          |
 | Approved plan / explicit go / Shot 2                                | `stop`              | `$dev` `implement` (leave triage)                                             |
 
-## Triage Ledger (required before handoff)
+## Triage Ledger (before handoff)
 
 | Field              | Content                                                           |
 | ------------------ | ----------------------------------------------------------------- |

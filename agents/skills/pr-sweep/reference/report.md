@@ -2,7 +2,7 @@
 
 ## Discover
 
-Stay on these two sets unless the user widens scope (never walk all org PRs):
+Only these two sets unless the user widens scope:
 
 ```bash
 gh search prs --review-requested=@me --owner=<org> --state=open \

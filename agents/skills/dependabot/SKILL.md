@@ -3,6 +3,7 @@ name: dependabot
 description: >-
   GitHub Dependabot configuration and PR triage. Use to create or optimize
   dependabot.yml, group updates, or assess/fix fallout on a Dependabot PR.
+disable-model-invocation: true
 ---
 
 # Dependabot
@@ -16,7 +17,7 @@ description: >-
 
 ## Shared prep
 
-- Repo already generates Dependabot/CODEOWNERS from one ownership SoT → use that repo-local generator; never hand-edit its output.
+- Repo generates Dependabot/CODEOWNERS from one ownership SoT → use that generator; never hand-edit its output.
 - Never approve, enable auto-merge, or merge. Never rewrite/amend bot commits.
 - No raw JSON or full Actions logs in context.
 
@@ -27,10 +28,9 @@ description: >-
 
 ## Handoff
 
-- CI fallout → `pull-request` **fix-ci** (separate fix commits on top of bot commits).
-- Conflicts → `@dependabot rebase` when no manual commits yet; otherwise `pull-request` **conflicts**.
+- CI fallout → `pull-request` **fix-ci**; conflicts → `@dependabot rebase` when no manual commits, else `pull-request` **conflicts**.
 - Multi-repo stale Dependabot discovery → `pr-sweep`.
 
 ## Completion criteria
 
-Per-branch Done when in the matched reference. Never approve/merge.
+Per-branch Done when in the matched reference.

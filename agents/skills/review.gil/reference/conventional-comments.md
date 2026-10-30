@@ -16,7 +16,4 @@ Labels: `issue` (bug, regression, security/privacy, contract mismatch, test gap)
 
 Decorations: `security` · `test` · `performance` · `non-blocking` (safe to defer).
 
-## Tone
-
-- `praise:` only when specific and earned — say what and why. Zero is valid; never generic "looks good".
-- Teammate voice ("Could we…", "Please…"), direct, no excessive hedging.
+Tone: teammate voice ("Could we…", "Please…"), direct, little hedging. `praise:` only when specific and earned (what and why); zero is valid.

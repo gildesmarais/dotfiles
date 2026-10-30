@@ -6,7 +6,7 @@ Security/compliance lens. Apply when the change touches authn/authz, sessions, s
 
 1. Threat context: actors, asset sensitivity, exposure. State assumptions when incomplete.
 2. Map changed assets, trust boundaries, entry points; check whether tests, policies, validation, logging, rate limits, retries, config changed together.
-3. Abuse paths via STRIDE categories; controls: least privilege / deny-by-default; input validation and safe queries; untrusted-text matching; data minimization/redaction; audit readiness; retries, timeouts, rate limits.
+3. Abuse paths via STRIDE; controls: least privilege / deny-by-default, input validation and safe queries, untrusted-text matching, data minimization/redaction, audit readiness, retries/timeouts/rate limits.
 4. No exploitability or control claims without code evidence; missing context → lower confidence, record in `Assumptions / Gaps`. No code edits unless fixes are asked after review.
 
 ## Severity
@@ -21,8 +21,8 @@ Frameworks: `ISO 27001`, `BSI C5`; `NIS2`, `DORA`, `KRITIS`; `EU MDR`, `IEC 6230
 
 ## Output
 
-Severity-ordered, folded into the `finish` report. Per finding: `Severity`, `Category`, `Evidence` (path:line), `Abuse path`, `Risk`, `Recommended fix`, `Control tags` when applicable, `Confidence`.
+Severity-ordered, folded into `finish`. Per finding: `Severity`, `Category`, `Evidence` (path:line), `Abuse path`, `Risk`, `Recommended fix`, `Control tags` when applicable, `Confidence`.
 
-Always: No findings → say so + 1–3 residual risks; `Assumptions / Gaps` (or `None`); `Compliance coverage summary` one line per relevant framework.
+Always: no findings → say so + 1–3 residual risks; `Assumptions / Gaps` (or `None`); `Compliance coverage summary`, one line per relevant framework.
 
 Compact path (≤2 files and no authn/authz, secrets, sensitive data/tenant, privileged/audit/logging/export, or external/webhook/resilience changes): threat context + the three "always" items only.

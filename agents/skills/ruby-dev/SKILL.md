@@ -1,22 +1,22 @@
 ---
 name: ruby-dev
 description: >-
-  Ruby deltas: TDD posture, Ruby 4 baseline, gem/CLI/adapter work, RSpec suite
-  hygiene, Rails overlay.
+  Ruby deltas: Ruby 4 baseline, gem/CLI/adapter work, RSpec suite hygiene, spec
+  twins, Rails overlay.
 disable-model-invocation: true
 ---
 
 # Ruby Dev
 
-**Stop:** read `$dev` Shared prep before any delta. Craft lives in `architecture`; compose sibling skills by name, never paste them.
+**Stop:** apply `$dev` Shared prep first; skip if already read. Craft lives in `architecture`; compose sibling skills by name, never paste them.
 
 ## Also earn `design` when
 
-Wrong-owner boundary absorb (serialize/cache/encode bent into a neighbor) / re-ledgering an already-owned aggregate / validate vs runtime expansion diverge / shared deadline or conflated meters across attempts / guard or policy owned in more than one place / published contract vs runtime acceptance drift / specs need private reach to assert behavior / mirrored specs re-encoding one algorithm across two production adapters (dual ownership → architecture `deep-modules`).
+Specs need private reach to assert behavior / mirrored specs re-encoding one algorithm across two production adapters (dual ownership → architecture `deep-modules`) / validate vs runtime expansion diverge.
 
 ## Docsets
 
-Dash: **Ruby**; with `ruby-on-rails-dev`, also **Rails**. YARD/RBS/Sorbet only if the repo already uses them — then keep touched contract docs accurate; never introduce a global YARD requirement.
+Dash: **Ruby**; with `ruby-on-rails-dev`, also **Rails**. YARD/RBS/Sorbet only if the repo already uses them; keep touched contract docs accurate.
 
 ## Stable surfaces
 
@@ -24,17 +24,18 @@ Published gem APIs, public service/CLI entrypoints, versioned HTTP contracts —
 
 ## Ruby 4 baseline
 
-- Read `.tool-versions` / `AGENTS.md`; default **Ruby 4.0+, no 3.x compat shims or dual-path APIs**.
-- Apply the checklist in [`reference.md`](reference.md#ruby-4-baseline-harvest) (self-contained).
-- RuboCop present → `AllCops.TargetRubyVersion: 4.0`, `Style/ItBlockParameter` where enabled.
+Read `.tool-versions` / `AGENTS.md`; default **Ruby 4.0+, no 3.x shims or dual-path APIs**. RuboCop present → `TargetRubyVersion: 4.0`.
+
+- `# frozen_string_literal: true` on every `.rb`; `it` for single-arg blocks; leading `&&` / `||` on wrapped conditions; `case … in` over structural `if/elsif`.
+- Core `Set` (no `require 'set'`); `Data.define` over OpenStruct.
+- Dedupe before new files; no metric-driven micro-methods.
 
 ## Deltas
 
-- Behavior-preserving moves: characterization or boundary coverage before moving code.
-- Mirrored specs: classify **spec-only twin** vs **dual-ownership twin** before editing ([`reference.md`](reference.md)); dual ownership earns `design` + `deep-modules`.
+- Behavior-preserving moves: characterization or boundary coverage first.
 - Framework-lifecycle-shaped failure → load `ruby-on-rails-dev` in the same change.
-- Load [`reference.md`](reference.md) for RSpec hygiene, SimpleCov floors, spec-twin probe, CLI/config homes. Test-quality → `review.gil` `tests`.
-- Entrypoints: `bin/rspec`, `bundle exec rspec`, `bin/rubocop`, or project wrappers; lint changed files.
+- [`reference.md`](reference.md): spec twins, RSpec hygiene, SimpleCov floors, CLI/config homes. Test-quality → `review.gil` `tests`.
+- Entrypoints: `bin/rspec`, `bundle exec rspec`, `bin/rubocop`, or project wrappers.
 
 ## Compose routes
 

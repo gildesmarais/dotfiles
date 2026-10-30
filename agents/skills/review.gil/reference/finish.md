@@ -1,32 +1,26 @@
 # Finish
 
-Production-readiness baseline. Report only — no boy-scout edits. PR targets: PR patch + surrounding code at the recorded head SHA, never the local tree or `HEAD`.
+Production-readiness baseline. Report only — no boy-scout edits. PR targets: PR patch + surrounding code at the recorded head SHA.
 
 ## Output format (required)
 
-All lenses fold into this single report.
+All lenses fold into one report. Always emit **Findings** and **Readiness**; other sections only when non-empty or a Critical exists.
 
-**Findings** — Critical / Important / Nice-to-Have; each with impact + recommended action.
-
-**Non-Goals** — explicit exclusions and intentionally unaddressed areas.
-
-**Confidence & Uncertainty** — known facts vs inferred/unverified.
-
-**Compliance & Risk Posture** — what passes, what gets flagged, minimum viable remediation or compensating controls.
-
-**Executive Summary** — Production readiness: Yes / No / Conditional; top risks; immediate actions.
+- **Findings** — Critical / Important / Nice-to-Have; each with impact + recommended action.
+- **Readiness** — Production readiness: Yes / No / Conditional; top risks; immediate actions.
+- Optional: **Non-Goals**, **Confidence & Uncertainty** (known vs inferred/unverified), **Compliance & Risk Posture** (passes, flags, minimum remediation or compensating controls).
 
 ## Incident / fix-diff postures
 
-For `fix`, `Revert`, or production-incident diffs, check (fold into Findings; no extra lens):
+For `fix`, `Revert`, or production-incident diffs, fold into Findings (no extra lens):
 
-1. Fix wandered onto a second surface? → `$dev` → routed `{lang}-dev`.
-2. Neighboring layer absorbing a boundary failure? → `$dev` → `{lang}-dev` → `architecture`.
-3. Path assumes an invisible contract (shape, reload, cache identity, cutover)? → overlay, else `architecture`.
-4. Disclosure/access treated as mere presence? → overlay (+ `security` when sensitive), else `architecture` / `security`.
-5. Did validate and execute see the same truth? Is each guard owned at one lifecycle point? Does the published contract accept only what runtime accepts?
-6. Dual public API or silent old-shape hydrate without user-required compat? → [`legacy.md`](legacy.md).
-7. Uniqueness/readiness race across a suspension/startup gate? Durable bag treated as live domain object without rehydrate?
-8. Parse/unwrap or generated-client types escaping the transport edge? Wire enum renamed in app code instead of normalized once?
-9. Checker silenced with `as` / `!` / bare suppression? → `$dev` → `typescript-dev`.
-10. Repeated harden/review-follow-up commits hinting a missing principle?
+1. Did the fix wander onto a second surface, or does a neighboring layer absorb a boundary failure? → `$dev` → `{lang}-dev` → `architecture`.
+2. Does a path assume an invisible contract (shape, reload, cache identity, cutover), or treat disclosure/access as mere presence? → overlay, `security`, else `architecture`.
+3. Do validate and execute see the same truth; is each guard owned at one lifecycle point; does the published contract accept only what runtime accepts?
+4. Dual public API or silent old-shape hydrate? → [`legacy.md`](legacy.md).
+5. Races across a startup/suspension gate; parse/unwrap or generated-client types escaping the transport edge; checker silenced instead of fixed; durable bags used as live domain objects without rehydrate; wire enum renamed in app code instead of normalized once → `{lang}-dev`.
+6. Repeated harden/follow-up commits hinting at a missing principle?
+
+## Surfaces
+
+Independent review passes folded into this report; not lenses or executions; `quality` skips them. Code diffs only (skip docs-only and trivial diffs and say so). Use a host review subagent if one exists (security review only when the `security` lens is selected), else a second inline pass. Give it the repo path, target (`branch changes` or `uncommitted changes`), a base branch only when not the repo default, and user instructions; it computes the diff. Failure: retry once (per-file change description if the diff could not be computed), then name the blocker and continue inline. Never fix, publish, or launch a second review from their output.

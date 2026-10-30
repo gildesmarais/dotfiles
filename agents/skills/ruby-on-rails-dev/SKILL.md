@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 # Ruby on Rails Dev
 
-**Stop:** read `$dev` Shared prep before any delta. Loaded with `ruby-dev`; design or private-seam cases → `$dev` → `architecture`.
+**Stop:** apply `$dev` Shared prep first; skip if already read. Loaded with `ruby-dev`; design or private-seam cases → `$dev` → `architecture`.
 
 Scope: controllers, routes, models, services, policies, serializers, workers/mailers/jobs, migrations, framework config loaders, cache-key composition, encryption cutovers. Require the `security` lens on Assure when authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, or privileged ops are in scope.
 
@@ -27,7 +27,7 @@ Scope: controllers, routes, models, services, policies, serializers, workers/mai
 
 ## API docs (`rswag`)
 
-One `response` per status code — rswag keys by status, so a second same-code `response` overwrites. Put every variant inside that one block: uniquely named examples (duplicate names overwrite) each with nested context, `let`s, and `run_test!`. Declare the schema once; widen it (`additionalProperties` or `oneOf`) so every example validates. A second same-code `response` only for `document: false`. Regenerate OpenAPI from request specs; never hand-edit. Document format/defaults/example payloads for enums at schema level.
+rswag keys `response` by status, so a second same-code `response` overwrites (allowed only with `document: false`). Put every variant in that one block: uniquely named examples (duplicate names overwrite), each with nested context, `let`s, and `run_test!`. Declare the schema once; widen it (`additionalProperties` or `oneOf`) so every example validates. Regenerate OpenAPI from request specs; never hand-edit. Enums: document format/defaults/examples at schema level.
 
 ## Handoff deltas
 

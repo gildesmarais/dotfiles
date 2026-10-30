@@ -1,6 +1,6 @@
 # Scrape incident playbook
 
-Signals: Botasaurus, scrape-api, `challenge_block`, `timeout/work`, fail-closed scrape UX, SoundCloud-shaped hostile hosts. Never re-grill these locks unless new evidence contradicts them.
+Signals: see `SKILL.md` playbook line; plus SoundCloud-shaped hostile hosts. Re-grill these locks only when new evidence contradicts them.
 
 ## Locks
 
@@ -17,7 +17,7 @@ Signals: Botasaurus, scrape-api, `challenge_block`, `timeout/work`, fail-closed 
 - **Shot 1** (`triage` → PO and/or `$dev` `plan`): Sentry → local reproduce → ledger → admit/plan.
 - **Shot 2** (`$dev` `implement`, after approval): Phase A scrape-api fail-faster → Phase B web copy/chrome → Phase C journey matrix → `review.gil` **quality** per PR.
 
-Triage names Shot 2 in ledger **Next** / Residuals; never executes implement or Assure.
+Triage names Shot 2 in ledger **Next** / Residuals; never executes it.
 
 ## Default class
 

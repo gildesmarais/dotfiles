@@ -567,23 +567,6 @@ class SkillUnitTest < Minitest::Test
     refute(errors.any? { |e| e.include?("duplicate line") })
   end
 
-  def test_linter_rejects_fat_learning_log
-    write_budgets(
-      "demo/SKILL.md" => 200,
-      "demo/reference/learning-log.md" => 80,
-      learning_log_max_lines: 5
-    )
-    write_router_skill("demo", links: ["[log](reference/learning-log.md)"])
-    write_store_file(
-      "demo/reference/learning-log.md",
-      "#{(1..8).map { |i| "candidate #{i}" }.join("\n")}\n"
-    )
-
-    errors = Skill::Linter.new(paths: @paths).run
-
-    assert(errors.any? { |e| e.include?("learning-log cap") })
-  end
-
   def test_lint_skills_notes_ok
     write_budgets("demo/SKILL.md" => 200)
     write_router_skill("demo")
@@ -627,7 +610,6 @@ class SkillUnitTest < Minitest::Test
     words = {}
     opts = {
       "description_max_words" => 80,
-      "learning_log_max_lines" => 20,
       "line_cap" => 100,
       "pinned_headers" => {},
       "duplicate_owners" => []
@@ -636,8 +618,6 @@ class SkillUnitTest < Minitest::Test
       case key
       when :description_max_words, "description_max_words"
         opts["description_max_words"] = value
-      when :learning_log_max_lines, "learning_log_max_lines"
-        opts["learning_log_max_lines"] = value
       when :line_cap, "line_cap"
         opts["line_cap"] = value
       when :pinned_headers, "pinned_headers"

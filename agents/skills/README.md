@@ -14,8 +14,8 @@ Requires Node.js and GitHub access. Verify: `npx skills list -g`. Browse: `--lis
 
 | Domain       | Job                     | Skill(s)                                                                                                                                                                                                                    | Primary branches                                                                                                                              |
 | ------------ | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Intent**   | Fuzzy need → work       | [`triage`](triage/), [`jira-ticket`](jira-ticket/), [`pr-sweep`](pr-sweep/)                                                                                                                                                  | `triage` `intake` (+ playbooks); `pr-sweep` `report`                                                                                          |
-| **Product**  | Admit/defer scope       | [`product-owner`](product-owner/)                                                                                                                                                                                           | `gate` (default); `story-slice`; `rebaseline`; `groom`; stubs: `prioritize`, `experiment`                                                     |
+| **Intent**   | Fuzzy need → work       | [`triage`](triage/), [`jira-ticket`](jira-ticket/), [`pr-sweep`](pr-sweep/), [`ops-chore`](ops-chore/) | `triage` `intake` (+ playbooks); `pr-sweep` `report`; `ops-chore` presets `quick` \| `post-deploy` \| `full` |
+| **Product**  | Admit/defer scope       | [`product-owner`](product-owner/) | `gate` (default); `story-slice`; `rebaseline`; `groom` |
 | **Solution** | How the system works    | [`architecture`](architecture/); [`docs`](docs/) `architecture` (verify-only) · `evidence`; `dev` `plan`                                                                                                                    | `philosophy` \| `deep-modules` \| `refactor-types` \| `refactor-boundaries` \| `performance` \| `design-patterns`; survey: `structure-survey` |
 | **Build**    | Change the codebase     | [`dev`](dev/); adapters [`ruby-dev`](ruby-dev/), [`rust-dev`](rust-dev/), [`swift-dev`](swift-dev/), [`typescript-dev`](typescript-dev/); overlays [`ruby-on-rails-dev`](ruby-on-rails-dev/), [`swiftui-dev`](swiftui-dev/) | `plan` \| `implement`; classify: surgical \| design \| review-hand-off                                                                        |
 | **Assure**   | Safe to merge?          | [`review.gil`](review.gil/)                                                                                                                                                                                                 | `findings`, `publish`, `quality` (lenses: tests, perf, security, legacy)                                                                      |
@@ -48,24 +48,19 @@ More: [skills.sh](https://skills.sh/), [Swift-Agent-Skills](https://github.com/t
 
 ## Compose / handoffs
 
-Build path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`. `$dev` is the only Build entry. `README.md` is not installed by `rcup` — runtime contracts live in skills and [`CONTEXT.md`](CONTEXT.md).
+Build path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; `$dev` is the only Build entry. Each skill's `## Handoff` owns its edges; handoff DTOs (Delivery Ledger, Triage Ledger, Ops Ledger) are defined in [`CONTEXT.md`](CONTEXT.md) or the owning skill. `README.md` is not installed by `rcup`.
 
-1. **Product before non-trivial scope** — feature / `jira-ticket` → `product-owner` `gate` → `$dev plan`. Multi-slice / UX-mandated AC → `story-slice` → `$dev plan`. Skip gate for bug fix / refactor / infra. Incident without Jira → `triage` first.
-2. **Craft ≠ product** — `architecture` / `dev` / `*-dev` / `review.gil` never answer "should we build X?".
-3. **Build entry is `$dev`** — classify / route there; axioms on every `implement`; `{lang}-dev` from touched-file evidence.
-4. **Plans → `$dev` `plan`** — each todo names files, one gate, Conventional Commit message; execute via [`dev/reference/phase-commits.md`](dev/reference/phase-commits.md).
-5. **Assure → Ship** — `findings` never posts; `publish` in `review.gil`; verified ledger → `pull-request` `comment`. Delivery Ledger: `dev/SKILL.md` Handoff.
-6. **Explain → docs** — `communication` → `docs` `editor`; never reverse.
-7. **Overlays via `$dev`** — `ruby-on-rails-dev` with `ruby-dev`; `swiftui-dev` with `swift-dev`.
-8. **Decide** — `grilling` stress-tests; scope doctrine with `product-owner`.
-9. **Sweep never fixes** — `pr-sweep` rows → `pull-request` / `dependabot` / `review.gil`.
-10. **Unblock chain** — `pull-request`: conflicts → resolve → fix-ci; never approve/merge.
-11. **Harvest loop** — `review.gil` / `pull-request` → `harvest` → rules or `.agents/debt-ledger.md` → `product-owner` Health Capacity Budget.
+- **Product before scope** — features and Jira tickets pass `product-owner` `gate` before `$dev plan`; bug fix, refactor, infra skip it. Incident without Jira → `triage` first. Craft skills never answer "should we build X?".
+- **Plans → `$dev plan`** — each todo names files, one gate, a Conventional Commit message; executed via [`dev/reference/plan.md`](dev/reference/plan.md).
+- **Assure → Ship** — `findings` never posts; `publish` stays in `review.gil`; a verified ledger goes to `pull-request` `comment`. `pr-sweep` never fixes.
+- **Explain → docs** — `communication` → `docs` `editor`; never reverse.
+- **Overlays via `$dev`** — `ruby-on-rails-dev` with `ruby-dev`; `swiftui-dev` with `swift-dev`.
+- **Harvest loop** — `review.gil` / `pull-request` → `harvest` → rules or `.agents/debt-ledger.md` → `product-owner` Health Capacity Budget.
 
 ## Authoring laws
 
-- **One router per domain**; branches are verb-paths with progressive load.
-- **Freeze the router** — harvest via staging → sparse-promote into `reference/<branch>.md`; edit `SKILL.md` only when the contract is wrong.
+- **One router per domain**; branches are verb-paths with progressive load. Route on clear signals; ask only when signals are absent or contradictory.
+- **Freeze the router** — harvest via sparse-promote into `reference/<branch>.md`; edit `SKILL.md` only when the contract is wrong.
 - **Thin `*-dev`** — craft in `architecture`; classify / validation / phase commits in `$dev`; overlays are deltas only.
 - **Proliferation guard** — new top-level skill only if it cannot be a branch of an existing router. Runtime route table stays in `dev/SKILL.md`.
 - **Zero backward compat** — delete superseded aliases, old execution names, and dual shims on cutover.

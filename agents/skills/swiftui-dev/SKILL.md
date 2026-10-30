@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # SwiftUI Dev
 
-**Stop:** read `$dev` Shared prep before any delta. Loaded with `swift-dev`; design or private-seam cases → `$dev` → `architecture`.
+**Stop:** apply `$dev` Shared prep first; skip if already read. Loaded with `swift-dev`; design or private-seam cases → `$dev` → `architecture`.
 
 Scope: views, navigation, layout, WidgetKit, AppKit bridges, Transferable, presentation/chrome. Optional packs by name when installed (never inline): `swiftui-pro`, `swiftui-design-principles`; testing depth → `swift-testing-pro` via `swift-dev`.
 
@@ -16,7 +16,7 @@ Scope: views, navigation, layout, WidgetKit, AppKit bridges, Transferable, prese
 - Stay in SwiftUI until AppKit/UIKit is earned by a concrete gap. Ask before adding third-party UI kits.
 - `NSViewRepresentable`/`UIViewRepresentable`: track focus via coordinator `lastFocusedField`; never spoof prior focus from native first-responder state.
 - Outbound data mirroring stays unidirectional: no `.onChange` on properties updated by outbound text flushes.
-- Model persistence through one non-reentrant trigger, not stacked parallel `.onChange` modifiers.
+- Persist via one non-reentrant trigger, not stacked parallel `.onChange` modifiers.
 
 ## Handoff deltas
 

@@ -1,14 +1,8 @@
 # GitHub API patterns (comment / resolve / reply)
 
-Prefer `scripts/gh-review-comments`; use these for fallback and mutations. End-to-end review publishing is owned by `review.gil` `publish` / `github-state.md`; this file covers posting verified findings, resolve, and reply.
+Prefer `scripts/gh-review-comments`; use these for fallback and mutations. End-to-end review publishing is owned by `review.gil` `publish` / `github-state.md`.
 
 Policy: post/submit → one review with `event: COMMENT`. Draft/pending → omit `event`. Never `APPROVE` / `REQUEST_CHANGES`.
-
-## Identify PR
-
-```bash
-gh pr view --json number,url,headRefName,baseRefName,headRefOid,title
-```
 
 ## Fetch threads
 
@@ -46,4 +40,4 @@ gh api graphql -f query='mutation($threadId:ID!){ resolveReviewThread(input:{thr
 ## Verify
 
 - `gh pr view --comments` often shows only the review header. Inline comments: `gh api repos/<owner>/<repo>/pulls/<pr>/reviews/<review_id>/comments`. Replies: returned `url` or thread query. Resolution: re-run the helper with `--filter unresolved`.
-- Never report success without the returned review/comment ID, URL, or refreshed thread state. On sandbox network failure, retry escalated, then verify.
+- Report success only with a returned review/comment ID, URL, or refreshed thread state.

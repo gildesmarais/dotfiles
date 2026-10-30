@@ -4,6 +4,7 @@ description: >-
   Distill and draft written communication. Use to summarize raw one-on-one
   notes, refine an internal Slack message or announcement, distill a comparable
   project status update, or draft a customer, partner, or public-facing message.
+disable-model-invocation: true
 ---
 
 # Communication
@@ -27,7 +28,7 @@ Load exactly one:
 - **`project-update`** → [`reference/project-update.md`](reference/project-update.md)
 - **`external-message`** → [`reference/external-message.md`](reference/external-message.md)
 
-Every branch returns only the final artifact; add improvement notes only when asked.
+Every branch returns only the final artifact.
 
 ## Handoff
 

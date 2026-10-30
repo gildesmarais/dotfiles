@@ -1,6 +1,6 @@
 # design-patterns
 
-GoF patterns are named forces, not recipes. Earn a pattern from forces, then map it to craft.
+GoF patterns are named forces, not recipes: earn a pattern from forces, then map it to craft.
 
 ## Earn this branch
 
@@ -17,9 +17,9 @@ User names a GoF pattern / asks which fits, or forces match: creation flexibilit
 
 ## Guardrails
 
-- Forces first, name second — no pattern-shopping.
-- New pattern layer must pass the deletion test; forwarding-only ceremony is a shallow module.
-- Idiomatic realizations belong in `{lang}-dev` / overlays / project `AGENTS.md`.
+- Forces first, name second.
+- A pattern layer must pass the deletion test; forwarding-only ceremony is a shallow module.
+- Idiomatic realizations live in `{lang}-dev` / overlays / project `AGENTS.md`.
 
 ## Done when
 

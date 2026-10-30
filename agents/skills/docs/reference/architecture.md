@@ -1,6 +1,6 @@
 # Docs — `architecture`
 
-ADRs, design notes, diagrams, system overviews, boundary and integration-flow docs. Goal: a reader can see boundaries, reason about data/control flow, identify constraints, and change the system without breaking critical behavior.
+Goal: a reader can see boundaries, reason about data/control flow, identify constraints, and change the system without breaking critical behavior.
 
 ## Evidence ladder
 
@@ -15,12 +15,11 @@ Live runtime impractical → continue down the ladder and report the tier reache
 
 ## Procedure
 
-1. Name the decisions the doc supports and the behavior a reader must not break.
-2. Trace key flows from real entrypoints through boundaries and enforced interfaces.
-3. Record constraints, failure modes, propagation, and fallback/recovery.
-4. Cut: history unless it explains a current constraint, removed components, speculative architecture, diagrams that don't match behavior. Never remove constraints that affect correctness.
-5. Rewrite: **System overview** · **Components and boundaries** · **Data and control flow** · **Constraints and invariants** · **Failure modes**. Diagrams only when they match reality.
-6. Validate: flows match execution paths; constraints enforced; interfaces exist and match implementation.
+1. Trace key flows from real entrypoints through boundaries and enforced interfaces.
+2. Record constraints, failure modes, propagation, and fallback/recovery.
+3. Cut: history unless it explains a current constraint, removed components, speculative architecture, diagrams that don't match behavior. Never remove constraints that affect correctness.
+4. Rewrite: **System overview** · **Components and boundaries** · **Data and control flow** · **Constraints and invariants** · **Failure modes**. Diagrams only when they match reality.
+5. Validate: flows match execution paths; constraints enforced; interfaces match implementation.
 
 ## Stopping rule
 

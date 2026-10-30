@@ -9,7 +9,6 @@ module Skill
   class Linter
     BUDGETS_FILE = ".budgets.yml"
     DEFAULT_DESCRIPTION_MAX_WORDS = 80
-    DEFAULT_LEARNING_LOG_MAX_LINES = 20
     DEFAULT_LINE_CAP = 100
     DUPLICATE_MIN_WORDS = 12
     ROUTER_HEADERS = [
@@ -42,7 +41,6 @@ module Skill
       check_links_resolve
       check_link_graph
       check_duplicate_lines
-      check_learning_logs
 
       @errors
     end
@@ -228,16 +226,6 @@ module Skill
         next if owners.key?(norm)
 
         error("duplicate line in #{files.join(', ')}: #{truncate(norm)}")
-      end
-    end
-
-    def check_learning_logs
-      max = integer_budget("learning_log_max_lines", DEFAULT_LEARNING_LOG_MAX_LINES)
-      @files.select { |rel| File.basename(rel) == "learning-log.md" }.each do |rel|
-        lines = @contents[rel].lines.size
-        next if lines <= max
-
-        error("#{rel}: #{lines} lines exceeds learning-log cap of #{max}")
       end
     end
 

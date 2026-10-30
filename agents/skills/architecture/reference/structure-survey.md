@@ -1,11 +1,11 @@
 # Structure survey
 
-Peer-directory survey for canonical shape, snowflakes, and ownership-move leverage. Discovery only — fixes go to craft branches. Load/skip rules: `SKILL.md` Pick branch.
+Peer-directory survey for canonical shape, snowflakes, and ownership-move leverage. Discovery only; fixes go to craft branches.
 
 ## Procedure
 
 1. Repo law (`AGENTS.md`, conventions) overrides inferred majority; note conflicts.
-2. Compare sibling shapes level by level (top-level packages → peer feature/domain folders → shared layers): layer names, nesting depth, file-role suffixes.
+2. Compare sibling shapes level by level (packages → peer feature/domain folders → shared layers): layer names, nesting depth, file-role suffixes.
 3. State the canonical shape (peer majority within repo law).
 4. Flag snowflakes: same job in different homes, incomplete twin stacks, placement drift, deletion-test micro-modules, dump/passthrough bags in shared trees.
 5. Flag layer inversions: shared/lower layers importing domain layers; dual homes for one type/fact.
@@ -31,8 +31,4 @@ Ownership / depth / seams / deletion test → `deep-modules`; plus `refactor-typ
 
 ## Done when
 
-- Canonical shape stated (law + majority, conflicts noted)
-- Anomalies ranked with evidence labels
-- Craft-branch handoff named for each Important+ item (or deferred with reason)
-- Residual dual ownership called out
-- No code required in this mode
+Canonical shape stated (law + majority, conflicts noted); anomalies ranked with evidence labels; craft branch named per Important+ item (or deferred with reason); residual dual ownership called out. No code in this mode.

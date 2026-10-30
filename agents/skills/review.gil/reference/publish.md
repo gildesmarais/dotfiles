@@ -1,6 +1,6 @@
 # Publish
 
-End-to-end PR review: retrieve → fresh multi-lens ledger → reconcile drafts/threads → recheck SHA → submit one friendly `COMMENT` review → thread replies → verify URLs. Load [`conventional-comments.md`](conventional-comments.md) when drafting. Mutation steps → [`github-state.md`](github-state.md).
+End-to-end PR review: retrieve → fresh multi-lens ledger → reconcile drafts/threads → recheck SHA → submit one friendly `COMMENT` review → thread replies → verify URLs. Drafting → [`conventional-comments.md`](conventional-comments.md). Mutations → [`github-state.md`](github-state.md).
 
 ## Hard rules
 
@@ -10,7 +10,7 @@ End-to-end PR review: retrieve → fresh multi-lens ledger → reconcile drafts/
 
 ## 1. Retrieve
 
-Use the `pr-context.sh --publish` snapshot from Shared prep (or run `./scripts/pr-context.sh --publish <pr>` once). Read patch + code at the PR head; record the verified head SHA. Apply target-repo `AGENTS.md`.
+Use the `pr-context.sh --publish` snapshot from Shared prep. Read patch + code at the PR head; record the verified head SHA.
 
 ## 2. Ledger
 
@@ -29,7 +29,7 @@ Regex-validate every inline comment and labeled reply before posting.
 
 ## 3. Reconcile → stale guard → publish → verify
 
-Fail-closed procedure: [`github-state.md`](github-state.md) — keep verified drafts; re-fetch head SHA before first mutation (stale → abort/re-anchor); submit `COMMENT` only; draft-only → stop at PENDING; verify URLs; state no code changed.
+Fail-closed procedure in `github-state.md`: keep verified drafts; re-fetch head SHA before the first mutation (stale → abort/re-anchor); draft-only → stop at PENDING; verify URLs; state no code changed.
 
 ## Review body
 

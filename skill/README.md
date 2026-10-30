@@ -51,7 +51,7 @@ Run the CLI entrypoint:
 
 Expected results:
 
-- `lint` checks store Markdown against `agents/skills/.budgets.yml` (word ratchet, description budget, 100-line hard cap), router/pinned headers, link resolve, link graph (acyclic, ≤2 hops from each `SKILL.md`, no router-to-router links), duplicate lines, and thin `learning-log.md`; exits `0` with `lint ok`, else `1` with one finding per line
+- `lint` checks store Markdown against `agents/skills/.budgets.yml` (word ratchet, description budget, 100-line hard cap), router/pinned headers, link resolve, link graph (acyclic, ≤2 hops from each `SKILL.md`, no router-to-router links), and duplicate lines; exits `0` with `lint ok`, else `1` with one finding per line
 - `doctor` prints aligned columns (padded name, then status: `ok`, `drift`, `home-only`, `broken`, `orphan`); exits `0` when no `drift` or `orphan`, else `1`
 - An **orphan** is a symlink under `~/.agents/skills/<name>/` whose target is inside the store and no longer exists; links pointing elsewhere are never orphans
 - `prune` deletes orphan links (and emptied directories), prints each `name/relative` path, and notes the count; a second run notes `no orphans to prune`

@@ -1,6 +1,6 @@
 # Open
 
-Finished local change → commit → push → `gh pr create --web`. Autonomous; ask only when a required input can't be derived safely (missing ticket is not a blocker).
+Finished local change → commit → push → `gh pr create`. Autonomous; ask only when a required input can't be derived safely (a missing ticket is not a blocker).
 
 ## Ticket
 
@@ -8,30 +8,30 @@ First match of `/[A-Z][A-Z0-9]+-\d+/` in `git branch --show-current`. Found → 
 
 ## Commit scope
 
-- Only session-touched files; `git add` explicit paths after `git status --short`. Evidence order: files the agent changed this session → files tied to the stated task and modified this session → minimal dirty set completing the work. Ambiguous → list candidates, ask.
-- Never clean, revert, or stash unrelated changes. Confirm staged diff = intended files before committing.
-- Note Assure / validation evidence when available (soft precondition; not a block when the user explicitly opens).
+- Session-touched files only, as explicit `git add` paths after `git status --short`. Evidence order: files changed this session → files tied to the stated task → minimal dirty set completing the work. Ambiguous → list candidates, ask.
+- Never clean, revert, or stash unrelated changes; staged diff must equal the intended files.
+- Cite Assure / validation evidence when available (soft precondition, never a block on an explicit open).
 
 ## Commit message
 
-Prefer phase commits already authored during Build. Only if the tree is still dirty, commit session-touched files once with Conventional Commits ([`../../dev/reference/phase-commits.md`](../../dev/reference/phase-commits.md)), ticket right after scope:
+Prefer phase commits from Build. If the tree is still dirty, commit session-touched files once, Conventional Commits ([`../../dev/reference/plan.md`](../../dev/reference/plan.md)), ticket right after scope:
 
 ```text
 type(scope): [ABC-123] summary
 type(scope): summary
 ```
 
-Also satisfy repo-local commit conventions/body sections. `Resolves: DEBT-<NUMBER>` closure: [`../../harvest/reference/debt.md`](../../harvest/reference/debt.md).
+Repo-local commit conventions also apply. `Resolves: DEBT-<NUMBER>`: [`../../harvest/reference/debt.md`](../../harvest/reference/debt.md).
 
 ## PR
 
 - Title/body per [`pr-narrative.md`](pr-narrative.md), rebuilt from full `base...HEAD`; list only validation actually run.
 - Base branch: `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` → `git symbolic-ref refs/remotes/origin/HEAD` → repo-declared base; ask only if underivable.
-- Push with upstream; confirm push succeeded; `gh pr create --web --base <default> --title … --body …`. `gh` unavailable/unauthenticated → give the URL/manual step.
+- Push with upstream, confirm, then `gh pr create --base <default> --title … --body …`. `gh` unavailable/unauthenticated → give the URL/manual step.
 
 ## Jira sync
 
-Ticket derived (or `$jira-ticket` flow) and Atlassian MCP available → run `jira-ticket` **Post-PR Jira sync** without re-asking. Unavailable / no transition → report and continue.
+Ticket derived (or `jira-ticket` flow) and a Jira tool available → run `jira-ticket` **Post-PR sync** without re-asking. Unavailable / no transition → report and continue.
 
 ## Output
 

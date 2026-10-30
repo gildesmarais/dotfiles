@@ -4,11 +4,12 @@ description: >-
   Operate the user's OmniFocus database through the omnifocus-operator MCP. Use
   when the user mentions OmniFocus, GTD, inbox processing, tags, projects,
   folders, defer dates, or perspectives.
+disable-model-invocation: true
 ---
 
 # OmniFocus
 
-Namespace `user-omnifocus-operator`. Discover schemas before calling. Dates are local. Tag names are case-insensitive; collisions error — pass IDs.
+Namespace `user-omnifocus-operator`; discover schemas before calling. Dates are local. Tag names are case-insensitive; collisions error — pass IDs.
 
 ## Load
 
@@ -19,8 +20,8 @@ Namespace `user-omnifocus-operator`. Discover schemas before calling. Dates are 
 
 ## Laws
 
-1. **Read first.** `list_projects` and `list_tags` before any create or edit. Build the name, ID, and parent map from that response.
-2. **Patch.** `edit_tasks` changes tags and location only through `actions.tags.add`, `actions.tags.remove`, and `actions.move`. Omit means no change. `null` clears. A top-level field is a full replacement — use it only for that field (`deferDate`, `name`).
+1. **Read first.** `list_projects` and `list_tags` before any create or edit; build the name/ID/parent map from them.
+2. **Patch.** `edit_tasks` changes tags and location only via `actions.tags.add`, `actions.tags.remove`, `actions.move`. Omit = no change; `null` clears; a top-level field fully replaces that field (`deferDate`, `name`).
 3. **No silent destruction.** Never drop or delete a task without an explicit single-purpose yes in this chat. Drop a tag only when `remainingTasks` is 0. Delete a tag only when it is already dropped and still empty.
 4. **Defer, don't due.** Overload and "not this week" set `deferDate`. `dueDate` is a real external deadline only.
 5. **Unmapped inbox stays inbox.** Below 80% project confidence, leave the task in the Inbox. Add `Needs Clarification` only if that tag already exists; do not create it.
@@ -29,6 +30,6 @@ Namespace `user-omnifocus-operator`. Discover schemas before calling. Dates are 
 
 MCP writes tasks only (`add_tasks`, `edit_tasks`). Tags, folders, and perspectives are not writable there. Folders have no On Hold status — put On Hold on the project.
 
-`list_*` defaults to 50 rows. Pass `limit: null` when the count matters. Do not call `get_all` unless a filtered list cannot answer.
+`list_*` defaults to 50 rows; pass `limit: null` when the count matters. Avoid `get_all` unless a filtered list cannot answer.
 
-`edit_tasks` times out → retry the same patch once, then apply the same fields via the reference. Do not widen the patch.
+`edit_tasks` times out → retry the same patch once, then apply the same fields via the reference, no wider.
