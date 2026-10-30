@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 # Harvest
 
-Session friction → durable rules or debt entries, never raw noise. Vocabulary (Preventive Mantra, Debt Ledger): [`../CONTEXT.md`](../CONTEXT.md).
+Session friction → durable rules or debt entries, never raw noise. A **Preventive Mantra** is one imperative sentence ("When X, always Y to prevent Z" / "Avoid X; use Y instead because Z"); the **Debt Ledger** (`.agents/debt-ledger.md`) is the architectural-friction backlog, admitted by `product-owner` and executed by `$dev`.
 
 ## Pick branch
 
@@ -24,7 +24,7 @@ Skip: zero corrections, no new failure class, no debt; trivial typo/rename/bump;
 
 ## Shared prep
 
-Scope destinations and procedure: [`reference/distill.md`](reference/distill.md) / [`reference/debt.md`](reference/debt.md). Never paste raw logs. Fresh-read target before edit. Distillation test: [`../CONTEXT.md`](../CONTEXT.md) Preventive Mantra.
+Scope destinations and procedure: [`reference/distill.md`](reference/distill.md) / [`reference/debt.md`](reference/debt.md). Never paste raw logs. Fresh-read target before edit. Distillation test: the Preventive Mantra form.
 
 ## Branch reference
 

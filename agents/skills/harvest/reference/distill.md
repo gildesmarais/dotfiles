@@ -2,7 +2,7 @@
 
 ## Mantra standard
 
-Format: [`../../CONTEXT.md`](../../CONTEXT.md) Preventive Mantra — 1–2 sentences. Reject incident writeups, stack traces, debug stories, vague platitudes.
+Format: Preventive Mantra (`SKILL.md`) — 1–2 sentences. Reject incident writeups, stack traces, debug stories, vague platitudes.
 
 Skill edits are clean cutovers: delete superseded aliases, old execution names, and compat wrappers immediately — never keep backward compat in skills.
 

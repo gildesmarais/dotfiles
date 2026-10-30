@@ -1,6 +1,6 @@
 # Debt
 
-Debt that can't be fixed in the current scope goes to `<project>/.agents/debt-ledger.md` (create `.agents/` if missing). Admission: `product-owner` under Health Capacity (`CONTEXT.md`).
+Debt that can't be fixed in the current scope goes to `<project>/.agents/debt-ledger.md` (create `.agents/` if missing). Admission: `product-owner` under its Health Capacity Budget.
 
 ## Entry schema
 

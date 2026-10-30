@@ -13,7 +13,7 @@ When doctrine conflicts with a proposal: cut, defer, or redesign — never debat
 - **Concept budget:** >1 new concept needs explicit justification.
 - **Cost-to-value:** new surface must justify customer value against golden-path friction.
 - **Pragmatic subservience:** capabilities stay subservient to the primary surface.
-- **Health Capacity Budget:** [`../../CONTEXT.md`](../../CONTEXT.md) — read `<project>/.agents/debt-ledger.md` before admitting scope.
+- **Health Capacity Budget:** ~20% capacity (or 1 debt tranche per 3–4 feature tranches) for high-friction items; read `<project>/.agents/debt-ledger.md` before admitting scope.
 
 ## Workflow
 
@@ -50,6 +50,6 @@ Run in order for gate and overlay.
 **Doctrine delta**: none | <anchor/registry/direction edit in this tranche>
 ```
 
-Vocabulary meanings: [`../../CONTEXT.md`](../../CONTEXT.md). Confidence High requires cited constraints; unknowns cap at Medium.
+Vocabulary: gate = **Build Now** | **Build Later** | **Research Further** | **Reject**, plus Confidence and Forced Challenge; golden path, click budget, mental model, persona and doctrine ledger are sections of `<project>/.agents/product.md` (cite only; absent → `unknown`). Confidence High requires cited constraints; unknowns cap at Medium.
 
 **Invalid output:** any admit labeled a founder override with Doctrine delta `none`. A founder override is allowed only when the same tranche edits doctrine so the decision is non-override next time.

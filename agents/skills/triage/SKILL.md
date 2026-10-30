@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 # Triage
 
-Incident/ops signals → evidence → Triage Ledger → exactly one next skill. Does not implement, open PRs, or own product admission ([`../CONTEXT.md`](../CONTEXT.md)).
+Incident/ops signals → evidence → Triage Ledger → exactly one next skill. Does not implement, open PRs, or own product admission. The **Triage Ledger** is the incident/ops evidence DTO.
 
 ## Pick branch
 

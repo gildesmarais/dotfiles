@@ -22,7 +22,7 @@ description: >-
 | Fix failing CI on a PR / Actions run                         | **fix-ci**    |
 | Resolve merge conflicts / rebase PR onto base                | **conflicts** |
 
-**Unblock chain** (not a branch; order: [`../CONTEXT.md`](../CONTEXT.md)): "unblock", "make merge-ready", "get this PR green", "autopilot this PR" → refresh live PR state each pass; **conflicts** → **resolve** → **fix-ci**; stop for `needs-user`.
+**Unblock chain** (not a branch; preserve intents, push with lease when rebased): "unblock", "make merge-ready", "get this PR green", "autopilot this PR" → refresh live PR state each pass; **conflicts** → **resolve** → **fix-ci**; stop for `needs-user`.
 
 Ambiguous routing:
 

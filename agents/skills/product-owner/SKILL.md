@@ -8,7 +8,7 @@ description: >-
 
 # Product Owner
 
-Vocabulary: [`../CONTEXT.md`](../CONTEXT.md). Doctrine overrides enthusiasm — see [`reference/gate.md`](reference/gate.md).
+Vocabulary: [`reference/gate.md`](reference/gate.md). Doctrine overrides enthusiasm — see [`reference/gate.md`](reference/gate.md).
 
 ## Pick branch
 
@@ -30,7 +30,7 @@ Skip: routine surgical bug fix / single-slice cleanup with no user-facing concep
 
 ## Shared prep
 
-- Cite personas, golden paths, click budgets, mental models, doctrine ledger only from `<project>/.agents/product.md` ([`../CONTEXT.md`](../CONTEXT.md)). Absent → `unknown`. Never invent. Silent → Confidence ≤ Medium; prefer Research Further or one clarifying question.
+- Cite personas, golden paths, click budgets, mental models, doctrine ledger only from `<project>/.agents/product.md`. Absent → `unknown`. Never invent. Silent → Confidence ≤ Medium; prefer Research Further or one clarifying question.
 - No personas section → don't invent a "general user". No step budget → qualitative delta only.
 
 ## Branch reference

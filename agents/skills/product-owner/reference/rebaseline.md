@@ -1,6 +1,6 @@
 # Doctrine re-baseline (`rebaseline`)
 
-Re-derive doctrine from what shipped and was kept (doctrine written before exploration ends is a fossil). Never evaluate a feature here; never invent a ledger, thresholds, golden paths, personas, or registry rows; never hardcode a product name. Product state is `<project>/.agents/product.md` ([`../../CONTEXT.md`](../../CONTEXT.md)).
+Re-derive doctrine from what shipped and was kept (doctrine written before exploration ends is a fossil). Never evaluate a feature here; never invent a ledger, thresholds, golden paths, personas, or registry rows; never hardcode a product name. Product state is `<project>/.agents/product.md`.
 
 Not this branch: "should we build X?" on a trusted basis → `gate`; slicing → `story-slice`.
 

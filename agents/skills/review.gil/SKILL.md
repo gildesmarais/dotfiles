@@ -9,7 +9,7 @@ description: >-
 
 # Review
 
-Findings-first review of a working tree, branch, commit range, or PR: the `finish` baseline plus only the lenses the diff warrants. Never ask the user to choose a template. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md).
+Findings-first review of a working tree, branch, commit range, or PR: the `finish` baseline plus only the lenses the diff warrants. Never ask the user to choose a template. A **lens** (`tests` / `perf` / `security` / `legacy`) is a findings rubric on the same diff prep.
 
 ## Pick branch
 

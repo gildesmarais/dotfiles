@@ -4,12 +4,12 @@
 description_max_words: 45
 line_cap: 100
 words:
-  CONTEXT.md: 413
+  CONTEXT.md: 169
   architecture/SKILL.md: 472
   architecture/reference/axioms.md: 128
   architecture/reference/deep-modules.md: 404
   architecture/reference/design-patterns.md: 205
-  architecture/reference/glossary.md: 235
+  architecture/reference/glossary.md: 232
   architecture/reference/growth.md: 122
   architecture/reference/performance.md: 363
   architecture/reference/philosophy.md: 209
@@ -30,12 +30,12 @@ words:
   dev/reference/api-truth.md: 101
   dev/reference/plan.md: 352
   dev/reference/surgical-laws.md: 101
-  docs/SKILL.md: 308
+  docs/SKILL.md: 322
   docs/reference/architecture.md: 254
   docs/reference/editor.md: 239
   docs/reference/evidence.md: 277
-  harvest/SKILL.md: 202
-  harvest/reference/debt.md: 301
+  harvest/SKILL.md: 234
+  harvest/reference/debt.md: 302
   harvest/reference/distill.md: 289
   jira-ticket/SKILL.md: 558
   omnifocus/SKILL.md: 309
@@ -47,12 +47,12 @@ words:
   ops-chore/reference/presets.md: 231
   pr-sweep/SKILL.md: 218
   pr-sweep/reference/report.md: 166
-  product-owner/SKILL.md: 389
-  product-owner/reference/gate.md: 441
+  product-owner/SKILL.md: 388
+  product-owner/reference/gate.md: 486
   product-owner/reference/groom.md: 544
-  product-owner/reference/rebaseline.md: 353
+  product-owner/reference/rebaseline.md: 352
   product-owner/reference/story-slice.md: 154
-  pull-request/SKILL.md: 478
+  pull-request/SKILL.md: 483
   pull-request/reference/comment.md: 239
   pull-request/reference/conflicts.md: 187
   pull-request/reference/fix-ci.md: 202
@@ -65,7 +65,7 @@ words:
   pull-request/reference/slice.md: 417
   release/SKILL.md: 158
   release/reference/notes.md: 94
-  review.gil/SKILL.md: 484
+  review.gil/SKILL.md: 500
   review.gil/reference/conventional-comments.md: 167
   review.gil/reference/finish.md: 354
   review.gil/reference/github-state.md: 372
@@ -84,7 +84,7 @@ words:
   swift-dev/SKILL.md: 204
   swift-dev/reference.md: 315
   swiftui-dev/SKILL.md: 139
-  triage/SKILL.md: 268
+  triage/SKILL.md: 275
   triage/reference/intake.md: 266
   triage/reference/scrape-incident.md: 192
   typescript-dev/SKILL.md: 312

@@ -24,7 +24,7 @@ Rewrite docs to match what the repo actually does. Treat existing prose as unver
 ## Shared prep
 
 1. Identify the target doc and decisions it must support; `AGENTS.md` overrides defaults.
-2. Classify by doc-class ([`../CONTEXT.md`](../CONTEXT.md)); effort verbs live in the matched branch. `evidence` net-new packs skip classification.
+2. Classify by doc-class (`accurate` | `partial` | `misleading` | `obsolete`; `editor` starts at code/tests, `architecture` at live runtime); effort verbs live in the matched branch. `evidence` net-new packs skip classification.
 
 Every branch: ladders are branch-local; only verified behavior; no absolute filesystem paths; **Write forward** once in [`reference/editor.md`](reference/editor.md).
 
