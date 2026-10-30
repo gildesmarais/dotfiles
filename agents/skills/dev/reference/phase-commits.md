@@ -11,7 +11,7 @@ Load when committing (plan phase or surgical milestone), or when executing a `$d
 
 ## Plan todo loop
 
-Host-neutral (Cursor plan todos; Codex plan text). The plan file is exempt from clean-tree, bounds, and stash.
+Host-neutral (plan todos or plan text). The plan file is exempt from clean-tree, bounds, and stash.
 
 1. Next = first todo with no matching commit; worktree clean **except the plan file**.
 2. Hand prompt: plan path, phase id, files, gate; load `$dev` `implement`; skip `review.gil`; do not commit. Retry adds one error line.

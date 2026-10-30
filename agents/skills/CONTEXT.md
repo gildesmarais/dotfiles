@@ -3,12 +3,12 @@
 Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 
 **Branch** (skill-internal): a verb-path through a skill, selected from the prompt. Not a git branch.
-**AGENTS.md load**: Cursor already injects every `AGENTS.md` from the workspace root upward; nearest file wins; do not re-read or paste unless citing a line. Global identity is `~/.cursor/rules/000-rules.mdc`, installed by `rcup` from `cursor/rules/`.
+**AGENTS.md load**: hosts load repo instruction files (`AGENTS.md`, `CLAUDE.md`) from the workspace root upward; nearest wins; do not re-read or paste unless citing a line.
 
 ## Ship / Assure
 
 **Lens** (`tests` / `perf` / `security` / `legacy`): findings rubric on the same diff prep.
-**Surface**: Cursor subagent whose output folds into the one finish report.
+**Surface**: independent review pass (subagent or inline) whose output folds into the one finish report.
 **Legacy** (lens; always under `quality`): dead compat — dual public names, superseded hydrate, deprecated markers. Findings report it; `quality` deletes without shims.
 **Unblock chain**: conflicts → resolve → fix-ci; never approve/merge. Preserve intents; push (lease when rebased).
 

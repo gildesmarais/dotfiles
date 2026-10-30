@@ -5,7 +5,7 @@ description_max_words: 45
 learning_log_max_lines: 20
 line_cap: 100
 words:
-  CONTEXT.md: 354
+  CONTEXT.md: 350
   architecture/SKILL.md: 473
   architecture/reference/axioms.md: 128
   architecture/reference/deep-modules.md: 404
@@ -30,7 +30,7 @@ words:
   dependabot/reference/yml-keys.md: 84
   dev/SKILL.md: 785
   dev/reference/api-truth.md: 101
-  dev/reference/phase-commits.md: 223
+  dev/reference/phase-commits.md: 222
   dev/reference/surgical-laws.md: 101
   docs/SKILL.md: 308
   docs/reference/architecture.md: 254
@@ -42,6 +42,11 @@ words:
   jira-ticket/SKILL.md: 543
   omnifocus/SKILL.md: 307
   omnifocus/reference/applescript.md: 254
+  ops-chore/SKILL.md: 422
+  ops-chore/reference/hard-stops.md: 184
+  ops-chore/reference/ledger.md: 155
+  ops-chore/reference/playbook.md: 403
+  ops-chore/reference/presets.md: 231
   pr-sweep/SKILL.md: 216
   pr-sweep/reference/report.md: 166
   product-owner/SKILL.md: 434
@@ -72,9 +77,9 @@ words:
   review.gil/reference/perf.md: 138
   review.gil/reference/plan-checklists.md: 104
   review.gil/reference/publish.md: 346
-  review.gil/reference/quality.md: 463
+  review.gil/reference/quality.md: 462
   review.gil/reference/security.md: 283
-  review.gil/reference/surfaces.md: 314
+  review.gil/reference/surfaces.md: 146
   review.gil/reference/tests.md: 373
   ruby-dev/SKILL.md: 308
   ruby-dev/reference.md: 419

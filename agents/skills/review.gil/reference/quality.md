@@ -4,7 +4,7 @@ Merge-prep on the current branch (not feature delivery). Phase 0 supersedes `SKI
 
 ## Phase 0 — Bootstrap (read-only)
 
-- Read `AGENTS.md`, `CONTRIBUTING.md`, `.cursor/rules`, CI workflows.
+- Read `AGENTS.md`, `CONTRIBUTING.md`, CI workflows.
 - Gate recipe (first match wins): `Makefile` (`lint`/`lintfix`/`test`/`ready`/`check`/`ci`) → manifest scripts → CI job commands. Version-manager wrappers only when documented.
 - Test stack + whether coverage is configured; resolve `<srcRoot>`, `<testRoot>`, globs.
 - Base: `BASE="$(git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null || git merge-base HEAD origin/HEAD)"`.
