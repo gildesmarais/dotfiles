@@ -209,7 +209,6 @@ class SkillCliTest < Minitest::Test
       File.join(@skills_dir, ".budgets.yml"),
       YAML.dump(
         "description_max_words" => 80,
-        "learning_log_max_lines" => 20,
         "line_cap" => 100,
         "words" => words,
         "pinned_headers" => {},

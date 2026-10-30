@@ -2,7 +2,6 @@
 # Lower an entry in the same change when content shrinks; never raise without cause.
 
 description_max_words: 45
-learning_log_max_lines: 20
 line_cap: 100
 words:
   CONTEXT.md: 415
