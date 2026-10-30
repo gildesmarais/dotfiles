@@ -19,7 +19,7 @@ Skill edits are clean cutovers: delete superseded aliases, old execution names, 
 ## Procedure
 
 1. Draft the mantra from the signal.
-2. Global arch / review: stage candidates in that skill's `learning-log.md` → generalize (strip product nouns, paths, schemas, language APIs) → tag one primary branch/lens → net-zero sparse-promote into the matching `reference/*.md` Checklist or Anti-patterns only when judgment changes and nothing covers it → drop the rest and leave the log empty. Cap ~10 candidates per event.
+2. Global arch / review: generalize (strip product nouns, paths, schemas, language APIs) → tag one primary branch/lens → net-zero sparse-promote into the matching `reference/*.md` Checklist or Anti-patterns only when judgment changes and nothing covers it → drop the rest. Cap ~10 candidates per event.
 3. Other scopes: read the target fresh. Covered, near-clone, or too narrow → drop; else append to `## Checklist` or `## Anti-patterns`.
 4. Cap: ≤3 promoted mantras per session unless the user asks for more.
 5. Target at budget → promote only by replacing or deleting a covered or obsolete line in the same edit; run `skill lint`.

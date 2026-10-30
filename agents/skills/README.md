@@ -65,7 +65,7 @@ Build path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`. `$dev
 ## Authoring laws
 
 - **One router per domain**; branches are verb-paths with progressive load.
-- **Freeze the router** — harvest via staging → sparse-promote into `reference/<branch>.md`; edit `SKILL.md` only when the contract is wrong.
+- **Freeze the router** — harvest via sparse-promote into `reference/<branch>.md`; edit `SKILL.md` only when the contract is wrong.
 - **Thin `*-dev`** — craft in `architecture`; classify / validation / phase commits in `$dev`; overlays are deltas only.
 - **Proliferation guard** — new top-level skill only if it cannot be a branch of an existing router. Runtime route table stays in `dev/SKILL.md`.
 - **Zero backward compat** — delete superseded aliases, old execution names, and dual shims on cutover.

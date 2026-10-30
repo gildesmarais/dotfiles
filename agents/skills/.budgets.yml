@@ -11,8 +11,7 @@ words:
   architecture/reference/deep-modules.md: 404
   architecture/reference/design-patterns.md: 205
   architecture/reference/glossary.md: 235
-  architecture/reference/growth.md: 127
-  architecture/reference/learning-log.md: 22
+  architecture/reference/growth.md: 122
   architecture/reference/performance.md: 363
   architecture/reference/philosophy.md: 209
   architecture/reference/refactor-boundaries.md: 313
@@ -38,7 +37,7 @@ words:
   docs/reference/evidence.md: 277
   harvest/SKILL.md: 202
   harvest/reference/debt.md: 301
-  harvest/reference/distill.md: 301
+  harvest/reference/distill.md: 289
   jira-ticket/SKILL.md: 543
   omnifocus/SKILL.md: 307
   omnifocus/reference/applescript.md: 254
@@ -67,18 +66,16 @@ words:
   pull-request/reference/slice.md: 417
   release/SKILL.md: 156
   release/reference/notes.md: 94
-  review.gil/SKILL.md: 493
+  review.gil/SKILL.md: 484
   review.gil/reference/conventional-comments.md: 167
-  review.gil/reference/finish.md: 268
+  review.gil/reference/finish.md: 354
   review.gil/reference/github-state.md: 372
   review.gil/reference/growth.md: 93
-  review.gil/reference/learning-log.md: 20
   review.gil/reference/legacy.md: 351
   review.gil/reference/perf.md: 138
   review.gil/reference/publish.md: 346
   review.gil/reference/quality.md: 462
   review.gil/reference/security.md: 283
-  review.gil/reference/surfaces.md: 146
   review.gil/reference/tests.md: 373
   ruby-dev/SKILL.md: 308
   ruby-dev/reference.md: 419

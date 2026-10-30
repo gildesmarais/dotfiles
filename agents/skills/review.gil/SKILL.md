@@ -33,16 +33,15 @@ Resolve scripts relative to this skill directory. `quality` skips this and runs 
 - **Local:** `scripts/compare_default_branch.sh` (fallback: diff `HEAD` vs `origin/<default>`).
 - **Every target:** **AGENTS.md load** ([`../CONTEXT.md`](../CONTEXT.md)). Separate unrelated dirty changes before selecting lenses.
 
-**Mandatory reference load (blocking — no findings before these are read):**
+**Reference load (read before findings; each on its signal):**
 
-1. Always: [`reference/finish.md`](reference/finish.md).
+1. Always: [`reference/finish.md`](reference/finish.md) (includes surfaces for a code diff).
 2. Behavior or tests changed: [`reference/tests.md`](reference/tests.md).
 3. Auth, tenancy, sensitive data, secrets, APIs, SQL, boundaries: [`reference/security.md`](reference/security.md).
 4. Dead-compat signals: [`reference/legacy.md`](reference/legacy.md) — report only under `findings`/`publish`; deletion is `quality`-only.
 5. `quality`: [`reference/quality.md`](reference/quality.md) + [`reference/legacy.md`](reference/legacy.md) (always).
 6. `publish`: [`reference/publish.md`](reference/publish.md), [`reference/conventional-comments.md`](reference/conventional-comments.md), [`reference/github-state.md`](reference/github-state.md).
 7. Hot path / allocations: [`reference/perf.md`](reference/perf.md).
-8. `findings`/`publish` with a code diff: [`reference/surfaces.md`](reference/surfaces.md). `quality` does not launch these subagents.
 
 ## Branch reference
 
