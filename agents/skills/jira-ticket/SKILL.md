@@ -17,6 +17,8 @@ disable-model-invocation: true
 | create              | "file a ticket", follow-up under an epic               |
 | Post-PR sync        | ticket has a new PR URL; "open PR + move to review"    |
 
+`Status lifecycle` (below) is the transition table shared by `create` and Post-PR sync.
+
 ## Shared prep
 
 - Normalize the key immediately; use it consistently in branch name, status, handoff.

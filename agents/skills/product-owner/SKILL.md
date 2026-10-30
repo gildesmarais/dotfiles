@@ -19,7 +19,7 @@ Default **`gate`**. Unauthored branch name → say so (stay on `gate` when admis
 | `gate`        | should we build, admit/defer, parity, UI/API surface, UAT expansion, debt tranche admission                             |
 | `story-slice` | user stories, GWT, UX budgets, AC — only after `gate` Build Now / founder override                                      |
 | `rebaseline`  | doctrine feels stale, north star predates shipped product, many founder overrides; step 0 `re-baseline`                 |
-| `groom`       | groom backlog, epic cleanup, reparent orphans, board sync after sequencing → [`reference/groom.md`](reference/groom.md) |
+| `groom`       | groom backlog, epic cleanup, reparent orphans, board sync after sequencing |
 
 Skip: routine surgical bug fix / single-slice cleanup with no user-facing concept or step change; stress-test-only → `grilling`; already one cited AC with no slice ask → no `story-slice`.
 
@@ -38,6 +38,7 @@ Skip: routine surgical bug fix / single-slice cleanup with no user-facing concep
 - `gate`: [`reference/gate.md`](reference/gate.md)
 - `story-slice`: [`reference/story-slice.md`](reference/story-slice.md)
 - `rebaseline`: [`reference/rebaseline.md`](reference/rebaseline.md)
+- `groom`: [`reference/groom.md`](reference/groom.md)
 
 ## Handoff
 
