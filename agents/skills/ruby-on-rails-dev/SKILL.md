@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 # Ruby on Rails Dev
 
-**Stop:** read `$dev` Shared prep before any delta. Loaded with `ruby-dev`; design or private-seam cases → `$dev` → `architecture`.
+**Stop:** apply `$dev` Shared prep first; skip if already read. Loaded with `ruby-dev`; design or private-seam cases → `$dev` → `architecture`.
 
 Scope: controllers, routes, models, services, policies, serializers, workers/mailers/jobs, migrations, framework config loaders, cache-key composition, encryption cutovers. Require the `security` lens on Assure when authn/authz, tenancy, PII/PHI, secrets, exports, webhooks, raw SQL, or privileged ops are in scope.
 

@@ -8,11 +8,11 @@ disable-model-invocation: true
 
 # Swift Dev
 
-**Stop:** read `$dev` Shared prep before any delta. Craft lives in `architecture`; compose sibling skills by name, never paste them.
+**Stop:** apply `$dev` Shared prep first; skip if already read. Craft lives in `architecture`; compose sibling skills by name, never paste them.
 
 ## Docsets
 
-Dash: **Swift**, **Objective-C** (IDs if present: `qsucmuuh-swift`, `qsucmuuh-objc`). Secondary: Apple docs.
+Dash: **Swift**, **Objective-C**, Apple API Reference as installed. Secondary: Apple docs.
 
 ## Stable surfaces
 

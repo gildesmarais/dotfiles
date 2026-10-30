@@ -18,7 +18,7 @@ Repo-exported queue/job gauges; exceptions by type and frame; unresolved or regr
 
 ## 3. APM
 
-Rank server spans by p95 on routes the repo declares; slow SQL where the backend exposes it. For each Strong slow route name the bottleneck class (placement, N+1, cache-key cost, outbound I/O), target files, and a one-line rejected alternative. External latency: defer, or admit timeouts/circuit breakers.
+Check each backend's span-duration unit (µs vs ns) first, then rank server spans by p95 on routes the repo declares; slow SQL where the backend exposes it. For each Strong slow route name the bottleneck class (placement, N+1, cache-key cost, outbound I/O), target files, and a one-line rejected alternative. External latency: defer, or admit timeouts/circuit breakers.
 
 ## 4. Capacity & cost
 

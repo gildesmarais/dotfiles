@@ -4,7 +4,6 @@ description: >-
   Investigate, scope, implement, or create a Jira ticket via Atlassian MCP and
   sync its status (e.g. Ready for Review after PR open). Use for Jira URLs/keys,
   follow-up tickets under an epic, and post-PR Jira handoff.
-disable-model-invocation: true
 ---
 
 # Jira Ticket
@@ -55,7 +54,7 @@ After `pull-request` `open`: confirm the PR URL, transition per the table above,
 
 ## Handoff
 
-`$dev` Handoff plus: branch name, commands run, PR URL if opened, Jira status after sync, residual risks.
+`$dev` Handoff plus: branch name, commands run, PR URL if opened, Jira status after sync, residual risks. Unavailable skill → say so; continue the closest local workflow.
 
 ## Completion criteria
 

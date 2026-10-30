@@ -18,7 +18,7 @@ For `fix`, `Revert`, or production-incident diffs, fold into Findings (no extra 
 2. Does a path assume an invisible contract (shape, reload, cache identity, cutover), or treat disclosure/access as mere presence? → overlay, `security`, else `architecture`.
 3. Do validate and execute see the same truth; is each guard owned at one lifecycle point; does the published contract accept only what runtime accepts?
 4. Dual public API or silent old-shape hydrate? → [`legacy.md`](legacy.md).
-5. Races across a startup/suspension gate; parse/unwrap or generated-client types escaping the transport edge; checker silenced instead of fixed → `{lang}-dev`.
+5. Races across a startup/suspension gate; parse/unwrap or generated-client types escaping the transport edge; checker silenced instead of fixed; durable bags used as live domain objects without rehydrate; wire enum renamed in app code instead of normalized once → `{lang}-dev`.
 6. Repeated harden/follow-up commits hinting at a missing principle?
 
 ## Surfaces

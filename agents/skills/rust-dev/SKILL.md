@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 # Rust Dev
 
-**Stop:** read `$dev` Shared prep before any delta. Craft lives in `architecture`; compose sibling skills by name, never paste them.
+**Stop:** apply `$dev` Shared prep first; skip if already read. Craft lives in `architecture`; compose sibling skills by name, never paste them.
 
 ## Docsets
 

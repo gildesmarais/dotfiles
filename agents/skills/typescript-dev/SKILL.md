@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 # TypeScript Dev
 
-**Stop:** read `$dev` Shared prep before any delta. Craft lives in `architecture`; compose sibling skills by name, never paste them. Framework overlays (e.g. React Native) stay in project skills / `AGENTS.md`.
+**Stop:** apply `$dev` Shared prep first; skip if already read. Craft lives in `architecture`; compose sibling skills by name, never paste them. Framework overlays (e.g. React Native) stay in project skills / `AGENTS.md`.
 
 ## Also earn `design` when
 

@@ -1,6 +1,6 @@
 # Doctrine re-baseline (`rebaseline`)
 
-Re-derive doctrine from what shipped and was kept. Never evaluate a feature here; never invent a ledger, thresholds, golden paths, personas, or registry rows. Product state is `<project>/.agents/product.md`.
+Re-derive doctrine from what shipped and was kept. Not this branch: "should we build X?" → `gate`; slicing → `story-slice`. Never evaluate a feature here; never invent a ledger, thresholds, golden paths, personas, or registry rows. Product state is `<project>/.agents/product.md`.
 
 ## Inputs (discover)
 

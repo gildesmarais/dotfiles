@@ -19,6 +19,7 @@ Single Build entry. Load packs/overlays by name; never paste their bodies. Craft
 | "should we build X?"                               | stop → `product-owner`  |
 | assure / findings / tests review / merge prep      | stop → `review.gil`     |
 | open / slice / comment a PR                        | stop → `pull-request`   |
+| Jira key or URL                                    | stop → `jira-ticket`    |
 
 ## Shared prep
 

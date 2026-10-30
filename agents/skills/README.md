@@ -50,7 +50,7 @@ More: [skills.sh](https://skills.sh/), [Swift-Agent-Skills](https://github.com/t
 
 Build path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; `$dev` is the only Build entry. Each skill's `## Handoff` owns its edges; handoff DTOs (Delivery Ledger, Triage Ledger, Ops Ledger) are defined in [`CONTEXT.md`](CONTEXT.md) or the owning skill. `README.md` is not installed by `rcup`.
 
-- **Product before scope** — features and Jira tickets pass `product-owner` `gate` before `$dev plan`; bug fix, refactor, infra skip it. Craft skills never answer "should we build X?".
+- **Product before scope** — features and Jira tickets pass `product-owner` `gate` before `$dev plan`; bug fix, refactor, infra skip it. Incident without Jira → `triage` first. Craft skills never answer "should we build X?".
 - **Plans → `$dev plan`** — each todo names files, one gate, a Conventional Commit message; executed via [`dev/reference/plan.md`](dev/reference/plan.md).
 - **Assure → Ship** — `findings` never posts; `publish` stays in `review.gil`; a verified ledger goes to `pull-request` `comment`. `pr-sweep` never fixes.
 - **Explain → docs** — `communication` → `docs` `editor`; never reverse.

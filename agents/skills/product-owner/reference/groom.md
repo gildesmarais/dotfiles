@@ -1,6 +1,6 @@
 # Backlog groom (`groom`)
 
-Make the board tell the truth: PO (value, Create bar) + Scrum Master (WIP, status, links) in one pass. No code unless asked.
+Make the board tell the truth: PO (value, Create bar) + Scrum Master (WIP, status, links) in one pass. No code unless asked. Never invent delivery tickets.
 
 ## Intake (max 1–2 questions; never re-ask locked answers)
 

@@ -38,6 +38,8 @@ Load only the matched branch's reference; the unblock chain loads each step as i
 
 ## Handoff
 
+Handoff load: [`../CONTEXT.md`](../CONTEXT.md).
+
 - Land ask + Assure readiness Yes/Conditional → **open** (do not re-ask "want a PR?").
 - Dependabot PR assessment → `dependabot` **triage** (may call back into **fix-ci**/**conflicts**).
 - Multi-repo attention list → `pr-sweep` (read-only).

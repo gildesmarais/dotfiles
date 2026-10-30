@@ -1,6 +1,6 @@
 # Open
 
-Finished local change → commit → push → `gh pr create --web`. Autonomous; ask only when a required input can't be derived safely (a missing ticket is not a blocker).
+Finished local change → commit → push → `gh pr create`. Autonomous; ask only when a required input can't be derived safely (a missing ticket is not a blocker).
 
 ## Ticket
 
@@ -27,11 +27,11 @@ Repo-local commit conventions also apply. `Resolves: DEBT-<NUMBER>`: [`../../har
 
 - Title/body per [`pr-narrative.md`](pr-narrative.md), rebuilt from full `base...HEAD`; list only validation actually run.
 - Base branch: `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` → `git symbolic-ref refs/remotes/origin/HEAD` → repo-declared base; ask only if underivable.
-- Push with upstream, confirm, then `gh pr create --web --base <default> --title … --body …`. `gh` unavailable/unauthenticated → give the URL/manual step.
+- Push with upstream, confirm, then `gh pr create --base <default> --title … --body …`. `gh` unavailable/unauthenticated → give the URL/manual step.
 
 ## Jira sync
 
-Ticket derived (or `jira-ticket` flow) and a Jira tool available → run `jira-ticket` **Post-PR Jira sync** without re-asking. Unavailable / no transition → report and continue.
+Ticket derived (or `jira-ticket` flow) and a Jira tool available → run `jira-ticket` **Post-PR sync** without re-asking. Unavailable / no transition → report and continue.
 
 ## Output
 

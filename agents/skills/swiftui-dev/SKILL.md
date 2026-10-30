@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # SwiftUI Dev
 
-**Stop:** read `$dev` Shared prep before any delta. Loaded with `swift-dev`; design or private-seam cases → `$dev` → `architecture`.
+**Stop:** apply `$dev` Shared prep first; skip if already read. Loaded with `swift-dev`; design or private-seam cases → `$dev` → `architecture`.
 
 Scope: views, navigation, layout, WidgetKit, AppKit bridges, Transferable, presentation/chrome. Optional packs by name when installed (never inline): `swiftui-pro`, `swiftui-design-principles`; testing depth → `swift-testing-pro` via `swift-dev`.
 
