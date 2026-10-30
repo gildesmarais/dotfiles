@@ -1,6 +1,6 @@
 # GitHub state machine (`publish`)
 
-`event: COMMENT` only; abort any payload with another event. Resolve/reply helpers owned by `pull-request` live in that skill's reference/gh-api.md.
+`event: COMMENT` only; abort any other payload. Resolve/reply helpers: `pull-request` `reference/gh-api.md`.
 
 Pending review state comes from `pr-context.sh --publish` `pending_reviews` (filtered to `gh api user --jq .login`; fails closed on truncation). GitHub allows **one** pending review per user per PR.
 
@@ -57,7 +57,7 @@ mutation($threadId:ID!, $body:String!) {
 
 ## Last resort: delete whole pending review
 
-Only when per-comment reconcile is impossible; snapshot the preserved ledger, recreate, verify before submit.
+Only when per-comment reconcile is impossible; snapshot the ledger, recreate, verify before submit.
 
 ```bash
 gh api graphql -f query='mutation($id:ID!){deletePullRequestReview(input:{pullRequestReviewId:$id}){pullRequestReview{id state}}}' -F id=REVIEW_NODE_ID

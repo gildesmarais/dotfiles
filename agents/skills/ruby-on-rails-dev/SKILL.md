@@ -27,7 +27,7 @@ Scope: controllers, routes, models, services, policies, serializers, workers/mai
 
 ## API docs (`rswag`)
 
-One `response` per status code — rswag keys by status, so a second same-code `response` overwrites. Put every variant inside that one block: uniquely named examples (duplicate names overwrite) each with nested context, `let`s, and `run_test!`. Declare the schema once; widen it (`additionalProperties` or `oneOf`) so every example validates. A second same-code `response` only for `document: false`. Regenerate OpenAPI from request specs; never hand-edit. Document format/defaults/example payloads for enums at schema level.
+rswag keys `response` by status, so a second same-code `response` overwrites (allowed only with `document: false`). Put every variant in that one block: uniquely named examples (duplicate names overwrite), each with nested context, `let`s, and `run_test!`. Declare the schema once; widen it (`additionalProperties` or `oneOf`) so every example validates. Regenerate OpenAPI from request specs; never hand-edit. Enums: document format/defaults/examples at schema level.
 
 ## Handoff deltas
 

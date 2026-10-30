@@ -14,10 +14,9 @@ updates:
     schedule:
       interval: weekly
       day: monday
-    open-pull-requests-limit: 5
     groups:
       ruby-deps:
         patterns: ["*"]
 ```
 
-Registries, multi-ecosystem groups, rare ecosystems → check current GitHub docs; don't invent keys.
+Registries, multi-ecosystem groups, rare ecosystems → current GitHub docs; don't invent keys.

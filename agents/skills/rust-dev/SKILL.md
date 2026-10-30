@@ -1,8 +1,8 @@
 ---
 name: rust-dev
 description: >-
-  Rust deltas: cargo validation, crate docsets, depth-pack compose, Criterion.
-  Perf recipes in reference.md.
+  Rust deltas: cargo validation, crate docsets, Criterion. Perf recipes in
+  reference.md.
 disable-model-invocation: true
 ---
 
@@ -21,5 +21,4 @@ Crate public API / semver-stable surfaces and documented FFI boundaries — unle
 ## Deltas
 
 - Entrypoints: `cargo test`, `cargo clippy`, project wrappers, `mise exec --`, Make targets.
-- Measured perf / hot path → `$dev` `design` → `architecture` `performance`; then Rust recipes in [`reference.md`](reference.md).
-- Third-party Rust guideline packs: compose when installed.
+- Measured perf / hot path → `$dev` `design` → `architecture` `performance`; then [`reference.md`](reference.md).

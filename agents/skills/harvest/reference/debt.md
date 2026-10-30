@@ -1,6 +1,6 @@
 # Debt
 
-Debt that can't be fixed in the current scope goes to `<project>/.agents/debt-ledger.md` (create `.agents/` if missing). Admission: `product-owner` under its Health Capacity Budget.
+Debt that can't be fixed in the current scope goes to `<project>/.agents/debt-ledger.md` (create `.agents/` if missing).
 
 ## Entry schema
 
@@ -8,11 +8,11 @@ Debt that can't be fixed in the current scope goes to `<project>/.agents/debt-le
 ### [DEBT-<NUMBER>] <Short Imperative Title>
 
 - **Category:** `boundary` | `types` | `perf` | `legacy` | `test`
-- **Friction:** Concise description of the friction, leak, or smell encountered.
+- **Friction:** the friction, leak, or smell encountered.
 - **Affected Files:**
   - `path/to/module.ext`
 - **Remediation Route:** matching craft branch (e.g. `architecture deep-modules`, `architecture refactor-types`, `review.gil quality`)
-- **Golden Path Impact:** How this debt slows down developer velocity, adds runtime latency, or increases defect risk.
+- **Golden Path Impact:** how it slows velocity, adds latency, or raises defect risk.
 - **Status:** `open` | `admitted` | `resolved`
 ```
 
@@ -30,5 +30,5 @@ Debt that can't be fixed in the current scope goes to `<project>/.agents/debt-le
 
 0. **Re-check inherited findings against HEAD** (re-run the gate or re-read the file) before logging — logging an already-resolved finding manufactures fake debt.
 1. Append with status `open`.
-2. `product-owner` admits high-friction items as Build Now (Health Capacity: CONTEXT).
-3. Delivered + Assure passed → `resolved` with commit SHA. `Resolves: DEBT-<NUMBER>` in a commit is the only marker. Whoever lands that commit sets the row to `resolved` with the commit hash, in one `chore(debt): resolve DEBT-<NUMBER>` commit (the agent that made the phase commit: right after it; `pull-request open`: before the push). Missing or ambiguous row → stop. Never ask for a manual ledger edit.
+2. `product-owner` admits high-friction items as Build Now (Health Capacity Budget).
+3. Delivered + Assure passed → `resolved` with commit SHA. `Resolves: DEBT-<NUMBER>` in a commit is the only marker. Whoever lands that commit sets the row to `resolved` with the commit hash, in one `chore(debt): resolve DEBT-<NUMBER>` commit (the agent that made the phase commit: right after it; `pull-request open`: before the push). Missing or ambiguous row → stop.

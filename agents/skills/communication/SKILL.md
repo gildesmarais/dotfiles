@@ -28,7 +28,7 @@ Load exactly one:
 - **`project-update`** → [`reference/project-update.md`](reference/project-update.md)
 - **`external-message`** → [`reference/external-message.md`](reference/external-message.md)
 
-Every branch returns only the final artifact; add improvement notes only when asked.
+Every branch returns only the final artifact.
 
 ## Handoff
 

@@ -1,6 +1,6 @@
 # PR narrative
 
-Title/body standard for **open** and **retitle**. Concrete paths, behaviors, contracts, failure modes. Banned filler: "enhances", "streamlines", "robust", "comprehensive", "leverages", and kin.
+Title/body standard for **open** and **retitle**. Concrete paths, behaviors, contracts, failure modes; no filler ("enhances", "streamlines", "robust", "comprehensive", "leverages").
 
 ## Title
 
@@ -30,7 +30,7 @@ What + why, scannable; `type(scope): summary` when the repo uses it; branch tick
 - <commands already run, or "not run: …">
 ```
 
-Fast-scan bullets first, detail below. Keep What changed / Why / Risk / Validation; add `## Ticket` when known.
+Fast-scan bullets first, detail below. Add `## Ticket` when known.
 
 ## Review map — size gates
 
@@ -45,4 +45,4 @@ Fast-scan bullets first, detail below. Keep What changed / Why / Risk / Validati
 
 **Small** → omit or one-liner: `Review map: whole PR is small — start at <path>.`
 
-Ordering (tests-first): from `git diff --stat <base>...HEAD`, cluster by package/domain; list changed tests/specs first (they state the behavior), then highest-churn files in the primary cluster, then public contracts (CLI help, APIs). No changed tests → say `No test delta — start at <path>.` Skip pure renames/noise unless they are the story.
+Ordering (tests-first): from `git diff --stat <base>...HEAD`, cluster by package/domain; changed tests/specs first (they state the behavior), then highest-churn files in the primary cluster, then public contracts (CLI help, APIs). No changed tests → `No test delta — start at <path>.` Skip renames/noise unless they are the story.

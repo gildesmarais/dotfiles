@@ -22,9 +22,9 @@ Embed these checklist lines where signaled (a plan is not a findings report; `re
 
 - Detect the default branch early (`AGENTS.md` / remote HEAD).
 - Off default: after each plan phase or surgical milestone, validate → ≥1 [Conventional Commit](https://www.conventionalcommits.org/) (v1.0.0) with a rationale body before the next. Store vocabulary: **Phase commit**.
-- On default: commit only when asked once at plan time. Never silently commit on main/master.
-- Carriers: `$dev` Shared prep (Build), `architecture` Shared prep (Solution). `release` `notes` only consumes merged history — don't defer authoring. Overlays never restate this.
+- On default: commit only when asked once at plan time; never silently on main/master.
+- Carriers: `$dev` Shared prep (Build), `architecture` Shared prep (Solution). `release` `notes` only consumes merged history. Overlays never restate this.
 
 ## Execution
 
-Todo tracking and sequencing belong to the host. Per todo: change only its files, run its gate (exit 0 observed), then commit its message with only those files staged; a failed gate twice on one phase stops the run. After the last commit, one `review.gil` `findings` (return in chat); code-needing findings become a follow-up plan. Resume by comparing todos to `git log`.
+Todo tracking and sequencing belong to the host. Per todo: change only its files, run its gate (exit 0 observed), commit its message with only those files staged; a gate failing twice on one phase stops the run. After the last commit, one `review.gil` `findings` (in chat); code-needing findings become a follow-up plan. Resume by comparing todos to `git log`.

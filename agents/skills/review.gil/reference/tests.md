@@ -5,7 +5,7 @@ Lens for changed tests/specs: over-mocking, hidden regressions, contract gaps, w
 ## Method
 
 1. Read the implementation diff before judging its tests.
-2. Classify flight height: **Pure unit** · **Component** · **Integration** · **UI smoke** · **Regression / characterization**. Pyramid definition → `$dev` [`../dev/reference/surgical-laws.md`](../../dev/reference/surgical-laws.md).
+2. Classify flight height: **Pure unit** · **Component** · **Integration** · **UI smoke** · **Regression / characterization** (definition → [`../../dev/reference/surgical-laws.md`](../../dev/reference/surgical-laws.md)).
 3. Useful isolation removes nondeterminism/expense while keeping the contract; harmful mocking reimplements production or asserts sequencing over outcomes.
 4. Tie findings to a production defect or bug risk.
 
@@ -33,4 +33,4 @@ Probe: What bug does this catch? What bug in this diff still passes? Would it pa
 
 ## Output
 
-Severity-ordered, folded into the `finish` report. Per finding: file:line, what the test does, why it hides a bug / inflates flight height, stronger shape or seam fix. None found → say so plus residual gaps.
+Severity-ordered, folded into `finish`. Per finding: file:line, what the test does, why it hides a bug / inflates flight height, stronger shape or seam fix. None found → say so plus residual gaps.

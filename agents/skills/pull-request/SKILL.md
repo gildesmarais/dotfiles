@@ -20,20 +20,21 @@ description: >-
 | Fix failing CI on a PR / Actions run                         | [**fix-ci**](reference/fix-ci.md)              |
 | Resolve merge conflicts / rebase PR onto base                | [**conflicts**](reference/conflicts.md)        |
 
-**Unblock chain** ("unblock", "make merge-ready", "get this PR green", "autopilot this PR"; preserve intents, push with lease when rebased): refresh live PR state each pass; **conflicts** → **resolve** → **fix-ci**; stop for `needs-user`.
+**Unblock chain** ("unblock", "make merge-ready", "get this PR green"; preserve intents, push with lease when rebased): refresh live PR state each pass; **conflicts** → **resolve** → **fix-ci**; stop for `needs-user`.
 
-Routing edges: "address/fix/resolve PR comments" → **resolve**, not reply. "update the PR" with no code → **retitle**. A ledger of verified findings → **comment**; "review the PR" / "post review" without a ledger → stop, `review.gil` (`findings` or `publish`). "Why is CI failing?" (no fix) → report only.
+Routing edges: "address/fix PR comments" → **resolve**, not reply. "update the PR" with no code → **retitle**. A ledger of verified findings → **comment**; "review the PR" / "post review" without a ledger → stop, `review.gil` (`findings` or `publish`). "Why is CI failing?" (no fix) → report only.
 
 ## Shared prep
 
-- Tools: `git`, `gh`, `jq`; non-interactive. Escalate network for `gh` when sandboxed.
-- Resolve scripts relative to this skill directory. Thread data on **resolve**/**reply**: `./scripts/gh-review-comments --filter unresolved --format json <pr-url>`.
-- Frugal fetches: failing-job logs only (**fix-ci**); unresolved threads only (**resolve**/**reply**); explicit `--json` fields; never paste raw JSON.
+- Tools: `git`, `gh`, `jq`; non-interactive.
+- Target PR: given, else current branch; ask only when none or several plausible.
+- Threads for **resolve**/**reply** (script path relative to this skill): `./scripts/gh-review-comments --filter unresolved --format json <pr-url>`.
+- Frugal fetches: failing-job logs only (**fix-ci**); unresolved threads only; explicit `--json` fields; never paste raw JSON.
 - Comment/event policy: [`reference/gh-api.md`](reference/gh-api.md). Never auto-approve or merge.
 
 ## Branch reference
 
-Load only the matched branch's reference (links in the table); the unblock chain loads each step as it runs. Extras: **open** and **retitle** also load [`reference/pr-narrative.md`](reference/pr-narrative.md); **comment**, **resolve** and **reply** load [`reference/gh-api.md`](reference/gh-api.md) when posting or resolving. **slice** blocks open/resolve until its ledger row is ready.
+Load only the matched branch's reference; the unblock chain loads each step as it runs. Extras: **open** and **retitle** also load [`reference/pr-narrative.md`](reference/pr-narrative.md); **comment**, **resolve** and **reply** load [`reference/gh-api.md`](reference/gh-api.md) when posting or resolving. **slice** blocks open/resolve until its ledger row is ready.
 
 ## Handoff
 

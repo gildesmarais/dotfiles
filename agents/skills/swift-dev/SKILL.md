@@ -20,11 +20,11 @@ Apple public APIs and shipped module public interfaces — unless the ask or `AG
 
 ## Deltas
 
-- Prefer `@Observable` over Combine when the repo allows; keep MainActor and background-boundary honesty. Project rules stay in `AGENTS.md` / overlays.
+- `@Observable` over Combine; Swift 6 mode with strict concurrency unless the repo pins otherwise; honest MainActor/background boundaries.
 - UI-shaped (views, navigation, WidgetKit, AppKit bridges, Transferable, layout) → load `swiftui-dev` in the same change.
 - Never nest `#require` inside `#require`; unwrap on separate lines — nested expansion fails to compile.
 - Entrypoints: `xcodebuild`, `swift test`, project wrappers, Make targets.
-- Apple runtime postures (concurrency/TLS hardening, text storage): [`reference.md`](reference.md).
+- Foreign-exception / TLS / text-storage hardening: [`reference.md`](reference.md).
 
 ## Performance & allocation hygiene
 
@@ -35,4 +35,4 @@ Hot path → `$dev` `design` → `architecture` `performance` first; recipes aft
 - UI → `swiftui-dev` (with this pack).
 - Swift Testing depth → `swift-testing-pro` when installed.
 - On-device AI → `apple-on-device-ai` when present.
-- Product overlays (e.g. `prestage-*`) when present in the repo.
+- Repo product overlays (e.g. `prestage-*`) when present.

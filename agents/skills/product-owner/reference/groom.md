@@ -1,6 +1,6 @@
 # Backlog groom (`groom`)
 
-Make the board tell the truth: PO (value, Create bar) + Scrum Master (WIP, status, links) in one pass. Never invent delivery tickets; no code unless explicitly asked.
+Make the board tell the truth: PO (value, Create bar) + Scrum Master (WIP, status, links) in one pass. No code unless asked.
 
 ## Intake (max 1–2 questions; never re-ask locked answers)
 
@@ -9,18 +9,16 @@ Make the board tell the truth: PO (value, Create bar) + Scrum Master (WIP, statu
 
 ## Hard rules
 
-- Local backlog docs are inputs to reconcile; the board wins after the lock. No speculative catalog dumps.
+- Local backlog docs are inputs to reconcile; the board wins after the lock.
 - **Create bar (depth ≥ 2):** cited code evidence or a named gap on an existing ticket; else Amend AC / Rehome / On Hold / Research Further.
 - Remove → Hide (On Hold) → Consolidate (rehome/amend) → Automate → Add (create).
 - Done foundation stays Done (comment it's closed; never reopen as MVP).
 - Empty future epics stay empty (park in a holding status) until evidence or an explicit Create ask.
-- Ticket text: short Context / Outcome / AC; no epic essays.
+- Ticket text: short Context / Outcome / AC.
 - Status names, link types, Ready transitions, Epic parent field: discover via tracker MCP / repo-local wrapper / `AGENTS.md`; never hardcode.
 - Create that adds user-facing scope → `gate` (or user confirm) first.
 
 ## Pipeline
-
-Present a disposition plan before mutating unless a concrete plan is already approved.
 
 1. **Inventory** (prefer Atlassian or project tracker MCP): target epic(s) + open children (exclude Done / Won't Do / Duplicate unless diagnosing misparents), related delivery/Integration epics, named Done foundation labels, local docs claiming sequencing (cite paths); depth ≥ 2: code search only for gaps named in the ask or on tickets.
 2. **Target shape:** portfolio umbrella (initiative home, not a Ready dump) → active delivery epic(s) → later Integration/capability epics (soft then-order in prose; `Blocks` only where truly blocking).
@@ -29,11 +27,11 @@ Present a disposition plan before mutating unless a concrete plan is already app
 5. **Execute (approved):** retitle, rewrite, reparent, transition, closing comments, hard-order links, approved Creates. Optionally sync an existing local backlog doc.
 6. **Verify:** re-query; no Ready orphans on the umbrella (unless that's the project pattern); held work in hold/next status, not Ready; Creates have parent + intended status; tracker parent/resolution quirks fixed or called out.
 
-Links: hard order → the project's discovered dependency link (often `Blocks`), one clear chain on the active epic; soft order → epic prose. Over-linking creates false WIP.
+Links: hard order → the project's dependency link (often `Blocks`), one chain on the active epic; soft order → epic prose.
 
 ## Output before mutate
 
-1. Depth + sequencing lock 2. Target shape 3. Disposition table 4. Create evidence (or "none") 5. Forced Challenge: strongest case this groom over- or under-files, and why it fails. Wait for approval unless a plan was attached.
+Depth + sequencing lock; target shape; disposition table; Create evidence (or "none"); Forced Challenge (strongest case this groom over- or under-files, and why it fails). Wait for approval unless a concrete plan is already approved.
 
 After mutate: keys changed, Create keys, verify notes, handoff.
 

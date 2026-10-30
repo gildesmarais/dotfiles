@@ -17,7 +17,7 @@ Single branch: **`report`**.
 
 ## Shared prep
 
-- Never fixes anything: **never** checkout, push, comment, approve, or merge. Output is the ledger only.
+- Never checkout, push, comment, approve, merge, or fix. Output is the ledger only.
 - Require an org/owner from the user or automation prompt; no default org.
 - Tools `gh`, `jq`; escalate network when sandboxed. Explicit `--json` field lists; no raw JSON, diffs, or CI logs in output.
 
@@ -38,6 +38,4 @@ Single branch: **`report`**.
 
 ## Completion criteria
 
-| Branch     | Done when                                                                                            |
-| ---------- | ---------------------------------------------------------------------------------------------------- |
-| **report** | Compact ledger emitted (or explicit empty); each row has repo, PR, blocker, invocation; no mutations |
+Compact ledger emitted (or explicit empty); each row has repo, PR, blocker, invocation; no mutations.

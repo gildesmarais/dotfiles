@@ -8,7 +8,7 @@ description: >-
 
 # Review
 
-Findings-first review of a working tree, branch, commit range, or PR: the `finish` baseline plus only the lenses the diff warrants. Never ask the user to choose a template. A **lens** (`tests` / `perf` / `security` / `legacy`) is a findings rubric on the same diff prep.
+Findings-first review of a working tree, branch, commit range, or PR: the `finish` baseline plus only the lenses the diff warrants (`tests` / `perf` / `security` / `legacy`; a lens is a findings rubric on the same diff prep). Never ask the user to choose a template.
 
 ## Pick branch
 
@@ -18,29 +18,29 @@ Findings-first review of a working tree, branch, commit range, or PR: the `finis
 | `publish`  | PR reviewed end to end, drafts reconciled, submitted as GitHub `COMMENT`                    |
 | `quality`  | Explicit merge-prep: audit, boy-scout refactors, tests, repo gates; changes code            |
 
-- Ask "Publish review on PR?" only in a top-level interactive human session targeting an existing PR with unspecified intent. Skip if already answered, read-only/draft findings, publication requested, or no PR. Answer selects execution, not lenses.
+- Ask "Publish review on PR?" only in a top-level interactive human session targeting an existing PR with unspecified intent. The answer selects execution, not lenses.
 - "Review and publish/post/ship the review" → `publish`, no ask.
 - "Post these findings" with a verified list → `pull-request` `comment`.
-- "Draft review" = read-only findings unless GitHub-pending explicitly asked: end-to-end drafts → `publish` stopping before submit; supplied verified ledger → `pull-request` `comment`.
-- Never infer `quality` from "review"; it needs explicit permission to change code.
+- "Draft review" = read-only findings, unless GitHub-pending is asked: end-to-end → `publish` stopping before submit; verified ledger supplied → `pull-request` `comment`.
+- `quality` needs explicit permission to change code; never infer it from "review".
 
 ## Shared prep
 
-Resolve scripts relative to this skill directory. `quality` skips this and runs its own Phase 0 (no `compare_default_branch.sh` first).
+Scripts resolve relative to this skill directory. `quality` skips this and runs its own Phase 0.
 
-- **PR:** no local/default-branch comparison. `scripts/pr-context.sh <pr>` (findings) or `scripts/pr-context.sh --publish <pr>` (publish); review the PR patch at the recorded head SHA, never the local tree/`HEAD`.
+- **PR:** `scripts/pr-context.sh <pr>` (findings) or `scripts/pr-context.sh --publish <pr>` (publish); review the PR patch at the recorded head SHA, never the local tree/`HEAD`; no default-branch comparison.
 - **Local:** `scripts/compare_default_branch.sh` (fallback: diff `HEAD` vs `origin/<default>`).
 - **Every target:** **AGENTS.md load** ([`../CONTEXT.md`](../CONTEXT.md)). Separate unrelated dirty changes before selecting lenses.
 
-**Reference load (read before findings; each on its signal):**
+**Reference load (before findings, each on its signal):**
 
-1. Always: [`reference/finish.md`](reference/finish.md) (includes surfaces for a code diff).
+1. Always: [`reference/finish.md`](reference/finish.md) (includes surfaces).
 2. Behavior or tests changed: [`reference/tests.md`](reference/tests.md).
 3. Auth, tenancy, sensitive data, secrets, APIs, SQL, boundaries: [`reference/security.md`](reference/security.md).
-4. Dead-compat signals: [`reference/legacy.md`](reference/legacy.md) — report only under `findings`/`publish`; deletion is `quality`-only.
-5. `quality`: [`reference/quality.md`](reference/quality.md) + [`reference/legacy.md`](reference/legacy.md) (always).
-6. `publish`: [`reference/publish.md`](reference/publish.md), [`reference/conventional-comments.md`](reference/conventional-comments.md), [`reference/github-state.md`](reference/github-state.md).
-7. Hot path / allocations: [`reference/perf.md`](reference/perf.md).
+4. Dead-compat signals: [`reference/legacy.md`](reference/legacy.md) — report-only outside `quality`.
+5. Hot path / allocations: [`reference/perf.md`](reference/perf.md).
+6. `quality`: [`reference/quality.md`](reference/quality.md) + `legacy.md` (always).
+7. `publish`: [`reference/publish.md`](reference/publish.md), [`reference/conventional-comments.md`](reference/conventional-comments.md), [`reference/github-state.md`](reference/github-state.md).
 
 ## Branch reference
 
@@ -48,7 +48,6 @@ Resolve scripts relative to this skill directory. `quality` skips this and runs 
 
 ## Handoff
 
-- Surfaces fold into the finish report; they do not publish or fix.
 - Structural findings **name** the `architecture` branch; remediation enters via `$dev`.
 - End-to-end PR review + publish stays here; verified ledger → `pull-request` `comment`. Never reverse.
 - `findings` never writes to GitHub. Land + Yes/Conditional → `pull-request` `open` only when land was asked.

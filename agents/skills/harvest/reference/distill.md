@@ -2,9 +2,7 @@
 
 ## Mantra standard
 
-Format: Preventive Mantra (`SKILL.md`) — 1–2 sentences. Reject incident writeups, stack traces, debug stories, vague platitudes.
-
-Skill edits are clean cutovers: delete superseded aliases, old execution names, and compat wrappers immediately — never keep backward compat in skills.
+Preventive Mantra form (`SKILL.md`), 1–2 sentences. Reject incident writeups, stack traces, debug stories, platitudes. Skill edits are clean cutovers: delete superseded aliases and compat wrappers.
 
 ## Scope filter
 
@@ -18,7 +16,7 @@ Skill edits are clean cutovers: delete superseded aliases, old execution names, 
 
 ## Procedure
 
-1. Draft the mantra from the signal.
+1. Draft the mantra.
 2. Global arch / review: generalize (strip product nouns, paths, schemas, language APIs) → tag one primary branch/lens → net-zero sparse-promote into the matching `reference/*.md` Checklist or Anti-patterns only when judgment changes and nothing covers it → drop the rest. Cap ~10 candidates per event.
 3. Other scopes: read the target fresh. Covered, near-clone, or too narrow → drop; else append to `## Checklist` or `## Anti-patterns`.
 4. Cap: ≤3 promoted mantras per session unless the user asks for more.

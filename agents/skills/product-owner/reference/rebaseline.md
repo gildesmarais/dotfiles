@@ -1,19 +1,16 @@
 # Doctrine re-baseline (`rebaseline`)
 
-Re-derive doctrine from what shipped and was kept (doctrine written before exploration ends is a fossil). Never evaluate a feature here; never invent a ledger, thresholds, golden paths, personas, or registry rows; never hardcode a product name. Product state is `<project>/.agents/product.md`.
-
-Not this branch: "should we build X?" on a trusted basis → `gate`; slicing → `story-slice`.
+Re-derive doctrine from what shipped and was kept. Never evaluate a feature here; never invent a ledger, thresholds, golden paths, personas, or registry rows. Product state is `<project>/.agents/product.md`.
 
 ## Inputs (discover)
 
-- **Doctrine ledger:** doctrine section of `.agents/product.md`; absent → `ledger absent`, invent no thresholds.
-- **Thresholds:** that section only; present without thresholds → note the gap.
+- **Doctrine ledger and thresholds:** doctrine section of `.agents/product.md`; absent → `ledger absent`; present without thresholds → note the gap.
 - **Have / shipped record:** the repo's existing shipped record.
 - **Direction, anchors, reject registry:** sections of `.agents/product.md`; a missing section → name the gap, add no new file.
 
 ## Procedure + Output
 
-Cite paths; silent source → `unknown`. Emit numbered steps as both procedure and output:
+Cite paths; silent source → `unknown`. Emit these numbered steps as the output:
 
 1. **Have since baseline:** shipped-and-kept since the ledger's last re-baseline date (no date → say so). Every row cites a path.
 2. **Overrides:** founder overrides since baseline, each cited; flag mismatch with the ledger's override count.
@@ -29,4 +26,4 @@ Cite paths; silent source → `unknown`. Emit numbered steps as both procedure a
 
 Steps 1–9 emitted; doctrine edits land only in `.agents/product.md`.
 
-**Falsification:** zero registry rows flipped/deleted **and** zero removal candidates **fails** unless an explicit "why nothing changed" paragraph is written. A date bump with no delta is not a re-baseline.
+**Falsification:** zero registry rows flipped/deleted **and** zero removal candidates fails unless a "why nothing changed" paragraph is written.

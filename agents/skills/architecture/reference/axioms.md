@@ -1,6 +1,6 @@
 # Axioms
 
-Ride-along for every `$dev` `implement` (surgical included). Load this file — not `architecture/SKILL.md` — until `design` is earned; then load `architecture/SKILL.md` and matched `reference/<branch>.md`. Hold the change against:
+Ride-along for every `$dev` `implement` (surgical included). Load this file, not `architecture/SKILL.md`, until `design` is earned; then load the router and matched `reference/<branch>.md`. Hold the change against:
 
 - **Deep Modules:** small interface, substantial private behavior; no shallow pass-through bags.
 - **Deletion Test:** removing or swapping a module must not cascade rewrites across unrelated consumers.

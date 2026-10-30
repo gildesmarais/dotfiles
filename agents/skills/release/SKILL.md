@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 # Release
 
-Notes-only: consumes merged history; never authors or rewrites it.
+Notes-only: reads merged history; never opens PRs, tags, flags, promotes, rolls back, or rewrites commits.
 
 ## Pick branch
 
@@ -16,13 +16,7 @@ Notes-only: consumes merged history; never authors or rewrites it.
 | -------------------------------------- | ------------------------- |
 | changelog, release notes, what shipped | `notes`                   |
 | open/slice/resolve a PR                | stop — use `pull-request` |
-| flag / promote / roll back a release   | out of scope — no branch  |
-
-## Shared prep
-
-- Ship range: tags, merge-base…HEAD, or user-named commits; prefer default-branch merges.
-- Commit types: [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/); authoring → [`../dev/reference/plan.md`](../dev/reference/plan.md). `git log` / `git show`; never invent commits.
-- Does not open PRs, tag, flag, promote, or roll back.
+| flag / promote / roll back a release   | out of scope              |
 
 ## Branch reference
 
@@ -30,8 +24,8 @@ Notes-only: consumes merged history; never authors or rewrites it.
 
 ## Handoff
 
-- PR lifecycle → `pull-request`. Phase-commit authoring → `dev` / `architecture`.
+- PR lifecycle → `pull-request`. Commit authoring → [`../dev/reference/plan.md`](../dev/reference/plan.md).
 
 ## Completion criteria
 
-Per [`reference/notes.md`](reference/notes.md) Done when.
+Notes emitted from real history, or the history gap reported.

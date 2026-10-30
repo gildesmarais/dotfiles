@@ -5,7 +5,7 @@ Edit an existing PR's title + body only — no commit, amend, stage, push, or fo
 ## Sequence
 
 1. Resolve PR (URL / number / current branch) and base.
-2. Rebuild from full `base...HEAD`, not the latest commit: `git log --oneline <base>...HEAD`, `git diff --stat <base>...HEAD`, `git diff <base>...HEAD` (enough to name concrete behaviors).
+2. Rebuild from full `base...HEAD`, not the latest commit: `git log --oneline`, `git diff --stat`, `git diff` (enough to name concrete behaviors).
 3. Size-classify per `pr-narrative.md` gates; draft title + body (tests-first Review map).
 4. Apply and confirm:
 
@@ -19,4 +19,4 @@ gh pr view <number-or-url> --json title,body
 
 ## Output
 
-PR URL, new title, size (lines + files vs gates), Review map form (full / one-liner / "No test delta …").
+PR URL, new title, size (lines + files), Review map form.

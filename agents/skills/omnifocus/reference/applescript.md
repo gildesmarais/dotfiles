@@ -1,6 +1,6 @@
 # OmniFocus writes the MCP cannot do
 
-Run from the shell (`all` permissions). OmniFocus must be running. One script per mutation; read back the fields you changed.
+Run from the shell; OmniFocus must be running. One script per mutation; read back the fields you changed.
 
 ```applescript
 osascript <<'EOF'
@@ -50,8 +50,6 @@ project.status = Project.Status.OnHold; // Active | OnHold | Done | Dropped
 `Folder.Status` is only `Active` or `Dropped`. `library` is the root section list.
 
 ## Task fields (MCP timeout fallback)
-
-Same fields the MCP patch would have sent — nothing wider.
 
 ```javascript
 task.deferDate = new Date(2026, 11, 18, 8, 0, 0); // month is 0-based
