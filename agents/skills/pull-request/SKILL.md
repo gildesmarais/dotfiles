@@ -22,7 +22,7 @@ description: >-
 | Fix failing CI on a PR / Actions run                         | **fix-ci**    |
 | Resolve merge conflicts / rebase PR onto base                | **conflicts** |
 
-**Unblock chain** (not a branch; order: [`../CONTEXT.md`](../CONTEXT.md)): "unblock", "make merge-ready", "get this PR green", "autopilot this PR" → refresh live PR state each pass; **conflicts** → **resolve** → **fix-ci**; stop for `needs-user`; never approve/merge.
+**Unblock chain** (not a branch; order: [`../CONTEXT.md`](../CONTEXT.md)): "unblock", "make merge-ready", "get this PR green", "autopilot this PR" → refresh live PR state each pass; **conflicts** → **resolve** → **fix-ci**; stop for `needs-user`.
 
 Ambiguous routing:
 
@@ -64,4 +64,4 @@ Load only the matched branch; unblock chain loads each step when it runs.
 
 ## Completion criteria
 
-Per-branch **Done when** in the matched reference. Unblock: conflicts clear, threads triaged, CI green or blockers reported; no approve/merge.
+Per-branch **Done when** in the matched reference. Unblock: conflicts clear, threads triaged, CI green or blockers reported.

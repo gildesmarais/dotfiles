@@ -10,7 +10,7 @@ Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 **Lens** (`tests` / `perf` / `security` / `legacy`): findings rubric on the same diff prep.
 **Surface**: independent review pass (subagent or inline) whose output folds into the one finish report.
 **Legacy** (lens; always under `quality`): dead compat — dual public names, superseded hydrate, deprecated markers. Findings report it; `quality` deletes without shims.
-**Unblock chain**: conflicts → resolve → fix-ci; never approve/merge. Preserve intents; push (lease when rebased).
+**Unblock chain**: conflicts → resolve → fix-ci. Preserve intents; push (lease when rebased).
 
 ## Explain
 

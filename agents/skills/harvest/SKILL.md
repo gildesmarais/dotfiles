@@ -32,14 +32,8 @@ Scope destinations and procedure: [`reference/distill.md`](reference/distill.md)
 
 ## Handoff
 
-```text
-harvest distill
-  local  → <project>/AGENTS.md or <project>/.agents/rules/*.md
-  global → ~/.dotfiles/agents/skills/<skill>/reference/
-           → `skill doctor`, then `rcup` (drift → `skill backfill <name>` → `rcup`)
-harvest debt
-  → <project>/.agents/debt-ledger.md (Health Capacity: CONTEXT; admit: product-owner)
-```
+- `distill` local → `<project>/AGENTS.md` or `<project>/.agents/rules/*.md`; global → `~/.dotfiles/agents/skills/<skill>/reference/`, then `skill doctor` and `rcup` (drift → `skill backfill <name>` → `rcup`).
+- `debt` → `<project>/.agents/debt-ledger.md` (Health Capacity: CONTEXT; admission: `product-owner`).
 
 ## Completion criteria
 

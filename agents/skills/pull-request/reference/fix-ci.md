@@ -11,4 +11,4 @@ Repair failing GitHub Actions on a PR. "Why is CI failing?" without a fix ask �
 5. **Fix** — repro locally via the job's repo target when cheap; Conventional Commit; push to PR head. No force-push unless the branch already requires it and the user consented.
 6. **Watch** — `gh pr checks <pr> --watch` once; report. Flake persisting after one re-run → hand to user.
 
-Never approve/merge. Never rewrite unrelated history or Dependabot's commits (`dependabot` **triage**).
+Never rewrite unrelated history or Dependabot's commits (`dependabot` **triage**).

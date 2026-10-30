@@ -29,15 +29,7 @@ Observability cue: [`../CONTEXT.md`](../CONTEXT.md). Reproduce when cheap; label
 
 ## Handoff
 
-Emit the Triage Ledger, then load exactly one next skill (route table in `intake.md`):
-
-```text
-triage intake
-  product | both     → product-owner gate → Build Now → $dev plan; else stop
-  eng only           → $dev plan
-  should-we-build    → product-owner only
-  approved plan / go → stop triage; $dev implement
-```
+Emit the Triage Ledger, then load exactly one next skill (route table in `intake.md`): product or both → `product-owner` `gate` (Build Now → `$dev` `plan`, else stop); eng only → `$dev` `plan`; should-we-build → `product-owner` only; approved plan / go → stop triage, `$dev` `implement`.
 
 **Continue policy:** go / Shot 2 / "plan then implement" → after Build Now continue `$dev` `plan` (`implement` only when explicitly approved). Shot 1 alone → stop after ledger + next skill. Hand off only — never paste doctrine or `$dev` plan bodies.
 

@@ -12,7 +12,7 @@ disable-model-invocation: true
 
 ## Also earn `design` when
 
-Wrong-owner boundary absorb (serialize/cache/encode bent into a neighbor) / re-ledgering an already-owned aggregate / validate vs runtime expansion diverge / shared deadline or conflated meters across attempts / guard or policy owned in more than one place / published contract vs runtime acceptance drift / specs need private reach to assert behavior / mirrored specs re-encoding one algorithm across two production adapters (dual ownership → architecture `deep-modules`).
+Specs need private reach to assert behavior / mirrored specs re-encoding one algorithm across two production adapters (dual ownership → architecture `deep-modules`) / validate vs runtime expansion diverge.
 
 ## Docsets
 

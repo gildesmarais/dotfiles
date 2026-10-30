@@ -33,4 +33,4 @@ description: >-
 
 ## Completion criteria
 
-Per-branch Done when in the matched reference. Never approve/merge.
+Per-branch Done when in the matched reference.

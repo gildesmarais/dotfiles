@@ -12,7 +12,7 @@ disable-model-invocation: true
 
 ## Also earn `design` when
 
-Generated client or wire types leaking past the adapter / parse-unwrap outside the transport edge / plain cache or form bags used as live domain objects / sentinel identity conflated across layers / wire enum renamed in app code instead of normalized once / check-then-act uniqueness across awaits / freshness conflated with sync / capture edge doing domain construction / wrong-owner absorb of serialize/cache/encode / verified client unused beside hand transport / primary success rolled back by secondary hydrate.
+Generated client or wire types leaking past the adapter / parse-unwrap outside the transport edge / plain cache or form bags used as live domain objects / check-then-act uniqueness across awaits / verified client unused beside hand transport.
 
 ## Docsets
 

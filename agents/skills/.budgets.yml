@@ -4,7 +4,7 @@
 description_max_words: 45
 line_cap: 100
 words:
-  CONTEXT.md: 415
+  CONTEXT.md: 413
   architecture/SKILL.md: 472
   architecture/reference/axioms.md: 128
   architecture/reference/deep-modules.md: 404
@@ -21,7 +21,7 @@ words:
   communication/reference/one-on-one.md: 285
   communication/reference/project-update.md: 134
   communication/reference/slack-message.md: 295
-  dependabot/SKILL.md: 179
+  dependabot/SKILL.md: 177
   dependabot/reference/configure.md: 95
   dependabot/reference/pr-commands.md: 146
   dependabot/reference/triage.md: 153
@@ -34,7 +34,7 @@ words:
   docs/reference/architecture.md: 254
   docs/reference/editor.md: 239
   docs/reference/evidence.md: 277
-  harvest/SKILL.md: 202
+  harvest/SKILL.md: 200
   harvest/reference/debt.md: 301
   harvest/reference/distill.md: 289
   jira-ticket/SKILL.md: 543
@@ -47,15 +47,15 @@ words:
   ops-chore/reference/presets.md: 231
   pr-sweep/SKILL.md: 216
   pr-sweep/reference/report.md: 166
-  product-owner/SKILL.md: 434
+  product-owner/SKILL.md: 388
   product-owner/reference/gate.md: 441
   product-owner/reference/groom.md: 544
   product-owner/reference/rebaseline.md: 353
   product-owner/reference/story-slice.md: 154
-  pull-request/SKILL.md: 482
+  pull-request/SKILL.md: 478
   pull-request/reference/comment.md: 239
   pull-request/reference/conflicts.md: 187
-  pull-request/reference/fix-ci.md: 204
+  pull-request/reference/fix-ci.md: 202
   pull-request/reference/gh-api.md: 271
   pull-request/reference/open.md: 309
   pull-request/reference/pr-narrative.md: 236
@@ -76,7 +76,7 @@ words:
   review.gil/reference/quality.md: 462
   review.gil/reference/security.md: 283
   review.gil/reference/tests.md: 373
-  ruby-dev/SKILL.md: 308
+  ruby-dev/SKILL.md: 269
   ruby-dev/reference.md: 419
   ruby-on-rails-dev/SKILL.md: 275
   rust-dev/SKILL.md: 118
@@ -84,10 +84,10 @@ words:
   swift-dev/SKILL.md: 204
   swift-dev/reference.md: 315
   swiftui-dev/SKILL.md: 139
-  triage/SKILL.md: 271
+  triage/SKILL.md: 266
   triage/reference/intake.md: 266
   triage/reference/scrape-incident.md: 192
-  typescript-dev/SKILL.md: 353
+  typescript-dev/SKILL.md: 312
   typescript-dev/reference.md: 360
 pinned_headers:
   omnifocus:
