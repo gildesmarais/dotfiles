@@ -4,6 +4,7 @@ description: >-
   Closed-loop service ops chore: verify observability, triage queues and errors,
   score APM, and admit service fixes. Use for /ops-chore, ops chore, run ops,
   weekly ops, full ops, quick ops, APM chores, post-deploy, datadog, or apply dashboard.
+disable-model-invocation: true
 ---
 
 # Ops Chore
@@ -24,7 +25,7 @@ Lookback: user window → prior ledger `Window.end` → now (same service) → d
 1. **Target**: Resolve from current workspace (monitoring config, OTEL service name, Sentry project, Datadog/OpenObserve targets, dashboard generator). Query telemetry via available Datadog or OpenObserve MCP tools / CLIs. If workspace defines no observability target, stop. Never query another repo's streams, org, or boards.
 2. **Hard stops**: Load [`reference/hard-stops.md`](reference/hard-stops.md). Read-only by default; write allowed only for live dashboard apply on an owned board. Never implement app code, open PRs, drain jobs, or raise limits.
 3. **Admit service fixes**: Every Strong reliability/APM finding must admit a concrete code/config change with target files and rejected alternative, or explicitly state deferral reason.
-4. **Incidents**: Active outage or incident mid-run → immediately hand off to `$triage`.
+4. **Incidents**: Active outage or incident mid-run → immediately hand off to `triage`.
 
 ## Branch reference
 
@@ -37,7 +38,7 @@ Lookback: user window → prior ledger `Window.end` → now (same service) → d
 
 | Signal | Next |
 | --- | --- |
-| Active incident | `$triage` |
+| Active incident | `triage` |
 | Admitted items (user requested plan) | `$dev` `plan` with admitted items |
 | Admitted items (no plan request) | Stop after ledger; items seed future `$dev` plan |
 | Product / journey ambiguity | `product-owner` `gate` |

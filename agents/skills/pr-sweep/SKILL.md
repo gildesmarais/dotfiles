@@ -4,6 +4,7 @@ description: >-
   Read-only morning PR attention ledger across a GitHub org or owner the user
   names; each row names the store skill invocation to run next. Use for
   /pr-sweep, "what PRs need me?", or weekday chore sweeps.
+disable-model-invocation: true
 ---
 
 # PR Sweep

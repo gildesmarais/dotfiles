@@ -4,6 +4,7 @@ description: >-
   Distill corrections and fixes into preventive mantras for project rules or
   skill references; log architectural debt. Use after Assure/Ship friction, a
   new failure class, or when asked to harvest, distill, or record debt.
+disable-model-invocation: true
 ---
 
 # Harvest

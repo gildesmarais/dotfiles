@@ -16,12 +16,12 @@ words:
   architecture/reference/refactor-boundaries.md: 313
   architecture/reference/refactor-types.md: 280
   architecture/reference/structure-survey.md: 340
-  communication/SKILL.md: 185
+  communication/SKILL.md: 187
   communication/reference/external-message.md: 139
   communication/reference/one-on-one.md: 285
   communication/reference/project-update.md: 134
   communication/reference/slack-message.md: 295
-  dependabot/SKILL.md: 177
+  dependabot/SKILL.md: 179
   dependabot/reference/configure.md: 95
   dependabot/reference/pr-commands.md: 146
   dependabot/reference/triage.md: 153
@@ -34,18 +34,18 @@ words:
   docs/reference/architecture.md: 254
   docs/reference/editor.md: 239
   docs/reference/evidence.md: 277
-  harvest/SKILL.md: 200
+  harvest/SKILL.md: 202
   harvest/reference/debt.md: 301
   harvest/reference/distill.md: 289
-  jira-ticket/SKILL.md: 543
-  omnifocus/SKILL.md: 307
+  jira-ticket/SKILL.md: 545
+  omnifocus/SKILL.md: 309
   omnifocus/reference/applescript.md: 254
-  ops-chore/SKILL.md: 422
+  ops-chore/SKILL.md: 424
   ops-chore/reference/hard-stops.md: 184
   ops-chore/reference/ledger.md: 155
   ops-chore/reference/playbook.md: 403
   ops-chore/reference/presets.md: 231
-  pr-sweep/SKILL.md: 216
+  pr-sweep/SKILL.md: 218
   pr-sweep/reference/report.md: 166
   product-owner/SKILL.md: 388
   product-owner/reference/gate.md: 441
@@ -63,7 +63,7 @@ words:
   pull-request/reference/resolve.md: 255
   pull-request/reference/retitle.md: 129
   pull-request/reference/slice.md: 417
-  release/SKILL.md: 156
+  release/SKILL.md: 158
   release/reference/notes.md: 94
   review.gil/SKILL.md: 484
   review.gil/reference/conventional-comments.md: 167
@@ -84,7 +84,7 @@ words:
   swift-dev/SKILL.md: 204
   swift-dev/reference.md: 315
   swiftui-dev/SKILL.md: 139
-  triage/SKILL.md: 266
+  triage/SKILL.md: 268
   triage/reference/intake.md: 266
   triage/reference/scrape-incident.md: 192
   typescript-dev/SKILL.md: 312

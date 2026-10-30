@@ -4,6 +4,7 @@ description: >-
   Distill and draft written communication. Use to summarize raw one-on-one
   notes, refine an internal Slack message or announcement, distill a comparable
   project status update, or draft a customer, partner, or public-facing message.
+disable-model-invocation: true
 ---
 
 # Communication

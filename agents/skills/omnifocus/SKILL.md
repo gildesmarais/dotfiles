@@ -4,6 +4,7 @@ description: >-
   Operate the user's OmniFocus database through the omnifocus-operator MCP. Use
   when the user mentions OmniFocus, GTD, inbox processing, tags, projects,
   folders, defer dates, or perspectives.
+disable-model-invocation: true
 ---
 
 # OmniFocus

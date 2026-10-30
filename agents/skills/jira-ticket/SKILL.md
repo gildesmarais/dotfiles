@@ -4,6 +4,7 @@ description: >-
   Investigate, scope, implement, or create a Jira ticket via Atlassian MCP and
   sync its status (e.g. Ready for Review after PR open). Use for Jira URLs/keys,
   follow-up tickets under an epic, and post-PR Jira handoff.
+disable-model-invocation: true
 ---
 
 # Jira Ticket

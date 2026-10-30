@@ -5,6 +5,7 @@ description: >-
   product vs eng scope, emit a Triage Ledger. Use for Sentry/errors/timeouts,
   scrape failures, fail-closed UX, /triage, /intake, or unclear admit-scope vs
   plan.
+disable-model-invocation: true
 ---
 
 # Triage

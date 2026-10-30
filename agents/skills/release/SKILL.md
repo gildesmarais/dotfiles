@@ -3,6 +3,7 @@ name: release
 description: >-
   Release notes from Conventional Commits in a merged ship range. Use when the
   user wants a changelog or release notes after merge.
+disable-model-invocation: true
 ---
 
 # Release
