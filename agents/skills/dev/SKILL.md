@@ -39,7 +39,7 @@ Single Build entry. Load packs/overlays by name; never paste their bodies. Craft
    | SwiftUI / WidgetKit / AppKit UI                                           | `swift-dev` + `swiftui-dev`         |
    | `.ts` / `.tsx` / `.js` / `.jsx`                                           | `typescript-dev`                   |
 
-3. **On signal:** tests / dual paths / acceptance → [`reference/surgical-laws.md`](reference/surgical-laws.md); material API claim → [`reference/api-truth.md`](reference/api-truth.md); committing or executing a plan → [`reference/plan.md`](reference/plan.md). **AGENTS.md load**, security and observability cues: [`../CONTEXT.md`](../CONTEXT.md); co-load the security lens when clearly needed.
+3. **On signal:** tests / dual paths / acceptance → [`reference/surgical-laws.md`](reference/surgical-laws.md); material API claim → [`reference/api-truth.md`](reference/api-truth.md); committing or executing a plan, or delegating to subagents → [`reference/plan.md`](reference/plan.md). **AGENTS.md load**, security and observability cues: [`../CONTEXT.md`](../CONTEXT.md); co-load the security lens when clearly needed.
 4. **Compat:** classify internal vs stable public. Possibly-breaking change to a stable surface with unclear permission → ask first. No silent shims, no silent breaks.
 5. **No destructive git** (`push --force`, hard reset, …) unless explicitly asked.
 6. **Validation:** repo-native entrypoints, narrow → broad, per phase. Never claim green without an observed exit 0 for each cited command.
