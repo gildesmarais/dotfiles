@@ -34,7 +34,7 @@ Route instead: "review/findings" → `review.gil` (co-load survey only when tree
 1. Evidence labels when surveying: Strong / Worth / Speculative (see [`reference/structure-survey.md`](reference/structure-survey.md)).
 2. Craft stays language-free; recipes live in `{lang}-dev`, overlays, or project `AGENTS.md` (via `$dev`).
 3. Structural signals → survey before or with craft.
-4. Phase → validate → commit: [`../dev/reference/phase-commits.md`](../dev/reference/phase-commits.md). Dirty-tree git / default-branch commit prompts owned by `$dev`.
+4. Phase → validate → commit: [`../dev/reference/plan.md`](../dev/reference/plan.md). Dirty-tree git / default-branch commit prompts owned by `$dev`.
 5. **Blocking:** before designing/refactoring, read each matched branch reference (+ [`reference/glossary.md`](reference/glossary.md) for terms).
 
 ## Branch reference
@@ -43,7 +43,7 @@ Route instead: "review/findings" → `review.gil` (co-load survey only when tree
 
 ## Handoff
 
-Return one ledger (required before coding continues via `$dev`) in **Delivery Ledger** shape (`$dev` Handoff) plus craft deltas: branches loaded; craft decisions (structural / type / boundary / perf), each with the rejected alternative, implement must honor; residuals incl. dual ownership; commits made or deferred.
+Return one ledger (required before coding continues via `$dev`) in **Delivery Ledger** shape ([`../CONTEXT.md`](../CONTEXT.md)) plus craft deltas: branches loaded; craft decisions (structural / type / boundary / perf), each with the rejected alternative, implement must honor; residuals incl. dual ownership; commits made or deferred.
 
 - Craft touched code → re-route through `$dev` → `{lang}-dev` / overlay for validation before Assure / Ship.
 - Then `review.gil` / `pull-request` — never reverse; never skip `$dev` validation when code changed.

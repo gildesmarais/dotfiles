@@ -1,6 +1,22 @@
-# Phase commits
+# Plan
 
-Load when committing (plan phase or surgical milestone), or when executing a `$dev` `plan` todo loop.
+`$dev` `plan` contract and phase-commit law. Load for `plan`, and when committing or executing a plan todo loop.
+
+## Plan contract
+
+The planning session writes no code. Each todo names:
+
+- exact repo-relative files
+- one gate copied from repo evidence (`AGENTS.md`, `Makefile`, CI); none trustworthy → halt and name the missing contract, never invent
+- its Conventional Commit message
+
+Embed these checklist lines where signaled (a plan is not a findings report; `review.gil` `findings` runs after implement):
+
+- **finish:** one home per fact; golden-path invariants (cite `AGENTS.md`); non-goals + residual risks with mitigations.
+- **tests** (behavior changes): each phase names its test flight height per `surgical-laws.md`.
+- **perf:** budgets + measure method; hot path isolated; optimize only measured breaches.
+- **security** (sandbox/boundary): capabilities justified; boundaries validated; no secrets/PII in logs.
+- **observability** (≥2 phases): log category per subsystem; levels + privacy; bridged error path if applicable.
 
 ## Commit law
 

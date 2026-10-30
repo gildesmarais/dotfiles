@@ -46,7 +46,6 @@ Resolve scripts relative to this skill directory. `quality` skips this and runs 
 
 ## Branch reference
 
-- Plan gates: [`reference/plan-checklists.md`](reference/plan-checklists.md).
 - New lens / harvest: [`reference/growth.md`](reference/growth.md).
 
 ## Handoff
@@ -55,7 +54,7 @@ Resolve scripts relative to this skill directory. `quality` skips this and runs 
 - Structural findings **name** the `architecture` branch; remediation enters via `$dev`.
 - End-to-end PR review + publish stays here; verified ledger → `pull-request` `comment`. Never reverse.
 - `findings` never writes to GitHub. Land + Yes/Conditional → `pull-request` `open` only when land was asked.
-- Recurring failure classes → `harvest`. Delivery Ledger fields: `$dev` Handoff.
+- Recurring failure classes → `harvest`. Delivery Ledger: `../CONTEXT.md`.
 
 ## Completion criteria
 

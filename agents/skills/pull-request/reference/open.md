@@ -14,7 +14,7 @@ First match of `/[A-Z][A-Z0-9]+-\d+/` in `git branch --show-current`. Found → 
 
 ## Commit message
 
-Prefer phase commits already authored during Build. Only if the tree is still dirty, commit session-touched files once with Conventional Commits ([`../../dev/reference/phase-commits.md`](../../dev/reference/phase-commits.md)), ticket right after scope:
+Prefer phase commits already authored during Build. Only if the tree is still dirty, commit session-touched files once with Conventional Commits ([`../../dev/reference/plan.md`](../../dev/reference/plan.md)), ticket right after scope:
 
 ```text
 type(scope): [ABC-123] summary

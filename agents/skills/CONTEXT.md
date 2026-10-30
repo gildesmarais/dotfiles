@@ -31,8 +31,16 @@ Glossary SoT. Handoff procedures live in each skill's `## Handoff`.
 **Classification**: `surgical` | `design` | `review-hand-off`. **Design** → `architecture`. Axioms on every `implement`.
 **API truth**: repo docs → Dash → Context7 → pack secondary → unknown; warn once on first material fallthrough per session.
 **Security cue** / **Observability cue**: sensitive surfaces → `review.gil` `security` lens; APM/trace/error/log links → matching observability MCP. No vendor recipes in routers.
-**Delivery Ledger**: handoff DTO emitted by `$dev` Handoff → `review.gil` → `pull-request` / `harvest`.
-**Phase commit**: `$dev` procedure — `dev/reference/phase-commits.md`.
+**Delivery Ledger**: handoff DTO emitted by `$dev` at delivery → `review.gil` → `pull-request` / `harvest`. Fields:
+- `Classification / Branches`: `surgical` | `design` and active branches
+- `Target Files`: exact paths matchable against `git diff --name-only <task_baseline>`
+- `Verification`: command executed + exit 0 observed
+- `Phase Commits`: hashes & rationale (or explicit deferral on default branch)
+- `Active Lenses`: `security`, `tests`, `perf`, `legacy`
+- `Readiness`: `Yes` | `No` | `Conditional`
+- `Residuals / Debt`: deferred items or N/A
+
+**Phase commit**: `$dev` procedure — `dev/reference/plan.md`.
 
 ## Harvest
 

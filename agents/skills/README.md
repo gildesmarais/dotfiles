@@ -53,8 +53,8 @@ Build path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`. `$dev
 1. **Product before non-trivial scope** — feature / `jira-ticket` → `product-owner` `gate` → `$dev plan`. Multi-slice / UX-mandated AC → `story-slice` → `$dev plan`. Skip gate for bug fix / refactor / infra. Incident without Jira → `triage` first.
 2. **Craft ≠ product** — `architecture` / `dev` / `*-dev` / `review.gil` never answer "should we build X?".
 3. **Build entry is `$dev`** — classify / route there; axioms on every `implement`; `{lang}-dev` from touched-file evidence.
-4. **Plans → `$dev` `plan`** — each todo names files, one gate, Conventional Commit message; execute via [`dev/reference/phase-commits.md`](dev/reference/phase-commits.md).
-5. **Assure → Ship** — `findings` never posts; `publish` in `review.gil`; verified ledger → `pull-request` `comment`. Delivery Ledger: `dev/SKILL.md` Handoff.
+4. **Plans → `$dev` `plan`** — each todo names files, one gate, Conventional Commit message; execute via [`dev/reference/plan.md`](dev/reference/plan.md).
+5. **Assure → Ship** — `findings` never posts; `publish` in `review.gil`; verified ledger → `pull-request` `comment`. Delivery Ledger: `CONTEXT.md`.
 6. **Explain → docs** — `communication` → `docs` `editor`; never reverse.
 7. **Overlays via `$dev`** — `ruby-on-rails-dev` with `ruby-dev`; `swiftui-dev` with `swift-dev`.
 8. **Decide** — `grilling` stress-tests; scope doctrine with `product-owner`.
