@@ -1,53 +1,41 @@
 ---
 name: ops-chore
 description: >-
-  Closed-loop service ops chore: verify observability, triage queues and errors,
-  score APM, and admit service fixes. Use for /ops-chore, ops chore, run ops,
-  weekly ops, full ops, quick ops, APM chores, post-deploy, datadog, or apply dashboard.
+  Closed-loop service ops review: verify observability, triage queues and
+  errors, score APM, admit service fixes to an Ops Ledger. Use for /ops-chore,
+  ops chore, weekly or quick ops, post-deploy check, dashboard apply.
 disable-model-invocation: true
 ---
 
 # Ops Chore
 
-Closed-loop service ops review: verify observability, triage queues and errors, score APM, and admit service fixes to the Ops Ledger. Does not implement application code.
+Verify observability, triage queues and errors, score APM, and admit service fixes. Evidence in, Ops Ledger out; never application code.
 
 ## Pick branch
 
-Resolve preset from trigger or lookback:
-- `quick`: "quick ops", "APM chores", "integrity", or unadorned trigger with lookback ≤ 3d.
-- `post-deploy`: "post-deploy", "after deploy", "collector check", or deploy marker in lookback. Default lookback 2h.
-- `full`: "weekly ops", "full ops", "deep APM", "datadog", "apply dashboard" (forces dashboard apply), or default lookback > 3d (default 14d).
+Presets (bands in [`reference/playbook.md`](reference/playbook.md)); first match wins:
 
-Lookback: user window → prior ledger `Window.end` → now (same service) → default. Ask at most 1 question only if lookback is ambiguous without prior ledger or deploy cue. Details: [`reference/presets.md`](reference/presets.md).
+1. `post-deploy` — "post-deploy", "after deploy", "collector check", or a deploy marker in the window. Default window 2h.
+2. Explicit words: `quick` ("quick ops", "APM chores", "integrity", default window 3d) · `full` ("weekly ops", "full ops", "deep APM", "dashboard apply" — forces band 7, default window 14d).
+3. Unadorned trigger: window ≤ 3d → `quick`, else `full`.
+
+Window: user's → prior Ops Ledger end → now (same service only) → preset default. Ask one question only when the window is ambiguous with no prior ledger or deploy cue.
 
 ## Shared prep
 
-1. **Target**: Resolve from current workspace (monitoring config, OTEL service name, Sentry project, Datadog/OpenObserve targets, dashboard generator). Query telemetry via available Datadog or OpenObserve MCP tools / CLIs. If workspace defines no observability target, stop. Never query another repo's streams, org, or boards.
-2. **Hard stops**: Load [`reference/hard-stops.md`](reference/hard-stops.md). Read-only by default; write allowed only for live dashboard apply on an owned board. Never implement app code, open PRs, drain jobs, or raise limits.
-3. **Admit service fixes**: Every Strong reliability/APM finding must admit a concrete code/config change with target files and rejected alternative, or explicitly state deferral reason.
-4. **Incidents**: Active outage or incident mid-run → immediately hand off to `triage`.
+1. **Target:** the workspace's monitoring config (service name, error project, telemetry backends, dashboard generator) defines the target; query it through available observability tools ([`../CONTEXT.md`](../CONTEXT.md) Observability cue). None defined → stop and say so.
+2. **Constraints:** load [`reference/hard-stops.md`](reference/hard-stops.md) every run.
+3. Active outage mid-run → hand off to `triage` now.
 
 ## Branch reference
 
-- Presets & scope: [`reference/presets.md`](reference/presets.md)
-- Playbook execution (bands 1–8): [`reference/playbook.md`](reference/playbook.md)
-- Hard stops & mutation boundary: [`reference/hard-stops.md`](reference/hard-stops.md)
-- Ops Ledger DTO schema: [`reference/ledger.md`](reference/ledger.md)
+- [`reference/playbook.md`](reference/playbook.md) — preset bands; load only the bands the preset runs (bands 5–7 on `full` or signal).
+- [`reference/ledger.md`](reference/ledger.md) — Ops Ledger schema and the admission rule.
 
 ## Handoff
 
-| Signal | Next |
-| --- | --- |
-| Active incident | `triage` |
-| Admitted items (user requested plan) | `$dev` `plan` with admitted items |
-| Admitted items (no plan request) | Stop after ledger; items seed future `$dev` plan |
-| Product / journey ambiguity | `product-owner` `gate` |
+Admitted items seed `$dev` `plan` (continue into it only when asked; otherwise stop after the ledger). Product-visible gaps → `product-owner` `gate`.
 
 ## Completion criteria
 
-- Ops Ledger emitted matching schema in [`reference/ledger.md`](reference/ledger.md).
-- Selected preset and lookback recorded on ledger.
-- All preset bands completed or marked blocked/NA with explicit reason.
-- Every Strong reliability/APM finding has an admitted `$dev` plan item or explicit deferral.
-- Dashboard applied with id/hash or marked N/A with reason.
-- Hard stops honored; zero direct application code or worktree modifications.
+Ledger emitted per `ledger.md` with preset and window; each band done, N/A, or blocked with a reason; every Strong finding admitted or deferred; dashboard apply recorded or N/A; hard stops honored.

@@ -4,7 +4,7 @@
 description_max_words: 45
 line_cap: 100
 words:
-  CONTEXT.md: 169
+  CONTEXT.md: 181
   architecture/SKILL.md: 472
   architecture/reference/axioms.md: 128
   architecture/reference/deep-modules.md: 404
@@ -40,11 +40,10 @@ words:
   jira-ticket/SKILL.md: 558
   omnifocus/SKILL.md: 309
   omnifocus/reference/applescript.md: 254
-  ops-chore/SKILL.md: 424
-  ops-chore/reference/hard-stops.md: 184
-  ops-chore/reference/ledger.md: 155
-  ops-chore/reference/playbook.md: 403
-  ops-chore/reference/presets.md: 231
+  ops-chore/SKILL.md: 301
+  ops-chore/reference/hard-stops.md: 129
+  ops-chore/reference/ledger.md: 130
+  ops-chore/reference/playbook.md: 359
   pr-sweep/SKILL.md: 218
   pr-sweep/reference/report.md: 166
   product-owner/SKILL.md: 384

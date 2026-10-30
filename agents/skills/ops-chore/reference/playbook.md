@@ -1,54 +1,37 @@
 # Playbook
 
-Execution bands for closed-loop ops chores. Query telemetry (APM, metrics, logs) via available Datadog or OpenObserve MCP tools / CLIs.
-Evidence labels: Strong / Worth / Speculative.
-Trace duration: microseconds (`SearchSQL`) or Datadog span duration. Never select `body` or `message` in board SQL.
+Evidence labels Strong / Worth / Speculative. Every Strong finding admits per `ledger.md`; none edits code.
 
-## 1. Observability Integrity
+| Preset | Bands |
+| --- | --- |
+| `quick` | 1, 2, 3, 4; 5–6 only if integrity shows a WARN/ERROR spike; 7 only if requested or a panel query is Strongly wrong |
+| `post-deploy` | 1 (streams, exporter sent/failed/refused, accessories), 2 (heartbeat/ready, new exception classes, 5xx excluding probes); 5 only if a tick falls in-window; 7 only if the deploy touched monitoring JSON |
+| `full` | 1–6; 7 if live board differs from generator output for an admitted fix, or requested |
 
-- Streams/indexes, `otelcol_*` sent/failed/refused, severity histogram, empty/`0` severity.
-- Post-deploy: missing series indicates a Strong host/accessory issue (not app code).
+## 1. Observability integrity
 
-## 2. Reliability & Queue Triage
+Streams/indexes, exporter sent/failed/refused counters, severity histogram (empty/`0` severity). Post-deploy: a missing series is a Strong host/accessory issue, not app code.
 
-- Repo-exported queue/job gauges; exceptions grouped by type and frame (ignore expected health-check errors).
-- Sentry or Datadog unresolved/regressed issues for this service.
-- Scheduled jobs checked against repo schedule definitions; notification/mailer failures.
-- Strong findings admit service fixes (health check failure text, discardable failed jobs with code guards, broken scheduled jobs) or host seeds.
+## 2. Reliability & queues
 
-## 3. APM Scoring
+Repo-exported queue/job gauges; exceptions by type and frame; unresolved or regressed error-tracker issues for this service; scheduled jobs against repo schedule definitions; notification/mailer failures. Admit service fixes (health-check text, discardable failed jobs with guards, broken schedules) or host seeds.
 
-- Rank server spans by p95 on routes declared in repo router/dashboards; slow SQL via `o2_db_query_norm` or Datadog resource breakdown when present.
-- For each Strong slow route: identify bottleneck class (placement, N+1, cache key cost, outbound I/O), admit fix with target files and 1-line rejected alternative.
-- Defer external HTTP latency or admit client timeouts/circuit breakers.
+## 3. APM
 
-## 4. Capacity & Cost
+Rank server spans by p95 on routes the repo declares; slow SQL where the backend exposes it. For each Strong slow route name the bottleneck class (placement, N+1, cache-key cost, outbound I/O), target files, and a one-line rejected alternative. External latency: defer, or admit timeouts/circuit breakers.
 
-- Disk % and trend toward 85%; span/log volume; export noise.
-- Host paths recorded as ledger seeds.
-- Collector filter / sampling adjustments admitted as `$dev` plan items (monitoring config).
+## 4. Capacity & cost
 
-## 5. Product Golden Paths
+Disk % and trend toward 85%; span/log volume and export noise. Host paths become seeds; collector filter/sampling changes are admitted items.
 
-- Product events and notification outcomes defined in repo; late scheduled jobs. If repo defines no product events, mark N/A.
-- Missing events: admit instrumentation fix via `$dev` plan only if Strong code evidence exists; otherwise route to `product-owner`.
+## 5. Product golden paths
 
-## 6. Security Skim
+Repo-defined product events, notification outcomes, late scheduled jobs; none defined → N/A. Missing events: admit instrumentation only with Strong code evidence, else `product-owner`.
 
-- Throttle hits, `Rack::Protection`, and scanner fingerprints.
-- Admit matcher updates for new public endpoints. Never raise rate limits.
+## 6. Security skim
 
-## 7. Dashboard Apply (Conditional)
+Throttle hits, framework-protection events, scanner fingerprints. Admit matcher updates for new public endpoints.
 
-- **Triggers**:
-  - User requested "apply dashboard" / "update live board".
-  - Strong evidence that live `GetDashboard` query differs from repo generator output for an active panel.
-  - Admitted panel fix landed on named branch and user requested apply.
-- **Procedure**:
-  1. `ListDashboards` in folder `default` → `GetDashboard` for id and hash (re-list on 404).
-  2. If generator must change: admit `$dev` plan item (never hand-edit live SQL).
-  3. If repo JSON is current and live board is stale: execute `UpdateDashboard` with full body for repo-owned board; record id and hash on ledger.
+## 7. Dashboard apply
 
-## 8. Ops Ledger
-
-- Emit completed Ops Ledger per [`ledger.md`](ledger.md).
+Triggers: user asked; a live panel query differs from generator output; an admitted panel fix landed on the named branch and apply was requested. List the repo-owned folder, read the board's id and hash (re-list on 404). Generator must change → admit it, never hand-edit. Repo JSON current and live stale → update with the full body; record id and hash.
