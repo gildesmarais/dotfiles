@@ -1,10 +1,9 @@
 ---
 name: review.gil
 description: >-
-  Review a local change, branch, or PR for production readiness, tests,
-  performance, security, legacy/dead-compat debt, or merge-prep quality. Use for
-  findings-ready review, PR code review, publishing to a PR, /code-review,
-  /review.gil, or a production-readiness / test-quality pass.
+  Review a change, branch, or PR for production readiness, tests, performance,
+  security, dead compat, or merge-prep; publish a review to a PR. Use for PR
+  code review, /code-review, /review.gil.
 ---
 
 # Review

@@ -4,17 +4,13 @@ Production-readiness baseline. Report only — no boy-scout edits. PR targets: P
 
 ## Output format (required)
 
-All lenses fold into this single report.
+All lenses fold into this single report. Always emit **Findings** and **Readiness**; emit the other sections only when non-empty or when a Critical finding exists.
 
 **Findings** — Critical / Important / Nice-to-Have; each with impact + recommended action.
 
-**Non-Goals** — explicit exclusions and intentionally unaddressed areas.
+**Readiness** — Production readiness: Yes / No / Conditional; top risks; immediate actions.
 
-**Confidence & Uncertainty** — known facts vs inferred/unverified.
-
-**Compliance & Risk Posture** — what passes, what gets flagged, minimum viable remediation or compensating controls.
-
-**Executive Summary** — Production readiness: Yes / No / Conditional; top risks; immediate actions.
+Optional: **Non-Goals** (explicit exclusions), **Confidence & Uncertainty** (known facts vs inferred/unverified), **Compliance & Risk Posture** (what passes, what is flagged, minimum viable remediation or compensating controls).
 
 ## Incident / fix-diff postures
 

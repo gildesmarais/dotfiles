@@ -26,9 +26,9 @@ words:
   dependabot/reference/pr-commands.md: 146
   dependabot/reference/triage.md: 153
   dependabot/reference/yml-keys.md: 84
-  dev/SKILL.md: 595
+  dev/SKILL.md: 616
   dev/reference/api-truth.md: 101
-  dev/reference/plan.md: 352
+  dev/reference/plan.md: 291
   dev/reference/surgical-laws.md: 101
   docs/SKILL.md: 322
   docs/reference/architecture.md: 254
@@ -47,12 +47,12 @@ words:
   ops-chore/reference/presets.md: 231
   pr-sweep/SKILL.md: 218
   pr-sweep/reference/report.md: 166
-  product-owner/SKILL.md: 388
+  product-owner/SKILL.md: 384
   product-owner/reference/gate.md: 486
   product-owner/reference/groom.md: 544
   product-owner/reference/rebaseline.md: 352
   product-owner/reference/story-slice.md: 154
-  pull-request/SKILL.md: 483
+  pull-request/SKILL.md: 397
   pull-request/reference/comment.md: 239
   pull-request/reference/conflicts.md: 187
   pull-request/reference/fix-ci.md: 202
@@ -65,9 +65,9 @@ words:
   pull-request/reference/slice.md: 417
   release/SKILL.md: 158
   release/reference/notes.md: 94
-  review.gil/SKILL.md: 500
+  review.gil/SKILL.md: 492
   review.gil/reference/conventional-comments.md: 167
-  review.gil/reference/finish.md: 354
+  review.gil/reference/finish.md: 365
   review.gil/reference/github-state.md: 372
   review.gil/reference/growth.md: 93
   review.gil/reference/legacy.md: 351

@@ -1,6 +1,6 @@
 # Plan
 
-`$dev` `plan` contract and phase-commit law. Load for `plan`, and when committing or executing a plan todo loop.
+`$dev` `plan` contract and phase-commit law. Load for `plan`, and when committing or executing a plan.
 
 ## Plan contract
 
@@ -25,12 +25,6 @@ Embed these checklist lines where signaled (a plan is not a findings report; `re
 - On default: commit only when asked once at plan time. Never silently commit on main/master.
 - Carriers: `$dev` Shared prep (Build), `architecture` Shared prep (Solution). `release` `notes` only consumes merged history — don't defer authoring. Overlays never restate this.
 
-## Plan todo loop
+## Execution
 
-Host-neutral (plan todos or plan text). The plan file is exempt from clean-tree, bounds, and stash.
-
-1. Next = first todo with no matching commit; worktree clean **except the plan file**.
-2. Hand prompt: plan path, phase id, files, gate; load `$dev` `implement`; skip `review.gil`; do not commit. Retry adds one error line.
-3. Bounds: `git diff --name-only` + untracked (plan file exempt) equals the todo's files. Gate exit 0 → stage those files, commit the todo message. Else `git stash push --include-untracked -m "<slug>/<phase>" -- . ':!<plan path>'`. Second failure on the same phase stops.
-4. After the last commit: one `review.gil` `findings` (return in chat). Code-needing findings → follow-up plan.
-5. Resume: compare todos to `git log`.
+Todo tracking and sequencing belong to the host. Per todo: change only its files, run its gate (exit 0 observed), then commit its message with only those files staged; a failed gate twice on one phase stops the run. After the last commit, one `review.gil` `findings` (return in chat); code-needing findings become a follow-up plan. Resume by comparing todos to `git log`.

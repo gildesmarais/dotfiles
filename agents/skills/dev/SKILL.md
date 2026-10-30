@@ -1,9 +1,9 @@
 ---
 name: dev
 description: >-
-  Build router: classify, route language packs/overlays, phase commits, API
-  truth. Use for implement, fix, feature, change the code, implementation plan,
-  phased plan, surgical or design coding; also optimize, hot path, profile.
+  Build entry: classify, route language packs, phase commits. Use for implement,
+  fix, feature, code change, implementation or phased plan, optimize, hot
+  path, profile.
 ---
 
 # Dev
@@ -27,16 +27,16 @@ Single Build entry. Load packs/overlays by name; never paste their bodies. Craft
    - Earn `design` on: dual ownership, shallow modules, primitive obsession across boundaries, structural cleanup, measured perf, type-driven refactor, named patterns. Ambiguous → `design`. Packs may only append "also earn when…" signals.
    - A prompt naming a plan path and phase id inherits that classification and its architecture decisions; no second pass.
    - `design` earned without inheritance → invoke `architecture` and record seam decisions in the plan or milestone ledger **before** writing code.
-2. **Route by touched files** (not repo-wide presence); multi-load OK; validate per surface; clarify only when signals are absent or contradictory.
+2. **Route by touched files** (not repo-wide presence); multi-load OK; packs load their own `reference.md` only on its signal; validate per surface; clarify only when signals are absent or contradictory.
 
    | Touched                                                                   | Load                                |
    | ------------------------------------------------------------------------- | ----------------------------------- |
-   | `.rb` / gem / plain Ruby                                                  | `ruby-dev` (+ `reference.md`)       |
+   | `.rb` / gem / plain Ruby                                                  | `ruby-dev`                         |
    | Rails-shaped (controllers, policies, serializers, workers, migrations, …) | `ruby-dev` + `ruby-on-rails-dev`    |
-   | `.rs`                                                                     | `rust-dev` (+ `reference.md`)       |
+   | `.rs`                                                                     | `rust-dev`                         |
    | `.swift` (non-UI)                                                         | `swift-dev`                         |
    | SwiftUI / WidgetKit / AppKit UI                                           | `swift-dev` + `swiftui-dev`         |
-   | `.ts` / `.tsx` / `.js` / `.jsx`                                           | `typescript-dev` (+ `reference.md`) |
+   | `.ts` / `.tsx` / `.js` / `.jsx`                                           | `typescript-dev`                   |
 
 3. **On signal:** tests / dual paths / acceptance → [`reference/surgical-laws.md`](reference/surgical-laws.md); material API claim → [`reference/api-truth.md`](reference/api-truth.md); committing or executing a plan → [`reference/plan.md`](reference/plan.md). **AGENTS.md load**, security and observability cues: [`../CONTEXT.md`](../CONTEXT.md); co-load the security lens when clearly needed.
 4. **Compat:** classify internal vs stable public. Possibly-breaking change to a stable surface with unclear permission → ask first. No silent shims, no silent breaks.
@@ -52,7 +52,7 @@ Single Build entry. Load packs/overlays by name; never paste their bodies. Craft
 
 Path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; never reverse. Emit the **Delivery Ledger** ([`../CONTEXT.md`](../CONTEXT.md)) at delivery → `review.gil`.
 
-- **Post-delivery Assure** (every `implement`, before the delivery report): prefer a subagent running `review.gil` `findings` (+ warranted lenses) with the Ledger; else reload in-session. Trivial diffs may skip (state why). `quality` only on explicit merge-prep / boy-scout / authorized P0/P1. Land ask + Yes/Conditional → `pull-request` `open`.
+- **Post-delivery Assure** (before the delivery report): run it for `design`, a stable-surface change, a matched security/perf/tests cue, or a land ask — prefer a subagent running `review.gil` `findings` (+ warranted lenses) with the Ledger, returning only Findings + Readiness; else reload in-session. A `surgical` change with green gates and no cue skips it (state why). `quality` only on explicit merge-prep / boy-scout / authorized P0/P1. Land ask + Yes/Conditional → `pull-request` `open`.
 - `harvest` when pain repeats, a fix was non-obvious, or asked.
 - Forward doc (post-Assure, Yes/Conditional): non-obvious maintenance → repo `AGENTS.md`; skip if self-documenting.
 

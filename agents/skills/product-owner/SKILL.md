@@ -1,9 +1,9 @@
 ---
 name: product-owner
 description: >-
-  Admit, defer, or reject product scope; slice Given/When/Then stories; admit
-  debt tranches; re-baseline doctrine. Use for feature proposals, scope debates,
-  UI/API expansion, UAT that changes scope, or "should we build X?".
+  Admit, defer, or reject product scope; slice stories; admit debt tranches; re-
+  baseline doctrine. Use for feature proposals, scope debates, UI/API
+  expansion, or "should we build X?".
 ---
 
 # Product Owner
