@@ -20,6 +20,20 @@ module Skill
       File.join(@dotfiles_root, "agents", "skills")
     end
 
+    # Repo-side entries rcup links into ~/.claude/skills (Claude Code does not
+    # read ~/.agents/skills). Each one is a relative symlink into the store.
+    def claude_dir
+      File.join(@dotfiles_root, "claude", "skills")
+    end
+
+    def claude_entry_path(name)
+      File.join(claude_dir, name)
+    end
+
+    def claude_entry_target(name)
+      File.join("..", "..", "agents", "skills", name)
+    end
+
     def home_dir
       return @home_dir unless @home_dir.nil? || @home_dir.empty?
 

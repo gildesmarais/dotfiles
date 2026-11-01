@@ -35,7 +35,7 @@ Personal and custom [Agent Skills](https://agentskills.io/) live in [`agents/ski
 | Who                             | How to install                                                                                           |
 | ------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | Any machine (no clone / `rcup`) | [`npx skills`](https://github.com/vercel-labs/skills) — see below                                        |
-| This machine (dotfiles + `rcm`) | `rcup` → `~/.agents/skills/` (also via topgrade `RCM: rcup`)                                             |
+| This machine (dotfiles + `rcm`) | `rcup` → `~/.agents/skills/` and `~/.claude/skills/` (also via topgrade `RCM: rcup`)                     |
 | Optional third-party packs      | Separate `npx skills add` — [agents/skills/README.md](agents/skills/README.md#optional-packs-not-os-sot) |
 
 ### Install skills (any machine)
@@ -54,7 +54,7 @@ Browse with `--list`, then install all (`-g` = user-level) or pick skills with `
 
 1. **Experiment** in any repo under `.agents/skills/`.
 2. **Promote** proven skills: `skill promote <name>` → moves into `agents/skills/` in this repo.
-3. **Install** with `rcup` (or wait for topgrade) so agents see `~/.agents/skills/<name>/`.
+3. **Install** with `rcup` (or wait for topgrade) so agents see `~/.agents/skills/<name>/` (and Claude Code `~/.claude/skills/<name>/`).
 
 ```sh
 skill list

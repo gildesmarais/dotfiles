@@ -118,4 +118,4 @@ Run tests with the macOS system Ruby 2.6:
 - When changing command behavior, update or add tests in `skill/test/cli_test.rb` first when practical.
 - Preserve Ruby 2.6 compatibility.
 - Prefer stdlib-only dependencies unless there is a strong reason not to.
-- First-party agent install is via `rcup` from `agents/skills/<name>/` into `~/.agents/skills/<name>/`. After `promote` / `rename` / `backfill`, run `rcup` (or wait for topgrade).
+- First-party agent install is via `rcup` from `agents/skills/<name>/` into `~/.agents/skills/<name>/`, and from `claude/skills/<name>` (symlink into the store, maintained by `promote` / `rename`, checked by `lint`) into `~/.claude/skills/<name>/` for Claude Code. After `promote` / `rename` / `backfill`, run `rcup` (or wait for topgrade).

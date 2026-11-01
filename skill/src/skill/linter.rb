@@ -41,6 +41,7 @@ module Skill
       check_links_resolve
       check_link_graph
       check_duplicate_lines
+      check_claude_entries
 
       @errors
     end
@@ -227,6 +228,29 @@ module Skill
 
         error("duplicate line in #{files.join(', ')}: #{truncate(norm)}")
       end
+    end
+
+    def check_claude_entries
+      names = @paths.store_skill_names
+      names.each do |name|
+        entry = @paths.claude_entry_path(name)
+        expected = @paths.claude_entry_target(name)
+        if !File.symlink?(entry)
+          error("claude/skills/#{name}: missing symlink to #{expected} (Claude Code reads ~/.claude/skills)")
+        elsif File.readlink(entry) != expected
+          error("claude/skills/#{name}: points to #{File.readlink(entry)}, expected #{expected}")
+        end
+      end
+
+      claude_entry_names.each do |name|
+        error("claude/skills/#{name}: no matching store skill") unless names.include?(name)
+      end
+    end
+
+    def claude_entry_names
+      return [] unless File.directory?(@paths.claude_dir)
+
+      Dir.children(@paths.claude_dir).reject { |name| name.start_with?(".") }.sort
     end
 
     def each_relative_md_link

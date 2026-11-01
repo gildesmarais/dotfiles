@@ -47,6 +47,7 @@ Do not optimize for:
 - The tool manages local directories in the dotfiles store; it should fail closed rather than overwrite unexpected paths.
 - Behavior should remain understandable from CLI output alone. Errors should be explicit and actionable.
 - Do not create agent install links. Print an `rcup` hint after promote/rename/backfill.
+- `promote` / `rename` keep `claude/skills/<name>` in sync inside the repo; `lint` fails on missing, wrong, or stale entries. They never write under `$HOME`.
 - `prune` only removes rcup links under `~/.agents/skills` whose store source is gone; it never creates links.
 - `Skill::Classifier` owns status, drift, and orphan detection; doctor/backfill/prune must not reimplement those rules.
 
@@ -54,6 +55,7 @@ Do not optimize for:
 
 - Store: `agents/skills/` at the dotfiles root
 - Agent install: `~/.agents/skills/<name>/` via `rcup` (file-level links from the store)
+- Claude Code install: `claude/skills/<name>` (relative symlink to `../../agents/skills/<name>`) → `~/.claude/skills/<name>/` via `rcup`; Claude Code does not read `~/.agents/skills`
 - Project promote source: `<project>/.agents/skills/` only (`.codex/skills/` is deprecated and rejected)
 - Main implementation: `skill/src/cli.rb`
 - Classifier: `skill/src/skill/classifier.rb`

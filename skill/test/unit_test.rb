@@ -404,6 +404,42 @@ class SkillUnitTest < Minitest::Test
     assert_equal([], errors)
   end
 
+  def test_linter_requires_claude_entry_for_each_store_skill
+    write_budgets("demo/SKILL.md" => 50)
+    write_router_skill("demo")
+    File.unlink(@paths.claude_entry_path("demo"))
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert_equal(1, errors.length)
+    assert_match(%r{claude/skills/demo: missing symlink to \.\./\.\./agents/skills/demo}, errors.first)
+  end
+
+  def test_linter_rejects_wrong_and_stale_claude_entries
+    write_budgets("demo/SKILL.md" => 50)
+    write_router_skill("demo")
+    File.unlink(@paths.claude_entry_path("demo"))
+    File.symlink("../../agents/skills/other", @paths.claude_entry_path("demo"))
+    write_claude_entry("gone")
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert_equal(2, errors.length)
+    assert(errors.any? { |e| e.include?("claude/skills/demo: points to") })
+    assert(errors.any? { |e| e.include?("claude/skills/gone: no matching store skill") })
+  end
+
+  def test_promote_and_rename_maintain_claude_entry
+    create_store_skill("old")
+    @operations.send(:add_claude_entry, "old")
+    assert_equal("../../agents/skills/old", File.readlink(@paths.claude_entry_path("old")))
+
+    @operations.rename_skill("old", "new")
+
+    refute(File.symlink?(@paths.claude_entry_path("old")))
+    assert_equal("../../agents/skills/new", File.readlink(@paths.claude_entry_path("new")))
+  end
+
   def test_linter_rejects_line_cap_breach
     write_budgets("demo/SKILL.md" => 500)
     lines = ["---", "name: demo", "description: short", "---", "", "# Demo"]
@@ -484,6 +520,8 @@ class SkillUnitTest < Minitest::Test
         e
       MD
     )
+
+    write_claude_entry("pack-dev")
 
     errors = Skill::Linter.new(paths: @paths).run
 
@@ -600,6 +638,11 @@ class SkillUnitTest < Minitest::Test
     File.write(File.join(@paths.agents_skill_path(name), "SKILL.md"), agent_body)
   end
 
+  def write_claude_entry(name)
+    FileUtils.mkdir_p(@paths.claude_dir)
+    FileUtils.ln_sf(@paths.claude_entry_target(name), @paths.claude_entry_path(name))
+  end
+
   def write_store_file(rel, body)
     path = File.join(@skills_dir, rel)
     FileUtils.mkdir_p(File.dirname(path))
@@ -638,6 +681,7 @@ class SkillUnitTest < Minitest::Test
     desc = description || "fixture router skill used by unit tests only"
     link_lines = links.map { |l| "- #{l}" }
     link_lines << "- none" if link_lines.empty?
+    write_claude_entry(name)
     body = <<~MD
       ---
       name: #{name}

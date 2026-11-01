@@ -72,6 +72,8 @@ class SkillCliTest < Minitest::Test
     refute_includes(result.output, "linked ")
     refute_includes(result.output, "npx skills")
     assert(File.directory?(File.join(@skills_dir, "my-skill")))
+    entry = File.join(@dotfiles_root, "claude", "skills", "my-skill")
+    assert_equal("../../agents/skills/my-skill", File.readlink(entry))
     refute_path_exists(local_skill)
     refute_path_exists(File.join(@agents_skills_dir, "my-skill"))
   end
@@ -204,6 +206,8 @@ class SkillCliTest < Minitest::Test
     MD
     FileUtils.mkdir_p(File.join(@skills_dir, "demo"))
     File.write(File.join(@skills_dir, "demo", "SKILL.md"), skill_body)
+    FileUtils.mkdir_p(File.join(@dotfiles_root, "claude", "skills"))
+    FileUtils.ln_s("../../agents/skills/demo", File.join(@dotfiles_root, "claude", "skills", "demo"))
     words = { "demo/SKILL.md" => skill_body.split(/\s+/).reject(&:empty?).size }
     File.write(
       File.join(@skills_dir, ".budgets.yml"),

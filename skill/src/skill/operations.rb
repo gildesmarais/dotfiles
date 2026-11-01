@@ -138,6 +138,7 @@ module Skill
       end
 
       FileUtils.mv(source, target)
+      add_claude_entry(name)
       @shell_ui.note("promoted #{name} -> #{target}")
       @shell_ui.note(RCUP_HINT)
     end
@@ -157,11 +158,26 @@ module Skill
       end
 
       FileUtils.mv(old_target, new_target)
+      remove_claude_entry(old_name)
+      add_claude_entry(new_name)
       @shell_ui.note("renamed #{old_name} -> #{new_name}")
       @shell_ui.note(RCUP_HINT)
     end
 
     private
+
+    def add_claude_entry(name)
+      entry = @paths.claude_entry_path(name)
+      return if File.symlink?(entry) || File.exist?(entry)
+
+      FileUtils.mkdir_p(@paths.claude_dir)
+      File.symlink(@paths.claude_entry_target(name), entry)
+    end
+
+    def remove_claude_entry(name)
+      entry = @paths.claude_entry_path(name)
+      File.unlink(entry) if File.symlink?(entry)
+    end
 
     def classifier
       @classifier ||= Classifier.new(paths: @paths)
