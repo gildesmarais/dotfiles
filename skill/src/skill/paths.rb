@@ -26,6 +26,13 @@ module Skill
       File.join(@dotfiles_root, "claude", "skills")
     end
 
+    # Top-level store files that skills cite as ../<file> and rcup must install.
+    SHARED_FILES = ["CONTEXT.md"].freeze
+
+    def shared_store_files
+      SHARED_FILES.select { |name| File.file?(File.join(store_dir, name)) }
+    end
+
     def claude_entry_path(name)
       File.join(claude_dir, name)
     end

@@ -231,7 +231,7 @@ module Skill
     end
 
     def check_claude_entries
-      names = @paths.store_skill_names
+      names = @paths.store_skill_names + @paths.shared_store_files
       names.each do |name|
         entry = @paths.claude_entry_path(name)
         expected = @paths.claude_entry_target(name)

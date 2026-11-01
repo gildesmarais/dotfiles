@@ -71,7 +71,7 @@ Router shape: `## Pick branch` → `## Shared prep` (omit when empty) → `## Br
 
 ## Operate the store
 
-Git-tracked `agents/skills/<name>/` is SoT. `rcup` installs file-level links into `~/.agents/skills/<name>/`. Claude Code only reads `~/.claude/skills`, so `claude/skills/<name>` (relative symlink into the store) makes `rcup` install there too; `skill promote` / `rename` maintain it and `skill lint` enforces it. Keep `SYMLINK_DIRS` unset for `agents` / `agents/skills` / `claude`. After clone/pull, promote/rename, or `backfill`, run `rcup` (or topgrade `RCM: rcup`).
+Git-tracked `agents/skills/<name>/` is SoT. `rcup` installs file-level links into `~/.agents/skills/<name>/`. Claude Code only reads `~/.claude/skills`, so `claude/skills/<name>` (relative symlink into the store) makes `rcup` install there too; `skill promote` / `rename` maintain it and `skill lint` enforces it. `CONTEXT.md` gets the same entry. `architecture/reference/axioms.md` is the always-on architecture rule: each host points at that one file (Claude: `@~/.agents/skills/architecture/reference/axioms.md` in `~/.claude/CLAUDE.md`), never a copy. Keep `SYMLINK_DIRS` unset for `agents` / `agents/skills` / `claude`. After clone/pull, promote/rename, or `backfill`, run `rcup` (or topgrade `RCM: rcup`).
 
 `rcup` installs `CONTEXT.md` so `../CONTEXT.md` citations resolve; keep `README.md` in `rcrc` `EXCLUDES`; never exclude `CONTEXT.md`. External `npx skills` installs may lack `CONTEXT.md` — fall back to [conventionalcommits.org](https://www.conventionalcommits.org/) v1.0.0 plus the `$dev` phase-commit law.
 

@@ -429,6 +429,17 @@ class SkillUnitTest < Minitest::Test
     assert(errors.any? { |e| e.include?("claude/skills/gone: no matching store skill") })
   end
 
+  def test_linter_requires_claude_entry_for_shared_context_file
+    write_budgets("demo/SKILL.md" => 50, "CONTEXT.md" => 20)
+    write_router_skill("demo")
+    write_store_file("CONTEXT.md", "# Vocabulary\n")
+
+    errors = Skill::Linter.new(paths: @paths).run
+
+    assert_equal(1, errors.length)
+    assert_match(%r{claude/skills/CONTEXT\.md: missing symlink}, errors.first)
+  end
+
   def test_promote_and_rename_maintain_claude_entry
     create_store_skill("old")
     @operations.send(:add_claude_entry, "old")

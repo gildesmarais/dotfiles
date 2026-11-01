@@ -6,7 +6,7 @@ line_cap: 100
 words:
   CONTEXT.md: 219
   architecture/SKILL.md: 442
-  architecture/reference/axioms.md: 127
+  architecture/reference/axioms.md: 250
   architecture/reference/deep-modules.md: 404
   architecture/reference/design-patterns.md: 202
   architecture/reference/glossary.md: 209

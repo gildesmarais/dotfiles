@@ -4,6 +4,7 @@ description: >-
   Build entry: classify, route language packs, phase commits. Use for implement,
   fix, feature, code change, implementation or phased plan, optimize, hot
   path, profile.
+disable-model-invocation: true
 ---
 
 # Dev
@@ -24,7 +25,7 @@ Single Build entry. Load packs/overlays by name; never paste their bodies. Craft
 ## Shared prep
 
 1. **Classify:** `surgical` | `design` | `review-hand-off` (→ stop → `review.gil`).
-   - Load [`architecture/reference/axioms.md`](../architecture/reference/axioms.md) on **every** `implement`; `architecture` `SKILL.md` + matched references only when `design` is earned.
+   - Axioms always-on ([`architecture/reference/axioms.md`](../architecture/reference/axioms.md)); `architecture` `SKILL.md` + matched references only when `design` is earned.
    - Earn `design` on: dual ownership, shallow modules, primitive obsession across boundaries, structural cleanup, measured perf, type-driven refactor, named patterns. Ambiguous → `design`. Packs may only append "also earn when…" signals.
    - A prompt naming a plan path and phase id inherits that classification and its architecture decisions; no second pass.
    - `design` earned without inheritance → invoke `architecture` and record seam decisions in the plan or milestone ledger **before** writing code.

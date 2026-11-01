@@ -1,15 +1,14 @@
 ---
 name: architecture
 description: >-
-  Language-free solution craft: module depth, type-driven refactors, wire
-  boundaries, measured perf, GoF, tree surveys. Use when $dev classifies design,
-  or for deepen/shallow, dual ownership, hot-path, which-pattern, promote/fold.
-disable-model-invocation: true
+  Structural craft for code: new modules, layers, adapters; deepen/shallow,
+  dual ownership, type-driven refactors, wire boundaries, measured perf, which
+  pattern, tree surveys. Skip single-file fixes.
 ---
 
 # Architecture
 
-Structure, types, boundaries, measured perf — not whether to build, not language validation. Not a Build entry: coding enters via `$dev`. [`reference/axioms.md`](reference/axioms.md) is the axioms SoT and rides along on every `$dev` `implement`; this router loads only when `design` is earned or a signal below matches.
+Structure, types, boundaries, measured perf — not whether to build, not language validation. Not a Build entry. [`reference/axioms.md`](reference/axioms.md) is the axioms SoT and is always-on; this router loads when `design` is earned or a signal below matches.
 
 ## Pick branch
 
