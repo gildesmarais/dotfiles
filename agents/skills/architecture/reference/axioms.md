@@ -1,3 +1,8 @@
+---
+description: Architecture axioms for any code change — reuse first, one owner, no shallow wrappers
+alwaysApply: true
+---
+
 # Axioms
 
 Always-on for any code change; hosts load this file directly. Repo structure and `AGENTS.md` win — axioms fill gaps and break ties. Scope for **Before** / **After**: new files, new modules, or edits spanning files; a single-file fix skips both.
@@ -6,13 +11,13 @@ Always-on for any code change; hosts load this file directly. Repo structure and
 
 Hold the change against:
 
-- **Deep Modules:** small interface, substantial private behavior; no shallow pass-through bags.
-- **Deletion Test:** removing or swapping a module must not cascade rewrites across unrelated consumers.
+- **Conform to Peers:** extend existing helpers and patterns before inventing; match how neighboring code is structured and named.
 - **Single Ownership:** each fact, rule, or expansion algorithm has one authoritative owner — no dual ownership between validate and execute, or between two adapters.
-- **Locality over Ceremony:** seams only where they buy testability or phased migration; wrong-layer domain surfaces fail locality even if deep.
-- **Wire vs Domain Boundary:** domain types enforce invariants at construction; boundary adapters map wire primitives in and out; no application logic in serialization shells.
+- **Deep Modules:** small interface, substantial private behavior; no shallow pass-through bags.
+- **Earn Every Abstraction:** extract on the third real use, not the first; seams only where they buy testability or phased migration. Inline it: if the complexity vanishes, it was a wrapper; if it reappears across many callers, it earns its place.
+- **Boundaries:** dependencies point toward the domain; domain types enforce invariants at construction; adapters map wire primitives in and out; no application logic in serialization shells or the wrong layer.
 
-**After:** on `git diff`, list each new file, class, and function. Apply the deletion test; flag any wrapper with one caller or one method; confirm placement matches peers. Fix before reporting.
+**After:** on `git diff`, list each new file, class, and function. Apply the inline test; flag any wrapper with one caller or one method; confirm placement matches peers. Fix before reporting.
 
 **Report:** one line — reused / owner / new abstractions (or none).
 
