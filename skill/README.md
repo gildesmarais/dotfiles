@@ -23,7 +23,7 @@ skill/
 ```
 
 - `src/cli.rb`: command parsing, dispatch, and help output
-- `src/skill/paths.rb`: canonical store, home, and project path resolution
+- `src/skill/paths.rb`: canonical store, `claude/skills` entry, home, and project path resolution
 - `src/skill/classifier.rb`: closed status set, real-file drift, and orphan-link detection
 - `src/skill/linter.rb`: store shape, word ratchet, link graph, and related lint checks
 - `src/skill/filesystem.rb`: shared skill-name safety helpers
@@ -51,11 +51,12 @@ Run the CLI entrypoint:
 
 Expected results:
 
-- `lint` checks store Markdown against `agents/skills/.budgets.yml` (word ratchet, description budget, 100-line hard cap), router/pinned headers, link resolve, link graph (acyclic, ≤2 hops from each `SKILL.md`, no router-to-router links), and duplicate lines; exits `0` with `lint ok`, else `1` with one finding per line
+- `lint` checks store Markdown against `agents/skills/.budgets.yml` (word ratchet, description budget, 100-line hard cap), router/pinned headers, link resolve, link graph (acyclic, ≤2 hops from each `SKILL.md`, no router-to-router links), duplicate lines, and `claude/skills/` entries (every store skill and shared `CONTEXT.md` needs a relative symlink into the store; wrong or stale entries fail); exits `0` with `lint ok`, else `1` with one finding per line
 - `doctor` prints aligned columns (padded name, then status: `ok`, `drift`, `home-only`, `broken`, `orphan`); exits `0` when no `drift` or `orphan`, else `1`
 - An **orphan** is a symlink under `~/.agents/skills/<name>/` whose target is inside the store and no longer exists; links pointing elsewhere are never orphans
 - `prune` deletes orphan links (and emptied directories), prints each `name/relative` path, and notes the count; a second run notes `no orphans to prune`
 - Agent install listing includes skill directories (and broken skill symlinks for `broken` status); excludes vocabulary file symlinks such as `CONTEXT.md`
+- `promote` / `rename` also create, move, or remove `claude/skills/<name>` inside the repo (never under `$HOME`); run `rcup` to install
 - `backfill <name>` prints each copied relative path, notes an `rcup` hint, and refuses home-only / broken / no-drift / missing store skills
 - After `backfill`, run `rcup` (or wait for topgrade) so `~/.agents/skills` matches the store again
 
