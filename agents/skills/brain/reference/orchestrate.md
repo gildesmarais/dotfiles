@@ -25,6 +25,15 @@ Gate: <repo-native command>
 Timebox: <turns or minutes>
 ```
 
+Merge-main variant (smallest tier; replaces the task fields):
+
+```text
+Task: <PR> — merge origin/main, no rebase/force. You MAY commit the merge.
+Resolve keeping both sides; generated swagger → take main's copy, then regenerate.
+Semantic conflict → `git merge --abort`, return blocked with the hunks.
+Return: merge SHA, conflicted files + how each was resolved, narrow check exit codes.
+```
+
 ## Tiers
 
 Set `model` and `effort` per spawn; the strongest tier is where defects get caught, the small tier is where cost is saved.

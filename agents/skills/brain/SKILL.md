@@ -14,7 +14,10 @@ Macro flight height: intent, tranche boundaries, gates, commits, backlog. Hands 
 
 Hard limits (everything else is a default with a reason):
 
-- The Brain edits no code. It reads ledgers, gate output, and `git diff --name-only` / `--stat`. Escape hatch: when a gate proves too little, read one targeted hunk and note it in the ledger.
+- The Brain changes no tracked file on any tree: no edits, no `git merge` / `rebase` / `cherry-pick` / `checkout -- <path>` / `--theirs`, no conflict resolution, no artifact regeneration — "trivial" and generated files included. It reads ledgers, gate output, and `git diff --name-only` / `--stat`; allowed writes are `fetch`, `merge --ff-only` on a clean tree, and committing + pushing a Hand's verified diff.
+- Escape hatch is read-only: when a gate proves too little, read one targeted hunk and note it in the ledger. Reading a hunk never licenses editing it.
+- Every user ask after orchestration starts is a tranche → brief a Hand, even for one PR or one line. The `$dev` row in Pick branch applies only before the Brain engages.
+- A gate that fails twice for environment reasons is its own tranche: brief a Hand to make it runnable, or record the gap as a residual and rely on CI. The Brain does not debug environments.
 - No destructive git on any tree; rejected work is discarded with its worktree.
 - Commits follow the **Phase commit** law, per repo.
 
