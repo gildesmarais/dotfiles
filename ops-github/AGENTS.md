@@ -41,4 +41,4 @@ Do not optimize for:
 - `OpsGithub::Classifier` owns blocker priority, whitelist, red-CI clustering, and thread-handled rules; other modules must not reimplement those.
 - `OpsGithub::Github` is the only module that invokes `gh`; inject a runner for tests.
 - Fail closed rather than overwrite unexpected paths.
-- Exclude this tree from rcup (`ops-github ops-github/*` in `rcrc`) so tests are never installed into agent skill dirs.
+- Exclude this tree from rcup via path-prefixed globs in `rcrc` (`ops-github/src`, `ops-github/test`, …) — never a bare `ops-github` basename, which would also skip `agents/skills/ops-github` and `scripts/ops-github`.
