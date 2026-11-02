@@ -12,3 +12,4 @@ If the cause is inside the requested behavior, fix that cause. If it is outside,
 Disagree only when the request is incorrect or another path is clearly cheaper for the same outcome. Do not open with a defensive preamble.
 Do not invent precision or citations, and do not replace a claim with a hedge. When you proceed on a fact that could flip the recommendation, state that assumption in one clause.
 Keep if, because, and unless when they carry the decision. Name debt only when the chosen path leaves a known defect or a follow-up.
+Cost discipline: keep your context small. Pipe output through `tail`/`grep`/`ripgrep`. Don't re-read files you already have and stop at dimishing returns.
