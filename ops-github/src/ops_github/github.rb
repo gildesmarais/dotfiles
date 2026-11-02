@@ -68,19 +68,19 @@ module OpsGithub
       out
     end
 
-    def post_reply(comment_id, body)
+    def post_reply(owner, repo, comment_id, body)
       result = json_run(
-        ["api", "repos/#{owner_repo_from_context}/pulls/comments/#{comment_id}/replies",
+        ["api", "repos/#{owner}/#{repo}/pulls/comments/#{comment_id}/replies",
          "-f", "body=#{body}"]
       )
-      read_back_comment(result)
+      read_back_comment(result, expected_body: body)
     end
 
     def post_issue_comment(owner, repo, number, body)
       result = json_run(
         ["api", "repos/#{owner}/#{repo}/issues/#{number}/comments", "-f", "body=#{body}"]
       )
-      read_back_comment(result)
+      read_back_comment(result, expected_body: body)
     end
 
     def resolve_thread(thread_id)
@@ -94,7 +94,7 @@ module OpsGithub
         args << "-f" << "#{key}=#{value}"
       end
       result = json_run(args)
-      read_back_comment(result)
+      read_back_comment(result, expected_body: fields["body"] || fields[:body])
     end
 
     def rerun_failed_jobs(run_id)
@@ -258,18 +258,18 @@ module OpsGithub
       owner ? "#{owner}/#{repo}" : nil
     end
 
-    def read_back_comment(result)
-      return {} unless result.is_a?(Hash)
+    def read_back_comment(result, expected_body: nil)
+      raise ExitError, "post returned non-object" unless result.is_a?(Hash)
+
+      body = result["body"].to_s
+      raise ExitError, "post read-back body mismatch" if expected_body && body != expected_body.to_s
 
       {
         "id" => result["id"] || result["databaseId"],
         "url" => result["html_url"] || result["url"],
-        "body" => result["body"]
+        "body" => body,
+        "ok" => true
       }
-    end
-
-    def owner_repo_from_context
-      raise ExitError, "post_reply requires explicit owner/repo in this version"
     end
   end
 end

@@ -3,11 +3,14 @@
 require "fileutils"
 require "json"
 require "optparse"
+require "stringio"
 
 require_relative "ops_github/error"
 require_relative "ops_github/github"
 require_relative "ops_github/ledger"
 require_relative "ops_github/classifier"
+require_relative "ops_github/workspace"
+require_relative "ops_github/watch"
 
 module OpsGithub
   class CLI
@@ -19,6 +22,10 @@ module OpsGithub
       "probe" => :run_probe,
       "tick" => :run_tick,
       "ledger" => :run_ledger,
+      "wt" => :run_wt,
+      "verify-merge" => :run_verify_merge,
+      "post" => :run_post,
+      "watch" => :run_watch,
       "doctor" => :run_doctor,
       "help" => :run_help
     }.freeze
@@ -169,11 +176,89 @@ module OpsGithub
       end
     end
 
+    def run_wt(args)
+      owner_repo = args.shift
+      branch = args.shift
+      raise ExitError, "usage: wt owner/repo branch" if owner_repo.nil? || branch.nil?
+
+      emit(workspace.ensure(owner_repo, branch))
+    end
+
+    def run_verify_merge(args)
+      path = args.shift
+      base = nil
+      before_file = nil
+      OptionParser.new do |opts|
+        opts.on("--base REF") { |r| base = r }
+        opts.on("--before-files PATH") { |p| before_file = p }
+      end.parse!(args)
+      if path.nil? || base.nil? || before_file.nil?
+        raise ExitError,
+              "usage: verify-merge PATH --base REF --before-files LIST"
+      end
+
+      before = File.readlines(before_file).map(&:strip)
+      emit(workspace.verify_merge(path, base_ref: base, before_files: before))
+    end
+
+    def run_post(args)
+      kind = args.shift
+      raise ExitError, "usage: post issue-comment|reply …" if kind.nil?
+
+      case kind
+      when "issue-comment"
+        owner, repo, number, body = args
+        raise ExitError, "usage: post issue-comment owner repo number body" if [owner, repo, number, body].any?(&:nil?)
+
+        result = github.post_issue_comment(owner, repo, number, body)
+        ensure_ledger([]).record_echo!(comment_ids: [result["id"]].compact)
+        emit(result)
+      when "reply"
+        owner, repo, comment_id, body = args
+        raise ExitError, "usage: post reply owner repo comment_id body" if [owner, repo, comment_id, body].any?(&:nil?)
+
+        result = github.post_reply(owner, repo, comment_id, body)
+        ensure_ledger([]).record_echo!(comment_ids: [result["id"]].compact)
+        emit(result)
+      else
+        raise ExitError, "unknown post kind: #{kind}"
+      end
+    end
+
+    def run_watch(args)
+      max_ticks = nil
+      OptionParser.new { |opts| opts.on("--max-ticks N") { |n| max_ticks = n.to_i } }.parse!(args)
+      ledger = ensure_ledger([])
+      if ledger.watcher_alive?
+        emit("status" => "already-running", "pid" => ledger.watcher_pid)
+        return
+      end
+
+      ledger.watcher_pid = Process.pid
+      probe = lambda do
+        out = StringIO.new
+        err = StringIO.new
+        begin
+          self.class.new(
+            ["--state-dir", state_dir, "--owners", ledger.owners.join(","), "probe"],
+            github: github,
+            stdout: out,
+            stderr: err
+          ).run
+          PROBE_QUIET
+        rescue SystemExit => e
+          e.status
+        end
+      end
+      Watch.new(probe: probe, stdout: @stdout).run(max_ticks: max_ticks)
+    end
+
     def run_doctor(_args)
       checks = {
         "ruby" => RUBY_VERSION,
         "state_dir" => state_dir,
         "state_dir_writable" => writable_dir?(state_dir),
+        "cache_dir" => cache_dir,
         "cli" => File.expand_path(__FILE__)
       }
       begin
@@ -190,6 +275,14 @@ module OpsGithub
 
     def run_help(_args)
       usage
+    end
+
+    def workspace
+      @workspace ||= Workspace.new(cache_dir: cache_dir)
+    end
+
+    def cache_dir
+      File.join(state_dir, "cache")
     end
 
     def ensure_ledger(_args)
@@ -245,6 +338,10 @@ module OpsGithub
           ledger summary       Compact day summary
           ledger decide ID ST  Record decision (asked|approved|snoozed|…)
           ledger exclude PR    Exclude owner/repo#n for the day
+          wt owner/repo branch Ensure (or ff) a local worktree
+          verify-merge PATH --base REF --before-files LIST
+          post issue-comment|reply …
+          watch [--max-ticks N]
           doctor               Self-check
           help
       USAGE
