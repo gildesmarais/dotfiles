@@ -85,7 +85,7 @@ module OpsGithub
       if in_flight.empty?
         lines << "(none)"
       else
-        in_flight.each { |i| lines << "- #{i['id']}" }
+        in_flight.first(3).each { |i| lines << "- #{i['id']}" }
       end
       lines << "## Waiting on others"
       lines << sections["waiting"].to_s
