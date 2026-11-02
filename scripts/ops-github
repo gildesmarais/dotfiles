@@ -1,0 +1,8 @@
+#!/usr/bin/ruby --disable-gems
+# frozen_string_literal: true
+
+# require_relative follows the rcm ~/.scripts/ops-github symlink. Do not locate
+# cli.rb via dirname of $0.
+require_relative "../ops-github/src/cli"
+
+OpsGithub::CLI.run(ARGV)

@@ -1,0 +1,18 @@
+{
+  "url": "https://github.com/acme/app/pull/2",
+  "number": 2,
+  "title": "red audit",
+  "author": { "login": "me" },
+  "isDraft": false,
+  "baseRefName": "main",
+  "headRefName": "fix",
+  "headRefOid": "bbb222",
+  "mergeable": "MERGEABLE",
+  "mergeStateStatus": "UNSTABLE",
+  "reviewDecision": "REVIEW_REQUIRED",
+  "updatedAt": "2026-11-02T11:00:00Z",
+  "statusCheckRollup": [
+    { "name": "bundler_audit", "conclusion": "FAILURE" },
+    { "name": "unit", "conclusion": "SUCCESS" }
+  ]
+}

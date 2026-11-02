@@ -1,2 +1,2 @@
-EXCLUDES="README.md dotfiles:scripts*"
+EXCLUDES="README.md AGENTS.md docs/* skill skill/* ops-github ops-github/* dotfiles:scripts*"
 UNDOTTED="Library"

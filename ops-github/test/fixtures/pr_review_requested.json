@@ -1,0 +1,17 @@
+{
+  "url": "https://github.com/acme/other/pull/9",
+  "number": 9,
+  "title": "please review",
+  "author": { "login": "alice" },
+  "isDraft": false,
+  "baseRefName": "main",
+  "headRefName": "alice-feat",
+  "headRefOid": "ddd444",
+  "mergeable": "MERGEABLE",
+  "mergeStateStatus": "CLEAN",
+  "reviewDecision": "REVIEW_REQUIRED",
+  "updatedAt": "2026-11-02T12:30:00Z",
+  "statusCheckRollup": [
+    { "name": "unit", "conclusion": "SUCCESS" }
+  ]
+}

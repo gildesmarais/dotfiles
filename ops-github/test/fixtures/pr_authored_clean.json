@@ -1,0 +1,17 @@
+{
+  "url": "https://github.com/acme/app/pull/1",
+  "number": 1,
+  "title": "clean pr",
+  "author": { "login": "me" },
+  "isDraft": false,
+  "baseRefName": "main",
+  "headRefName": "feat",
+  "headRefOid": "aaa111",
+  "mergeable": "MERGEABLE",
+  "mergeStateStatus": "CLEAN",
+  "reviewDecision": "REVIEW_REQUIRED",
+  "updatedAt": "2026-11-02T10:00:00Z",
+  "statusCheckRollup": [
+    { "name": "unit", "conclusion": "SUCCESS" }
+  ]
+}
