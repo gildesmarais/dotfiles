@@ -29,7 +29,7 @@ disable-model-invocation: true
 ## Handoff
 
 - CI fallout → `pull-request` **fix-ci**; conflicts → `@dependabot rebase` when no manual commits, else `pull-request` **conflicts**.
-- Multi-repo stale Dependabot discovery → `pr-sweep`.
+- Multi-repo stale Dependabot discovery → `ops-github`.
 
 ## Completion criteria
 
