@@ -34,7 +34,10 @@ module OpsGithub
         pr_key = pr_key_for(state)
         next if ledger.exclusions.include?(pr_key)
 
-        role = (rows_by_url[url] || {})["role"] || infer_role(state)
+        role = (rows_by_url[url] || {})["role"]
+        # "both" (authored + review-requested, e.g. a team request on your own PR)
+        # resolves by author so authored rules still apply.
+        role = infer_role(state) if role.nil? || role == "both"
         items.concat(items_for_pr(state, role: role))
       end
 
@@ -59,7 +62,8 @@ module OpsGithub
       }
     end
 
-    def render_report(items, auto_done: [])
+    # +in_flight+: ledger items a Hand marked in_flight (classifier items carry no status).
+    def render_report(items, auto_done: [], in_flight: [])
       sections = report_sections(items)
       lines = []
       lines << "## Needs you"
@@ -78,8 +82,11 @@ module OpsGithub
         auto_done.first(5).each { |line| lines << "- #{line}" }
       end
       lines << "## In flight"
-      inflight = items.select { |i| i["status"] == "in_flight" }
-      lines << (inflight.empty? ? "(none)" : inflight.map { |i| "- #{i['id']}" }.join("\n"))
+      if in_flight.empty?
+        lines << "(none)"
+      else
+        in_flight.each { |i| lines << "- #{i['id']}" }
+      end
       lines << "## Waiting on others"
       lines << sections["waiting"].to_s
       lines = lines.first(15)
@@ -91,7 +98,8 @@ module OpsGithub
       auto = actionable.select { |i| i["action"] == "auto" }.first(ledger.budgets["auto"] || 3)
       ask = actionable.select { |i| i["action"] == "ask" }
       judge = actionable.select { |i| i["action"] == "judge" }
-      report = render_report(actionable, auto_done: auto_done)
+      in_flight = ledger.items.values.select { |i| i["status"] == "in_flight" }
+      report = render_report(actionable, auto_done: auto_done, in_flight: in_flight)
       status = (auto + ask + judge).empty? ? "quiet" : "changes"
       {
         "status" => status,
