@@ -37,9 +37,13 @@ module OpsGithub
           @quiet_streak += 1
         else
           emit_wake("env")
+          break if max_ticks && ticks >= max_ticks
+
           @sleep_fn.call(300)
           next
         end
+
+        break if max_ticks && ticks >= max_ticks
 
         @sleep_fn.call(interval_seconds)
       end

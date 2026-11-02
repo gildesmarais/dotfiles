@@ -66,7 +66,8 @@ module OpsGithub
         opts.on("--state-dir DIR") { |d| @state_dir = d }
         opts.on("--owners LIST") { |list| @owners = list.split(",").map(&:strip).reject(&:empty?) }
       end
-      rest = parser.parse(argv)
+      # order! stops at the subcommand so flags like watch --max-ticks stay intact.
+      rest = parser.order(argv)
       command = rest.shift
       raise ExitError, "missing command" if command.nil? || command.empty?
 
@@ -101,7 +102,7 @@ module OpsGithub
         key = "#{row['repository']}##{row['number']}"
         next if ledger.exclusions.include?(key)
 
-        if ledger.changed_since_seen?(key, updated_at: row["updatedAt"], head_sha: row["updatedAt"])
+        if ledger.changed_since_seen?(key, updated_at: row["updatedAt"])
           delta = true
           break
         end
@@ -123,10 +124,7 @@ module OpsGithub
         key = "#{row['repository']}##{row['number']}"
         next if ledger.exclusions.include?(key)
 
-        if ledger.changed_since_seen?(key, updated_at: row["updatedAt"],
-                                           head_sha: row["headRefOid"] || row["updatedAt"])
-          changed_urls << row["url"]
-        end
+        changed_urls << row["url"] if ledger.changed_since_seen?(key, updated_at: row["updatedAt"])
       end
 
       # First tick (empty seen): fetch all non-excluded.
@@ -136,9 +134,19 @@ module OpsGithub
       end
 
       states = github.pr_states(changed_urls.uniq)
-      states.each do |state|
-        key = "#{state['repository']}##{state['number']}"
-        ledger.mark_seen!(key, updated_at: state["updatedAt"], head_sha: state["headRefOid"])
+      states_by_url = {}
+      states.each { |state| states_by_url[state["url"]] = state }
+      # Always stamp search rows so probe can quiet even when a view fails.
+      rows.each do |row|
+        key = "#{row['repository']}##{row['number']}"
+        next if ledger.exclusions.include?(key)
+
+        state = states_by_url[row["url"]]
+        if state
+          ledger.mark_seen!(key, updated_at: state["updatedAt"], head_sha: state["headRefOid"])
+        else
+          ledger.mark_seen!(key, updated_at: row["updatedAt"], head_sha: nil)
+        end
       end
 
       login = github.login

@@ -120,17 +120,22 @@ module OpsGithub
       save!
     end
 
-    def mark_seen!(pr_key, updated_at:, head_sha:)
+    def mark_seen!(pr_key, updated_at:, head_sha: nil)
       seen[pr_key] = { "updatedAt" => updated_at, "headRefOid" => head_sha }
       save!
     end
 
-    def changed_since_seen?(pr_key, updated_at:, head_sha:)
+    # Search rows only have updatedAt; pass head_sha only when comparing a full
+    # PR state. A nil/blank head_sha means "timestamp only" so probe can stay
+    # quiet after tick wrote a real headRefOid.
+    def changed_since_seen?(pr_key, updated_at:, head_sha: nil)
       prev = seen[pr_key]
       return true if prev.nil?
-      return false if echo_shas.include?(head_sha)
+      return false if !head_sha.nil? && !head_sha.empty? && echo_shas.include?(head_sha)
+      return true if prev["updatedAt"] != updated_at
+      return false if head_sha.nil? || head_sha.empty?
 
-      prev["updatedAt"] != updated_at || prev["headRefOid"] != head_sha
+      prev["headRefOid"] != head_sha
     end
 
     def decide!(id, status, meta = {})

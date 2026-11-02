@@ -38,6 +38,13 @@ class LedgerTest < Minitest::Test
     assert(ledger.changed_since_seen?("acme/app#1", updated_at: "t2", head_sha: "sha3"))
   end
 
+  def test_probe_ignores_head_when_only_timestamp_compared
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    ledger.mark_seen!("acme/app#1", updated_at: "t1", head_sha: "sha1")
+    refute(ledger.changed_since_seen?("acme/app#1", updated_at: "t1"))
+    assert(ledger.changed_since_seen?("acme/app#1", updated_at: "t2"))
+  end
+
   def test_upsert_does_not_reset_asked_same_fingerprint
     ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
     item = { "id" => "x1", "fingerprint" => "fp1", "class" => "red-ci", "status" => "new" }

@@ -70,7 +70,8 @@ class CliTest < Minitest::Test
       "me"
     )
     ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
-    ledger.mark_seen!("acme/app#1", updated_at: row["updatedAt"], head_sha: row["updatedAt"])
+    # Tick stores a real oid; probe must quiet on matching updatedAt alone.
+    ledger.mark_seen!("acme/app#1", updated_at: row["updatedAt"], head_sha: state["headRefOid"])
     status = run_cli(["probe"], github: gh)
     assert_equal(0, status)
     assert_equal("quiet", JSON.parse(@stdout.string)["status"])
@@ -129,5 +130,36 @@ class CliTest < Minitest::Test
     status = run_cli(["wat"], github: gh)
     assert_equal(1, status)
     assert_match(/unknown command/, @stderr.string)
+  end
+
+  def test_watch_max_ticks_quiet_emits_no_wake
+    state = state_from_fixture("pr_authored_clean.json")
+    row = search_row(state, "authored")
+    gh = FakeGithub.new(
+      { "login" => "me", "owners" => %w[acme], "auth_ok" => true },
+      [row],
+      [state],
+      "me"
+    )
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    ledger.mark_seen!("acme/app#1", updated_at: row["updatedAt"], head_sha: state["headRefOid"])
+    status = run_cli(["watch", "--max-ticks", "1"], github: gh)
+    assert_equal(0, status)
+    refute_match(/OPS_GITHUB_WAKE/, @stdout.string)
+  end
+
+  def test_watch_max_ticks_delta_emits_wake
+    state = state_from_fixture("pr_authored_clean.json")
+    row = search_row(state, "authored")
+    gh = FakeGithub.new(
+      { "login" => "me", "owners" => %w[acme], "auth_ok" => true },
+      [row],
+      [state],
+      "me"
+    )
+    OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    status = run_cli(["watch", "--max-ticks", "1"], github: gh)
+    assert_equal(0, status)
+    assert_match(/OPS_GITHUB_WAKE/, @stdout.string)
   end
 end
