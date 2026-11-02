@@ -18,6 +18,7 @@ Single Build entry. Load packs/overlays by name; never paste their bodies. Craft
 | implementation plan, plan mode, phased plan        | `plan`                  |
 | implement, fix, feature, change the code (default) | `implement`             |
 | "should we build X?"                               | stop → `product-owner`  |
+| multi-repo or long-running orchestration           | stop → `brain`          |
 | assure / findings / tests review / merge prep      | stop → `review.gil`     |
 | open / slice / comment a PR                        | stop → `pull-request`   |
 | Jira key or URL                                    | stop → `jira-ticket`    |

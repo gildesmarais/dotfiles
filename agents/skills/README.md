@@ -23,6 +23,7 @@ Requires Node.js and GitHub access. Verify: `npx skills list -g`. Browse: `--lis
 | **Explain**  | Humans understand state | [`communication`](communication/), [`docs`](docs/)                                                                                                                                                                          | see skill branches                                                                                                                            |
 | **Decide**   | Stress-test choices     | `grilling` (third-party); `product-owner` Forced Challenge                                                                                                                                                                  | —                                                                                                                                             |
 | **Harvest**  | Learning & debt loop    | [`harvest`](harvest/)                                                                                                                                                                                                       | `distill` (default); `debt`                                                                                                                   |
+| **Orchestrate** | Long-running delivery | [`brain`](brain/) | `orchestrate` (Hands via `$dev`; live backlog) |
 | **Personal** | Tool operators          | [`omnifocus`](omnifocus/)                                                                                                                                                                                                   | —                                                                                                                                             |
 
 ## Optional packs (not OS SoT)
@@ -55,6 +56,7 @@ Build path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; `$dev
 - **Assure → Ship** — `findings` never posts; `publish` stays in `review.gil`; a verified ledger goes to `pull-request` `comment`. `pr-sweep` never fixes.
 - **Explain → docs** — `communication` → `docs` `editor`; never reverse.
 - **Overlays via `$dev`** — `ruby-on-rails-dev` with `ruby-dev`; `swiftui-dev` with `swift-dev`.
+- **Orchestrate above Build** — multi-repo or long-running → `brain`; it briefs Hands that load `$dev` `implement`, verifies their gates, commits; the Brain never writes code.
 - **Harvest loop** — `review.gil` / `pull-request` → `harvest` → rules or `.agents/debt-ledger.md` → `product-owner` Health Capacity Budget.
 
 ## Authoring laws

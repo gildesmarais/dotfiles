@@ -4,7 +4,7 @@
 description_max_words: 45
 line_cap: 100
 words:
-  CONTEXT.md: 219
+  CONTEXT.md: 238
   architecture/SKILL.md: 442
   architecture/reference/axioms.md: 280
   architecture/reference/deep-modules.md: 404
@@ -16,6 +16,8 @@ words:
   architecture/reference/refactor-boundaries.md: 313
   architecture/reference/refactor-types.md: 280
   architecture/reference/structure-survey.md: 326
+  brain/SKILL.md: 429
+  brain/reference/orchestrate.md: 461
   communication/SKILL.md: 181
   communication/reference/external-message.md: 107
   communication/reference/one-on-one.md: 262
@@ -26,7 +28,7 @@ words:
   dependabot/reference/pr-commands.md: 146
   dependabot/reference/triage.md: 142
   dependabot/reference/yml-keys.md: 81
-  dev/SKILL.md: 630
+  dev/SKILL.md: 640
   dev/reference/api-truth.md: 99
   dev/reference/plan.md: 380
   dev/reference/surgical-laws.md: 96

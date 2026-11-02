@@ -16,3 +16,4 @@ Cross-skill terms only; skill-local vocabulary lives in the owning skill. Handof
 - `Active Lenses`: `security`, `tests`, `perf`, `legacy`
 - `Readiness`: `Yes` | `No` | `Conditional` | `Skipped (reason)` when Assure was skipped
 - `Residuals / Debt`: deferred items or N/A
+- `Discoveries` (optional): follow-ups, reorder hints, invalidated assumptions found but not acted on; `brain` folds them into its backlog
