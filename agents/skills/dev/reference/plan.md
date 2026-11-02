@@ -17,6 +17,7 @@ Embed these checklist lines where signaled (a plan is not a findings report; `re
 - **perf:** budgets + measure method; hot path isolated; optimize only measured breaches.
 - **security** (sandbox/boundary): capabilities justified; boundaries validated; no secrets/PII in logs.
 - **observability** (≥2 phases): log category per subsystem; levels + privacy; bridged error path if applicable.
+- **rollout** (schema/backfill, skewed clients, live auth/state): per **Rollout Skew**; Cutover is a later todo.
 
 ## Commit law
 
@@ -27,10 +28,10 @@ Embed these checklist lines where signaled (a plan is not a findings report; `re
 
 ## Execution
 
-Todo tracking and sequencing belong to the host. Per todo: change only its files, run its gate (exit 0 observed), commit its message with only those files staged; a gate failing twice on one phase stops the run. After a plan's last commit, one `review.gil` `findings` regardless of per-phase skips (in chat); code-needing findings become a follow-up plan. Resume by comparing todos to `git log`.
+Host owns todo tracking. Per todo: change only its files, run its gate (exit 0 observed), commit its message with only those files staged; a gate failing twice on one phase stops the run. After the last commit, one `review.gil` `findings` in chat; code-needing findings → follow-up plan. Resume by comparing todos to `git log`.
 
 ## Token hygiene
 
-- Delegate with a closed brief: exact files, one command, stop condition; point to `AGENTS.md`, never restate it. Disjoint file sets when parallel; read-only surveys only when the answer is not one grep away.
-- Cheapest model that fits: mechanical edits on a small model, design calls on the strongest.
+- Closed brief: exact files, one command, stop condition; point to `AGENTS.md`, never restate it. Disjoint file sets when parallel; read-only surveys only when not one grep away.
+- Cheapest model that fits: mechanical edits on a small model, design on the strongest.
 - Cap command output (`| tail -n 40`, `grep` the summary, full log to scratch). Clear or compact between unrelated tasks.

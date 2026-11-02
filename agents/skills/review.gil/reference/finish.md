@@ -20,7 +20,10 @@ For `fix`, `Revert`, or production-incident diffs, fold into Findings (no extra 
 4. Dual public API or silent old-shape hydrate? → [`legacy.md`](legacy.md).
 5. Races across a startup/suspension gate; parse/unwrap or generated-client types escaping the transport edge; checker silenced instead of fixed; durable bags used as live domain objects without rehydrate; wire enum renamed in app code instead of normalized once → `{lang}-dev`.
 6. Repeated harden/follow-up commits hinting at a missing principle?
+7. Different clocks for server/data/clients: break for lagged client, pre-backfill pod, or existing session? Can temp compat be removed later? Any mechanism counts; find only real breaks or undeletable temp paths — not missing names.
+
 
 ## Surfaces
 
-Independent review passes folded into this report; not lenses or executions; `quality` skips them. Code diffs only (skip docs-only and trivial diffs and say so). Use a host review subagent if one exists (security review only when the `security` lens is selected), else a second inline pass. Give it the repo path, target (`branch changes` or `uncommitted changes`), a base branch only when not the repo default, and user instructions; it computes the diff. Failure: retry once (per-file change description if the diff could not be computed), then name the blocker and continue inline. Never fix, publish, or launch a second review from their output.
+Review passes folded here (not lenses/executions; `quality` skips). Code diffs only — skip docs-only/trivial and say so. Prefer host review subagent (security review only with `security` lens), else second inline pass. Pass repo path, target (`branch changes` | `uncommitted changes`), non-default base if needed, user instructions; it computes the diff. Fail → retry once (per-file desc if no diff), name blocker, continue inline. Never fix, publish, or relaunch from output.
+

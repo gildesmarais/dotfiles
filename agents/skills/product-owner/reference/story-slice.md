@@ -1,17 +1,18 @@
 # Story slice (`story-slice`)
 
-1. **Prerequisite:** cite the `gate` Build Now or approved founder override; never slice rejected or uncited scope.
+1. **Prerequisite:** cite `gate` Build Now or founder override; never slice rejected/uncited scope.
 2. **Strip contraband:** secondary SSOTs, parallel DB tables, unneeded settings surfaces.
-3. **Triad per slice:** persona + documented golden path; invariants & non-goals (what it will not touch); Given/When/Then AC on observable state / filesystem truth.
-4. **UX & performance mandates:** click/keystroke budgets, latency SLAs, conflict handling — cite from `product.md` only; silent → `unknown`.
-5. Pair every story with its automated test target and verification benchmark before `$dev` `plan`.
+3. **Triad per slice:** persona + golden path; invariants & non-goals; Given/When/Then on observable state.
+4. **UX & performance mandates:** click/keystroke budgets, latency SLAs, conflict handling — cite `product.md` only; silent → `unknown`.
+5. Pair each story with test target + verification before `$dev` `plan`.
+6. **Live-cohort rollout:** live auth/validation/contract → cohort + bridge; **Rollout Skew**.
 
 ## Story Card (one per slice)
 
 ```text
 **Title**:
 **Persona & context**:
-**Golden path served**: (cite, or unknown)
+**Golden path served**: (cite / unknown)
 **Invariants bound**:
 **Non-goals**:
 **Acceptance**:
@@ -19,8 +20,9 @@
 - When …
 - Then …
 **Edge cases**:
-**Interaction budget**: (cite, or unknown / qualitative)
-**Latency SLA**: (cite, or unknown)
-**Conflict handling**: (cite documented rule, or unknown)
+**Rollout & skew**: (forward-only / migrate / bridge / N/A)
+**Interaction budget**: (cite / unknown)
+**Latency SLA**: (cite / unknown)
+**Conflict handling**: (cite / unknown)
 **Test target / verification**:
 ```
