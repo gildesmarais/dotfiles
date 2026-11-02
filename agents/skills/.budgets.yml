@@ -46,11 +46,11 @@ words:
   ops-chore/reference/hard-stops.md: 133
   ops-chore/reference/ledger.md: 130
   ops-chore/reference/playbook.md: 369
-  ops-github/SKILL.md: 296
-  ops-github/reference/act.md: 199
-  ops-github/reference/review.md: 99
-  ops-github/reference/setup.md: 100
-  ops-github/reference/tick.md: 158
+  ops-github/SKILL.md: 300
+  ops-github/reference/act.md: 187
+  ops-github/reference/review.md: 116
+  ops-github/reference/setup.md: 96
+  ops-github/reference/tick.md: 219
   ops-github/reference/wrap.md: 55
   product-owner/SKILL.md: 365
   product-owner/reference/gate.md: 456

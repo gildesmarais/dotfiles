@@ -9,27 +9,30 @@ disable-model-invocation: true
 
 # Ops GitHub
 
-Daily GitHub operator. The `ops-github` CLI owns GitHub calls, classification,
-whitelist, ledger, worktrees, post, and watch. This router runs the workflow and
-briefs Hands; it never restates engine rules. Brain hard limits: edit no tracked
-files. No org names; owners come from setup or the day ledger.
+Daily GitHub operator. CLI: read-only discovery, classification, day ledger,
+watch. Router is the Brain — briefs Hands, no engine-rule restatement, no
+tracked-file edits. No org names; owners from setup or day ledger. Co-load
+[`../brain/reference/orchestrate.md`](../brain/reference/orchestrate.md) for
+**act** / **review**.
 
 ## Pick branch
 
 | Signal | Branch |
 | ------ | ------ |
-| Bare `/ops-github`, no day ledger | **setup** |
+| Bare `/ops-github`, no day ledger; `setup-facts`; `reconfigure` | **setup** |
 | Bare `/ops-github`, day ledger exists; or `OPS_GITHUB_WAKE` | **tick** |
 | `act <id>` | **act** |
 | `review <url>` | **review** |
-| `reconfigure` | **setup** |
 | `wrap` | **wrap** |
 
 ## Shared prep
 
-1. Require `ops-github` on PATH (`doctor` exit 0). Escalate network for `gh`.
-2. Prefer `--state-dir` from the day ledger / env; never invent owners.
+1. `ops-github` on PATH (`doctor` exit 0). Escalate network for `gh`.
+2. Prefer `--state-dir` from ledger / env; never invent owners.
 3. After `/compact`, re-read only `ops-github ledger summary` (≤40 lines).
+4. Brain limits: no tracked-file edits; no PR diffs/source/raw CI here; shell
+   `| tail -n 40`; logs → `/tmp/ops-github/<id>.log`. Mutations/reviews → Hands
+   (`Task`, worktree, whitelist, tier, timebox).
 
 ## Branch reference
 
@@ -43,12 +46,12 @@ files. No org names; owners come from setup or the day ledger.
 
 | Need | Invocation |
 | ---- | ---------- |
-| Code fix / conflicts / threads on your PR | Hand → `pull-request` resolve \| fix-ci \| conflicts \| reply |
-| Review someone else's PR | Hand → `review.gil` `findings` (publish only after per-PR OK) |
-| Dependabot fallout on one PR | `dependabot` `triage` |
-| Multi-repo / multi-tranche delivery | `brain` `orchestrate` |
+| Fix / conflicts / threads on your PR | Hand → `pull-request` resolve \| fix-ci \| conflicts \| reply |
+| Review someone else's PR | Hand → `review.gil` `findings` (after per-PR OK) |
+| Dependabot fallout | `dependabot` `triage` |
+| Multi-repo delivery | `brain` `orchestrate` |
 
 ## Completion criteria
 
 Matched branch Done; report ≤15 engine lines + ≤1 model sentence; no
-tracked-file edits; watch armed or stopped as the branch says.
+tracked-file edits; watch armed/stopped as the branch says; budgets honored.

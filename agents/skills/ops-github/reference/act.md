@@ -1,26 +1,25 @@
 # Act
 
-Run one envelope item (`auto` or user-approved `ask`). Push one branch per
-command. Mark `in_flight` before; `done` / `blocked` after.
+Run one envelope item (`auto` or user-approved `ask`). Mark `in_flight` before;
+`done` / `blocked` after via `ops-github ledger decide <id> <status>`.
+
+Hand brief, Merge-main, Tiers, Verify:
+[`../../brain/reference/orchestrate.md`](../../brain/reference/orchestrate.md)
+— do not restate. Cap tool output; logs → `/tmp/ops-github/<id>.log`; Hand
+returns ≤12 lines.
 
 ## Resolve invoke
 
 | `class` / hint | Steps |
 | -------------- | ----- |
-| `red-ci-base` | `wt` → merge `baseRefName` → `verify-merge` vs PR base + prior files → push iff OK |
-| `red-ci-flaky` | Re-run failing checks once via `gh`; no local edits |
-| `ready-ping` | `ops-github post issue-comment` once; read-back must match |
-| `bot-thread` (approved) | Hand replies/resolves after a commit addresses it; `post reply` |
-| conflicts / red-ci / unresolved-review / approved-red | Hand → `pull-request` conflicts \| fix-ci \| resolve (mid; frontier on retry) |
-| `red-ci-shared` | Ask once with clustered PRs; never auto |
+| `red-ci-flaky` | Brain fast: `gh run rerun <id> --failed` (discover via capped `gh pr checks`) |
+| `ready-ping` | Brain fast: `gh pr comment <url> --body "@<who> ready for another look"` |
+| `red-ci-base` | Small/low Hand, Merge-main, ≤8 turns: merge `origin/<baseRefName>`; Brain verifies file set vs pre-merge, pushes |
+| bot-thread / unresolved-review / conflicts / red-ci / approved-red | Mid Hand (`strongest` on retry/security), ≤15 turns, worktree: `pull-request` resolve \| conflicts \| fix-ci; Verify + push; max 1 retry/wake |
+| `red-ci-shared` / `dependabot-triage` | Ask once with cluster; never auto |
 
 ## Workspace rules
 
-- `ops-github wt owner/repo branch` — ff-only; claimed trees block auto.
-- `verify-merge PATH --base REF --before-files LIST` must pass before any push
-  this session owns.
-- Fast: merges, re-runs, ff, bot replies. Mid: thread fixes, judgement
-  conflicts. Frontier: retries, security-matrix hits.
-- Hand brief: fixed prefix per `brain` orchestrate; ≤12 lines back; logs →
-  `/tmp/ops-github/<id>.log`.
+- Hands own checkouts; Brain edits no tracked files.
+- Fast: reruns, pings. Mid: fixes/conflicts/CI. Frontier: retries, security, reviews.
 - Budgets: 3 auto, 1 retry/wake. On block: `ledger decide <id> blocked`.
