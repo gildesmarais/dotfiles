@@ -189,4 +189,41 @@ class CliTest < Minitest::Test
     assert_equal(0, status)
     assert_match(/OPS_GITHUB_WAKE/, @stdout.string)
   end
+
+  def test_tick_both_role_authored_pr_reports_red_ci
+    state = state_from_fixture("pr_bundler_audit.json")
+    gh = FakeGithub.new(
+      { "login" => "me", "owners" => %w[acme], "auth_ok" => true },
+      [search_row(state, "both")],
+      [state],
+      "me"
+    )
+    assert_equal(10, run_cli(["tick"], github: gh))
+    env = JSON.parse(@stdout.string)
+    classes = (env["auto"] + env["ask"] + env["judge"]).select { |i| i["pr"] == "acme/app#2" }.map { |i| i["class"] }
+    assert_includes(classes, "red-ci-base")
+  end
+
+  def test_report_lists_in_flight_items_capped_at_three
+    gh = FakeGithub.new(
+      { "login" => "me", "owners" => %w[acme], "auth_ok" => true },
+      [],
+      [],
+      "me"
+    )
+    assert_equal(0, run_cli(["ledger", "decide", "acme/app#1", "in_flight"], github: gh))
+    @stdout.truncate(0)
+    @stdout.rewind
+    run_cli(["tick"], github: gh)
+    report = JSON.parse(@stdout.string)["report_md"]
+    assert_includes(report, "## In flight\n- acme/app#1\n## Waiting on others")
+
+    %w[2 3 4].each { |n| run_cli(["ledger", "decide", "acme/app##{n}", "in_flight"], github: gh) }
+    @stdout.truncate(0)
+    @stdout.rewind
+    run_cli(["tick"], github: gh)
+    report = JSON.parse(@stdout.string)["report_md"]
+    assert_equal(3, report[/## In flight\n(.*?)## Waiting/m, 1].lines.size)
+    assert_includes(report, "## Waiting on others")
+  end
 end

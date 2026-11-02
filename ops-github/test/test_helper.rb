@@ -11,6 +11,14 @@ require_relative "../src/ops_github/ledger"
 require_relative "../src/ops_github/classifier"
 require_relative "../src/cli"
 
+# Isolate default state-dir resolution (OPS_GITHUB_STATE_DIR, XDG_STATE_HOME, ~/.local/state)
+# so nothing, including mutated code, can touch the real ~/.local/state/ops-github.
+ISOLATED_STATE_ROOT = Dir.mktmpdir("ops-github-home")
+ENV["HOME"] = ISOLATED_STATE_ROOT
+ENV["XDG_STATE_HOME"] = File.join(ISOLATED_STATE_ROOT, "state")
+ENV.delete("OPS_GITHUB_STATE_DIR")
+Minitest.after_run { FileUtils.rm_rf(ISOLATED_STATE_ROOT) }
+
 module OpsGithubTest
   FIXTURES = File.expand_path("fixtures", __dir__)
 
@@ -66,5 +74,14 @@ module OpsGithubTest
       "author" => state["author"],
       "role" => role
     }
+  end
+end
+
+class StateIsolationTest < Minitest::Test
+  def test_default_state_dir_resolves_under_tmp
+    cli = OpsGithub::CLI.new(["doctor"])
+    default = cli.send(:state_dir)
+    assert_equal(File.join(ISOLATED_STATE_ROOT, "state", "ops-github"), default)
+    assert_equal(ISOLATED_STATE_ROOT, Dir.home)
   end
 end
