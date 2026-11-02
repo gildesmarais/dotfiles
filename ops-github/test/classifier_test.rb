@@ -15,7 +15,7 @@ class ClassifierTest < Minitest::Test
     FileUtils.rm_rf(@tmpdir)
   end
 
-  def test_base_caused_bundler_audit_is_auto_merge_base
+  def test_base_caused_bundler_audit_is_auto_merge_main
     state = state_from_fixture("pr_bundler_audit.json")
     items = @classifier.classify(
       search_rows: [search_row(state, "authored")],
@@ -25,7 +25,8 @@ class ClassifierTest < Minitest::Test
     red = items.find { |i| i["class"] == "red-ci-base" }
     refute_nil(red)
     assert_equal("auto", red["action"])
-    assert_match(/merge-base/, red["invoke"])
+    assert_match(/merge-main/, red["invoke"])
+    assert_equal("fix", red["headRefName"])
   end
 
   def test_shared_red_ci_clusters_into_one_ask
@@ -43,6 +44,7 @@ class ClassifierTest < Minitest::Test
     assert_equal(1, shared.size)
     assert_equal("ask", shared.first["action"])
     assert_equal(%w[acme/app#2 acme/app#22], shared.first["evidence"]["prs"])
+    assert_match(%r{/pull-request fix-ci}, shared.first["invoke"])
   end
 
   def test_open_bot_thread_is_judge
@@ -55,6 +57,7 @@ class ClassifierTest < Minitest::Test
     bot = items.find { |i| i["class"] == "bot-thread" }
     refute_nil(bot)
     assert_equal("judge", bot["action"])
+    assert(bot["evidence"].key?("comment_id"))
   end
 
   def test_handled_thread_suppressed
@@ -79,6 +82,46 @@ class ClassifierTest < Minitest::Test
     refute_nil(req)
     assert_equal("urgent", req["urgency"])
     assert_equal("ask", req["action"])
+  end
+
+  def test_dependabot_review_requested_is_batch_and_clustered
+    a = state_from_fixture("pr_review_requested.json")
+    a["author"] = "app/dependabot"
+    a["url"] = "https://github.com/acme/app/pull/10"
+    a["number"] = 10
+    a["repository"] = "acme/app"
+    b = state_from_fixture("pr_review_requested.json")
+    b["author"] = "app/dependabot"
+    b["url"] = "https://github.com/acme/app/pull/11"
+    b["number"] = 11
+    b["repository"] = "acme/app"
+    items = @classifier.classify(
+      search_rows: [search_row(a, "review-requested"), search_row(b, "review-requested")],
+      states: [a, b],
+      ledger: @ledger
+    )
+    triage = items.select { |i| i["class"] == "dependabot-triage" }
+    assert_equal(1, triage.size)
+    assert_equal("batch", triage.first["urgency"])
+    assert_match(%r{/dependabot triage acme/app}, triage.first["invoke"])
+  end
+
+  def test_report_md_ranks_urgent_before_batch
+    urgent = state_from_fixture("pr_bundler_audit.json")
+    urgent["reviewDecision"] = "APPROVED"
+    urgent["failing_checks"] = [{ "name" => "unit-test", "state" => "FAILURE" }]
+    batch = state_from_fixture("pr_bot_thread.json", "threads_bot_open.json")
+    batch["url"] = "https://github.com/acme/app/pull/9"
+    batch["number"] = 9
+    batch["repository"] = "acme/app"
+    items = @classifier.classify(
+      search_rows: [search_row(batch, "authored"), search_row(urgent, "authored")],
+      states: [batch, urgent],
+      ledger: @ledger
+    )
+    env = @classifier.envelope(items, ledger: @ledger)
+    needs_lines = env["report_md"].lines.select { |l| l.start_with?("- ") }
+    assert(needs_lines.first.include?("urgent"), needs_lines.first)
   end
 
   def test_envelope_report_md_within_15_lines
@@ -125,5 +168,26 @@ class ClassifierTest < Minitest::Test
     hit = items.find { |i| i["class"] == "approved-red" }
     refute_nil(hit)
     assert_equal("urgent", hit["urgency"])
+  end
+
+  def test_ready_ping_only_when_changes_requested
+    state = state_from_fixture("pr_authored_clean.json", "threads_handled.json")
+    state["reviewDecision"] = nil
+    items = @classifier.classify(
+      search_rows: [search_row(state, "authored")],
+      states: [state],
+      ledger: @ledger
+    )
+    assert_empty(items.select { |i| i["class"] == "ready-ping" })
+
+    state["reviewDecision"] = "CHANGES_REQUESTED"
+    again = @classifier.classify(
+      search_rows: [search_row(state, "authored")],
+      states: [state],
+      ledger: @ledger
+    )
+    ping = again.find { |i| i["class"] == "ready-ping" }
+    refute_nil(ping)
+    assert_match(/gh pr comment/, ping["invoke"])
   end
 end

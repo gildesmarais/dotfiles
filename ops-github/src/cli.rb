@@ -9,7 +9,6 @@ require_relative "ops_github/error"
 require_relative "ops_github/github"
 require_relative "ops_github/ledger"
 require_relative "ops_github/classifier"
-require_relative "ops_github/workspace"
 require_relative "ops_github/watch"
 
 module OpsGithub
@@ -22,9 +21,6 @@ module OpsGithub
       "probe" => :run_probe,
       "tick" => :run_tick,
       "ledger" => :run_ledger,
-      "wt" => :run_wt,
-      "verify-merge" => :run_verify_merge,
-      "post" => :run_post,
       "watch" => :run_watch,
       "doctor" => :run_doctor,
       "help" => :run_help
@@ -152,7 +148,7 @@ module OpsGithub
       login = github.login
       login = github.setup_facts["login"] if login.nil? || login.empty?
       classifier = Classifier.new(login: login)
-      items = classifier.classify(search_rows: rows, states: states, ledger: ledger, claimed: {})
+      items = classifier.classify(search_rows: rows, states: states, ledger: ledger)
       env = classifier.envelope(items, ledger: ledger)
       emit(env)
       code = env["status"] == "quiet" ? PROBE_QUIET : PROBE_DELTA
@@ -181,55 +177,6 @@ module OpsGithub
         emit("exclusions" => ledger.exclusions)
       else
         raise ExitError, "unknown ledger subcommand: #{sub}"
-      end
-    end
-
-    def run_wt(args)
-      owner_repo = args.shift
-      branch = args.shift
-      raise ExitError, "usage: wt owner/repo branch" if owner_repo.nil? || branch.nil?
-
-      emit(workspace.ensure(owner_repo, branch))
-    end
-
-    def run_verify_merge(args)
-      path = args.shift
-      base = nil
-      before_file = nil
-      OptionParser.new do |opts|
-        opts.on("--base REF") { |r| base = r }
-        opts.on("--before-files PATH") { |p| before_file = p }
-      end.parse!(args)
-      if path.nil? || base.nil? || before_file.nil?
-        raise ExitError,
-              "usage: verify-merge PATH --base REF --before-files LIST"
-      end
-
-      before = File.readlines(before_file).map(&:strip)
-      emit(workspace.verify_merge(path, base_ref: base, before_files: before))
-    end
-
-    def run_post(args)
-      kind = args.shift
-      raise ExitError, "usage: post issue-comment|reply …" if kind.nil?
-
-      case kind
-      when "issue-comment"
-        owner, repo, number, body = args
-        raise ExitError, "usage: post issue-comment owner repo number body" if [owner, repo, number, body].any?(&:nil?)
-
-        result = github.post_issue_comment(owner, repo, number, body)
-        ensure_ledger([]).record_echo!(comment_ids: [result["id"]].compact)
-        emit(result)
-      when "reply"
-        owner, repo, comment_id, body = args
-        raise ExitError, "usage: post reply owner repo comment_id body" if [owner, repo, comment_id, body].any?(&:nil?)
-
-        result = github.post_reply(owner, repo, comment_id, body)
-        ensure_ledger([]).record_echo!(comment_ids: [result["id"]].compact)
-        emit(result)
-      else
-        raise ExitError, "unknown post kind: #{kind}"
       end
     end
 
@@ -266,7 +213,6 @@ module OpsGithub
         "ruby" => RUBY_VERSION,
         "state_dir" => state_dir,
         "state_dir_writable" => writable_dir?(state_dir),
-        "cache_dir" => cache_dir,
         "cli" => File.expand_path(__FILE__)
       }
       begin
@@ -277,20 +223,22 @@ module OpsGithub
         checks["auth_ok"] = false
         checks["auth_error"] = e.message
       end
+      path = Ledger.day_path(state_dir)
+      if File.file?(path)
+        ledger = Ledger.load(path)
+        checks["watcher_pid"] = ledger.watcher_pid
+        checks["watcher_alive"] = ledger.watcher_alive?
+      else
+        checks["watcher_pid"] = nil
+        checks["watcher_alive"] = false
+      end
       emit(checks)
-      raise ExitError.new("doctor failed", status: 1) unless checks["state_dir_writable"]
+      ok = checks["state_dir_writable"] && checks["auth_ok"]
+      raise ExitError.new("doctor failed", status: 1) unless ok
     end
 
     def run_help(_args)
       usage
-    end
-
-    def workspace
-      @workspace ||= Workspace.new(cache_dir: cache_dir)
-    end
-
-    def cache_dir
-      File.join(state_dir, "cache")
     end
 
     def ensure_ledger(_args)
@@ -344,11 +292,8 @@ module OpsGithub
           probe                Exit 0 quiet / 10 delta vs day ledger
           tick                 Attention Ledger envelope (JSON)
           ledger summary       Compact day summary
-          ledger decide ID ST  Record decision (asked|approved|snoozed|…)
+          ledger decide ID ST  Record decision (asked|approved|snoozed|done|…)
           ledger exclude PR    Exclude owner/repo#n for the day
-          wt owner/repo branch Ensure (or ff) a local worktree
-          verify-merge PATH --base REF --before-files LIST
-          post issue-comment|reply …
           watch [--max-ticks N]
           doctor               Self-check
           help

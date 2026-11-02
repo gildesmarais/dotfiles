@@ -13,6 +13,7 @@ module OpsGithub
       /network is unreachable/i
     ].freeze
     BASE_CAUSED_CHECKS = %w[bundler_audit dependabot].freeze
+    URGENCY_RANK = { "urgent" => 0, "batch" => 1 }.freeze
 
     def initialize(login:)
       @login = login.to_s
@@ -21,8 +22,7 @@ module OpsGithub
     # +search_rows+: from Github#search_prs (authored + review-requested)
     # +states+: map url => pr_state hash
     # +ledger+: Ledger
-    # +claimed+: map "owner/repo#n" => true when worktree has tracked changes
-    def classify(search_rows:, states:, ledger:, claimed: {})
+    def classify(search_rows:, states:, ledger:)
       items = []
       rows_by_url = {}
       Array(search_rows).each { |r| rows_by_url[r["url"]] = r }
@@ -35,10 +35,11 @@ module OpsGithub
         next if ledger.exclusions.include?(pr_key)
 
         role = (rows_by_url[url] || {})["role"] || infer_role(state)
-        items.concat(items_for_pr(state, role: role, claimed: claimed[pr_key]))
+        items.concat(items_for_pr(state, role: role))
       end
 
       items = cluster_red(items)
+      items = cluster_dependabot(items)
       items.each do |item|
         item["fingerprint"] = fingerprint(item)
         ledger.upsert_item!(item_stub(item))
@@ -65,7 +66,8 @@ module OpsGithub
       if sections["needs"].empty?
         lines << "(none)"
       else
-        sections["needs"].first(8).each do |i|
+        ranked = sections["needs"].sort_by { |i| URGENCY_RANK.fetch(i["urgency"], 9) }
+        ranked.first(8).each do |i|
           lines << "- #{i['urgency']} #{i['pr']}: #{i['class']} → #{i['invoke']}"
         end
       end
@@ -122,7 +124,12 @@ module OpsGithub
       "#{state['repository']}##{state['number']}"
     end
 
-    def items_for_pr(state, role:, claimed:)
+    def bot_author?(login)
+      name = login.to_s.sub(%r{\Aapp/}, "")
+      BOT_AUTHORS.include?(name)
+    end
+
+    def items_for_pr(state, role:)
       out = []
       pr = pr_key_for(state)
       base = {
@@ -132,13 +139,19 @@ module OpsGithub
         "repository" => state["repository"],
         "number" => state["number"],
         "baseRefName" => state["baseRefName"],
+        "headRefName" => state["headRefName"],
         "headRefOid" => state["headRefOid"]
       }
 
       if role == "review-requested" && state["author"].to_s != @login
-        out << item(base, "review-requested", "urgent", "ask",
-                    "/ops-github review #{state['url']}",
-                    "author" => state["author"])
+        klass, urgency, invoke = if bot_author?(state["author"])
+                                   ["dependabot-review", "batch",
+                                    "/dependabot triage #{state['repository']}"]
+                                 else
+                                   ["review-requested", "urgent",
+                                    "/ops-github review #{state['url']}"]
+                                 end
+        out << item(base, klass, urgency, "ask", invoke, "author" => state["author"])
       end
 
       return out if state["isDraft"] && role == "authored"
@@ -151,13 +164,13 @@ module OpsGithub
       failing = Array(state["failing_checks"])
       unless failing.empty?
         names = failing.map { |c| c["name"] }.compact
-        if role == "authored" && base_caused?(names) && !claimed
+        if role == "authored" && base_caused?(names)
           out << item(base, "red-ci-base", "batch", "auto",
-                      "ops-github merge-base #{state['url']}",
+                      "/ops-github act #{pr} merge-main",
                       "checks" => names)
-        elsif role == "authored" && flaky?(failing) && !claimed
+        elsif role == "authored" && flaky?(failing)
           out << item(base, "red-ci-flaky", "batch", "auto",
-                      "ops-github rerun #{state['url']}",
+                      "gh run rerun --failed",
                       "checks" => names)
         elsif role == "authored" && state["reviewDecision"] == "APPROVED"
           out << item(base, "approved-red", "urgent", "ask",
@@ -178,6 +191,7 @@ module OpsGithub
           out << item(base, "bot-thread", "batch", "judge",
                       "/pull-request resolve #{state['url']}",
                       "thread_id" => thread["id"],
+                      "comment_id" => (thread["last"] || {})["databaseId"],
                       "path" => thread["path"],
                       "body" => (thread["first"] || {})["body"])
         elsif role == "authored" && thread["last"] && thread["last"]["author"] != @login
@@ -185,20 +199,21 @@ module OpsGithub
           out << item(base, "unresolved-review", urgency, "ask",
                       "/pull-request resolve #{state['url']}",
                       "thread_id" => thread["id"],
+                      "comment_id" => (thread["last"] || {})["databaseId"],
                       "author" => (thread["last"] || {})["author"],
                       "body" => (thread["last"] || {})["body"])
         end
       end
 
-      if role == "authored" && !claimed
+      if role == "authored" && state["reviewDecision"] == "CHANGES_REQUESTED"
         human_threads = unresolved.reject { |t| t["bot"] }
         if !human_threads.empty? && human_threads.all? { |t| thread_handled?(t) }
           reviewers = human_threads.map { |t| (t["first"] || {})["author"] }.compact.uniq
           reviewers.each do |who|
-            next if who.to_s.empty? || who == @login
+            next if who.to_s.empty? || who == @login || bot_author?(who)
 
             out << item(base, "ready-ping", "batch", "auto",
-                        "ops-github ping #{state['url']} #{who}",
+                        "gh pr comment #{state['url']} --body \"@#{who} ready for another look\"",
                         "reviewer" => who)
           end
         end
@@ -224,11 +239,16 @@ module OpsGithub
       {
         "id" => item["id"],
         "pr" => item["pr"],
+        "url" => item["url"],
         "class" => item["class"],
         "action" => item["action"],
         "urgency" => item["urgency"],
         "invoke" => item["invoke"],
         "fingerprint" => item["fingerprint"],
+        "baseRefName" => item["baseRefName"],
+        "headRefName" => item["headRefName"],
+        "headRefOid" => item["headRefOid"],
+        "evidence" => item["evidence"],
         "status" => "new"
       }
     end
@@ -246,6 +266,9 @@ module OpsGithub
         "urgency" => item["urgency"],
         "action" => item["action"],
         "invoke" => item["invoke"],
+        "baseRefName" => item["baseRefName"],
+        "headRefName" => item["headRefName"],
+        "headRefOid" => item["headRefOid"],
         "evidence" => item["evidence"]
       }
     end
@@ -294,7 +317,7 @@ module OpsGithub
             "checks" => key.split(","),
             "prs" => group.map { |g| g["pr"] }
           )
-          primary["invoke"] = "ops-github cluster-red #{key}"
+          primary["invoke"] = "/pull-request fix-ci #{group.first['url']}"
           primary["action"] = "ask"
           primary["urgency"] = "batch"
           reds << primary
@@ -303,6 +326,36 @@ module OpsGithub
         end
       end
       others + reds
+    end
+
+    def cluster_dependabot(items)
+      groups = Hash.new { |h, k| h[k] = [] }
+      others = []
+      items.each do |item|
+        if item["class"] == "dependabot-review"
+          repo = item["repository"].to_s
+          groups[repo] << item
+        else
+          others << item
+        end
+      end
+      clustered = groups.map do |repo, group|
+        next group.first if group.size == 1
+
+        primary = group.first.dup
+        primary["id"] = Digest::SHA1.hexdigest("dependabot|#{repo}")[0, 12]
+        primary["class"] = "dependabot-triage"
+        primary["pr"] = group.map { |g| g["pr"] }.join(",")
+        primary["evidence"] = (primary["evidence"] || {}).merge(
+          "prs" => group.map { |g| g["pr"] },
+          "count" => group.size
+        )
+        primary["invoke"] = "/dependabot triage #{repo}"
+        primary["action"] = "ask"
+        primary["urgency"] = "batch"
+        primary
+      end
+      others + clustered
     end
 
     def suppress_decided(items, ledger)

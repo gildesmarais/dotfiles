@@ -10,6 +10,7 @@ module OpsGithub
   # classification rules live in Classifier.
   class Ledger
     OPEN_STATUSES = %w[new asked approved snoozed deferred excluded in_flight blocked].freeze
+    VALID_STATUSES = (OPEN_STATUSES + %w[done]).freeze
     CARRY_STATUSES = %w[approved snoozed deferred excluded in_flight blocked].freeze
 
     attr_reader :path, :data
@@ -21,7 +22,11 @@ module OpsGithub
     def self.init(state_dir, owners:, exclusions: [], date: Date.today)
       FileUtils.mkdir_p(state_dir)
       path = day_path(state_dir, date)
-      return load(path) if File.file?(path)
+      if File.file?(path)
+        ledger = load(path)
+        ledger.owners = owners if owners && !owners.empty? && ledger.owners != Array(owners)
+        return ledger
+      end
 
       yesterday = day_path(state_dir, date - 1)
       carry = {}
@@ -43,7 +48,7 @@ module OpsGithub
         "exclusions" => carry_exclusions.uniq,
         "watcher_pid" => nil,
         "seen" => {},
-        "echo" => { "shas" => [], "comment_ids" => [] },
+        "echo" => { "shas" => [] },
         "items" => carry,
         "budgets" => { "auto" => 3, "review" => 4, "retry" => 1 }
       )
@@ -63,6 +68,11 @@ module OpsGithub
 
     def owners
       Array(@data["owners"])
+    end
+
+    def owners=(list)
+      @data["owners"] = Array(list)
+      save!
     end
 
     def exclusions
@@ -109,14 +119,9 @@ module OpsGithub
       (@data["echo"] || {})["shas"] || []
     end
 
-    def echo_comment_ids
-      (@data["echo"] || {})["comment_ids"] || []
-    end
-
-    def record_echo!(shas: [], comment_ids: [])
-      @data["echo"] ||= { "shas" => [], "comment_ids" => [] }
+    def record_echo!(shas: [])
+      @data["echo"] ||= { "shas" => [] }
       @data["echo"]["shas"] = (echo_shas + Array(shas)).uniq
-      @data["echo"]["comment_ids"] = (echo_comment_ids + Array(comment_ids)).uniq
       save!
     end
 
@@ -139,7 +144,7 @@ module OpsGithub
     end
 
     def decide!(id, status, meta = {})
-      raise ExitError, "unknown status: #{status}" unless OPEN_STATUSES.include?(status)
+      raise ExitError, "unknown status: #{status}" unless VALID_STATUSES.include?(status)
 
       item = items[id] || { "id" => id }
       item["status"] = status

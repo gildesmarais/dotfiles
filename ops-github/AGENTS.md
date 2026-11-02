@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`ops-github/` owns the implementation and tests for the `ops-github` command: a daily GitHub attention engine (probe, tick, ledger, worktrees, post, watch). The agent skill router at `agents/skills/ops-github/` calls these verbs; it never reimplements them.
+`ops-github/` owns the implementation and tests for the `ops-github` command: a daily GitHub attention engine (probe, tick, ledger, watch). The agent skill router at `agents/skills/ops-github/` calls these verbs; it never reimplements them. GitHub mutations and worktrees belong to Hands (`pull-request`, `gh`, Task worktree isolation).
 
 ## Key Decision
 
@@ -32,6 +32,7 @@ Do not optimize for:
 - plugin architecture
 - non-stdlib Ruby dependencies
 - encoding org names in the tool or skill
+- local worktree mirrors or GitHub write wrappers (Hands own those)
 
 ## Operating Constraints
 
@@ -39,6 +40,6 @@ Do not optimize for:
 - Prefer stdlib only.
 - `scripts/ops-github` must remain a tiny launcher. Keep `require_relative` so the rcm `~/.scripts/ops-github` symlink still loads `src/cli.rb`.
 - `OpsGithub::Classifier` owns blocker priority, whitelist, red-CI clustering, and thread-handled rules; other modules must not reimplement those.
-- `OpsGithub::Github` is the only module that invokes `gh`; inject a runner for tests.
+- `OpsGithub::Github` is the only module that invokes `gh`, and it is read-only (`setup_facts`, `search_prs`, `pr_states`); inject a runner for tests.
 - Fail closed rather than overwrite unexpected paths.
 - Exclude this tree from rcup via path-prefixed globs in `rcrc` (`ops-github/src`, `ops-github/test`, …) — never a bare `ops-github` basename, which would also skip `agents/skills/ops-github` and `scripts/ops-github`.

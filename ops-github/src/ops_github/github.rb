@@ -5,8 +5,10 @@ require "open3"
 
 module OpsGithub
   # Boundary adapter: the only module that invokes `gh`. Inject +runner+ for tests.
+  # Read-only: discovery and PR state; mutations belong to Hands / pull-request / gh.
   class Github
     BATCH_SIZE = 25
+    PARALLELISM = 6
     THREAD_BODY_MAX = 160
     BOT_AUTHORS = %w[
       copilot-pull-request-reviewer
@@ -68,39 +70,6 @@ module OpsGithub
       out
     end
 
-    def post_reply(owner, repo, comment_id, body)
-      result = json_run(
-        ["api", "repos/#{owner}/#{repo}/pulls/comments/#{comment_id}/replies",
-         "-f", "body=#{body}"]
-      )
-      read_back_comment(result, expected_body: body)
-    end
-
-    def post_issue_comment(owner, repo, number, body)
-      result = json_run(
-        ["api", "repos/#{owner}/#{repo}/issues/#{number}/comments", "-f", "body=#{body}"]
-      )
-      read_back_comment(result, expected_body: body)
-    end
-
-    def resolve_thread(thread_id)
-      query = "mutation($t:ID!){resolveReviewThread(input:{threadId:$t}){thread{isResolved}}}"
-      json_run(["api", "graphql", "-f", "query=#{query}", "-F", "t=#{thread_id}"])
-    end
-
-    def post_inline_comment(owner, repo, number, fields)
-      args = ["api", "repos/#{owner}/#{repo}/pulls/#{number}/comments"]
-      fields.each do |key, value|
-        args << "-f" << "#{key}=#{value}"
-      end
-      result = json_run(args)
-      read_back_comment(result, expected_body: fields["body"] || fields[:body])
-    end
-
-    def rerun_failed_jobs(run_id)
-      run(%W[run rerun #{run_id} --failed])
-    end
-
     private
 
     def default_run(argv)
@@ -140,9 +109,26 @@ module OpsGithub
     end
 
     def pr_states_batch(urls)
-      # Prefer per-URL `gh pr view` for fixture-friendly tests; production can
-      # still batch via GraphQL later without changing Classifier.
-      urls.map { |url| pr_state(url) }
+      return urls.map { |url| pr_state(url) } if urls.size <= 1
+
+      results = Array.new(urls.size)
+      queue = Queue.new
+      urls.each_with_index { |url, idx| queue << [idx, url] }
+      workers = [PARALLELISM, urls.size].min
+      threads = Array.new(workers) do
+        Thread.new do
+          loop do
+            idx, url = begin
+              queue.pop(true)
+            rescue ThreadError
+              break
+            end
+            results[idx] = pr_state(url)
+          end
+        end
+      end
+      threads.each(&:join)
+      results
     end
 
     def pr_state(url)
@@ -256,20 +242,6 @@ module OpsGithub
     def repo_from_url(url)
       owner, repo, = parse_pr_url(url)
       owner ? "#{owner}/#{repo}" : nil
-    end
-
-    def read_back_comment(result, expected_body: nil)
-      raise ExitError, "post returned non-object" unless result.is_a?(Hash)
-
-      body = result["body"].to_s
-      raise ExitError, "post read-back body mismatch" if expected_body && body != expected_body.to_s
-
-      {
-        "id" => result["id"] || result["databaseId"],
-        "url" => result["html_url"] || result["url"],
-        "body" => body,
-        "ok" => true
-      }
     end
   end
 end

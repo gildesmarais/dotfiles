@@ -20,6 +20,18 @@ class LedgerTest < Minitest::Test
     assert_equal(%w[acme me], ledger.owners)
   end
 
+  def test_init_updates_owners_on_existing_day_file
+    OpsGithub::Ledger.init(@tmpdir, owners: %w[acme other])
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    assert_equal(%w[acme], ledger.owners)
+  end
+
+  def test_decide_accepts_done
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    item = ledger.decide!("abc", "done")
+    assert_equal("done", item["status"])
+  end
+
   def test_carry_over_exclusions_and_decisions
     day = Date.new(2026, 11, 1)
     first = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme], date: day)

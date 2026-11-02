@@ -123,6 +123,33 @@ class CliTest < Minitest::Test
     assert_equal(0, status)
     payload = JSON.parse(@stdout.string)
     assert_equal(true, payload["state_dir_writable"])
+    assert_equal(true, payload["auth_ok"])
+    assert_equal(false, payload["watcher_alive"])
+  end
+
+  def test_doctor_fails_when_auth_bad
+    gh = FakeGithub.new(
+      { "login" => "", "owners" => [], "auth_ok" => false },
+      [],
+      [],
+      ""
+    )
+    status = run_cli(["doctor"], github: gh)
+    assert_equal(1, status)
+  end
+
+  def test_owners_flag_updates_existing_ledger
+    OpsGithub::Ledger.init(@tmpdir, owners: %w[acme other])
+    gh = FakeGithub.new(
+      { "login" => "me", "owners" => %w[acme], "auth_ok" => true },
+      [],
+      [],
+      "me"
+    )
+    status = run_cli(["tick"], github: gh)
+    assert_includes([0, 10], status)
+    ledger = OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir))
+    assert_equal(%w[acme], ledger.owners)
   end
 
   def test_unknown_command
