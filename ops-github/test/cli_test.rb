@@ -448,7 +448,10 @@ class CliTest < Minitest::Test
     run_cli(["ledger", "decide", id, "deferred"], github: gh)
     reset_output
     bumped_gh = github_for(runner_with(assigned: [issue_node(5, updated_at: "2026-11-02T15:00:00Z")]))
-    assert_equal(10, run_cli(["probe"], github: bumped_gh))
+    assert_equal(0, run_cli(["probe"], github: bumped_gh))
+    reset_output
+    assigned_gh = github_for(runner_with(assigned: [issue_node(5), issue_node(6)]))
+    assert_equal(10, run_cli(["probe"], github: assigned_gh))
     reset_output
     assert_equal(0, run_cli(["tick"], github: bumped_gh))
     env = JSON.parse(@stdout.string)

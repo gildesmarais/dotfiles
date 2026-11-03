@@ -47,7 +47,7 @@ module OpsGithubTest
   def issue_node(number, updated_at: "2026-11-02T09:00:00Z", repo: "acme/app")
     { "id" => "I_#{number}", "url" => "https://github.com/#{repo}/issues/#{number}", "number" => number,
       "title" => "issue #{number}", "author" => { "login" => "alice" }, "updatedAt" => updated_at,
-      "repository" => { "nameWithOwner" => repo }, "labels" => { "nodes" => [{ "name" => "bug" }] } }
+      "repository" => { "nameWithOwner" => repo } }
   end
 
   def nodes_response(nodes)

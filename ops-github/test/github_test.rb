@@ -54,8 +54,8 @@ class GithubTest < Minitest::Test
     assert_equal(1, calls.size)
     assert_includes(calls.first, "assigned=is:issue is:open assignee:@me user:acme user:beta")
     issue = rows.find { |r| r["kind"] == "issue" }
-    assert_equal(["acme/app#5", "assigned", "2026-11-02T09:00:00Z", %w[bug]],
-                 [OpsGithub::Github.pr_key(issue), issue["role"], issue["signature"], issue["labels"]])
+    assert_equal(%w[acme/app#5 assigned issue],
+                 [OpsGithub::Github.pr_key(issue), issue["role"], issue["signature"]])
     assert_equal(%w[pr], rows.reject { |r| r["kind"] == "issue" }.map { |r| r["kind"] })
   end
 
@@ -87,6 +87,26 @@ class GithubTest < Minitest::Test
     rows = OpsGithub::Github.new(runner: runner).discover(%w[acme])
     assert_equal([1, 9, 2], rows.map { |r| r["number"] })
     assert_includes(calls.last, "ac=A1")
+    assert_includes(calls.last, "withR=false")
+  end
+
+  def test_discover_pages_assigned_alias_until_exhausted
+    pages = [
+      { "authored" => search_page([]), "requested" => search_page([]),
+        "assigned" => search_page([issue_node(5)], "I1") },
+      { "assigned" => search_page([issue_node(6)]) }
+    ]
+    calls = []
+    runner = lambda do |argv|
+      calls << argv
+      JSON.generate("data" => pages[calls.size - 1])
+    end
+    rows = OpsGithub::Github.new(runner: runner).discover(%w[acme])
+    assert_equal([5, 6], rows.map { |r| r["number"] })
+    assert_equal(2, calls.size)
+    assert_includes(calls.last, "ic=I1")
+    assert_includes(calls.last, "withI=true")
+    assert_includes(calls.last, "withA=false")
     assert_includes(calls.last, "withR=false")
   end
 

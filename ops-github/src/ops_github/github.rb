@@ -46,7 +46,6 @@ module OpsGithub
           ... on Issue {
             id url number title author{login} updatedAt
             repository{ nameWithOwner }
-            labels(first:20){ nodes{ name } }
           }
         }
       }
@@ -267,7 +266,8 @@ module OpsGithub
       }
     end
 
-    # Issues have no CI rollup: updatedAt alone is the signature.
+    # Constant signature: only a new assignment (unseen key) is a delta; comments and
+    # label edits bump updatedAt and would wake the watcher for nothing.
     def issue_row(node, role)
       {
         "id" => node["id"],
@@ -277,10 +277,9 @@ module OpsGithub
         "number" => node["number"],
         "updatedAt" => node["updatedAt"],
         "author" => (node["author"] || {})["login"],
-        "labels" => Array((node["labels"] || {})["nodes"]).map { |l| l["name"] },
         "kind" => "issue",
         "role" => role,
-        "signature" => node["updatedAt"].to_s
+        "signature" => "issue"
       }
     end
 
