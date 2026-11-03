@@ -5,8 +5,8 @@ user-approved `ask` items too). Mark `in_flight` before;
 `done` / `blocked` after via `ops-github ledger decide <id> <status>`.
 
 Hand brief, Merge-main, Tiers, Verify:
-[`../../brain/reference/orchestrate.md`](../../brain/reference/orchestrate.md)
-— do not restate. Cap tool output; logs → `/tmp/ops-github/<id>.log`; Hand
+[`../../brain/reference/orchestrate.md`](../../brain/reference/orchestrate.md).
+Cap tool output; logs → `/tmp/ops-github/<id>.log`; Hand
 returns ≤12 lines.
 
 ## Resolve invoke
@@ -21,6 +21,6 @@ returns ≤12 lines.
 
 ## Workspace rules
 
-- Hands own checkouts; Brain edits no tracked files.
+- Hands own checkouts.
 - Fast: reruns, pings. Mid: fixes/conflicts/CI. Frontier: retries, security, reviews.
 - Budgets: envelope `budgets`. On block: `ledger decide <id> blocked`.

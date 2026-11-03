@@ -4,7 +4,7 @@ Others' PRs only (`review-requested`). Never approve or merge.
 
 1. Spawn a read-only strongest / high Hand (`Task`, timebox ≤12 turns) loading
    `review.gil` `findings` on the URL. Scratch → `/tmp/ops-github/<id>.log`.
-   Return Findings + Readiness only (≤12 lines to chat). Hand brief / tiers:
+   Return Findings + Readiness (≤12 lines). Brief / tiers:
    [`../../brain/reference/orchestrate.md`](../../brain/reference/orchestrate.md).
 2. Show a one-line verdict. AskQuestion for per-PR OK before any GitHub write.
 3. On OK: submit a `COMMENT` review (not approve). Prefer \`\`\`suggestion
