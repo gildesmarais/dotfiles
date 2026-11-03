@@ -269,4 +269,39 @@ class ClassifierTest < Minitest::Test
     assert_equal(%w[alice bob], pings.map { |i| i["evidence"]["reviewer"] }.sort)
     assert_equal(2, pings.map { |i| i["id"] }.uniq.size)
   end
+
+  def line_item(id, action, urgency = "batch")
+    { "id" => id, "pr" => "acme/r##{id}", "class" => "x", "urgency" => urgency,
+      "action" => action, "invoke" => "/x", "fingerprint" => id }
+  end
+
+  def test_line_quiet
+    env = @classifier.envelope([], ledger: @ledger)
+    assert_equal("ops: quiet", env["line"])
+    assert_equal(false, env["dry"])
+  end
+
+  def test_line_mixed_counts
+    items = [line_item("a", "ask", "urgent"), line_item("b", "judge"), line_item("c", "auto")]
+    @ledger.upsert_item!(line_item("z", "ask").merge("status" => "in_flight"))
+    env = @classifier.envelope(items, ledger: @ledger)
+    assert_equal("ops: 2 need you (1 urgent) · 1 auto · 1 in flight", env["line"])
+  end
+
+  def test_dry_moves_auto_to_ask
+    items = [line_item("a", "auto"), line_item("b", "ask")]
+    env = @classifier.envelope(items, ledger: @ledger, dry: true)
+    assert_empty(env["auto"])
+    assert_equal(%w[ask ask], env["ask"].map { |i| i["action"] })
+    assert_equal(true, env["dry"])
+    assert_equal("ops: 2 need you · dry", env["line"])
+    assert_equal("ops: quiet · dry", @classifier.envelope([], ledger: @ledger, dry: true)["line"])
+  end
+
+  def test_line_within_80_chars_with_many_items
+    items = (1..300).map { |n| line_item(n.to_s, %w[ask judge auto][n % 3], "urgent") }
+    line = @classifier.envelope(items, ledger: @ledger, dry: false)["line"]
+    assert_operator(line.length, :<=, 80)
+    refute_includes(line, "\n")
+  end
 end

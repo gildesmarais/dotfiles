@@ -72,8 +72,10 @@ module OpsGithub
     end
 
     # +items+: Classifier#classify output (already filtered by Ledger#decided?).
-    def envelope(items, ledger:)
+    # +dry+: demote every auto item to ask so nothing outward-facing runs unattended.
+    def envelope(items, ledger:, dry: false)
       actionable = items
+      actionable = actionable.map { |i| i["action"] == "auto" ? i.merge("action" => "ask") : i } if dry
       auto = actionable.select { |i| i["action"] == "auto" }.first(ledger.budgets["auto"] || 3)
       ask = actionable.select { |i| i["action"] == "ask" }
       judge = actionable.select { |i| i["action"] == "judge" }
@@ -82,6 +84,8 @@ module OpsGithub
       status = (auto + ask + judge).empty? ? "quiet" : "changes"
       {
         "status" => status,
+        "dry" => dry,
+        "line" => status_line(ask + judge, auto, in_flight, dry),
         "report_md" => report,
         "auto" => auto.map { |i| slim(i) },
         "ask" => ask.map { |i| slim(i) },
@@ -97,6 +101,17 @@ module OpsGithub
     end
 
     private
+
+    def status_line(needs, auto, in_flight, dry)
+      urgent = needs.count { |i| i["urgency"] == "urgent" }
+      segs = []
+      segs << "#{needs.size} need you#{" (#{urgent} urgent)" if urgent.positive?}" unless needs.empty?
+      segs << "#{auto.size} auto" unless auto.empty?
+      segs << "#{in_flight.size} in flight" unless in_flight.empty?
+      segs << "quiet" if segs.empty?
+      segs << "dry" if dry
+      "ops: #{segs.join(' · ')}"
+    end
 
     def infer_role(state)
       state["author"].to_s == @login ? "authored" : "review-requested"
