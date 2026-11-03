@@ -12,5 +12,5 @@ Others' PRs only (`review-requested`). Never approve or merge.
 4. If a local gate can't run, AskQuestion — do not guess green.
 5. Record `ops-github ledger decide <id> done|deferred` after the outcome.
 
-Budget: ≤4 review Hands per wake (`budgets.review`); overflow carries.
+Budget: `budgets.review` Hands per wake; overflow waits for the next wake.
 Security-matrix hits stay frontier tier.

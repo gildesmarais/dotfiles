@@ -4,10 +4,8 @@
    `auto`, `ask`, `judge`, `budgets`). Exit 0 = quiet, 10 = changes (both OK).
 2. Paste `report_md` as the chat report (engine ≤15 lines). Add at most one
    sentence naming what to do first.
-3. **Auto:** run each `auto[]` via **act** up to `budgets.auto` (default 3).
-   Overflow carries.
-4. **Ask / judge:** one AskQuestion batch for urgent items (review-requested,
-   human reply, approved-red). Batch wake → one digest line
+3. **Auto:** run each `auto[]` via **act** (engine already caps at `budgets.auto`).
+4. **Ask / judge:** one AskQuestion batch for `urgency: urgent` items. Batch wake → one digest line
    ("N new, `/ops-github` to see") unless the user is already in-session.
    After AskQuestion, record `ops-github ledger decide <id> asked|approved|snoozed|deferred|excluded`.
 5. **Judge:** for bot-thread items, decide approve / defer / exclude yourself
@@ -22,5 +20,5 @@
    AskQuestion; batch → digest only.
 
 Never re-ask items already `asked`/`approved`/`snoozed`/`deferred`/`in_flight`
-until the engine resurfaces them (fingerprint change). Enforce budgets:
-`auto` 3, `review` 4, `retry` 1 per wake.
+until the engine resurfaces them (fingerprint change). Enforce the envelope
+`budgets` per wake.
