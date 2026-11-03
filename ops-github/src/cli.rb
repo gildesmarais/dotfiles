@@ -92,16 +92,10 @@ module OpsGithub
 
     def run_probe(_args)
       ledger = ensure_ledger
-      rows = discover(ledger.owners)
-      delta = false
-      rows.each do |row|
-        key = "#{row['repository']}##{row['number']}"
-        next if ledger.exclusions.include?(key)
-
-        if ledger.changed_since_seen?(key, updated_at: row["updatedAt"])
-          delta = true
-          break
-        end
+      rows = github.discover(ledger.owners)
+      delta = rows.any? do |row|
+        key = pr_key(row)
+        !ledger.exclusions.include?(key) && ledger.changed_since_seen?(key, signature: row["signature"])
       end
       if delta
         emit("status" => "changes", "count" => rows.size)
@@ -114,31 +108,20 @@ module OpsGithub
 
     def run_tick(_args)
       ledger = ensure_ledger
-      rows = discover(ledger.owners)
-      changed_urls = []
+      rows = github.discover(ledger.owners)
+      first_tick = ledger.seen.empty?
+      changed_ids = []
       rows.each do |row|
-        key = "#{row['repository']}##{row['number']}"
+        key = pr_key(row)
         next if ledger.exclusions.include?(key)
 
-        changed_urls << row["url"] if ledger.changed_since_seen?(key, updated_at: row["updatedAt"])
+        changed_ids << row["id"] if first_tick || ledger.changed_since_seen?(key, signature: row["signature"])
       end
-
-      # First tick (empty seen): fetch all non-excluded.
-      if ledger.seen.empty?
-        changed_urls = rows.reject { |r| ledger.exclusions.include?("#{r['repository']}##{r['number']}") }
-                           .map { |r| r["url"] }
-      end
-
-      states = github.pr_states(changed_urls.uniq)
-      states_by_url = {}
-      states.each { |state| states_by_url[state["url"]] = state }
-      # Always stamp search rows so probe can quiet even when a view fails.
+      states = github.pr_states(changed_ids)
+      # Stamp only after full state fetched, so a failed tick re-sees the change.
       rows.each do |row|
-        key = "#{row['repository']}##{row['number']}"
-        next if ledger.exclusions.include?(key)
-
-        state = states_by_url[row["url"]]
-        ledger.mark_seen!(key, updated_at: (state || row)["updatedAt"])
+        key = pr_key(row)
+        ledger.mark_seen!(key, signature: row["signature"]) unless ledger.exclusions.include?(key)
       end
 
       login = github.login
@@ -253,19 +236,8 @@ module OpsGithub
       Ledger.init(state_dir, owners: owners)
     end
 
-    def discover(owners)
-      authored = github.search_prs(owners, "authored")
-      requested = github.search_prs(owners, "review-requested")
-      by_url = {}
-      authored.each { |r| by_url[r["url"]] = r }
-      requested.each do |r|
-        if by_url[r["url"]]
-          by_url[r["url"]]["role"] = "both"
-        else
-          by_url[r["url"]] = r
-        end
-      end
-      by_url.values
+    def pr_key(row)
+      "#{row['repository']}##{row['number']}"
     end
 
     def writable_dir?(dir)

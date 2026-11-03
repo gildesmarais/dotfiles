@@ -6,19 +6,47 @@ require_relative "test_helper"
 class CliTest < Minitest::Test
   include OpsGithubTest
 
-  FakeGithub = Struct.new(:facts, :rows, :states, :login) do
-    def setup_facts
-      self.login = facts["login"]
-      facts
+  # Real Github over a recorded-shape runner: search returns +nodes+ (one page),
+  # nodes(ids:) returns the requested ones. Counts gh invocations.
+  class FakeRunner
+    include OpsGithubTest
+
+    attr_reader :calls
+
+    def initialize(login: "me", orgs: [], authored: [], requested: [])
+      @login = login
+      @orgs = orgs
+      @authored = authored
+      @requested = requested
+      @calls = []
     end
 
-    def search_prs(_owners, role)
-      rows.select { |r| [role, "both"].include?(r["role"]) }
+    def call(argv)
+      @calls << argv
+      return "#{@login}\n" if argv[0, 2] == %w[api user]
+      return JSON.generate(@orgs) if argv[0, 2] == %w[api user/orgs]
+      raise "unexpected gh call: #{argv.inspect}" unless argv[0, 2] == %w[api graphql]
+      return search_response(authored: @authored, requested: @requested) unless state_call?(argv)
+
+      ids = argv.grep(/\Aids\[\]=/).map { |arg| arg.split("=", 2).last }
+      nodes_response((@authored + @requested).uniq.select { |node| ids.include?(node["id"]) })
     end
 
-    def pr_states(urls)
-      states.select { |s| urls.include?(s["url"]) }
+    def state_call?(argv)
+      argv.any? { |arg| arg.include?("nodes(ids:") }
     end
+
+    def graphql_calls
+      calls.count { |argv| argv[0, 2] == %w[api graphql] }
+    end
+
+    def state_calls
+      calls.count { |argv| state_call?(argv) }
+    end
+  end
+
+  def github_for(runner)
+    OpsGithub::Github.new(runner: runner)
   end
 
   def setup
@@ -46,14 +74,17 @@ class CliTest < Minitest::Test
     end
   end
 
+  def runner_with(authored: [], requested: [])
+    FakeRunner.new(authored: authored, requested: requested)
+  end
+
+  def seen_signature(node)
+    github_for(runner_with(authored: [node])).discover(%w[acme]).first["signature"]
+  end
+
   def test_setup_facts_emits_owners
-    gh = FakeGithub.new(
-      { "login" => "me", "owners" => %w[acme me], "auth_ok" => true },
-      [],
-      [],
-      nil
-    )
-    status = run_cli(["setup-facts"], github: gh)
+    runner = FakeRunner.new(orgs: %w[acme])
+    status = run_cli(["setup-facts"], github: github_for(runner))
     assert_equal(0, status)
     payload = JSON.parse(@stdout.string)
     assert_equal("me", payload["login"])
@@ -61,45 +92,49 @@ class CliTest < Minitest::Test
   end
 
   def test_probe_quiet_when_seen_matches
-    state = state_from_fixture("pr_authored_clean.json")
-    row = search_row(state, "authored")
-    gh = FakeGithub.new(
-      { "login" => "me", "owners" => %w[acme], "auth_ok" => true },
-      [row],
-      [state],
-      "me"
-    )
+    node = pr_node("pr_authored_clean.json")
     ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
-    ledger.mark_seen!("acme/app#1", updated_at: row["updatedAt"])
-    status = run_cli(["probe"], github: gh)
+    ledger.mark_seen!("acme/app#1", signature: seen_signature(node))
+    status = run_cli(["probe"], github: github_for(runner_with(authored: [node])))
     assert_equal(0, status)
     assert_equal("quiet", JSON.parse(@stdout.string)["status"])
   end
 
   def test_probe_delta_on_new_updated_at
-    state = state_from_fixture("pr_authored_clean.json")
-    row = search_row(state, "authored")
-    gh = FakeGithub.new(
-      { "login" => "me", "owners" => %w[acme], "auth_ok" => true },
-      [row],
-      [state],
-      "me"
-    )
     OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
-    status = run_cli(["probe"], github: gh)
+    status = run_cli(["probe"], github: github_for(runner_with(authored: [pr_node("pr_authored_clean.json")])))
     assert_equal(10, status)
   end
 
+  def test_probe_delta_when_rollup_fails_with_same_updated_at
+    node = pr_node("pr_authored_clean.json")
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    ledger.mark_seen!("acme/app#1", signature: seen_signature(node))
+    red = JSON.parse(JSON.generate(node))
+    red["commits"]["nodes"][0]["commit"]["statusCheckRollup"]["state"] = "FAILURE"
+    status = run_cli(["probe"], github: github_for(runner_with(authored: [red])))
+    assert_equal(node["updatedAt"], red["updatedAt"])
+    assert_equal(10, status)
+  end
+
+  def test_probe_one_call_and_tick_one_plus_chunks
+    nodes = (1..11).map do |n|
+      pr_node("pr_authored_clean.json").merge("id" => "PR_#{n}", "number" => n,
+                                              "url" => "https://github.com/acme/app/pull/#{n}")
+    end
+    runner = runner_with(authored: nodes)
+    gh = github_for(runner)
+    run_cli(["probe"], github: gh)
+    assert_equal([1, 1], [runner.graphql_calls, runner.calls.size])
+    run_cli(["tick"], github: gh)
+    chunks = (11.0 / OpsGithub::Github::STATE_CHUNK).ceil
+    assert_equal([1 + 1 + chunks, chunks], [runner.graphql_calls, runner.state_calls])
+    run_cli(["tick"], github: gh)
+    assert_equal([1 + (1 + chunks) + 1, chunks], [runner.graphql_calls, runner.state_calls])
+  end
+
   def test_tick_envelope_schema
-    state = state_from_fixture("pr_bundler_audit.json")
-    row = search_row(state, "authored")
-    gh = FakeGithub.new(
-      { "login" => "me", "owners" => %w[acme], "auth_ok" => true },
-      [row],
-      [state],
-      "me"
-    )
-    status = run_cli(["tick"], github: gh)
+    status = run_cli(["tick"], github: github_for(runner_with(authored: [pr_node("pr_bundler_audit.json")])))
     assert_equal(10, status)
     env = JSON.parse(@stdout.string)
     assert(env.key?("status"))
@@ -111,14 +146,16 @@ class CliTest < Minitest::Test
     refute_empty(env["auto"])
   end
 
+  def test_tick_stamps_signature_and_skips_unchanged_on_second_tick
+    gh = github_for(runner_with(authored: [pr_node("pr_bundler_audit.json")]))
+    assert_equal(10, run_cli(["tick"], github: gh))
+    ledger = OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir))
+    assert_equal("2026-11-02T11:00:00Z|FAILURE|REVIEW_REQUIRED", ledger.seen["acme/app#2"])
+    assert_equal(0, run_cli(["probe"], github: gh))
+  end
+
   def test_doctor_ok
-    gh = FakeGithub.new(
-      { "login" => "me", "owners" => %w[me], "auth_ok" => true },
-      [],
-      [],
-      "me"
-    )
-    status = run_cli(["doctor"], github: gh)
+    status = run_cli(["doctor"], github: github_for(FakeRunner.new))
     assert_equal(0, status)
     payload = JSON.parse(@stdout.string)
     assert_equal(true, payload["state_dir_writable"])
@@ -127,89 +164,53 @@ class CliTest < Minitest::Test
   end
 
   def test_doctor_fails_when_auth_bad
-    gh = FakeGithub.new(
-      { "login" => "", "owners" => [], "auth_ok" => false },
-      [],
-      [],
-      ""
-    )
-    status = run_cli(["doctor"], github: gh)
+    status = run_cli(["doctor"], github: github_for(FakeRunner.new(login: "")))
     assert_equal(1, status)
   end
 
   def test_owners_flag_updates_existing_ledger
     OpsGithub::Ledger.init(@tmpdir, owners: %w[acme other])
-    gh = FakeGithub.new(
-      { "login" => "me", "owners" => %w[acme], "auth_ok" => true },
-      [],
-      [],
-      "me"
-    )
-    status = run_cli(["tick"], github: gh)
+    status = run_cli(["tick"], github: github_for(FakeRunner.new))
     assert_includes([0, 10], status)
     ledger = OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir))
     assert_equal(%w[acme], ledger.owners)
   end
 
   def test_unknown_command
-    gh = FakeGithub.new({ "login" => "me", "owners" => [], "auth_ok" => true }, [], [], "me")
-    status = run_cli(["wat"], github: gh)
+    status = run_cli(["wat"], github: github_for(FakeRunner.new))
     assert_equal(1, status)
     assert_match(/unknown command/, @stderr.string)
   end
 
   def test_watch_max_ticks_quiet_emits_no_wake
-    state = state_from_fixture("pr_authored_clean.json")
-    row = search_row(state, "authored")
-    gh = FakeGithub.new(
-      { "login" => "me", "owners" => %w[acme], "auth_ok" => true },
-      [row],
-      [state],
-      "me"
-    )
+    node = pr_node("pr_authored_clean.json")
     ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
-    ledger.mark_seen!("acme/app#1", updated_at: row["updatedAt"])
-    status = run_cli(["watch", "--max-ticks", "1"], github: gh)
+    ledger.mark_seen!("acme/app#1", signature: seen_signature(node))
+    status = run_cli(["watch", "--max-ticks", "1"], github: github_for(runner_with(authored: [node])))
     assert_equal(0, status)
     refute_match(/OPS_GITHUB_WAKE/, @stdout.string)
   end
 
   def test_watch_max_ticks_delta_emits_wake
-    state = state_from_fixture("pr_authored_clean.json")
-    row = search_row(state, "authored")
-    gh = FakeGithub.new(
-      { "login" => "me", "owners" => %w[acme], "auth_ok" => true },
-      [row],
-      [state],
-      "me"
-    )
     OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    gh = github_for(runner_with(authored: [pr_node("pr_authored_clean.json")]))
     status = run_cli(["watch", "--max-ticks", "1"], github: gh)
     assert_equal(0, status)
     assert_match(/OPS_GITHUB_WAKE/, @stdout.string)
   end
 
   def test_tick_both_role_authored_pr_reports_red_ci
-    state = state_from_fixture("pr_bundler_audit.json")
-    gh = FakeGithub.new(
-      { "login" => "me", "owners" => %w[acme], "auth_ok" => true },
-      [search_row(state, "both")],
-      [state],
-      "me"
-    )
-    assert_equal(10, run_cli(["tick"], github: gh))
+    node = pr_node("pr_bundler_audit.json")
+    runner = runner_with(authored: [node], requested: [node])
+    assert_equal(%w[both], github_for(runner).discover(%w[acme]).map { |r| r["role"] })
+    assert_equal(10, run_cli(["tick"], github: github_for(runner)))
     env = JSON.parse(@stdout.string)
     classes = (env["auto"] + env["ask"] + env["judge"]).select { |i| i["pr"] == "acme/app#2" }.map { |i| i["class"] }
     assert_includes(classes, "red-ci-base")
   end
 
   def test_report_lists_in_flight_items_capped_at_three
-    gh = FakeGithub.new(
-      { "login" => "me", "owners" => %w[acme], "auth_ok" => true },
-      [],
-      [],
-      "me"
-    )
+    gh = github_for(FakeRunner.new)
     assert_equal(0, run_cli(["ledger", "decide", "acme/app#1", "in_flight"], github: gh))
     @stdout.truncate(0)
     @stdout.rewind
@@ -226,8 +227,8 @@ class CliTest < Minitest::Test
   end
 
   def test_watch_survives_probe_crash
-    gh = FakeGithub.new({ "login" => "me", "owners" => %w[acme], "auth_ok" => true }, [], [], "me")
-    def gh.search_prs(*)
+    gh = github_for(FakeRunner.new)
+    def gh.discover(*)
       raise Errno::ENOENT, "gh"
     end
     OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])

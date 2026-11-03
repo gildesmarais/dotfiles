@@ -26,40 +26,30 @@ module OpsGithubTest
     JSON.parse(File.read(File.join(FIXTURES, name)))
   end
 
-  def state_from_fixture(name, threads_name = nil)
-    raw = fixture(name)
-    state = {
-      "url" => raw["url"],
-      "number" => raw["number"],
-      "title" => raw["title"],
-      "author" => (raw["author"] || {})["login"],
-      "isDraft" => raw["isDraft"],
-      "baseRefName" => raw["baseRefName"],
-      "headRefName" => raw["headRefName"],
-      "headRefOid" => raw["headRefOid"],
-      "mergeable" => raw["mergeable"],
-      "mergeStateStatus" => raw["mergeStateStatus"],
-      "reviewDecision" => raw["reviewDecision"],
-      "updatedAt" => raw["updatedAt"],
-      "failing_checks" => failing_checks_from(raw),
-      "threads" => [],
-      "repository" => raw["url"][%r{github\.com/([^/]+/[^/]+)/}, 1]
-    }
-    if threads_name
-      nodes = fixture(threads_name).dig("data", "repository", "pullRequest", "reviewThreads", "nodes") || []
-      gh = OpsGithub::Github.new(runner: ->(_) { "{}" })
-      state["threads"] = nodes.map { |n| gh.send(:normalize_thread, n) }
-    end
-    state
+  # PullRequest node as recorded inside a search response; +threads_name+
+  # supplies its reviewThreads fragment.
+  def pr_node(name, threads_name = nil)
+    node = fixture(name)
+    node["reviewThreads"] = fixture(threads_name)["reviewThreads"] if threads_name
+    node
   end
 
-  def failing_checks_from(raw)
-    failed = Array(raw["statusCheckRollup"]).select do |c|
-      OpsGithub::Github::FAILING_STATES.include?((c["conclusion"] || c["state"]).to_s.upcase)
-    end
-    failed.map do |c|
-      { "name" => c["name"], "state" => (c["conclusion"] || c["state"]).to_s.upcase }
-    end
+  def search_page(nodes, cursor = nil)
+    { "pageInfo" => { "hasNextPage" => !cursor.nil?, "endCursor" => cursor }, "nodes" => nodes }
+  end
+
+  def search_response(authored: [], requested: [])
+    JSON.generate("data" => { "authored" => search_page(authored), "requested" => search_page(requested) })
+  end
+
+  def nodes_response(nodes)
+    JSON.generate("data" => { "nodes" => nodes })
+  end
+
+  # Builds the state through the production normalizer (Github#pr_states).
+  def state_from_fixture(name, threads_name = nil)
+    response = nodes_response([pr_node(name, threads_name)])
+    OpsGithub::Github.new(runner: ->(_) { response }).pr_states(%w[id]).first
   end
 
   def search_row(state, role)

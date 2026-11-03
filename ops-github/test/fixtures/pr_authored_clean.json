@@ -1,8 +1,12 @@
 {
+  "__typename": "PullRequest",
+  "id": "PR_app1",
   "url": "https://github.com/acme/app/pull/1",
   "number": 1,
   "title": "clean pr",
-  "author": { "login": "me" },
+  "author": {
+    "login": "me"
+  },
   "isDraft": false,
   "baseRefName": "main",
   "headRefName": "feat",
@@ -11,7 +15,32 @@
   "mergeStateStatus": "CLEAN",
   "reviewDecision": "REVIEW_REQUIRED",
   "updatedAt": "2026-11-02T10:00:00Z",
-  "statusCheckRollup": [
-    { "name": "unit", "conclusion": "SUCCESS" }
-  ]
+  "repository": {
+    "nameWithOwner": "acme/app"
+  },
+  "commits": {
+    "nodes": [
+      {
+        "commit": {
+          "committedDate": "2026-11-02T09:30:00Z",
+          "statusCheckRollup": {
+            "state": "SUCCESS",
+            "contexts": {
+              "nodes": [
+                {
+                  "__typename": "CheckRun",
+                  "name": "unit",
+                  "conclusion": "SUCCESS",
+                  "detailsUrl": "https://github.com/acme/app/actions/runs/1"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "reviewThreads": {
+    "nodes": []
+  }
 }

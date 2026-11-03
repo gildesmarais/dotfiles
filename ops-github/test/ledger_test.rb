@@ -50,12 +50,12 @@ class LedgerTest < Minitest::Test
     assert(second.watcher_alive?)
   end
 
-  def test_changed_since_seen_compares_updated_at
+  def test_changed_since_seen_compares_signature
     ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
-    assert(ledger.changed_since_seen?("acme/app#1", updated_at: "t1"))
-    ledger.mark_seen!("acme/app#1", updated_at: "t1")
-    refute(ledger.changed_since_seen?("acme/app#1", updated_at: "t1"))
-    assert(ledger.changed_since_seen?("acme/app#1", updated_at: "t2"))
+    assert(ledger.changed_since_seen?("acme/app#1", signature: "t1|SUCCESS"))
+    ledger.mark_seen!("acme/app#1", signature: "t1|SUCCESS")
+    refute(ledger.changed_since_seen?("acme/app#1", signature: "t1|SUCCESS"))
+    assert(ledger.changed_since_seen?("acme/app#1", signature: "t1|FAILURE"))
   end
 
   def test_upsert_does_not_reset_asked_same_fingerprint

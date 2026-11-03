@@ -1,8 +1,12 @@
 {
+  "__typename": "PullRequest",
+  "id": "PR_other9",
   "url": "https://github.com/acme/other/pull/9",
   "number": 9,
   "title": "please review",
-  "author": { "login": "alice" },
+  "author": {
+    "login": "alice"
+  },
   "isDraft": false,
   "baseRefName": "main",
   "headRefName": "alice-feat",
@@ -11,7 +15,32 @@
   "mergeStateStatus": "CLEAN",
   "reviewDecision": "REVIEW_REQUIRED",
   "updatedAt": "2026-11-02T12:30:00Z",
-  "statusCheckRollup": [
-    { "name": "unit", "conclusion": "SUCCESS" }
-  ]
+  "repository": {
+    "nameWithOwner": "acme/other"
+  },
+  "commits": {
+    "nodes": [
+      {
+        "commit": {
+          "committedDate": "2026-11-02T12:00:00Z",
+          "statusCheckRollup": {
+            "state": "SUCCESS",
+            "contexts": {
+              "nodes": [
+                {
+                  "__typename": "CheckRun",
+                  "name": "unit",
+                  "conclusion": "SUCCESS",
+                  "detailsUrl": "https://github.com/acme/other/actions/runs/1"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "reviewThreads": {
+    "nodes": []
+  }
 }

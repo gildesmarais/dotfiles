@@ -117,14 +117,15 @@ module OpsGithub
       @data["items"] ||= {}
     end
 
-    def mark_seen!(pr_key, updated_at:)
-      seen[pr_key] = { "updatedAt" => updated_at }
+    # +signature+: opaque change string built by Github (updatedAt + CI rollup +
+    # mergeable + reviewDecision); the ledger only compares it.
+    def mark_seen!(pr_key, signature:)
+      seen[pr_key] = signature
       save!
     end
 
-    def changed_since_seen?(pr_key, updated_at:)
-      prev = seen[pr_key]
-      prev.nil? || prev["updatedAt"] != updated_at
+    def changed_since_seen?(pr_key, signature:)
+      seen[pr_key] != signature
     end
 
     def decide!(id, status, meta = {})

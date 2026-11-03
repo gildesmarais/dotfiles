@@ -7,8 +7,6 @@ module OpsGithub
   # Boundary adapter: the only module that invokes `gh`. Inject +runner+ for tests.
   # Read-only: discovery and PR state; mutations belong to Hands / pull-request / gh.
   class Github
-    BATCH_SIZE = 25
-    PARALLELISM = 6
     THREAD_BODY_MAX = 160
     FAILING_STATES = %w[FAILURE ERROR TIMED_OUT STARTUP_FAILURE].freeze
     BOT_AUTHORS = %w[
@@ -18,6 +16,64 @@ module OpsGithub
       dependabot
       renovate
     ].freeze
+    SEARCH_ROLES = { "authored" => "authored", "requested" => "review-requested" }.freeze
+    CURSOR_VARS = { "authored" => "ac", "requested" => "rc" }.freeze
+    # Full-state chunk; sized from a live measurement (see AGENTS.md).
+    STATE_CHUNK = 10
+    RETRYABLE = /HTTP 50[24]/.freeze
+    # Phase 1: cheap. No mergeable/contexts/threads: merge-state computation is what
+    # pushes a full search past GitHub's ~10s timeout.
+    SEARCH_QUERY = <<~GRAPHQL
+      query($authored:String!,$requested:String!,$ac:String,$rc:String,$withA:Boolean!,$withR:Boolean!){
+        authored: search(type:ISSUE,first:50,query:$authored,after:$ac) @include(if:$withA){ ...page }
+        requested: search(type:ISSUE,first:50,query:$requested,after:$rc) @include(if:$withR){ ...page }
+      }
+      fragment page on SearchResultItemConnection {
+        pageInfo{ hasNextPage endCursor }
+        nodes{
+          ... on PullRequest {
+            id url number title author{login} isDraft updatedAt reviewDecision
+            repository{ nameWithOwner }
+            commits(last:1){ nodes{ commit{ statusCheckRollup{ state } } } }
+          }
+        }
+      }
+    GRAPHQL
+    # Phase 2: full state for changed PRs only.
+    STATE_QUERY = <<~GRAPHQL
+      query($ids:[ID!]!){ nodes(ids:$ids){ ...pr } }
+      fragment comment on PullRequestReviewComment {
+        databaseId author{login} body createdAt path
+      }
+      fragment pr on PullRequest {
+        url number title author{login} isDraft baseRefName headRefName headRefOid
+        mergeable mergeStateStatus reviewDecision updatedAt
+        repository{ nameWithOwner }
+        commits(last:1){
+          nodes{
+            commit{
+              committedDate
+              statusCheckRollup{
+                state
+                contexts(first:50){
+                  nodes{
+                    ... on CheckRun{ name conclusion detailsUrl }
+                    ... on StatusContext{ context state targetUrl }
+                  }
+                }
+              }
+            }
+          }
+        }
+        reviewThreads(first:100){
+          nodes{
+            id isResolved
+            first: comments(first:1){ nodes{ ...comment } }
+            last: comments(last:1){ nodes{ ...comment } }
+          }
+        }
+      }
+    GRAPHQL
 
     attr_reader :login
 
@@ -42,33 +98,42 @@ module OpsGithub
       }
     end
 
-    def search_prs(owners, role)
-      owners = Array(owners)
-      results = []
-      owners.each do |owner|
-        flag = role == "review-requested" ? "--review-requested=@me" : "--author=@me"
-        args = [
-          "search", "prs", flag, "--owner=#{owner}", "--state=open",
-          "--json", "url,repository,title,number,updatedAt,isDraft,author",
-          "--limit", "50"
-        ]
-        rows = json_run(args)
-        Array(rows).each do |row|
-          results << normalize_search_row(row, role)
+    # Phase 1: one `gh api graphql` call per page, both roles aliased in one
+    # query. Rows carry id, role (authored|review-requested|both), and signature.
+    def discover(owners)
+      scope = Array(owners).map { |owner| "user:#{owner}" }.join(" ")
+      cursors = { "authored" => nil, "requested" => nil }
+      pending = SEARCH_ROLES.keys
+      rows_by_url = {}
+      until pending.empty?
+        data = graphql(
+          SEARCH_QUERY,
+          "-F", "authored=is:pr is:open author:@me #{scope}".strip,
+          "-F", "requested=is:pr is:open review-requested:@me #{scope}".strip,
+          "-F", "withA=#{pending.include?('authored')}",
+          "-F", "withR=#{pending.include?('requested')}",
+          *cursor_args(cursors)
+        )
+        pending = pending.select do |field|
+          page = data[field] || {}
+          Array(page["nodes"]).each { |node| merge_row(rows_by_url, node, SEARCH_ROLES[field]) }
+          cursors[field] = page.dig("pageInfo", "endCursor")
+          page.dig("pageInfo", "hasNextPage") && cursors[field]
         end
       end
-      results
+      rows_by_url.values
     end
 
-    def pr_states(urls)
-      urls = Array(urls).uniq
-      return [] if urls.empty?
+    # Phase 2: full classifier states for node ids, STATE_CHUNK per call. A 502/504
+    # retries that chunk once as two halves; any other failure fails the caller.
+    def pr_states(ids)
+      Array(ids).each_slice(STATE_CHUNK).flat_map do |chunk|
+        state_nodes(chunk)
+      rescue ExitError => e
+        raise unless chunk.size > 1 && RETRYABLE.match?(e.message)
 
-      out = []
-      urls.each_slice(BATCH_SIZE) do |batch|
-        out.concat(pr_states_batch(batch))
+        chunk.each_slice((chunk.size + 1) / 2).flat_map { |half| state_nodes(half) }
       end
-      out
     end
 
     private
@@ -94,111 +159,72 @@ module OpsGithub
       raw.strip
     end
 
-    def normalize_search_row(row, role)
-      repo = row["repository"] || {}
-      name = repo.is_a?(Hash) ? (repo["nameWithOwner"] || repo["name"]) : repo.to_s
-      {
-        "url" => row["url"],
-        "repository" => name,
-        "title" => row["title"],
-        "number" => row["number"],
-        "updatedAt" => row["updatedAt"],
-        "isDraft" => row["isDraft"],
-        "author" => (row["author"] || {})["login"],
-        "role" => role
-      }
+    def graphql(query, *args)
+      raw = json_run(["api", "graphql", "-f", "query=#{query}", *args])
+      (raw.is_a?(Hash) && raw["data"]) || {}
     end
 
-    def pr_states_batch(urls)
-      return urls.map { |url| pr_state(url) } if urls.size <= 1
+    def cursor_args(cursors)
+      cursors.flat_map { |field, cursor| cursor ? ["-f", "#{CURSOR_VARS[field]}=#{cursor}"] : [] }
+    end
 
-      results = Array.new(urls.size)
-      queue = Queue.new
-      urls.each_with_index { |url, idx| queue << [idx, url] }
-      workers = [PARALLELISM, urls.size].min
-      threads = Array.new(workers) do
-        Thread.new do
-          loop do
-            idx, url = begin
-              queue.pop(true)
-            rescue ThreadError
-              break
-            end
-            results[idx] = pr_state(url)
-          end
-        end
+    def state_nodes(ids)
+      args = ids.flat_map { |id| ["-f", "ids[]=#{id}"] }
+      Array(graphql(STATE_QUERY, *args)["nodes"]).compact.map { |node| normalize_state(node) }
+    end
+
+    def merge_row(rows_by_url, node, role)
+      url = node["url"]
+      return if url.nil?
+
+      existing = rows_by_url[url]
+      if existing
+        existing["role"] = "both" if existing["role"] != role
+      else
+        rows_by_url[url] = search_row(node, role)
       end
-      threads.each(&:join)
-      results
     end
 
-    def pr_state(url)
-      fields = %w[
-        url number title author isDraft baseRefName headRefName headRefOid
-        mergeable mergeStateStatus reviewDecision
-        statusCheckRollup updatedAt
-      ].join(",")
-      raw = json_run(["pr", "view", url, "--json", fields])
-      threads, head_committed_at = review_graph(url)
-      checks = normalize_checks(raw["statusCheckRollup"])
+    def normalize_state(node)
+      commit = node.dig("commits", "nodes", 0, "commit") || {}
+      rollup = commit["statusCheckRollup"] || {}
+      checks = normalize_checks((rollup["contexts"] || {})["nodes"])
       {
-        "url" => raw["url"] || url,
-        "number" => raw["number"],
-        "title" => raw["title"],
-        "author" => (raw["author"] || {})["login"],
-        "isDraft" => raw["isDraft"],
-        "baseRefName" => raw["baseRefName"],
-        "headRefName" => raw["headRefName"],
-        "headRefOid" => raw["headRefOid"],
-        "headCommittedAt" => head_committed_at,
-        "mergeable" => raw["mergeable"],
-        "mergeStateStatus" => raw["mergeStateStatus"],
-        "reviewDecision" => raw["reviewDecision"],
-        "updatedAt" => raw["updatedAt"],
+        "url" => node["url"],
+        "number" => node["number"],
+        "title" => node["title"],
+        "author" => (node["author"] || {})["login"],
+        "isDraft" => node["isDraft"],
+        "baseRefName" => node["baseRefName"],
+        "headRefName" => node["headRefName"],
+        "headRefOid" => node["headRefOid"],
+        "headCommittedAt" => commit["committedDate"],
+        "mergeable" => node["mergeable"],
+        "mergeStateStatus" => node["mergeStateStatus"],
+        "reviewDecision" => node["reviewDecision"],
+        "updatedAt" => node["updatedAt"],
         "failing_checks" => checks.select { |c| FAILING_STATES.include?(c["state"]) },
-        "threads" => threads,
-        "repository" => repo_from_url(raw["url"] || url)
+        "threads" => Array((node["reviewThreads"] || {})["nodes"]).map { |t| normalize_thread(t) },
+        "repository" => (node["repository"] || {})["nameWithOwner"]
       }
     end
 
-    # Returns [threads, head commit committedDate] from one GraphQL call.
-    def review_graph(url)
-      owner, repo, number = parse_pr_url(url)
-      return [[], nil] unless owner
-
-      query = <<~GRAPHQL
-        query($o:String!,$r:String!,$n:Int!){
-          repository(owner:$o,name:$r){
-            pullRequest(number:$n){
-              commits(last:1){ nodes{ commit{ committedDate } } }
-              reviewThreads(first:100){
-                nodes{
-                  id isResolved
-                  first: comments(first:1){
-                    nodes{ databaseId author{login} body createdAt path }
-                  }
-                  last: comments(last:1){
-                    nodes{ databaseId author{login} body createdAt path }
-                  }
-                }
-              }
-            }
-          }
-        }
-      GRAPHQL
-      raw = json_run(
-        ["api", "graphql",
-         "-f", "query=#{query}",
-         "-F", "o=#{owner}",
-         "-F", "r=#{repo}",
-         "-F", "n=#{number}"]
-      )
-      pr = (raw.is_a?(Hash) && raw.dig("data", "repository", "pullRequest")) || {}
-      nodes = (pr["reviewThreads"] || {})["nodes"] || []
-      head_committed_at = pr.dig("commits", "nodes", 0, "commit", "committedDate")
-      [nodes.map { |node| normalize_thread(node) }, head_committed_at]
-    rescue ExitError
-      [[], nil]
+    # Signature owner: updatedAt does not move when CI turns red, so the head
+    # commit's rollup state and reviewDecision join it.
+    def search_row(node, role)
+      rollup_state = node.dig("commits", "nodes", 0, "commit", "statusCheckRollup", "state")
+      {
+        "id" => node["id"],
+        "url" => node["url"],
+        "repository" => (node["repository"] || {})["nameWithOwner"],
+        "title" => node["title"],
+        "number" => node["number"],
+        "updatedAt" => node["updatedAt"],
+        "isDraft" => node["isDraft"],
+        "author" => (node["author"] || {})["login"],
+        "role" => role,
+        "signature" => [node["updatedAt"], rollup_state, node["reviewDecision"]].map(&:to_s).join("|")
+      }
     end
 
     def normalize_thread(node)
@@ -240,18 +266,6 @@ module OpsGithub
       return text if text.length <= max
 
       "#{text[0, max - 1]}…"
-    end
-
-    def parse_pr_url(url)
-      m = %r{github\.com/([^/]+)/([^/]+)/pull/(\d+)}.match(url.to_s)
-      return [nil, nil, nil] unless m
-
-      [m[1], m[2], m[3].to_i]
-    end
-
-    def repo_from_url(url)
-      owner, repo, = parse_pr_url(url)
-      owner ? "#{owner}/#{repo}" : nil
     end
   end
 end

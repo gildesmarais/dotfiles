@@ -1,43 +1,36 @@
 {
-  "data": {
-    "repository": {
-      "pullRequest": {
-        "reviewThreads": {
+  "reviewThreads": {
+    "nodes": [
+      {
+        "id": "PRRT_bot1",
+        "isResolved": false,
+        "first": {
           "nodes": [
             {
-              "id": "PRRT_bot1",
-              "isResolved": false,
-              "isOutdated": false,
-              "first": {
-                "nodes": [
-                  {
-                    "databaseId": 1001,
-                    "author": {
-                      "login": "copilot-pull-request-reviewer"
-                    },
-                    "body": "Important: Integer parses octal.",
-                    "createdAt": "2026-11-02T12:00:00Z",
-                    "path": "app/controller.rb"
-                  }
-                ]
+              "databaseId": 1001,
+              "author": {
+                "login": "copilot-pull-request-reviewer"
               },
-              "last": {
-                "nodes": [
-                  {
-                    "databaseId": 1001,
-                    "author": {
-                      "login": "copilot-pull-request-reviewer"
-                    },
-                    "body": "Important: Integer parses octal.",
-                    "createdAt": "2026-11-02T12:00:00Z",
-                    "path": "app/controller.rb"
-                  }
-                ]
-              }
+              "body": "Important: Integer parses octal.",
+              "createdAt": "2026-11-02T12:00:00Z",
+              "path": "app/controller.rb"
+            }
+          ]
+        },
+        "last": {
+          "nodes": [
+            {
+              "databaseId": 1001,
+              "author": {
+                "login": "copilot-pull-request-reviewer"
+              },
+              "body": "Important: Integer parses octal.",
+              "createdAt": "2026-11-02T12:00:00Z",
+              "path": "app/controller.rb"
             }
           ]
         }
       }
-    }
+    ]
   }
 }

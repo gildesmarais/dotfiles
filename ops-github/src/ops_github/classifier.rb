@@ -19,7 +19,7 @@ module OpsGithub
       @login = login.to_s
     end
 
-    # +search_rows+: from Github#search_prs (authored + review-requested)
+    # +search_rows+: from Github#discover (authored + review-requested)
     # +states+: map url => pr_state hash
     # +ledger+: Ledger
     def classify(search_rows:, states:, ledger:)

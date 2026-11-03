@@ -1,43 +1,36 @@
 {
-  "data": {
-    "repository": {
-      "pullRequest": {
-        "reviewThreads": {
+  "reviewThreads": {
+    "nodes": [
+      {
+        "id": "PRRT_human1",
+        "isResolved": false,
+        "first": {
           "nodes": [
             {
-              "id": "PRRT_human1",
-              "isResolved": false,
-              "isOutdated": false,
-              "first": {
-                "nodes": [
-                  {
-                    "databaseId": 2001,
-                    "author": {
-                      "login": "alice"
-                    },
-                    "body": "please fix",
-                    "createdAt": "2026-11-02T10:00:00Z",
-                    "path": "lib/x.rb"
-                  }
-                ]
+              "databaseId": 2001,
+              "author": {
+                "login": "alice"
               },
-              "last": {
-                "nodes": [
-                  {
-                    "databaseId": 2002,
-                    "author": {
-                      "login": "me"
-                    },
-                    "body": "Fixed in abc123",
-                    "createdAt": "2026-11-02T11:00:00Z",
-                    "path": "lib/x.rb"
-                  }
-                ]
-              }
+              "body": "please fix",
+              "createdAt": "2026-11-02T10:00:00Z",
+              "path": "lib/x.rb"
+            }
+          ]
+        },
+        "last": {
+          "nodes": [
+            {
+              "databaseId": 2002,
+              "author": {
+                "login": "me"
+              },
+              "body": "Fixed in abc123",
+              "createdAt": "2026-11-02T11:00:00Z",
+              "path": "lib/x.rb"
             }
           ]
         }
       }
-    }
+    ]
   }
 }
