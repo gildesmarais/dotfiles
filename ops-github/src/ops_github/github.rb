@@ -10,6 +10,7 @@ module OpsGithub
     BATCH_SIZE = 25
     PARALLELISM = 6
     THREAD_BODY_MAX = 160
+    FAILING_STATES = %w[FAILURE ERROR TIMED_OUT STARTUP_FAILURE].freeze
     BOT_AUTHORS = %w[
       copilot-pull-request-reviewer
       copilot-swe-agent
@@ -153,7 +154,7 @@ module OpsGithub
         "mergeStateStatus" => raw["mergeStateStatus"],
         "reviewDecision" => raw["reviewDecision"],
         "updatedAt" => raw["updatedAt"],
-        "failing_checks" => checks.select { |c| %w[FAILURE ERROR].include?(c["state"]) },
+        "failing_checks" => checks.select { |c| FAILING_STATES.include?(c["state"]) },
         "checks" => checks,
         "threads" => threads,
         "repository" => repo_from_url(raw["url"] || url)

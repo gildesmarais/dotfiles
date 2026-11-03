@@ -9,7 +9,7 @@ module OpsGithub
     FLAKY_SIGNATURES = [
       /flaky/i,
       /intermittent/i,
-      /timed?\s*out/i,
+      /timed?[\s_]*out/i,
       /network is unreachable/i
     ].freeze
     BASE_CAUSED_CHECKS = %w[bundler_audit dependabot].freeze
@@ -164,7 +164,7 @@ module OpsGithub
 
       return out if state["isDraft"] && role == "authored"
 
-      if state["mergeable"] == "CONFLICTING" || state["mergeStateStatus"] == "DIRTY"
+      if role == "authored" && (state["mergeable"] == "CONFLICTING" || state["mergeStateStatus"] == "DIRTY")
         out << item(base, "conflicts", "batch", "ask",
                     "/pull-request conflicts #{state['url']}")
       end

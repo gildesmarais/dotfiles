@@ -56,7 +56,7 @@ module OpsGithubTest
 
   def failing_checks_from(raw)
     failed = Array(raw["statusCheckRollup"]).select do |c|
-      %w[FAILURE ERROR].include?((c["conclusion"] || c["state"]).to_s.upcase)
+      OpsGithub::Github::FAILING_STATES.include?((c["conclusion"] || c["state"]).to_s.upcase)
     end
     failed.map do |c|
       { "name" => c["name"], "state" => (c["conclusion"] || c["state"]).to_s.upcase }

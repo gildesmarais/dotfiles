@@ -170,6 +170,30 @@ class ClassifierTest < Minitest::Test
     assert_equal("urgent", hit["urgency"])
   end
 
+  def test_conflicts_on_others_pr_not_reported
+    state = state_from_fixture("pr_review_requested.json")
+    state["mergeable"] = "CONFLICTING"
+    items = @classifier.classify(
+      search_rows: [search_row(state, "review-requested")],
+      states: [state],
+      ledger: @ledger
+    )
+    assert_equal(%w[review-requested], items.map { |i| i["class"] })
+  end
+
+  def test_timed_out_check_is_red_and_flaky
+    gh = OpsGithub::Github.new(runner: ->(_) { "{}" })
+    checks = gh.send(:normalize_checks, [{ "name" => "unit", "conclusion" => "TIMED_OUT" }])
+    state = state_from_fixture("pr_authored_clean.json")
+    state["failing_checks"] = checks.select { |c| OpsGithub::Github::FAILING_STATES.include?(c["state"]) }
+    items = @classifier.classify(
+      search_rows: [search_row(state, "authored")],
+      states: [state],
+      ledger: @ledger
+    )
+    assert_equal(%w[red-ci-flaky], items.map { |i| i["class"] })
+  end
+
   def test_ready_ping_only_when_changes_requested
     state = state_from_fixture("pr_authored_clean.json", "threads_handled.json")
     state["reviewDecision"] = nil
