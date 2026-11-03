@@ -42,8 +42,8 @@ module OpsGithub
 
     def interval_seconds
       return 180 if @quiet_streak < 2
-      return 3600 if @quiet_streak >= 4
 
+      # Capped so a review request never waits longer than one quiet interval.
       600
     end
 
