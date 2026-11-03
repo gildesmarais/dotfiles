@@ -11,10 +11,12 @@ class CliTest < Minitest::Test
   class FakeRunner
     include OpsGithubTest
 
-    attr_reader :calls
+    attr_reader :calls, :state_ids
 
-    def initialize(login: "me", orgs: [], authored: [], requested: [], missing: [])
+    def initialize(login: "me", orgs: [], authored: [], requested: [], assigned: [], missing: []) # rubocop:disable Metrics/ParameterLists
       @missing = missing
+      @assigned = assigned
+      @state_ids = []
       @login = login
       @orgs = orgs
       @authored = authored
@@ -27,9 +29,10 @@ class CliTest < Minitest::Test
       return "#{@login}\n" if argv[0, 2] == %w[api user]
       return JSON.generate(@orgs) if argv[0, 2] == %w[api user/orgs]
       raise "unexpected gh call: #{argv.inspect}" unless argv[0, 2] == %w[api graphql]
-      return search_response(authored: @authored, requested: @requested) unless state_call?(argv)
+      return search_response(authored: @authored, requested: @requested, assigned: @assigned) unless state_call?(argv)
 
       ids = argv.grep(/\Aids\[\]=/).map { |arg| arg.split("=", 2).last }
+      @state_ids.concat(ids)
       if (bogus = ids.find { |id| @missing.include?(id) })
         raise OpsGithub::ExitError, "gh failed: Could not resolve to a node with the global id of '#{bogus}'"
       end
@@ -79,8 +82,8 @@ class CliTest < Minitest::Test
     end
   end
 
-  def runner_with(authored: [], requested: [], missing: [])
-    FakeRunner.new(authored: authored, requested: requested, missing: missing)
+  def runner_with(authored: [], requested: [], assigned: [], missing: [])
+    FakeRunner.new(authored: authored, requested: requested, assigned: assigned, missing: missing)
   end
 
   def numbered_nodes(range)
@@ -392,6 +395,65 @@ class CliTest < Minitest::Test
     closed = pr_node("pr_bundler_audit.json").merge("state" => "CLOSED")
     assert_equal(0, run_cli(["tick"], github: github_for(runner_with(authored: [closed]))))
     assert_empty(JSON.parse(@stdout.string)["auto"])
+  end
+
+  def with_dry(value)
+    old = ENV["OPS_GITHUB_DRY"]
+    ENV["OPS_GITHUB_DRY"] = value
+    yield
+  ensure
+    old.nil? ? ENV.delete("OPS_GITHUB_DRY") : ENV["OPS_GITHUB_DRY"] = old
+  end
+
+  def test_tick_asks_about_assigned_issue_without_fetching_its_state
+    runner = runner_with(authored: [pr_node("pr_bundler_audit.json")], assigned: [issue_node(5)])
+    assert_equal(10, run_cli(["tick"], github: github_for(runner)))
+    env = JSON.parse(@stdout.string)
+    issue = env["ask"].find { |i| i["class"] == "issue-assigned" }
+    refute_nil(issue)
+    assert_equal(["acme/app#5", "batch", "/ops-github act #{issue['id']}", { "author" => "alice" }],
+                 issue.values_at("pr", "urgency", "invoke", "evidence"))
+    assert_includes(env["report_md"], "acme/app#5: issue-assigned")
+    assert_equal(%w[PR_app2], runner.state_ids)
+  end
+
+  def test_excluded_issue_leaves_envelope_and_report
+    gh = github_for(runner_with(assigned: [issue_node(5)]))
+    run_cli(["tick"], github: gh)
+    assert_includes(JSON.parse(@stdout.string)["report_md"], "acme/app#5: issue-assigned")
+    run_cli(%w[ledger exclude acme/app#5], github: gh)
+    reset_output
+    assert_equal(0, run_cli(["tick"], github: gh))
+    env = JSON.parse(@stdout.string)
+    assert_empty(env["ask"])
+    refute_includes(env["report_md"], "acme/app#5")
+  end
+
+  def test_dry_keeps_issue_ask_and_demotes_pr_auto
+    with_dry("1") do
+      run_cli(["tick"], github: github_for(runner_with(authored: [pr_node("pr_bundler_audit.json")],
+                                                       assigned: [issue_node(5)])))
+    end
+    env = JSON.parse(@stdout.string)
+    assert_empty(env["auto"])
+    classes = env["ask"].map { |i| i["class"] }
+    assert_includes(classes, "issue-assigned")
+    assert_includes(classes, "red-ci-base")
+  end
+
+  def test_deferred_issue_stays_hidden_when_updated
+    gh = github_for(runner_with(assigned: [issue_node(5)]))
+    run_cli(["tick"], github: gh)
+    id = JSON.parse(@stdout.string)["ask"].first["id"]
+    run_cli(["ledger", "decide", id, "deferred"], github: gh)
+    reset_output
+    bumped_gh = github_for(runner_with(assigned: [issue_node(5, updated_at: "2026-11-02T15:00:00Z")]))
+    assert_equal(10, run_cli(["probe"], github: bumped_gh))
+    reset_output
+    assert_equal(0, run_cli(["tick"], github: bumped_gh))
+    env = JSON.parse(@stdout.string)
+    assert_empty(env["ask"])
+    assert_equal("deferred", OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir)).items[id]["status"])
   end
 
   def test_failed_state_fetch_leaves_seen_empty

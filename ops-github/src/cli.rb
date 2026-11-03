@@ -111,7 +111,7 @@ module OpsGithub
       rows = github.discover(ledger.owners)
       first_tick = ledger.seen.empty?
       ledger.prune_closed!(rows.map { |r| Github.pr_key(r) }) if first_tick
-      changed_ids = []
+      changed_rows = []
       changed_keys = []
       open_keys = []
       rows.each do |row|
@@ -121,7 +121,7 @@ module OpsGithub
         open_keys << key
         next unless first_tick || ledger.changed_since_seen?(key, signature: row["signature"])
 
-        changed_ids << row["id"]
+        changed_rows << row
         changed_keys << key
       end
       open_rows = rows.reject { |r| ledger.exclusions.include?(Github.pr_key(r)) }
@@ -129,10 +129,10 @@ module OpsGithub
         row = open_rows.find { |r| Github.pr_key(r) == key }
         next unless row
 
-        changed_ids << row["id"]
+        changed_rows << row
         changed_keys << key
       end
-      states = github.pr_states(changed_ids)
+      states = github.states(changed_rows)
       # Stamp only after full state fetched, so a failed tick re-sees the change.
       rows.each do |row|
         key = Github.pr_key(row)
@@ -310,9 +310,9 @@ module OpsGithub
                                OPS_GITHUB_PARKED_LABELS=a,b replaces the parked label set
           ledger summary       Compact day summary
           ledger decide ID ST  Record decision (asked|approved|snoozed|done|…)
-          ledger exclude PR    Exclude owner/repo#n until included or closed
+          ledger exclude KEY   Exclude owner/repo#n (PR or issue) until included or closed
           ledger exclude --clear
-          ledger include PR    Drop owner/repo#n from the exclusions
+          ledger include KEY   Drop owner/repo#n from the exclusions
           watch [--max-ticks N]
           doctor               Self-check
           help

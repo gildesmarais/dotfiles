@@ -14,6 +14,8 @@ module OpsGithub
     ].freeze
     BASE_CAUSED_CHECKS = %w[bundler_audit dependabot].freeze
     URGENCY_RANK = { "urgent" => 0, "batch" => 1 }.freeze
+    # The one class an assigned issue yields; ranks after PR items of equal urgency.
+    ISSUE_CLASS = "issue-assigned"
     # An authored PR with one of these labels (case-insensitive) is parked like a draft.
     PARKED_LABELS = %w[on-hold do-not-merge parked].freeze
 
@@ -36,6 +38,7 @@ module OpsGithub
 
         pr_key = Github.pr_key(state)
         next if ledger.exclusions.include?(pr_key)
+        next items << issue_item(state) if state["kind"] == "issue"
 
         role = (rows_by_url[url] || {})["role"]
         # "both" (authored + review-requested, e.g. a team request on your own PR)
@@ -61,8 +64,11 @@ module OpsGithub
       if needs.empty?
         lines << "(none)"
       else
-        ranked = needs.sort_by { |i| URGENCY_RANK.fetch(i["urgency"], 9) }
-        ranked.first(8).each do |i|
+        # Index keeps the order stable; issues trail PRs so they never crowd them out.
+        ranked = needs.each_with_index.sort_by do |i, index|
+          [URGENCY_RANK.fetch(i["urgency"], 9), i["class"] == ISSUE_CLASS ? 1 : 0, index]
+        end
+        ranked.map(&:first).first(8).each do |i|
           lines << "- #{i['urgency']} #{report_label(i)}: #{i['class']}"
         end
       end
@@ -136,6 +142,19 @@ module OpsGithub
     def bot_author?(login)
       name = login.to_s.sub(%r{\Aapp/}, "")
       BOT_AUTHORS.include?(name)
+    end
+
+    # Assigned issue: one ask routed through the act branch. Evidence stays stable so
+    # a decision holds until the issue closes, whatever bumps its updatedAt.
+    def issue_item(state)
+      base = {
+        "pr" => Github.pr_key(state),
+        "url" => state["url"],
+        "title" => state["title"],
+        "repository" => state["repository"],
+        "number" => state["number"]
+      }
+      item(base, ISSUE_CLASS, "batch", "ask", :act, "author" => state["author"])
     end
 
     def items_for_pr(state, role:)
