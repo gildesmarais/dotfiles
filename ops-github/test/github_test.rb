@@ -38,8 +38,9 @@ class GithubTest < Minitest::Test
     assert_includes(calls.first, "authored=is:pr is:open author:@me user:acme user:beta")
     assert_includes(calls.first, "requested=is:pr is:open review-requested:@me user:acme user:beta")
     assert_equal({ 2 => "both", 9 => "review-requested" }, rows.map { |r| [r["number"], r["role"]] }.to_h)
-    assert_equal("2026-11-02T11:00:00Z|FAILURE|REVIEW_REQUIRED", rows.first["signature"])
+    assert_equal("2026-11-02T11:00:00Z|FAILURE", rows.first["signature"])
     assert_equal("PR_app2", rows.first["id"])
+    refute_includes(calls.first.join(" "), "reviewDecision")
   end
 
   def test_discover_pages_each_alias_until_exhausted

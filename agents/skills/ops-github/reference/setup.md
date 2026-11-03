@@ -11,4 +11,9 @@ First day (or `reconfigure`).
 4. Arm watch per [`tick.md`](tick.md) step 6. Confirm ≤3 lines: owners,
    state-dir, watch.
 
+5. Optional statusline: `tick` writes `<state-dir>/status.txt`. Tell the user they
+   can set Claude Code `statusLine` to the command
+   `cat "${OPS_GITHUB_STATE_DIR:-$HOME/.local/state/ops-github}/status.txt" 2>/dev/null`.
+   Never edit their settings.
+
 `reconfigure` re-asks, then ticks with `--owners`. Never encode org names.

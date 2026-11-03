@@ -32,7 +32,7 @@ module OpsGithub
         pageInfo{ hasNextPage endCursor }
         nodes{
           ... on PullRequest {
-            id url number title author{login} isDraft updatedAt reviewDecision
+            id url number title author{login} isDraft updatedAt
             repository{ nameWithOwner }
             commits(last:1){ nodes{ commit{ statusCheckRollup{ state } } } }
           }
@@ -210,7 +210,7 @@ module OpsGithub
     end
 
     # Signature owner: updatedAt does not move when CI turns red, so the head
-    # commit's rollup state and reviewDecision join it.
+    # commit's rollup state joins it (a review bumps updatedAt).
     def search_row(node, role)
       rollup_state = node.dig("commits", "nodes", 0, "commit", "statusCheckRollup", "state")
       {
@@ -223,7 +223,7 @@ module OpsGithub
         "isDraft" => node["isDraft"],
         "author" => (node["author"] || {})["login"],
         "role" => role,
-        "signature" => [node["updatedAt"], rollup_state, node["reviewDecision"]].map(&:to_s).join("|")
+        "signature" => [node["updatedAt"], rollup_state].map(&:to_s).join("|")
       }
     end
 

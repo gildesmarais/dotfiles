@@ -30,7 +30,8 @@ tracked-file edits. No org names; owners from setup or day ledger. Co-load
 1. `ops-github` on PATH (`doctor` exit 0). Escalate network for `gh`.
 2. Prefer `--state-dir` from ledger / env; never invent owners.
 3. After `/compact`, re-read only `ops-github ledger summary` (≤40 lines).
-4. Brain limits: no tracked-file edits; no PR diffs/source/raw CI here; shell
+4. `OPS_GITHUB_DRY=1` turns all auto into ask (use on first days / new owners).
+5. Brain limits: no tracked-file edits; no PR diffs/source/raw CI here; shell
    `| tail -n 40`; logs → `/tmp/ops-github/<id>.log`. Mutations/reviews → Hands
    (`Task`, worktree, whitelist, tier, timebox).
 

@@ -128,10 +128,25 @@ module OpsGithub
       login = github.setup_facts["login"] if login.nil? || login.empty?
       classifier = Classifier.new(login: login)
       items = classifier.classify(search_rows: rows, states: states, ledger: ledger)
-      env = classifier.envelope(items, ledger: ledger)
+      env = classifier.envelope(items, ledger: ledger, dry: dry_run?)
       emit(env)
+      write_status(env)
       code = env["status"] == "quiet" ? PROBE_QUIET : PROBE_DELTA
       raise ExitError.new(status: code)
+    end
+
+    def dry_run?
+      v = ENV["OPS_GITHUB_DRY"].to_s
+      !v.empty? && v != "0"
+    end
+
+    # Zero-token statusline source; atomic so a reader never sees a partial line.
+    def write_status(env)
+      FileUtils.mkdir_p(state_dir)
+      path = File.join(state_dir, "status.txt")
+      tmp = "#{path}.tmp.#{Process.pid}"
+      File.write(tmp, "#{env['line']} · #{Time.now.strftime('%H:%M')}\n")
+      File.rename(tmp, path)
     end
 
     def run_ledger(args)
@@ -262,7 +277,8 @@ module OpsGithub
         Commands:
           setup-facts          Owners + login from gh (no org names hardcoded)
           probe                Exit 0 quiet / 10 delta vs day ledger
-          tick                 Attention Ledger envelope (JSON)
+          tick                 Attention Ledger envelope (JSON); writes <state>/status.txt
+                               OPS_GITHUB_DRY=1 demotes all auto to ask
           ledger summary       Compact day summary
           ledger decide ID ST  Record decision (asked|approved|snoozed|done|…)
           ledger exclude PR    Exclude owner/repo#n for the day

@@ -154,6 +154,25 @@ class ClassifierTest < Minitest::Test
     assert(needs_lines.first.include?("urgent"), needs_lines.first)
   end
 
+  def test_cluster_report_line_is_compact_without_urls
+    states = (10..36).map do |n|
+      s = state_from_fixture("pr_review_requested.json")
+      s.merge("author" => "app/dependabot", "repository" => "acme/app", "number" => n,
+              "url" => "https://github.com/acme/app/pull/#{n}")
+    end
+    items = @classifier.classify(
+      search_rows: states.map { |s| search_row(s, "review-requested") },
+      states: states,
+      ledger: @ledger
+    )
+    env = @classifier.envelope(items, ledger: @ledger)
+    line = env["report_md"].lines.find { |l| l.start_with?("- ") }
+    assert_operator(line.chomp.length, :<=, 80, line)
+    assert_includes(line, "acme/app (27 PRs)")
+    refute_includes(env["report_md"], "https://")
+    assert_match(%r{/dependabot triage}, env["ask"].first["invoke"])
+  end
+
   def test_envelope_report_md_within_15_lines
     state = state_from_fixture("pr_bundler_audit.json")
     items = @classifier.classify(

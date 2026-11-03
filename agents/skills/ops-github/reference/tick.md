@@ -18,6 +18,11 @@
    `/ops-github` is the user's request to monitor.
 7. Wake lines: `OPS_GITHUB_WAKE {…}` → this branch again. Urgent → full report +
    AskQuestion; batch → digest only.
+8. Cheap wake: on `OPS_GITHUB_WAKE` with urgency `changes`, spawn a smallest-tier,
+   low-effort `Task` that runs `ops-github tick` and returns only `line` plus the
+   urgent ask/judge items (id, pr, class, ≤1 line each, ≤10 lines total). The Brain
+   prints `line` as the one chat line and escalates only on urgent items or when
+   the user is in-session. A bare `/ops-github` runs tick directly and pastes `report_md`.
 
 Never re-ask items already `asked`/`approved`/`snoozed`/`deferred`/`in_flight`
 until the engine resurfaces them (fingerprint change). Enforce the envelope

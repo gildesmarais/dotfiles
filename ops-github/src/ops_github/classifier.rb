@@ -59,7 +59,7 @@ module OpsGithub
       else
         ranked = needs.sort_by { |i| URGENCY_RANK.fetch(i["urgency"], 9) }
         ranked.first(8).each do |i|
-          lines << "- #{i['urgency']} #{i['pr']}: #{i['class']} → #{i['invoke']}"
+          lines << "- #{i['urgency']} #{report_label(i)}: #{i['class']}"
         end
       end
       lines << "## In flight"
@@ -101,6 +101,11 @@ module OpsGithub
     end
 
     private
+
+    def report_label(item)
+      prs = (item["evidence"] || {})["prs"]
+      prs ? "#{item['repository']} (#{prs.size} PRs)" : item["pr"]
+    end
 
     def status_line(needs, auto, in_flight, dry)
       urgent = needs.count { |i| i["urgency"] == "urgent" }

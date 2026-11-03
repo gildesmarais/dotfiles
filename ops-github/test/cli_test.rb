@@ -146,11 +146,30 @@ class CliTest < Minitest::Test
     refute_empty(env["auto"])
   end
 
+  def test_tick_writes_status_txt_with_line
+    run_cli(["tick"], github: github_for(runner_with(authored: [pr_node("pr_bundler_audit.json")])))
+    env = JSON.parse(@stdout.string)
+    text = File.read(File.join(@tmpdir, "status.txt"))
+    assert_match(/\A#{Regexp.escape(env['line'])} · \d\d:\d\d\n\z/, text)
+  end
+
+  def test_dry_env_demotes_auto_to_ask
+    old = ENV["OPS_GITHUB_DRY"]
+    ENV["OPS_GITHUB_DRY"] = "1"
+    run_cli(["tick"], github: github_for(runner_with(authored: [pr_node("pr_bundler_audit.json")])))
+    env = JSON.parse(@stdout.string)
+    assert_equal(true, env["dry"])
+    assert_empty(env["auto"])
+    refute_empty(env["ask"])
+  ensure
+    old.nil? ? ENV.delete("OPS_GITHUB_DRY") : ENV["OPS_GITHUB_DRY"] = old
+  end
+
   def test_tick_stamps_signature_and_skips_unchanged_on_second_tick
     gh = github_for(runner_with(authored: [pr_node("pr_bundler_audit.json")]))
     assert_equal(10, run_cli(["tick"], github: gh))
     ledger = OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir))
-    assert_equal("2026-11-02T11:00:00Z|FAILURE|REVIEW_REQUIRED", ledger.seen["acme/app#2"])
+    assert_equal("2026-11-02T11:00:00Z|FAILURE", ledger.seen["acme/app#2"])
     assert_equal(0, run_cli(["probe"], github: gh))
   end
 
