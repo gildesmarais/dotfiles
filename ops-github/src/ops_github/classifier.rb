@@ -315,23 +315,24 @@ module OpsGithub
       reds = []
       others = []
       items.each do |item|
-        if %w[red-ci red-ci-base red-ci-flaky approved-red].include?(item["class"])
-          key = Array((item["evidence"] || {})["checks"]).sort.join(",")
-          key = item["class"] if key.empty?
-          groups[key] << item
+        # approved-red stays standalone so its urgency survives.
+        if %w[red-ci red-ci-base red-ci-flaky].include?(item["class"])
+          checks = Array((item["evidence"] || {})["checks"]).sort
+          groups[[item["repository"].to_s, checks.empty? ? [item["class"]] : checks]] << item
         else
           others << item
         end
       end
-      groups.each do |key, group|
+      groups.each do |(_repo, checks), group|
         if group.size > 1
+          prs = group.map { |g| g["pr"] }
           primary = group.first.dup
-          primary["id"] = Digest::SHA1.hexdigest("cluster|#{key}")[0, 12]
+          primary["id"] = Digest::SHA1.hexdigest((["cluster"] + prs.sort + checks).join("|"))[0, 12]
           primary["class"] = "red-ci-shared"
-          primary["pr"] = group.map { |g| g["pr"] }.join(",")
+          primary["pr"] = prs.join(",")
           primary["evidence"] = (primary["evidence"] || {}).merge(
-            "checks" => key.split(","),
-            "prs" => group.map { |g| g["pr"] }
+            "checks" => checks,
+            "prs" => prs
           )
           primary["invoke"] = "/pull-request fix-ci #{group.first['url']}"
           primary["action"] = "ask"

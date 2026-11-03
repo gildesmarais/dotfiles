@@ -47,6 +47,36 @@ class ClassifierTest < Minitest::Test
     assert_match(%r{/pull-request fix-ci}, shared.first["invoke"])
   end
 
+  def test_red_ci_clusters_only_within_a_repo
+    a = state_from_fixture("pr_bundler_audit.json")
+    b = state_from_fixture("pr_bundler_audit.json")
+    b["url"] = "https://github.com/acme/web/pull/2"
+    b["repository"] = "acme/web"
+    items = @classifier.classify(
+      search_rows: [search_row(a, "authored"), search_row(b, "authored")],
+      states: [a, b],
+      ledger: @ledger
+    )
+    assert_equal(%w[red-ci-base red-ci-base], items.map { |i| i["class"] })
+  end
+
+  def test_approved_red_not_demoted_by_cluster
+    a = state_from_fixture("pr_bundler_audit.json")
+    a["reviewDecision"] = "APPROVED"
+    a["failing_checks"] = [{ "name" => "unit-test", "state" => "FAILURE" }]
+    b = Marshal.load(Marshal.dump(a))
+    b["reviewDecision"] = nil
+    b["url"] = "https://github.com/acme/app/pull/22"
+    b["number"] = 22
+    items = @classifier.classify(
+      search_rows: [search_row(a, "authored"), search_row(b, "authored")],
+      states: [a, b],
+      ledger: @ledger
+    )
+    hit = items.find { |i| i["class"] == "approved-red" }
+    assert_equal("urgent", hit["urgency"])
+  end
+
   def test_open_bot_thread_is_judge
     state = state_from_fixture("pr_bot_thread.json", "threads_bot_open.json")
     items = @classifier.classify(
