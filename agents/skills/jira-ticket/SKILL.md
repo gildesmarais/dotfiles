@@ -3,7 +3,7 @@ name: jira-ticket
 description: >-
   Investigate, scope, implement, or create a Jira ticket via Atlassian MCP and
   sync its status (e.g. Ready for Review after PR open). Use for Jira URLs/keys,
-  follow-up tickets under an epic, and post-PR Jira handoff.
+  challenging an incoming ticket, follow-ups under an epic, post-PR handoff.
 ---
 
 # Jira Ticket
@@ -13,6 +13,7 @@ description: >-
 | Branch              | Signals                                                |
 | ------------------- | ------------------------------------------------------ |
 | implement (default) | Jira URL or key (`ABC-123`) to investigate / implement |
+| challenge           | review / challenge / gate an incoming ticket; `ops-github` Jira item |
 | create              | "file a ticket", follow-up under an epic               |
 | Post-PR sync        | ticket has a new PR URL; "open PR + move to review"    |
 
@@ -24,6 +25,10 @@ description: >-
 - Observability/security cues, Assure, phase commits, land: `$dev` Shared prep + Handoff; reach `$dev` via **Handoff load** ([`../CONTEXT.md`](../CONTEXT.md)).
 
 ## Branch reference
+
+### challenge
+
+[`reference/challenge.md`](reference/challenge.md)
 
 ### implement
 
@@ -58,6 +63,7 @@ After `pull-request` `open`: confirm the PR URL, transition per the table above,
 
 ## Completion criteria
 
+- challenge: per [`reference/challenge.md`](reference/challenge.md).
 - implement: `$dev` plan emitted; delivered per `$dev`; Jira synced if a PR opened.
 - create: issue created with verified parent/epic, correct links and status.
 - Post-PR sync: transitioned (or transitions listed) and reported.
