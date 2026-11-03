@@ -41,7 +41,7 @@ words:
   harvest/reference/debt.md: 281
   harvest/reference/distill.md: 273
   jira-ticket/SKILL.md: 510
-  jira-ticket/reference/challenge.md: 212
+  jira-ticket/reference/challenge.md: 218
   omnifocus/SKILL.md: 292
   omnifocus/reference/applescript.md: 241
   ops-chore/SKILL.md: 301
@@ -49,10 +49,10 @@ words:
   ops-chore/reference/ledger.md: 130
   ops-chore/reference/playbook.md: 369
   ops-github/SKILL.md: 314
-  ops-github/reference/act.md: 216
+  ops-github/reference/act.md: 229
   ops-github/reference/review.md: 114
   ops-github/reference/setup.md: 96
-  ops-github/reference/tick.md: 268
+  ops-github/reference/tick.md: 264
   ops-github/reference/wrap.md: 55
   product-owner/SKILL.md: 372
   product-owner/reference/gate.md: 456

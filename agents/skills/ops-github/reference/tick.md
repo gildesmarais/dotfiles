@@ -13,7 +13,7 @@
    JQL assigned or new in intake; skip `<state-dir>/jira.txt`). One AskQuestion
    per ticket: challenge / implement / skip. GitHub → **act**, `ledger decide
    <id> …` (skip → `deferred`; never → `ledger exclude owner/repo#n`). Jira →
-   append key; Hand → `jira-ticket`. Brain asks before posting.
+   append key; Hand → `jira-ticket`.
 7. Watcher PID gone (`doctor`) → arm `ops-github watch` as a session-owned
    background shell notifying on `OPS_GITHUB_WAKE` (debounce ≥60s); never
    `nohup … &`, which drops wakes. Claude Code: `Monitor` (`timeout_ms`

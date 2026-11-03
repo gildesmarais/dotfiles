@@ -16,7 +16,7 @@ Cap tool output; logs → `/tmp/ops-github/<id>.log`; Hand ≤12 lines.
 | `ready-ping` | Brain fast: `gh pr comment <url> --body "@<evidence.reviewer> ready for another look"` |
 | `red-ci-base` | Small/low Hand, Merge-main, ≤8 turns: merge `origin/<baseRefName>`; Brain verifies file set vs pre-merge, pushes |
 | bot-thread / unresolved-review / conflicts / red-ci / approved-red | Mid Hand (`strongest` on retry/security), ≤15 turns, worktree: `pull-request` resolve \| conflicts \| fix-ci; Verify + push; `budgets.retry` per wake |
-| `issue-assigned` | challenge: read-only Hand → `jira-ticket` `challenge` on `url`; Brain asks before posting. implement: worktree Hand → `$dev` `plan` → `implement`; PR on ask → `pull-request` `open` |
+| `issue-assigned` | challenge: read-only Hand → `jira-ticket` `challenge` on `url`; Brain asks before posting. implement: worktree Hand → `$dev` `plan` → `implement`; PR on ask → `pull-request` `open`. After either: `ledger decide <id> deferred` (`done` expires daily; `deferred` holds until close) |
 | `red-ci-shared` / `dependabot-triage` | Ask once with cluster; never auto |
 
 ## Workspace rules
