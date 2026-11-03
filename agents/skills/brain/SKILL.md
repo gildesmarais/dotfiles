@@ -19,7 +19,7 @@ Hard limits (everything else is a default with a reason):
 - Every user ask after orchestration starts is a tranche → brief a Hand, even for one PR or one line. The `$dev` row in Pick branch applies only before the Brain engages.
 - A gate that fails twice for environment reasons is its own tranche: brief a Hand to make it runnable, or record the gap as a residual and rely on CI. The Brain does not debug environments.
 - No destructive git on any tree; rejected work is discarded with its worktree.
-- Commits follow the **Phase commit** law, per repo.
+- Commits follow the **Phase commit** law, per repo; commit bodies, PR prose, and status posts follow [`../communication/reference/outward-text.md`](../communication/reference/outward-text.md).
 
 ## Pick branch
 

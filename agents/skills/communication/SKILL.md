@@ -19,6 +19,10 @@ disable-model-invocation: true
 | Draft a customer, partner, or public-facing message (email, support reply) | `external-message` |
 | Marketing copy or public PR/press statement                                | out of scope       |
 
+## Shared prep
+
+Every branch, and any text leaving the workstation even without this skill: [`reference/outward-text.md`](reference/outward-text.md). Hosts load it always-on.
+
 ## Branch reference
 
 Load exactly one:

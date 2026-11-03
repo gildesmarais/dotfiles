@@ -31,6 +31,7 @@ Routing edges: "address/fix PR comments" → **resolve**, not reply. "update the
 - Threads for **resolve**/**reply** (script path relative to this skill): `./scripts/gh-review-comments --filter unresolved --format json <pr-url>`.
 - Frugal fetches: failing-job logs only (**fix-ci**); unresolved threads only; explicit `--json` fields; never paste raw JSON.
 - Comment/event policy: [`reference/gh-api.md`](reference/gh-api.md). Never auto-approve or merge.
+- Titles, bodies, comments, replies: [`../communication/reference/outward-text.md`](../communication/reference/outward-text.md).
 
 ## Branch reference
 

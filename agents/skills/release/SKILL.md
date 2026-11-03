@@ -24,7 +24,7 @@ Notes-only: reads merged history; never opens PRs, tags, flags, promotes, rolls 
 
 ## Handoff
 
-- PR lifecycle → `pull-request`. Commit authoring → [`../dev/reference/plan.md`](../dev/reference/plan.md).
+- PR lifecycle → `pull-request`. Commit authoring → [`../dev/reference/plan.md`](../dev/reference/plan.md). Notes text → [`../communication/reference/outward-text.md`](../communication/reference/outward-text.md).
 
 ## Completion criteria
 
