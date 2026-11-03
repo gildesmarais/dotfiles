@@ -196,6 +196,7 @@ class ClassifierTest < Minitest::Test
 
   def test_ready_ping_only_when_changes_requested
     state = state_from_fixture("pr_authored_clean.json", "threads_handled.json")
+    state["headCommittedAt"] = "2026-11-02T10:30:00Z"
     state["reviewDecision"] = nil
     items = @classifier.classify(
       search_rows: [search_row(state, "authored")],
@@ -212,6 +213,30 @@ class ClassifierTest < Minitest::Test
     )
     ping = again.find { |i| i["class"] == "ready-ping" }
     refute_nil(ping)
-    assert_match(/gh pr comment/, ping["invoke"])
+    assert_equal("alice", ping["evidence"]["reviewer"])
+  end
+
+  def test_ready_ping_waits_for_push_after_review
+    state = state_from_fixture("pr_authored_clean.json", "threads_handled.json")
+    state["reviewDecision"] = "CHANGES_REQUESTED"
+    [nil, "2026-11-02T09:00:00Z"].each do |committed|
+      state["headCommittedAt"] = committed
+      items = @classifier.classify(search_rows: [search_row(state, "authored")], states: [state], ledger: @ledger)
+      assert_empty(items.select { |i| i["class"] == "ready-ping" }, committed.inspect)
+    end
+  end
+
+  def test_ready_ping_id_unique_per_reviewer
+    state = state_from_fixture("pr_authored_clean.json", "threads_handled.json")
+    state["reviewDecision"] = "CHANGES_REQUESTED"
+    state["headCommittedAt"] = "2026-11-02T10:30:00Z"
+    bob = Marshal.load(Marshal.dump(state["threads"].first))
+    bob["id"] = "PRRT_human2"
+    bob["first"]["author"] = "bob"
+    state["threads"] << bob
+    items = @classifier.classify(search_rows: [search_row(state, "authored")], states: [state], ledger: @ledger)
+    pings = items.select { |i| i["class"] == "ready-ping" }
+    assert_equal(%w[alice bob], pings.map { |i| i["evidence"]["reviewer"] }.sort)
+    assert_equal(2, pings.map { |i| i["id"] }.uniq.size)
   end
 end

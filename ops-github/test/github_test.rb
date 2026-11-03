@@ -12,7 +12,7 @@ class GithubTest < Minitest::Test
       "id" => "t1",
       "isResolved" => false,
       "isOutdated" => false,
-      "comments" => {
+      "first" => {
         "nodes" => [
           { "databaseId" => 1, "author" => { "login" => "copilot-pull-request-reviewer" },
             "body" => long, "createdAt" => "t", "path" => "a.rb" }
@@ -77,5 +77,21 @@ class GithubTest < Minitest::Test
     assert_equal("me", facts["login"])
     assert_includes(facts["owners"], "acme")
     assert_equal(true, facts["auth_ok"])
+  end
+
+  def test_pr_state_reads_head_commit_and_last_thread_comment
+    url = "https://github.com/acme/app/pull/1"
+    threads = fixture("threads_handled.json")
+    threads["data"]["repository"]["pullRequest"]["commits"] =
+      { "nodes" => [{ "commit" => { "committedDate" => "2026-11-02T10:30:00Z" } }] }
+    runner = lambda do |argv|
+      return File.read(File.join(FIXTURES, "pr_authored_clean.json")) if argv[0] == "pr"
+
+      JSON.generate(threads)
+    end
+    state = OpsGithub::Github.new(runner: runner).pr_states([url]).first
+    assert_equal("2026-11-02T10:30:00Z", state["headCommittedAt"])
+    assert_equal("me", state["threads"].first["last"]["author"])
+    assert_equal("alice", state["threads"].first["first"]["author"])
   end
 end

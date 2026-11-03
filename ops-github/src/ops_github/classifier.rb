@@ -215,7 +215,8 @@ module OpsGithub
 
       if role == "authored" && state["reviewDecision"] == "CHANGES_REQUESTED"
         human_threads = unresolved.reject { |t| t["bot"] }
-        if !human_threads.empty? && human_threads.all? { |t| thread_handled?(t) }
+        if !human_threads.empty? && human_threads.all? { |t| thread_handled?(t) } &&
+           pushed_after_review?(state, human_threads)
           reviewers = human_threads.map { |t| (t["first"] || {})["author"] }.compact.uniq
           reviewers.each do |who|
             next if who.to_s.empty? || who == @login || bot_author?(who)
@@ -231,7 +232,7 @@ module OpsGithub
     end
 
     def item(base, klass, urgency, action, invoke, evidence = {}) # rubocop:disable Metrics/ParameterLists
-      parts = [base["pr"], klass, evidence["thread_id"], evidence["checks"]]
+      parts = [base["pr"], klass, evidence["thread_id"], evidence["checks"], evidence["reviewer"]]
       id = Digest::SHA1.hexdigest(parts.flatten.compact.join("|"))[0, 12]
       base.merge(
         "id" => id,
@@ -290,6 +291,13 @@ module OpsGithub
         text = [c["name"], c["state"]].join(" ")
         FLAKY_SIGNATURES.any? { |re| re.match?(text) }
       end
+    end
+
+    # Replying alone is not "ready": the head commit must postdate the review.
+    def pushed_after_review?(state, threads)
+      pushed = state["headCommittedAt"]
+      reviewed = threads.map { |t| (t["first"] || {})["createdAt"] }.compact.max
+      !pushed.nil? && !reviewed.nil? && pushed > reviewed
     end
 
     def human_reply?(thread)

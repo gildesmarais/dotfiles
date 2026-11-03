@@ -139,7 +139,7 @@ module OpsGithub
         statusCheckRollup updatedAt
       ].join(",")
       raw = json_run(["pr", "view", url, "--json", fields])
-      threads = review_threads(url)
+      threads, head_committed_at = review_graph(url)
       checks = normalize_checks(raw["statusCheckRollup"])
       {
         "url" => raw["url"] || url,
@@ -150,6 +150,7 @@ module OpsGithub
         "baseRefName" => raw["baseRefName"],
         "headRefName" => raw["headRefName"],
         "headRefOid" => raw["headRefOid"],
+        "headCommittedAt" => head_committed_at,
         "mergeable" => raw["mergeable"],
         "mergeStateStatus" => raw["mergeStateStatus"],
         "reviewDecision" => raw["reviewDecision"],
@@ -161,18 +162,23 @@ module OpsGithub
       }
     end
 
-    def review_threads(url)
+    # Returns [threads, head commit committedDate] from one GraphQL call.
+    def review_graph(url)
       owner, repo, number = parse_pr_url(url)
-      return [] unless owner
+      return [[], nil] unless owner
 
       query = <<~GRAPHQL
         query($o:String!,$r:String!,$n:Int!){
           repository(owner:$o,name:$r){
             pullRequest(number:$n){
+              commits(last:1){ nodes{ commit{ committedDate } } }
               reviewThreads(first:100){
                 nodes{
                   id isResolved isOutdated
-                  comments(first:20){
+                  first: comments(first:1){
+                    nodes{ databaseId author{login} body createdAt path }
+                  }
+                  last: comments(last:1){
                     nodes{ databaseId author{login} body createdAt path }
                   }
                 }
@@ -188,24 +194,17 @@ module OpsGithub
          "-F", "r=#{repo}",
          "-F", "n=#{number}"]
       )
-      nodes = ((raw || {}).dig("data", "repository", "pullRequest", "reviewThreads") || {})["nodes"] || []
-      nodes.map { |node| normalize_thread(node) }
+      pr = (raw.is_a?(Hash) && raw.dig("data", "repository", "pullRequest")) || {}
+      nodes = (pr["reviewThreads"] || {})["nodes"] || []
+      head_committed_at = pr.dig("commits", "nodes", 0, "commit", "committedDate")
+      [nodes.map { |node| normalize_thread(node) }, head_committed_at]
     rescue ExitError
-      []
+      [[], nil]
     end
 
     def normalize_thread(node)
-      comments = ((node["comments"] || {})["nodes"] || []).map do |c|
-        {
-          "databaseId" => c["databaseId"],
-          "author" => (c["author"] || {})["login"],
-          "body" => truncate((c["body"] || "").to_s, THREAD_BODY_MAX),
-          "createdAt" => c["createdAt"],
-          "path" => c["path"]
-        }
-      end
-      first = comments.first
-      last = comments.last
+      first = normalize_comment(node.dig("first", "nodes", 0))
+      last = normalize_comment(node.dig("last", "nodes", 0))
       {
         "id" => node["id"],
         "isResolved" => node["isResolved"],
@@ -214,6 +213,18 @@ module OpsGithub
         "first" => first,
         "last" => last,
         "bot" => first && BOT_AUTHORS.include?(first["author"].to_s)
+      }
+    end
+
+    def normalize_comment(comment)
+      return nil if comment.nil?
+
+      {
+        "databaseId" => comment["databaseId"],
+        "author" => (comment["author"] || {})["login"],
+        "body" => truncate((comment["body"] || "").to_s, THREAD_BODY_MAX),
+        "createdAt" => comment["createdAt"],
+        "path" => comment["path"]
       }
     end
 
