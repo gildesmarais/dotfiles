@@ -42,6 +42,14 @@ class LedgerTest < Minitest::Test
     assert_equal("snoozed", second.items["abc"]["status"])
   end
 
+  def test_watcher_pid_carries_to_next_day
+    day = Date.new(2026, 11, 1)
+    first = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme], date: day)
+    first.watcher_pid = Process.pid
+    second = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme], date: day + 1)
+    assert(second.watcher_alive?)
+  end
+
   def test_echo_suppression
     ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
     ledger.mark_seen!("acme/app#1", updated_at: "t1", head_sha: "sha1")

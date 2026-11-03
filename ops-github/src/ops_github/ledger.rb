@@ -31,6 +31,7 @@ module OpsGithub
       yesterday = day_path(state_dir, date - 1)
       carry = {}
       carry_exclusions = exclusions.dup
+      watcher_pid = nil
       if File.file?(yesterday)
         prev = load(yesterday)
         (prev.data["items"] || {}).each do |id, item|
@@ -39,6 +40,8 @@ module OpsGithub
           carry[id] = item
         end
         carry_exclusions |= Array(prev.data["exclusions"])
+        # A watch started yesterday keeps running past midnight.
+        watcher_pid = prev.watcher_pid
       end
 
       ledger = new(
@@ -46,7 +49,7 @@ module OpsGithub
         "date" => date.strftime("%Y-%m-%d"),
         "owners" => owners,
         "exclusions" => carry_exclusions.uniq,
-        "watcher_pid" => nil,
+        "watcher_pid" => watcher_pid,
         "seen" => {},
         "echo" => { "shas" => [] },
         "items" => carry,

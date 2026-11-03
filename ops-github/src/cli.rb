@@ -203,6 +203,10 @@ module OpsGithub
           PROBE_QUIET
         rescue SystemExit => e
           e.status
+        rescue StandardError => e
+          # Any probe crash surfaces as an env wake instead of killing watch.
+          @stderr.write("ops-github: probe: #{e.class}: #{e.message}\n")
+          1
         end
       end
       Watch.new(probe: probe, stdout: @stdout).run(max_ticks: max_ticks)

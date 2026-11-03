@@ -226,4 +226,15 @@ class CliTest < Minitest::Test
     assert_equal(3, report[/## In flight\n(.*?)## Waiting/m, 1].lines.size)
     assert_includes(report, "## Waiting on others")
   end
+
+  def test_watch_survives_probe_crash
+    gh = FakeGithub.new({ "login" => "me", "owners" => %w[acme], "auth_ok" => true }, [], [], "me")
+    def gh.search_prs(*)
+      raise Errno::ENOENT, "gh"
+    end
+    OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    assert_equal(0, run_cli(["watch", "--max-ticks", "1"], github: gh))
+    assert_match(/"urgency":"env"/, @stdout.string)
+    assert_match(/probe: Errno::ENOENT/, @stderr.string)
+  end
 end
