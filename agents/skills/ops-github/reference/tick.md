@@ -5,8 +5,7 @@
 2. Paste `report_md` as the chat report (engine ≤15 lines). Add at most one
    sentence naming what to do first.
 3. **Auto:** run each `auto[]` via **act** (engine already caps at `budgets.auto`).
-4. **Ask / judge:** one AskQuestion batch for `urgency: urgent` items. Batch wake → one digest line
-   ("N new, `/ops-github` to see") unless the user is already in-session.
+4. **Ask / judge:** one AskQuestion batch for `urgency: urgent` items.
    After AskQuestion, record `ops-github ledger decide <id> asked|approved|snoozed|deferred|excluded`.
 5. **Judge:** for bot-thread items, decide approve / defer / exclude yourself
    only when evidence is clear; else AskQuestion. Record
@@ -16,13 +15,14 @@
    full permissions, `notify_on_output` on `OPS_GITHUB_WAKE`, debounce ≥60s) —
    never `nohup … &`, which detaches it and silently drops wakes. Bare
    `/ops-github` is the user's request to monitor.
-7. Wake lines: `OPS_GITHUB_WAKE {…}` → this branch again. Urgent → full report +
-   AskQuestion; batch → digest only.
-8. Cheap wake: on `OPS_GITHUB_WAKE` with urgency `changes`, spawn a smallest-tier,
-   low-effort `Task` that runs `ops-github tick` and returns only `line` plus the
-   urgent ask/judge items (id, pr, class, ≤1 line each, ≤10 lines total). The Brain
-   prints `line` as the one chat line and escalates only on urgent items or when
-   the user is in-session. A bare `/ops-github` runs tick directly and pastes `report_md`.
+7. Wake (`OPS_GITHUB_WAKE`, `urgency` is `changes` or `env`):
+   - `changes`: spawn a smallest-tier, low-effort `Task` that runs `ops-github tick`
+     and returns `line`, all `auto` ids, and the urgent ask/judge items (id, pr,
+     class), ≤12 lines. The Brain prints `line` as its one chat line, runs auto via
+     **act**, and asks about urgent items in one AskQuestion. Batch items stay in
+     the envelope for the next bare `/ops-github`.
+   - `env`: run `ops-github doctor | tail -n 5`, print one line, no tick.
+   Urgent/batch come from envelope items, never from the wake.
 
 Never re-ask items already `asked`/`approved`/`snoozed`/`deferred`/`in_flight`
 until the engine resurfaces them (fingerprint change). Enforce the envelope

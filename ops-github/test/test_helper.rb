@@ -52,17 +52,13 @@ module OpsGithubTest
     OpsGithub::Github.new(runner: ->(_) { response }).pr_states(%w[id]).first
   end
 
+  # Row through the production discover path (Github#discover), not a copy of it.
   def search_row(state, role)
-    {
-      "url" => state["url"],
-      "repository" => state["repository"],
-      "title" => state["title"],
-      "number" => state["number"],
-      "updatedAt" => state["updatedAt"],
-      "isDraft" => state["isDraft"],
-      "author" => state["author"],
-      "role" => role
-    }
+    node = state.slice("id", "url", "number", "title", "updatedAt", "isDraft")
+    node.merge!("author" => { "login" => state["author"] }, "repository" => { "nameWithOwner" => state["repository"] })
+    page = role == "authored" ? { authored: [node] } : { requested: [node] }
+    response = search_response(**page)
+    OpsGithub::Github.new(runner: ->(_) { response }).discover(%w[acme]).first
   end
 end
 

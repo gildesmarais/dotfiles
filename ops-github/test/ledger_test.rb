@@ -72,4 +72,15 @@ class LedgerTest < Minitest::Test
     ledger.watcher_pid = 9_999_999
     refute(ledger.watcher_alive?)
   end
+
+  def test_undecided_returns_new_items_of_open_prs_including_cluster_members
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    ledger.upsert_item!("id" => "a", "pr" => "acme/app#1", "fingerprint" => "f")
+    ledger.upsert_item!("id" => "c", "pr" => "acme/app#2,acme/app#3", "fingerprint" => "f")
+    ledger.upsert_item!("id" => "d", "pr" => "acme/app#4", "fingerprint" => "f")
+    ledger.decide!("d", "asked")
+    ids = ->(keys) { ledger.undecided(keys).map { |i| i["id"] }.sort }
+    assert_equal(%w[a c], ids.call(%w[acme/app#1 acme/app#3 acme/app#4]))
+    assert_empty(ids.call(%w[acme/app#9]))
+  end
 end

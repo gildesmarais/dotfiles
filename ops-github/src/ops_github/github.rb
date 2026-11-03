@@ -20,7 +20,10 @@ module OpsGithub
     CURSOR_VARS = { "authored" => "ac", "requested" => "rc" }.freeze
     # Full-state chunk; sized from a live measurement (see AGENTS.md).
     STATE_CHUNK = 10
-    RETRYABLE = /HTTP 50[24]/.freeze
+    # gh stderr for an id GitHub cannot resolve (deleted or transferred PR).
+    NOT_FOUND = /Could not resolve to a node/.freeze
+    # Failures worth bisecting: an unresolvable id, or a gateway timeout on a big chunk.
+    BISECTABLE = Regexp.union(NOT_FOUND, /HTTP 50[24]|Bad Gateway|Gateway Timeout/).freeze
     # Phase 1: cheap. No mergeable/contexts/threads: merge-state computation is what
     # pushes a full search past GitHub's ~10s timeout.
     SEARCH_QUERY = <<~GRAPHQL
@@ -46,7 +49,7 @@ module OpsGithub
         databaseId author{login} body createdAt path
       }
       fragment pr on PullRequest {
-        url number title author{login} isDraft baseRefName headRefName headRefOid
+        url number title state author{login} isDraft baseRefName headRefName headRefOid
         mergeable mergeStateStatus reviewDecision updatedAt
         repository{ nameWithOwner }
         commits(last:1){
@@ -124,16 +127,16 @@ module OpsGithub
       rows_by_url.values
     end
 
-    # Phase 2: full classifier states for node ids, STATE_CHUNK per call. A 502/504
-    # retries that chunk once as two halves; any other failure fails the caller.
-    def pr_states(ids)
-      Array(ids).each_slice(STATE_CHUNK).flat_map do |chunk|
-        state_nodes(chunk)
-      rescue ExitError => e
-        raise unless chunk.size > 1 && RETRYABLE.match?(e.message)
+    # Single owner of the PR key string ("owner/repo#n") for rows, states and items.
+    def self.pr_key(record)
+      "#{record['repository']}##{record['number']}"
+    end
 
-        chunk.each_slice((chunk.size + 1) / 2).flat_map { |half| state_nodes(half) }
-      end
+    # Phase 2: full classifier states for node ids, STATE_CHUNK per call. A failed
+    # chunk is bisected down to single ids; a single id GitHub cannot resolve
+    # (NOT_FOUND) is dropped, any other failure fails the caller.
+    def pr_states(ids)
+      Array(ids).each_slice(STATE_CHUNK).flat_map { |chunk| chunk_states(chunk) }
     end
 
     private
@@ -168,9 +171,20 @@ module OpsGithub
       cursors.flat_map { |field, cursor| cursor ? ["-f", "#{CURSOR_VARS[field]}=#{cursor}"] : [] }
     end
 
+    def chunk_states(ids)
+      state_nodes(ids)
+    rescue ExitError => e
+      return [] if ids.size == 1 && NOT_FOUND.match?(e.message)
+      raise if ids.size == 1 || !BISECTABLE.match?(e.message)
+
+      ids.each_slice((ids.size + 1) / 2).flat_map { |half| chunk_states(half) }
+    end
+
+    # Closed or merged between discovery and this fetch: nothing to act on.
     def state_nodes(ids)
       args = ids.flat_map { |id| ["-f", "ids[]=#{id}"] }
-      Array(graphql(STATE_QUERY, *args)["nodes"]).compact.map { |node| normalize_state(node) }
+      nodes = Array(graphql(STATE_QUERY, *args)["nodes"]).compact
+      nodes.select { |node| node["state"] == "OPEN" }.map { |node| normalize_state(node) }
     end
 
     def merge_row(rows_by_url, node, role)

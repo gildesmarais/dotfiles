@@ -1,5 +1,6 @@
 {
   "__typename": "PullRequest",
+  "state": "OPEN",
   "id": "PR_app2",
   "url": "https://github.com/acme/app/pull/2",
   "number": 2,

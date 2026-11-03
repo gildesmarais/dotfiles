@@ -94,7 +94,7 @@ module OpsGithub
       ledger = ensure_ledger
       rows = github.discover(ledger.owners)
       delta = rows.any? do |row|
-        key = pr_key(row)
+        key = Github.pr_key(row)
         !ledger.exclusions.include?(key) && ledger.changed_since_seen?(key, signature: row["signature"])
       end
       if delta
@@ -111,16 +111,22 @@ module OpsGithub
       rows = github.discover(ledger.owners)
       first_tick = ledger.seen.empty?
       changed_ids = []
+      changed_keys = []
+      open_keys = []
       rows.each do |row|
-        key = pr_key(row)
+        key = Github.pr_key(row)
         next if ledger.exclusions.include?(key)
 
-        changed_ids << row["id"] if first_tick || ledger.changed_since_seen?(key, signature: row["signature"])
+        open_keys << key
+        next unless first_tick || ledger.changed_since_seen?(key, signature: row["signature"])
+
+        changed_ids << row["id"]
+        changed_keys << key
       end
       states = github.pr_states(changed_ids)
       # Stamp only after full state fetched, so a failed tick re-sees the change.
       rows.each do |row|
-        key = pr_key(row)
+        key = Github.pr_key(row)
         ledger.mark_seen!(key, signature: row["signature"]) unless ledger.exclusions.include?(key)
       end
 
@@ -128,6 +134,9 @@ module OpsGithub
       login = github.setup_facts["login"] if login.nil? || login.empty?
       classifier = Classifier.new(login: login)
       items = classifier.classify(search_rows: rows, states: states, ledger: ledger)
+      # Undecided items of unchanged open PRs stay visible; a changed PR is reclassified.
+      fresh_ids = items.map { |i| i["id"] }
+      items += ledger.undecided(open_keys - changed_keys).reject { |i| fresh_ids.include?(i["id"]) }
       env = classifier.envelope(items, ledger: ledger, dry: dry_run?)
       emit(env)
       write_status(env)
@@ -136,8 +145,8 @@ module OpsGithub
     end
 
     def dry_run?
-      v = ENV["OPS_GITHUB_DRY"].to_s
-      !v.empty? && v != "0"
+      v = ENV["OPS_GITHUB_DRY"].to_s.strip.downcase
+      !v.empty? && !%w[0 false no].include?(v)
     end
 
     # Zero-token statusline source; atomic so a reader never sees a partial line.
@@ -251,10 +260,6 @@ module OpsGithub
       Ledger.init(state_dir, owners: owners)
     end
 
-    def pr_key(row)
-      "#{row['repository']}##{row['number']}"
-    end
-
     def writable_dir?(dir)
       FileUtils.mkdir_p(dir)
       test = File.join(dir, ".write-test.#{Process.pid}")
@@ -278,7 +283,7 @@ module OpsGithub
           setup-facts          Owners + login from gh (no org names hardcoded)
           probe                Exit 0 quiet / 10 delta vs day ledger
           tick                 Attention Ledger envelope (JSON); writes <state>/status.txt
-                               OPS_GITHUB_DRY=1 demotes all auto to ask
+                               OPS_GITHUB_DRY=1 demotes all auto to ask (0|false|no = off)
           ledger summary       Compact day summary
           ledger decide ID ST  Record decision (asked|approved|snoozed|done|…)
           ledger exclude PR    Exclude owner/repo#n for the day

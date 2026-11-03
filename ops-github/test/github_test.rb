@@ -94,6 +94,49 @@ class GithubTest < Minitest::Test
     end
   end
 
+  NOT_FOUND_MESSAGE = "gh failed: Could not resolve to a node with the global id of 'PR_bogus'"
+
+  def not_found_runner(bogus, calls = [])
+    lambda do |argv|
+      ids = argv.grep(/\Aids\[\]=/).map { |a| a.split("=", 2).last }
+      calls << ids
+      raise OpsGithub::ExitError, NOT_FOUND_MESSAGE if ids.include?(bogus)
+
+      nodes_response(ids.map { |id| pr_node("pr_authored_clean.json").merge("id" => id) })
+    end
+  end
+
+  def test_pr_states_drops_single_not_found_id_by_bisecting
+    calls = []
+    states = OpsGithub::Github.new(runner: not_found_runner("PR_bogus", calls)).pr_states(%w[PR_a PR_bogus PR_b])
+    assert_equal(2, states.size)
+    assert_includes(calls, %w[PR_bogus])
+  end
+
+  def test_pr_states_fails_closed_on_other_single_id_error
+    runner = ->(_) { raise OpsGithub::ExitError, "gh failed: HTTP 401" }
+    assert_raises(OpsGithub::ExitError) { OpsGithub::Github.new(runner: runner).pr_states(%w[PR_a PR_b]) }
+  end
+
+  def test_pr_states_non_gateway_error_raises_without_bisecting
+    calls = 0
+    runner = lambda do |_|
+      calls += 1
+      raise OpsGithub::ExitError, "gh failed: HTTP 401"
+    end
+    assert_raises(OpsGithub::ExitError) do
+      OpsGithub::Github.new(runner: runner).pr_states((1..10).map { |n| "PR_#{n}" })
+    end
+    assert_equal(1, calls)
+  end
+
+  def test_pr_states_skips_nodes_that_are_not_open
+    closed = pr_node("pr_authored_clean.json").merge("state" => "CLOSED")
+    response = nodes_response([closed, pr_node("pr_bundler_audit.json")])
+    states = OpsGithub::Github.new(runner: ->(_) { response }).pr_states(%w[a b])
+    assert_equal([2], states.map { |s| s["number"] })
+  end
+
   def test_setup_facts_reads_login_and_orgs
     runner = lambda do |argv|
       joined = argv.join(" ")

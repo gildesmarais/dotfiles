@@ -31,7 +31,7 @@ module OpsGithub
         url = state["url"]
         next if url.nil?
 
-        pr_key = pr_key_for(state)
+        pr_key = Github.pr_key(state)
         next if ledger.exclusions.include?(pr_key)
 
         role = (rows_by_url[url] || {})["role"]
@@ -122,10 +122,6 @@ module OpsGithub
       state["author"].to_s == @login ? "authored" : "review-requested"
     end
 
-    def pr_key_for(state)
-      "#{state['repository']}##{state['number']}"
-    end
-
     def bot_author?(login)
       name = login.to_s.sub(%r{\Aapp/}, "")
       BOT_AUTHORS.include?(name)
@@ -133,7 +129,7 @@ module OpsGithub
 
     def items_for_pr(state, role:)
       out = []
-      pr = pr_key_for(state)
+      pr = Github.pr_key(state)
       base = {
         "pr" => pr,
         "url" => state["url"],
@@ -239,6 +235,7 @@ module OpsGithub
         "id" => item["id"],
         "pr" => item["pr"],
         "url" => item["url"],
+        "repository" => item["repository"],
         "class" => item["class"],
         "action" => item["action"],
         "urgency" => item["urgency"],

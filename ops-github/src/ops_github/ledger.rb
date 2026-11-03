@@ -117,8 +117,8 @@ module OpsGithub
       @data["items"] ||= {}
     end
 
-    # +signature+: opaque change string built by Github (updatedAt + CI rollup +
-    # mergeable + reviewDecision); the ledger only compares it.
+    # +signature+: opaque change string built by Github (updatedAt + head-commit CI
+    # rollup state); the ledger only compares it.
     def mark_seen!(pr_key, signature:)
       seen[pr_key] = signature
       save!
@@ -156,6 +156,14 @@ module OpsGithub
       items[item["id"]] = merged
       save!
       merged
+    end
+
+    # Items still awaiting a decision whose PR (any key of a cluster's comma-joined
+    # +pr+) is in +open_pr_keys+: they must reappear even when nothing changed.
+    def undecided(open_pr_keys)
+      items.values.select do |item|
+        item["status"] == "new" && item["pr"].to_s.split(",").any? { |key| open_pr_keys.include?(key) }
+      end
     end
 
     def summary(limit: 40)
