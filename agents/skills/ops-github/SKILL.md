@@ -32,7 +32,8 @@ tracked-file edits. No org names; owners from setup or day ledger. Co-load
 3. After `/compact`, re-read only `ops-github ledger summary` (≤40 lines).
 4. `OPS_GITHUB_DRY=1` turns all auto into ask (use on first days / new owners).
 5. Brain limits: no tracked-file edits; no PR diffs/source/raw CI here; shell
-   `| tail -n 40`; logs → `/tmp/ops-github/<id>.log`. Mutations/reviews → Hands
+   `| tail -n 40`; logs → `/tmp/ops-github/<id>.log` (`mkdir -p` first; write
+   with `>|` — zsh `noclobber` silently keeps a stale file). Mutations/reviews → Hands
    (`Task`, worktree, whitelist, tier, timebox).
 
 ## Branch reference

@@ -14,9 +14,12 @@ module OpsGithub
     ].freeze
     BASE_CAUSED_CHECKS = %w[bundler_audit dependabot].freeze
     URGENCY_RANK = { "urgent" => 0, "batch" => 1 }.freeze
+    # An authored PR with one of these labels (case-insensitive) is parked like a draft.
+    PARKED_LABELS = %w[on-hold do-not-merge parked].freeze
 
-    def initialize(login:)
+    def initialize(login:, parked_labels: PARKED_LABELS)
       @login = login.to_s
+      @parked_labels = Array(parked_labels).map { |l| l.to_s.downcase }
     end
 
     # +search_rows+: from Github#discover (authored + review-requested)
@@ -123,6 +126,13 @@ module OpsGithub
       state["author"].to_s == @login ? "authored" : "review-requested"
     end
 
+    # Draft or parked label: the author's own PR is not ready, so its blockers wait.
+    def parked?(state)
+      return true if state["isDraft"]
+
+      (Array(state["labels"]).map { |l| l.to_s.downcase } & @parked_labels).any?
+    end
+
     def bot_author?(login)
       name = login.to_s.sub(%r{\Aapp/}, "")
       BOT_AUTHORS.include?(name)
@@ -153,7 +163,7 @@ module OpsGithub
         out << item(base, klass, urgency, "ask", invoke, "author" => state["author"])
       end
 
-      return out if state["isDraft"] && role == "authored"
+      return out if role == "authored" && parked?(state)
 
       if role == "authored" && (state["mergeable"] == "CONFLICTING" || state["mergeStateStatus"] == "DIRTY")
         out << item(base, "conflicts", "batch", "ask",

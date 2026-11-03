@@ -50,6 +50,50 @@ class LedgerTest < Minitest::Test
     assert(second.watcher_alive?)
   end
 
+  def test_carry_over_spans_gap_days_from_newest_ledger
+    friday = Date.new(2026, 10, 30)
+    OpsGithub::Ledger.init(@tmpdir, owners: %w[old], date: friday - 1).exclude!("old/app#9")
+    OpsGithub::Ledger.init(@tmpdir, owners: %w[acme], date: friday).exclude!("acme/app#1")
+    File.write(File.join(@tmpdir, "2026-11-01.json.bak"), "{}")
+    monday = OpsGithub::Ledger.init(@tmpdir, owners: nil, date: friday + 3)
+    assert_equal(%w[acme], monday.owners)
+    assert_equal(%w[acme/app#1 old/app#9].sort, monday.exclusions.sort)
+  end
+
+  def test_explicit_owners_win_over_carried_owners
+    day = Date.new(2026, 11, 1)
+    OpsGithub::Ledger.init(@tmpdir, owners: %w[acme other], date: day)
+    second = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme], date: day + 1)
+    assert_equal(%w[acme], second.owners)
+  end
+
+  def test_previous_is_nil_without_earlier_ledger
+    assert_nil(OpsGithub::Ledger.previous(@tmpdir))
+    assert_nil(OpsGithub::Ledger.previous(File.join(@tmpdir, "missing")))
+  end
+
+  def test_include_and_clear_exclusions
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    ledger.exclude!("acme/app#1")
+    ledger.exclude!("acme/app#2")
+    ledger.include!("acme/app#1")
+    assert_equal(%w[acme/app#2], ledger.exclusions)
+    ledger.clear_exclusions!
+    assert_empty(OpsGithub::Ledger.load(ledger.path).exclusions)
+  end
+
+  def test_prune_closed_drops_exclusions_and_items_of_closed_prs
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    ledger.exclude!("acme/app#1")
+    ledger.exclude!("acme/app#2")
+    ledger.decide!("open", "snoozed", "pr_keys" => %w[acme/app#1])
+    ledger.decide!("cluster", "deferred", "pr_keys" => %w[acme/app#1 acme/app#2])
+    ledger.decide!("legacy", "approved")
+    ledger.prune_closed!(%w[acme/app#1 acme/app#3])
+    assert_equal(%w[acme/app#1], ledger.exclusions)
+    assert_equal(%w[legacy open], ledger.items.keys.sort)
+  end
+
   def test_changed_since_seen_compares_signature
     ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
     assert(ledger.changed_since_seen?("acme/app#1", signature: "t1|SUCCESS"))

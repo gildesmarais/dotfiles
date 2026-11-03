@@ -52,6 +52,7 @@ module OpsGithub
         url number title state author{login} isDraft baseRefName headRefName headRefOid
         mergeable mergeStateStatus reviewDecision updatedAt
         repository{ nameWithOwner }
+        labels(first:20){ nodes{ name } }
         commits(last:1){
           nodes{
             commit{
@@ -209,6 +210,7 @@ module OpsGithub
         "title" => node["title"],
         "author" => (node["author"] || {})["login"],
         "isDraft" => node["isDraft"],
+        "labels" => Array((node["labels"] || {})["nodes"]).map { |l| l["name"] },
         "baseRefName" => node["baseRefName"],
         "headRefName" => node["headRefName"],
         "headRefOid" => node["headRefOid"],
