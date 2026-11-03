@@ -70,8 +70,7 @@ class CliTest < Minitest::Test
       "me"
     )
     ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
-    # Tick stores a real oid; probe must quiet on matching updatedAt alone.
-    ledger.mark_seen!("acme/app#1", updated_at: row["updatedAt"], head_sha: state["headRefOid"])
+    ledger.mark_seen!("acme/app#1", updated_at: row["updatedAt"])
     status = run_cli(["probe"], github: gh)
     assert_equal(0, status)
     assert_equal("quiet", JSON.parse(@stdout.string)["status"])
@@ -169,7 +168,7 @@ class CliTest < Minitest::Test
       "me"
     )
     ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
-    ledger.mark_seen!("acme/app#1", updated_at: row["updatedAt"], head_sha: state["headRefOid"])
+    ledger.mark_seen!("acme/app#1", updated_at: row["updatedAt"])
     status = run_cli(["watch", "--max-ticks", "1"], github: gh)
     assert_equal(0, status)
     refute_match(/OPS_GITHUB_WAKE/, @stdout.string)
@@ -216,15 +215,14 @@ class CliTest < Minitest::Test
     @stdout.rewind
     run_cli(["tick"], github: gh)
     report = JSON.parse(@stdout.string)["report_md"]
-    assert_includes(report, "## In flight\n- acme/app#1\n## Waiting on others")
+    assert(report.end_with?("## In flight\n- acme/app#1"), report)
 
     %w[2 3 4].each { |n| run_cli(["ledger", "decide", "acme/app##{n}", "in_flight"], github: gh) }
     @stdout.truncate(0)
     @stdout.rewind
     run_cli(["tick"], github: gh)
     report = JSON.parse(@stdout.string)["report_md"]
-    assert_equal(3, report[/## In flight\n(.*?)## Waiting/m, 1].lines.size)
-    assert_includes(report, "## Waiting on others")
+    assert_equal(3, report.split("## In flight\n").last.lines.size)
   end
 
   def test_watch_survives_probe_crash

@@ -50,17 +50,10 @@ class LedgerTest < Minitest::Test
     assert(second.watcher_alive?)
   end
 
-  def test_echo_suppression
+  def test_changed_since_seen_compares_updated_at
     ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
-    ledger.mark_seen!("acme/app#1", updated_at: "t1", head_sha: "sha1")
-    ledger.record_echo!(shas: ["sha2"])
-    refute(ledger.changed_since_seen?("acme/app#1", updated_at: "t2", head_sha: "sha2"))
-    assert(ledger.changed_since_seen?("acme/app#1", updated_at: "t2", head_sha: "sha3"))
-  end
-
-  def test_probe_ignores_head_when_only_timestamp_compared
-    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
-    ledger.mark_seen!("acme/app#1", updated_at: "t1", head_sha: "sha1")
+    assert(ledger.changed_since_seen?("acme/app#1", updated_at: "t1"))
+    ledger.mark_seen!("acme/app#1", updated_at: "t1")
     refute(ledger.changed_since_seen?("acme/app#1", updated_at: "t1"))
     assert(ledger.changed_since_seen?("acme/app#1", updated_at: "t2"))
   end

@@ -11,7 +11,6 @@ class GithubTest < Minitest::Test
     node = {
       "id" => "t1",
       "isResolved" => false,
-      "isOutdated" => false,
       "first" => {
         "nodes" => [
           { "databaseId" => 1, "author" => { "login" => "copilot-pull-request-reviewer" },

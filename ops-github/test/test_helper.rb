@@ -42,7 +42,6 @@ module OpsGithubTest
       "reviewDecision" => raw["reviewDecision"],
       "updatedAt" => raw["updatedAt"],
       "failing_checks" => failing_checks_from(raw),
-      "checks" => Array(raw["statusCheckRollup"]),
       "threads" => [],
       "repository" => raw["url"][%r{github\.com/([^/]+/[^/]+)/}, 1]
     }

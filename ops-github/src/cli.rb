@@ -90,8 +90,8 @@ module OpsGithub
       emit(facts)
     end
 
-    def run_probe(args)
-      ledger = ensure_ledger(args)
+    def run_probe(_args)
+      ledger = ensure_ledger
       rows = discover(ledger.owners)
       delta = false
       rows.each do |row|
@@ -112,8 +112,8 @@ module OpsGithub
       raise ExitError.new(status: PROBE_QUIET)
     end
 
-    def run_tick(args)
-      ledger = ensure_ledger(args)
+    def run_tick(_args)
+      ledger = ensure_ledger
       rows = discover(ledger.owners)
       changed_urls = []
       rows.each do |row|
@@ -138,11 +138,7 @@ module OpsGithub
         next if ledger.exclusions.include?(key)
 
         state = states_by_url[row["url"]]
-        if state
-          ledger.mark_seen!(key, updated_at: state["updatedAt"], head_sha: state["headRefOid"])
-        else
-          ledger.mark_seen!(key, updated_at: row["updatedAt"], head_sha: nil)
-        end
+        ledger.mark_seen!(key, updated_at: (state || row)["updatedAt"])
       end
 
       login = github.login
@@ -159,7 +155,7 @@ module OpsGithub
       sub = args.shift
       raise ExitError, "ledger requires summary|decide|exclude" if sub.nil?
 
-      ledger = ensure_ledger([])
+      ledger = ensure_ledger
       case sub
       when "summary"
         @stdout.write("#{ledger.summary}\n")
@@ -183,7 +179,7 @@ module OpsGithub
     def run_watch(args)
       max_ticks = nil
       OptionParser.new { |opts| opts.on("--max-ticks N") { |n| max_ticks = n.to_i } }.parse!(args)
-      ledger = ensure_ledger([])
+      ledger = ensure_ledger
       if ledger.watcher_alive?
         emit("status" => "already-running", "pid" => ledger.watcher_pid)
         return
@@ -245,7 +241,7 @@ module OpsGithub
       usage
     end
 
-    def ensure_ledger(_args)
+    def ensure_ledger
       owners = @owners
       if owners.nil? || owners.empty?
         path = Ledger.day_path(state_dir)

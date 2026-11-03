@@ -47,39 +47,20 @@ module OpsGithub
         item["fingerprint"] = fingerprint(item)
         ledger.upsert_item!(item_stub(item))
       end
-      suppress_decided(items, ledger)
-    end
-
-    def report_sections(items)
-      needs = items.select { |i| %w[ask judge].include?(i["action"]) }
-      auto = items.select { |i| i["action"] == "auto" }
-      info = items.select { |i| i["action"] == "info" }
-      {
-        "needs" => needs,
-        "auto" => auto,
-        "info" => info,
-        "waiting" => info.size
-      }
+      items.reject { |item| ledger.decided?(item) }
     end
 
     # +in_flight+: ledger items a Hand marked in_flight (classifier items carry no status).
-    def render_report(items, auto_done: [], in_flight: [])
-      sections = report_sections(items)
-      lines = []
-      lines << "## Needs you"
-      if sections["needs"].empty?
+    def render_report(items, in_flight: [])
+      needs = items.select { |i| %w[ask judge].include?(i["action"]) }
+      lines = ["## Needs you"]
+      if needs.empty?
         lines << "(none)"
       else
-        ranked = sections["needs"].sort_by { |i| URGENCY_RANK.fetch(i["urgency"], 9) }
+        ranked = needs.sort_by { |i| URGENCY_RANK.fetch(i["urgency"], 9) }
         ranked.first(8).each do |i|
           lines << "- #{i['urgency']} #{i['pr']}: #{i['class']} → #{i['invoke']}"
         end
-      end
-      lines << "## Auto-done"
-      if auto_done.empty?
-        lines << "(none)"
-      else
-        auto_done.first(5).each { |line| lines << "- #{line}" }
       end
       lines << "## In flight"
       if in_flight.empty?
@@ -87,19 +68,17 @@ module OpsGithub
       else
         in_flight.first(3).each { |i| lines << "- #{i['id']}" }
       end
-      lines << "## Waiting on others"
-      lines << sections["waiting"].to_s
-      lines = lines.first(15)
-      lines.join("\n")
+      lines.first(15).join("\n")
     end
 
-    def envelope(items, ledger:, auto_done: [])
-      actionable = suppress_decided(items, ledger)
+    # +items+: Classifier#classify output (already filtered by Ledger#decided?).
+    def envelope(items, ledger:)
+      actionable = items
       auto = actionable.select { |i| i["action"] == "auto" }.first(ledger.budgets["auto"] || 3)
       ask = actionable.select { |i| i["action"] == "ask" }
       judge = actionable.select { |i| i["action"] == "judge" }
       in_flight = ledger.items.values.select { |i| i["status"] == "in_flight" }
-      report = render_report(actionable, auto_done: auto_done, in_flight: in_flight)
+      report = render_report(actionable, in_flight: in_flight)
       status = (auto + ask + judge).empty? ? "quiet" : "changes"
       {
         "status" => status,
@@ -111,15 +90,10 @@ module OpsGithub
       }
     end
 
-    def thread_handled?(thread, head_pushed_at: nil)
+    def thread_handled?(thread)
       return true if thread["isResolved"]
 
-      last = thread["last"]
-      return false if last.nil?
-      return false unless last["author"].to_s == @login
-      return true if head_pushed_at.nil? || last["createdAt"].nil?
-
-      last["createdAt"] >= head_pushed_at
+      (thread["last"] || {})["author"].to_s == @login
     end
 
     private
@@ -369,18 +343,6 @@ module OpsGithub
         primary
       end
       others + clustered
-    end
-
-    def suppress_decided(items, ledger)
-      items.reject do |item|
-        existing = ledger.items[item["id"]]
-        next false if existing.nil?
-        next true if %w[snoozed deferred excluded done].include?(existing["status"])
-        next true if %w[asked approved in_flight blocked].include?(existing["status"]) &&
-                     existing["fingerprint"] == item["fingerprint"]
-
-        false
-      end
     end
   end
 end

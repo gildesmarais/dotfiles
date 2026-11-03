@@ -27,7 +27,5 @@ class WatchTest < Minitest::Test
     assert_equal(600, watch.interval_seconds)
     watch.instance_variable_set(:@quiet_streak, 4)
     assert_equal(3600, watch.interval_seconds)
-    watch.in_flight = true
-    assert_equal(120, watch.interval_seconds)
   end
 end

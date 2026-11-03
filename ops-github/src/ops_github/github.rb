@@ -156,7 +156,6 @@ module OpsGithub
         "reviewDecision" => raw["reviewDecision"],
         "updatedAt" => raw["updatedAt"],
         "failing_checks" => checks.select { |c| FAILING_STATES.include?(c["state"]) },
-        "checks" => checks,
         "threads" => threads,
         "repository" => repo_from_url(raw["url"] || url)
       }
@@ -174,7 +173,7 @@ module OpsGithub
               commits(last:1){ nodes{ commit{ committedDate } } }
               reviewThreads(first:100){
                 nodes{
-                  id isResolved isOutdated
+                  id isResolved
                   first: comments(first:1){
                     nodes{ databaseId author{login} body createdAt path }
                   }
@@ -208,7 +207,6 @@ module OpsGithub
       {
         "id" => node["id"],
         "isResolved" => node["isResolved"],
-        "isOutdated" => node["isOutdated"],
         "path" => first && first["path"],
         "first" => first,
         "last" => last,
