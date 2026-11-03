@@ -329,13 +329,14 @@ class CliTest < Minitest::Test
     assert_empty(ledger.items)
   end
 
-  def test_cluster_with_changed_member_does_not_come_back_via_unchanged_member
+  def test_cluster_is_reclassified_whole_when_one_member_changes
     a, b = numbered_nodes(1..2)
     _, first = tick_json([a, b])
     assert_equal(%w[red-ci-shared], (first["ask"] + first["auto"]).map { |i| i["class"] }.uniq)
     _, env = tick_json([bumped(a, "2026-11-02T12:00:00Z"), b])
-    reported = (env["ask"] + env["auto"]).map { |i| i["pr"] }
-    assert_equal(["acme/app#1"], reported)
+    reported = env["ask"] + env["auto"]
+    assert_equal(%w[acme/app#1 acme/app#2], reported.flat_map { |i| i["pr"].split(",") }.uniq.sort)
+    assert_equal(%w[red-ci-shared], reported.map { |i| i["class"] }.uniq)
   end
 
   def test_changed_pr_keeps_its_decided_item

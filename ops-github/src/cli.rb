@@ -123,6 +123,14 @@ module OpsGithub
         changed_ids << row["id"]
         changed_keys << key
       end
+      open_rows = rows.reject { |r| ledger.exclusions.include?(Github.pr_key(r)) }
+      ledger.cluster_siblings(changed_keys).each do |key|
+        row = open_rows.find { |r| Github.pr_key(r) == key }
+        next unless row
+
+        changed_ids << row["id"]
+        changed_keys << key
+      end
       states = github.pr_states(changed_ids)
       # Stamp only after full state fetched, so a failed tick re-sees the change.
       rows.each do |row|

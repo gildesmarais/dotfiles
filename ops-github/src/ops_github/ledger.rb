@@ -167,6 +167,15 @@ module OpsGithub
       end
     end
 
+    # Keys of the other PRs in any multi-PR item (cluster) that touches +keys+, so a
+    # cluster is reclassified whole when one member changes. One pass, not transitive.
+    def cluster_siblings(keys)
+      items.values.flat_map do |item|
+        members = Array(item["pr_keys"])
+        members.size > 1 && (members & keys).any? ? members : []
+      end.uniq - keys
+    end
+
     # Drops superseded +new+ items of PRs that changed this tick (reclassified,
     # closed or gone) unless in +keep_ids+; decided items stay.
     def retire_stale!(changed_keys, keep_ids)

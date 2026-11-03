@@ -96,4 +96,14 @@ class LedgerTest < Minitest::Test
     assert_equal(%w[fresh other snz], ledger.items.keys.sort)
     assert_equal(%w[fresh other snz], OpsGithub::Ledger.load(ledger.path).items.keys.sort)
   end
+
+  def test_cluster_siblings_widens_multi_key_items_only_once
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    ledger.upsert_item!("id" => "c", "pr_keys" => %w[acme/app#1 acme/app#2], "fingerprint" => "f")
+    ledger.upsert_item!("id" => "t", "pr_keys" => %w[acme/app#2 acme/app#3], "fingerprint" => "f")
+    ledger.upsert_item!("id" => "s", "pr_keys" => %w[acme/app#7], "fingerprint" => "f")
+    ledger.decide!("t", "snoozed")
+    assert_equal(%w[acme/app#2], ledger.cluster_siblings(%w[acme/app#1]))
+    assert_empty(ledger.cluster_siblings(%w[acme/app#7]))
+  end
 end
