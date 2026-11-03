@@ -73,6 +73,17 @@ class GithubTest < Minitest::Test
     assert_equal("https://ci", state["failing_checks"].last["link"])
   end
 
+  def test_pr_states_keeps_newest_run_per_check_name
+    node = pr_node("pr_bundler_audit.json")
+    contexts = node["commits"]["nodes"][0]["commit"]["statusCheckRollup"]["contexts"]["nodes"]
+    contexts[0]["startedAt"] = "2026-11-03T14:22:40Z"
+    contexts << { "__typename" => "CheckRun", "name" => "bundler_audit", "conclusion" => "SUCCESS",
+                  "detailsUrl" => "https://ci/2", "startedAt" => "2026-11-03T14:25:05Z" }
+    response = nodes_response([node])
+    state = OpsGithub::Github.new(runner: ->(_) { response }).pr_states(%w[id]).first
+    assert_empty(state["failing_checks"])
+  end
+
   def test_pr_states_normalizes_label_names
     node = pr_node("pr_authored_clean.json").merge("labels" => { "nodes" => [{ "name" => "on-hold" }] })
     response = nodes_response([node])

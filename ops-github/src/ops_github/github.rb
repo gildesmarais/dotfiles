@@ -61,8 +61,8 @@ module OpsGithub
                 state
                 contexts(first:50){
                   nodes{
-                    ... on CheckRun{ name conclusion detailsUrl }
-                    ... on StatusContext{ context state targetUrl }
+                    ... on CheckRun{ name conclusion detailsUrl startedAt }
+                    ... on StatusContext{ context state targetUrl createdAt }
                   }
                 }
               }
@@ -268,14 +268,25 @@ module OpsGithub
       }
     end
 
+    # Newest run per check name, as the PR checks view shows it: the rollup also keeps
+    # superseded runs on the same commit (e.g. a closed PR that shared the head SHA).
     def normalize_checks(rollup)
-      Array(rollup).map do |c|
-        {
-          "name" => c["name"] || c["context"],
-          "state" => (c["conclusion"] || c["state"]).to_s.upcase,
-          "link" => c["detailsUrl"] || c["targetUrl"]
+      latest = {}
+      Array(rollup).each do |c|
+        name = c["name"] || c["context"]
+        at = (c["startedAt"] || c["createdAt"]).to_s
+        next if latest[name] && latest[name][:at] > at
+
+        latest[name] = {
+          at: at,
+          check: {
+            "name" => name,
+            "state" => (c["conclusion"] || c["state"]).to_s.upcase,
+            "link" => c["detailsUrl"] || c["targetUrl"]
+          }
         }
       end
+      latest.values.map { |v| v[:check] }
     end
 
     def truncate(text, max)
