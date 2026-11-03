@@ -47,4 +47,6 @@ Do not optimize for:
 - `tick` writes `<state-dir>/status.txt` (`line · HH:MM`) atomically for a zero-token statusline.
 - `OPS_GITHUB_DRY` (non-empty, not `0|false|no`, case-insensitive) makes `tick` demote every auto item to ask.
 - Fail closed rather than overwrite unexpected paths.
+- `Ledger.previous` (newest `YYYY-MM-DD.json` before today, across gaps) is the only carry source: a new day inherits its owners (unless `--owners` is passed), exclusions, carried items and watcher PID. `setup-facts` owners seed only the very first ledger. Exclusions persist until `ledger include PR`, `ledger exclude --clear`, or the first tick of a day, which prunes exclusions and carried items of PRs the search no longer returns (`Ledger#prune_closed!`; items without `pr_keys` stay).
+- `Classifier#parked?` treats an authored PR as not ready when it is a draft or carries a parked label (`Classifier::PARKED_LABELS`, case-insensitive; `OPS_GITHUB_PARKED_LABELS=a,b` replaces the set). Review requests on others' PRs are never parked. Labels come from the phase-2 state query; adding a label bumps `updatedAt` (observed live), so the signature sees it.
 - Exclude this tree from rcup via path-prefixed globs in `rcrc` (`ops-github/src`, `ops-github/test`, …) — never a bare `ops-github` basename, which would also skip `agents/skills/ops-github` and `scripts/ops-github`.

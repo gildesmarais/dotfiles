@@ -212,6 +212,34 @@ class CliTest < Minitest::Test
     assert_equal(%w[acme], ledger.owners)
   end
 
+  def test_new_day_without_owners_flag_carries_previous_owners
+    OpsGithub::Ledger.init(@tmpdir, owners: %w[acme], date: Date.today - 3)
+    runner = FakeRunner.new(orgs: [{ "login" => "other" }])
+    cli = OpsGithub::CLI.new(["--state-dir", @tmpdir, "ledger", "summary"],
+                             github: github_for(runner), stdout: @stdout, stderr: @stderr)
+    cli.run
+    assert_equal(%w[acme], OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir)).owners)
+    assert_empty(runner.calls)
+  end
+
+  def test_ledger_include_and_exclude_clear
+    gh = github_for(FakeRunner.new)
+    run_cli(%w[ledger exclude acme/app#1], github: gh)
+    run_cli(%w[ledger exclude acme/app#2], github: gh)
+    run_cli(%w[ledger include acme/app#1], github: gh)
+    assert_equal(%w[acme/app#2], OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir)).exclusions)
+    run_cli(["ledger", "exclude", "--clear"], github: gh)
+    assert_empty(OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir)).exclusions)
+  end
+
+  def test_first_tick_prunes_exclusions_of_closed_prs_only
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    ledger.exclude!("acme/app#1")
+    ledger.exclude!("acme/app#99")
+    run_cli(["tick"], github: github_for(runner_with(authored: [pr_node("pr_authored_clean.json")])))
+    assert_equal(%w[acme/app#1], OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir)).exclusions)
+  end
+
   def test_unknown_command
     status = run_cli(["wat"], github: github_for(FakeRunner.new))
     assert_equal(1, status)

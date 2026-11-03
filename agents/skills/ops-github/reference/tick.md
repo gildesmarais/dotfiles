@@ -13,7 +13,10 @@
 6. Arm `ops-github watch` if watcher PID is gone (`doctor` / ledger summary).
    Run it as a background Shell owned by this session (`block_until_ms: 0`,
    full permissions, `notify_on_output` on `OPS_GITHUB_WAKE`, debounce ≥60s) —
-   never `nohup … &`, which detaches it and silently drops wakes. Bare
+   never `nohup … &`, which detaches it and silently drops wakes. In Claude Code
+   that is `Monitor` (`timeout_ms` 1800000, the max) over
+   `ops-github … watch 2>&1 | grep -E --line-buffered 'OPS_GITHUB_WAKE|rror|FAIL'`;
+   it expires after 30m and kills the watch, so re-arm on every expiry. Bare
    `/ops-github` is the user's request to monitor.
 7. Wake (`OPS_GITHUB_WAKE`, `urgency` is `changes` or `env`):
    - `changes`: spawn a smallest-tier, low-effort `Task` that runs `ops-github tick`

@@ -29,6 +29,31 @@ class ClassifierTest < Minitest::Test
     assert_equal("fix", red["headRefName"])
   end
 
+  def test_parked_label_suppresses_authored_blockers
+    state = state_from_fixture("pr_bundler_audit.json")
+    state["labels"] = ["On-Hold"]
+    items = @classifier.classify(search_rows: [search_row(state, "authored")], states: [state], ledger: @ledger)
+    assert_empty(items)
+  end
+
+  def test_parked_labels_are_configurable
+    state = state_from_fixture("pr_bundler_audit.json")
+    state["labels"] = ["on-hold"]
+    classifier = OpsGithub::Classifier.new(login: "me", parked_labels: %w[waiting-on-product])
+    items = classifier.classify(search_rows: [search_row(state, "authored")], states: [state], ledger: @ledger)
+    refute_empty(items)
+    state["labels"] = ["Waiting-On-Product"]
+    assert_empty(classifier.classify(search_rows: [search_row(state, "authored")], states: [state], ledger: @ledger))
+  end
+
+  def test_parked_label_keeps_review_request_on_others_pr
+    state = state_from_fixture("pr_review_requested.json")
+    state["labels"] = ["do-not-merge"]
+    items = @classifier.classify(search_rows: [search_row(state, "review-requested")], states: [state],
+                                 ledger: @ledger)
+    assert_equal(%w[review-requested], items.map { |i| i["class"] })
+  end
+
   def test_shared_red_ci_clusters_into_one_ask
     a = state_from_fixture("pr_bundler_audit.json")
     b = state_from_fixture("pr_bundler_audit.json")

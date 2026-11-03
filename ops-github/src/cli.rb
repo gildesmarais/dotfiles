@@ -110,6 +110,7 @@ module OpsGithub
       ledger = ensure_ledger
       rows = github.discover(ledger.owners)
       first_tick = ledger.seen.empty?
+      ledger.prune_closed!(rows.map { |r| Github.pr_key(r) }) if first_tick
       changed_ids = []
       changed_keys = []
       open_keys = []
@@ -140,7 +141,7 @@ module OpsGithub
 
       login = github.login
       login = github.setup_facts["login"] if login.nil? || login.empty?
-      classifier = Classifier.new(login: login)
+      classifier = Classifier.new(login: login, parked_labels: parked_labels)
       items = classifier.classify(search_rows: rows, states: states, ledger: ledger)
       # A changed PR (including one dropped as closed/not found) is reclassified: its old
       # undecided items retire. Undecided items of unchanged open PRs stay visible.
@@ -159,6 +160,12 @@ module OpsGithub
       !v.empty? && !%w[0 false no].include?(v)
     end
 
+    # OPS_GITHUB_PARKED_LABELS (comma list) replaces the default parked label set.
+    def parked_labels
+      list = ENV["OPS_GITHUB_PARKED_LABELS"].to_s.split(",").map(&:strip).reject(&:empty?)
+      list.empty? ? Classifier::PARKED_LABELS : list
+    end
+
     # Zero-token statusline source; atomic so a reader never sees a partial line.
     def write_status(env)
       FileUtils.mkdir_p(state_dir)
@@ -170,7 +177,7 @@ module OpsGithub
 
     def run_ledger(args)
       sub = args.shift
-      raise ExitError, "ledger requires summary|decide|exclude" if sub.nil?
+      raise ExitError, "ledger requires summary|decide|exclude|include" if sub.nil?
 
       ledger = ensure_ledger
       case sub
@@ -184,9 +191,15 @@ module OpsGithub
         emit(ledger.decide!(id, status))
       when "exclude"
         pr = args.shift
-        raise ExitError, "usage: ledger exclude owner/repo#n" if pr.nil?
+        raise ExitError, "usage: ledger exclude owner/repo#n|--clear" if pr.nil?
 
-        ledger.exclude!(pr)
+        pr == "--clear" ? ledger.clear_exclusions! : ledger.exclude!(pr)
+        emit("exclusions" => ledger.exclusions)
+      when "include"
+        pr = args.shift
+        raise ExitError, "usage: ledger include owner/repo#n" if pr.nil?
+
+        ledger.include!(pr)
         emit("exclusions" => ledger.exclusions)
       else
         raise ExitError, "unknown ledger subcommand: #{sub}"
@@ -264,8 +277,8 @@ module OpsGithub
         path = Ledger.day_path(state_dir)
         return Ledger.load(path) if File.file?(path)
 
-        facts = github.setup_facts
-        owners = facts["owners"]
+        # Ledger.init carries the previous ledger's owners; setup facts seed only the first.
+        owners = github.setup_facts["owners"] if Ledger.previous(state_dir).nil?
       end
       Ledger.init(state_dir, owners: owners)
     end
@@ -294,9 +307,12 @@ module OpsGithub
           probe                Exit 0 quiet / 10 delta vs day ledger
           tick                 Attention Ledger envelope (JSON); writes <state>/status.txt
                                OPS_GITHUB_DRY=1 demotes all auto to ask (0|false|no = off)
+                               OPS_GITHUB_PARKED_LABELS=a,b replaces the parked label set
           ledger summary       Compact day summary
           ledger decide ID ST  Record decision (asked|approved|snoozed|done|…)
-          ledger exclude PR    Exclude owner/repo#n for the day
+          ledger exclude PR    Exclude owner/repo#n until included or closed
+          ledger exclude --clear
+          ledger include PR    Drop owner/repo#n from the exclusions
           watch [--max-ticks N]
           doctor               Self-check
           help

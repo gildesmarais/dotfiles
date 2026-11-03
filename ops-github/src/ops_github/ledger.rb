@@ -12,6 +12,7 @@ module OpsGithub
     DECIDED_STATUSES = %w[asked approved snoozed deferred excluded in_flight blocked done].freeze
     VALID_STATUSES = (%w[new] + DECIDED_STATUSES).freeze
     CARRY_STATUSES = %w[approved snoozed deferred excluded in_flight blocked].freeze
+    DAY_FILE = /\A\d{4}-\d{2}-\d{2}\.json\z/.freeze
 
     attr_reader :path, :data
 
@@ -19,6 +20,16 @@ module OpsGithub
       File.join(state_dir, date.strftime("%Y-%m-%d.json"))
     end
 
+    # Newest day ledger before +date+, across gaps such as weekends; nil when none.
+    def self.previous(state_dir, date = Date.today)
+      today = File.basename(day_path(state_dir, date))
+      name = Dir.children(state_dir).select { |f| DAY_FILE.match?(f) && f < today }.max
+      name && load(File.join(state_dir, name))
+    rescue Errno::ENOENT
+      nil
+    end
+
+    # +owners+ nil or empty carries the previous ledger's owners.
     def self.init(state_dir, owners:, exclusions: [], date: Date.today)
       FileUtils.mkdir_p(state_dir)
       path = day_path(state_dir, date)
@@ -28,18 +39,18 @@ module OpsGithub
         return ledger
       end
 
-      yesterday = day_path(state_dir, date - 1)
       carry = {}
       carry_exclusions = exclusions.dup
       watcher_pid = nil
-      if File.file?(yesterday)
-        prev = load(yesterday)
+      prev = previous(state_dir, date)
+      if prev
         (prev.data["items"] || {}).each do |id, item|
           next unless CARRY_STATUSES.include?(item["status"])
 
           carry[id] = item
         end
-        carry_exclusions |= Array(prev.data["exclusions"])
+        carry_exclusions |= prev.exclusions
+        owners = prev.owners if owners.nil? || owners.empty?
         # A watch started yesterday keeps running past midnight.
         watcher_pid = prev.watcher_pid
       end
@@ -81,8 +92,28 @@ module OpsGithub
       Array(@data["exclusions"])
     end
 
+    # Exclusions carry across days until included again or the PR closes.
     def exclude!(pr_key)
       @data["exclusions"] = (exclusions + [pr_key]).uniq
+      save!
+    end
+
+    def include!(pr_key)
+      @data["exclusions"] = exclusions - [pr_key]
+      save!
+    end
+
+    def clear_exclusions!
+      @data["exclusions"] = []
+      save!
+    end
+
+    # First tick of a day: drops exclusions and carried items of PRs no longer open.
+    # +open_keys+: every key the search returned, excluded ones included. Items
+    # without +pr_keys+ stay: nothing proves their PR closed.
+    def prune_closed!(open_keys)
+      @data["exclusions"] = exclusions & open_keys
+      items.select! { |_id, item| (Array(item["pr_keys"]) - open_keys).empty? }
       save!
     end
 

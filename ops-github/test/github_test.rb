@@ -73,6 +73,13 @@ class GithubTest < Minitest::Test
     assert_equal("https://ci", state["failing_checks"].last["link"])
   end
 
+  def test_pr_states_normalizes_label_names
+    node = pr_node("pr_authored_clean.json").merge("labels" => { "nodes" => [{ "name" => "on-hold" }] })
+    response = nodes_response([node])
+    state = OpsGithub::Github.new(runner: ->(_) { response }).pr_states(%w[id]).first
+    assert_equal(%w[on-hold], state["labels"])
+  end
+
   def test_pr_states_retries_gateway_timeout_once_at_half_chunk
     sizes = []
     runner = lambda do |argv|

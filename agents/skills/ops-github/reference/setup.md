@@ -17,3 +17,7 @@ First day (or `reconfigure`).
    Never edit their settings.
 
 `reconfigure` re-asks, then ticks with `--owners`. Never encode org names.
+Clearing exclusions: `ledger exclude --clear` (or `ledger include PR`); never
+hand-edit the day JSON. Product-parked PRs: prefer a parked label on GitHub
+(`on-hold`, `do-not-merge`, `parked`; `OPS_GITHUB_PARKED_LABELS` overrides)
+over an exclusion.
