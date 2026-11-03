@@ -1,8 +1,8 @@
 ---
 name: ops-github
 description: >-
-  Daily GitHub + Jira attention operator: setup, tick, whitelist auto-acts,
-  PR review and ticket challenge briefs, wrap. Use for /ops-github, "what PRs need me?",
+  Daily GitHub PR, issue and Jira operator: setup, tick, whitelist auto-acts,
+  PR review, ticket challenge, wrap. Use for /ops-github, "what PRs need me?",
   or periodic PR attention across owners you name.
 disable-model-invocation: true
 ---
@@ -47,7 +47,7 @@ edits tracked files. Owners come from setup or the day ledger. Co-load
 
 - Fix, conflicts, threads on your PR → Hand → `pull-request` resolve | fix-ci | conflicts | reply.
 - Others' PR → Hand → `review.gil` `findings` (after per-PR OK).
-- Incoming Jira ticket → Hand → `jira-ticket` `challenge` | `implement`.
+- Ticket: Jira → Hand → `jira-ticket` `challenge` | `implement`; GitHub issue → `jira-ticket` `challenge` | `$dev`.
 - Dependabot fallout → `dependabot` `triage`; multi-repo delivery → `brain` `orchestrate`.
 
 ## Completion criteria

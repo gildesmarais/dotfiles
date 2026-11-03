@@ -13,7 +13,7 @@ description: >-
 | Branch              | Signals                                                |
 | ------------------- | ------------------------------------------------------ |
 | implement (default) | Jira URL or key (`ABC-123`) to investigate / implement |
-| challenge           | review / challenge / gate an incoming ticket; `ops-github` Jira item |
+| challenge           | review / challenge / gate an incoming ticket; `ops-github` ticket item |
 | create              | "file a ticket", follow-up under an epic               |
 | Post-PR sync        | ticket has a new PR URL; "open PR + move to review"    |
 
