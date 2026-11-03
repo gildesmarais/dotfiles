@@ -44,6 +44,7 @@ module OpsGithub
       items = cluster_red(items)
       items = cluster_dependabot(items)
       items.each do |item|
+        item["pr_keys"] = Array((item["evidence"] || {})["prs"] || item["pr"])
         item["fingerprint"] = fingerprint(item)
         ledger.upsert_item!(item_stub(item))
       end
@@ -234,6 +235,7 @@ module OpsGithub
       {
         "id" => item["id"],
         "pr" => item["pr"],
+        "pr_keys" => item["pr_keys"],
         "url" => item["url"],
         "repository" => item["repository"],
         "class" => item["class"],

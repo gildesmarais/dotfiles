@@ -301,13 +301,61 @@ class CliTest < Minitest::Test
     assert_empty(JSON.parse(@stdout.string)["auto"])
   end
 
+  def bumped(node, updated_at, green: false)
+    node = Marshal.load(Marshal.dump(node)).merge("updatedAt" => updated_at)
+    return node unless green
+
+    commit = node["commits"]["nodes"][0]["commit"]
+    commit["statusCheckRollup"]["state"] = "SUCCESS"
+    commit["statusCheckRollup"]["contexts"]["nodes"].each { |c| c["conclusion"] = "SUCCESS" }
+    node
+  end
+
+  def tick_json(nodes)
+    reset_output
+    status = run_cli(["tick"], github: github_for(runner_with(authored: nodes)))
+    [status, JSON.parse(@stdout.string)]
+  end
+
+  def test_reclassified_green_pr_retires_its_stale_new_item
+    red = pr_node("pr_bundler_audit.json")
+    assert_equal(10, tick_json([red]).first)
+    _, env = tick_json([bumped(red, "2026-11-02T12:00:00Z", green: true)])
+    assert_empty(env["auto"])
+    status, env = tick_json([bumped(red, "2026-11-02T12:00:00Z", green: true)])
+    assert_equal(0, status)
+    assert_empty(env["auto"])
+    ledger = OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir))
+    assert_empty(ledger.items)
+  end
+
+  def test_cluster_with_changed_member_does_not_come_back_via_unchanged_member
+    a, b = numbered_nodes(1..2)
+    _, first = tick_json([a, b])
+    assert_equal(%w[red-ci-shared], (first["ask"] + first["auto"]).map { |i| i["class"] }.uniq)
+    _, env = tick_json([bumped(a, "2026-11-02T12:00:00Z"), b])
+    reported = (env["ask"] + env["auto"]).map { |i| i["pr"] }
+    assert_equal(["acme/app#1"], reported)
+  end
+
+  def test_changed_pr_keeps_its_decided_item
+    red = pr_node("pr_bundler_audit.json")
+    tick_json([red])
+    ledger = OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir))
+    id = ledger.items.keys.first
+    ledger.decide!(id, "snoozed")
+    tick_json([bumped(red, "2026-11-02T12:00:00Z", green: true)])
+    reloaded = OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir))
+    assert_equal("snoozed", reloaded.items[id]["status"])
+  end
+
   def test_tick_drops_not_found_node_and_stamps_its_row
     runner = runner_with(authored: numbered_nodes(1..3), missing: %w[PR_2])
     assert_equal(10, run_cli(["tick"], github: github_for(runner)))
     assert_empty(@stderr.string)
     ledger = OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir))
     assert_equal(%w[acme/app#1 acme/app#2 acme/app#3], ledger.seen.keys.sort)
-    classified = ledger.items.values.flat_map { |i| i["pr"].split(",") }.uniq.sort
+    classified = ledger.items.values.flat_map { |i| i["pr_keys"] }.uniq.sort
     assert_equal(%w[acme/app#1 acme/app#3], classified)
   end
 

@@ -45,6 +45,8 @@ class ClassifierTest < Minitest::Test
     assert_equal("ask", shared.first["action"])
     assert_equal(%w[acme/app#2 acme/app#22], shared.first["evidence"]["prs"])
     assert_match(%r{/pull-request fix-ci}, shared.first["invoke"])
+    assert_equal(%w[acme/app#2 acme/app#22], shared.first["pr_keys"])
+    assert_equal(%w[acme/app#2 acme/app#22], @ledger.items[shared.first["id"]]["pr_keys"])
   end
 
   def test_red_ci_clusters_only_within_a_repo

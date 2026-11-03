@@ -158,12 +158,25 @@ module OpsGithub
       merged
     end
 
-    # Items still awaiting a decision whose PR (any key of a cluster's comma-joined
-    # +pr+) is in +open_pr_keys+: they must reappear even when nothing changed.
-    def undecided(open_pr_keys)
+    # Items still awaiting a decision whose PRs (all of the item's +pr_keys+) are in
+    # +live_pr_keys+ (open and unchanged this tick): they reappear even when nothing changed.
+    def undecided(live_pr_keys)
       items.values.select do |item|
-        item["status"] == "new" && item["pr"].to_s.split(",").any? { |key| open_pr_keys.include?(key) }
+        keys = Array(item["pr_keys"])
+        item["status"] == "new" && !keys.empty? && keys.all? { |key| live_pr_keys.include?(key) }
       end
+    end
+
+    # Drops superseded +new+ items of PRs that changed this tick (reclassified,
+    # closed or gone) unless in +keep_ids+; decided items stay.
+    def retire_stale!(changed_keys, keep_ids)
+      stale = items.select do |id, item|
+        item["status"] == "new" && !keep_ids.include?(id) && (Array(item["pr_keys"]) & changed_keys).any?
+      end
+      return if stale.empty?
+
+      stale.each_key { |id| items.delete(id) }
+      save!
     end
 
     def summary(limit: 40)

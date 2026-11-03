@@ -134,8 +134,10 @@ module OpsGithub
       login = github.setup_facts["login"] if login.nil? || login.empty?
       classifier = Classifier.new(login: login)
       items = classifier.classify(search_rows: rows, states: states, ledger: ledger)
-      # Undecided items of unchanged open PRs stay visible; a changed PR is reclassified.
+      # A changed PR (including one dropped as closed/not found) is reclassified: its old
+      # undecided items retire. Undecided items of unchanged open PRs stay visible.
       fresh_ids = items.map { |i| i["id"] }
+      ledger.retire_stale!(changed_keys, fresh_ids)
       items += ledger.undecided(open_keys - changed_keys).reject { |i| fresh_ids.include?(i["id"]) }
       env = classifier.envelope(items, ledger: ledger, dry: dry_run?)
       emit(env)

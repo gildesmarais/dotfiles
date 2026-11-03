@@ -73,14 +73,27 @@ class LedgerTest < Minitest::Test
     refute(ledger.watcher_alive?)
   end
 
-  def test_undecided_returns_new_items_of_open_prs_including_cluster_members
+  def test_undecided_requires_all_pr_keys_live
     ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
-    ledger.upsert_item!("id" => "a", "pr" => "acme/app#1", "fingerprint" => "f")
-    ledger.upsert_item!("id" => "c", "pr" => "acme/app#2,acme/app#3", "fingerprint" => "f")
-    ledger.upsert_item!("id" => "d", "pr" => "acme/app#4", "fingerprint" => "f")
+    ledger.upsert_item!("id" => "a", "pr_keys" => %w[acme/app#1], "fingerprint" => "f")
+    ledger.upsert_item!("id" => "c", "pr_keys" => %w[acme/app#2 acme/app#3], "fingerprint" => "f")
+    ledger.upsert_item!("id" => "d", "pr_keys" => %w[acme/app#4], "fingerprint" => "f")
     ledger.decide!("d", "asked")
     ids = ->(keys) { ledger.undecided(keys).map { |i| i["id"] }.sort }
-    assert_equal(%w[a c], ids.call(%w[acme/app#1 acme/app#3 acme/app#4]))
+    assert_equal(%w[a c], ids.call(%w[acme/app#1 acme/app#2 acme/app#3 acme/app#4]))
+    assert_equal(%w[a], ids.call(%w[acme/app#1 acme/app#3]))
     assert_empty(ids.call(%w[acme/app#9]))
+  end
+
+  def test_retire_stale_deletes_only_new_items_of_changed_prs
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    ledger.upsert_item!("id" => "old", "pr_keys" => %w[acme/app#1 acme/app#2], "fingerprint" => "f")
+    ledger.upsert_item!("id" => "fresh", "pr_keys" => %w[acme/app#1], "fingerprint" => "f")
+    ledger.upsert_item!("id" => "snz", "pr_keys" => %w[acme/app#1], "fingerprint" => "f")
+    ledger.decide!("snz", "snoozed")
+    ledger.upsert_item!("id" => "other", "pr_keys" => %w[acme/app#9], "fingerprint" => "f")
+    ledger.retire_stale!(%w[acme/app#1], %w[fresh])
+    assert_equal(%w[fresh other snz], ledger.items.keys.sort)
+    assert_equal(%w[fresh other snz], OpsGithub::Ledger.load(ledger.path).items.keys.sort)
   end
 end
