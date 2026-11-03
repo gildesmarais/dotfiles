@@ -25,7 +25,7 @@ class ClassifierTest < Minitest::Test
     red = items.find { |i| i["class"] == "red-ci-base" }
     refute_nil(red)
     assert_equal("auto", red["action"])
-    assert_match(/merge-main/, red["invoke"])
+    assert_equal("/ops-github act #{red['id']}", red["invoke"])
     assert_equal("fix", red["headRefName"])
   end
 

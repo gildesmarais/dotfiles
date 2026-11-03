@@ -174,12 +174,9 @@ module OpsGithub
         names = failing.map { |c| c["name"] }.compact
         if role == "authored" && base_caused?(names)
           out << item(base, "red-ci-base", "batch", "auto",
-                      "/ops-github act #{pr} merge-main",
-                      "checks" => names)
+                      :act, "checks" => names)
         elsif role == "authored" && flaky?(failing)
-          out << item(base, "red-ci-flaky", "batch", "auto",
-                      "gh run rerun --failed",
-                      "checks" => names)
+          out << item(base, "red-ci-flaky", "batch", "auto", :act, "checks" => names)
         elsif role == "authored" && state["reviewDecision"] == "APPROVED"
           out << item(base, "approved-red", "urgent", "ask",
                       "/pull-request fix-ci #{state['url']}",
@@ -221,9 +218,7 @@ module OpsGithub
           reviewers.each do |who|
             next if who.to_s.empty? || who == @login || bot_author?(who)
 
-            out << item(base, "ready-ping", "batch", "auto",
-                        "gh pr comment #{state['url']} --body \"@#{who} ready for another look\"",
-                        "reviewer" => who)
+            out << item(base, "ready-ping", "batch", "auto", :act, "reviewer" => who)
           end
         end
       end
@@ -239,7 +234,8 @@ module OpsGithub
         "class" => klass,
         "urgency" => urgency,
         "action" => action,
-        "invoke" => invoke,
+        # Auto items route through the act branch, which owns the steps.
+        "invoke" => invoke == :act ? "/ops-github act #{id}" : invoke,
         "evidence" => evidence
       )
     end
