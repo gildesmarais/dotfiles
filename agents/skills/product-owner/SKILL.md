@@ -44,6 +44,7 @@ Cite personas, golden paths, click budgets, mental models, and the doctrine ledg
 - `gate` — Build Now → `story-slice` when stories / multi-slice / UX-mandated AC, else `$dev` `plan` (intent entrypoints may continue; debt → `$dev` `plan`). Build Later / Reject → stop, no stories (user override → `$dev` `plan` records it). Research Further → name the smallest missing product artifact (reason `re-baseline` → `rebaseline`).
 - `story-slice` — ready cards → `$dev` `plan` same turn (writes no code); ungated or rejected → stop.
 - `rebaseline` — done → `gate` can run again.
+- Reaching a `$skill`: **Handoff load** ([`../CONTEXT.md`](../CONTEXT.md)).
 
 ## Completion criteria
 
