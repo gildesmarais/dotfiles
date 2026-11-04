@@ -13,14 +13,13 @@ description: >-
 | Branch              | Signals                                                |
 | ------------------- | ------------------------------------------------------ |
 | implement (default) | Jira URL or key (`ABC-123`) to investigate / implement |
-| challenge           | review / challenge / gate an incoming ticket; `ops-github` Jira item |
+| challenge           | review / challenge / gate an incoming ticket; `ops-github` ticket item |
 | create              | "file a ticket", follow-up under an epic               |
 | Post-PR sync        | ticket has a new PR URL; "open PR + move to review"    |
 
 ## Shared prep
 
-- Atlassian MCP required: fetch the ticket (fields, parent/epic, links, comments, attachments) and linked Confluence rather than relying on pasted text or asking the user to restate it. Mark missing-AC assumptions.
-- Verify the correct repository before planning or editing.
+- Atlassian MCP required: fetch the ticket (fields, parent/epic, links, comments, attachments) and linked Confluence; never ask the user to restate it. Mark missing-AC assumptions.
 - **Product gate:** non-trivial user-facing scope → `product-owner` `gate`; continue on Build Now only. Multi-slice / UX-mandated AC → `product-owner` `story-slice` → `$dev` `plan`. Skip for pure bug fix/refactor/infra.
 - Observability/security cues, Assure, phase commits, land: `$dev` Shared prep + Handoff; reach `$dev` via **Handoff load** ([`../CONTEXT.md`](../CONTEXT.md)).
 

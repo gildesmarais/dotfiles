@@ -13,5 +13,5 @@ First day or `reconfigure` (re-ask, tick with `--owners`).
    `cat "${OPS_GITHUB_STATE_DIR:-$HOME/.local/state/ops-github}/status.txt" 2>/dev/null`;
    never edit settings.
 
-Un-exclude via `ledger exclude --clear` or `ledger include PR`, not the day JSON. Parked PRs: prefer
+Un-exclude via `ledger exclude --clear` or `ledger include owner/repo#n`, not the day JSON. Parked PRs: prefer
 a GitHub label (`OPS_GITHUB_PARKED_LABELS`) over an exclusion.

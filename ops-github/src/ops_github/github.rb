@@ -16,8 +16,10 @@ module OpsGithub
       dependabot
       renovate
     ].freeze
-    SEARCH_ROLES = { "authored" => "authored", "requested" => "review-requested" }.freeze
-    CURSOR_VARS = { "authored" => "ac", "requested" => "rc" }.freeze
+    SEARCH_ROLES = { "authored" => "authored", "requested" => "review-requested", "assigned" => "assigned" }.freeze
+    CURSOR_VARS = { "authored" => "ac", "requested" => "rc", "assigned" => "ic" }.freeze
+    # Aliases whose rows are issues; every other alias returns pull requests.
+    ISSUE_ALIASES = %w[assigned].freeze
     # Full-state chunk; sized from a live measurement (see AGENTS.md).
     STATE_CHUNK = 10
     # gh stderr for an id GitHub cannot resolve (deleted or transferred PR).
@@ -27,9 +29,11 @@ module OpsGithub
     # Phase 1: cheap. No mergeable/contexts/threads: merge-state computation is what
     # pushes a full search past GitHub's ~10s timeout.
     SEARCH_QUERY = <<~GRAPHQL
-      query($authored:String!,$requested:String!,$ac:String,$rc:String,$withA:Boolean!,$withR:Boolean!){
+      query($authored:String!,$requested:String!,$assigned:String!,$ac:String,$rc:String,$ic:String,
+            $withA:Boolean!,$withR:Boolean!,$withI:Boolean!){
         authored: search(type:ISSUE,first:50,query:$authored,after:$ac) @include(if:$withA){ ...page }
         requested: search(type:ISSUE,first:50,query:$requested,after:$rc) @include(if:$withR){ ...page }
+        assigned: search(type:ISSUE,first:50,query:$assigned,after:$ic) @include(if:$withI){ ...page }
       }
       fragment page on SearchResultItemConnection {
         pageInfo{ hasNextPage endCursor }
@@ -38,6 +42,10 @@ module OpsGithub
             id url number title author{login} isDraft updatedAt
             repository{ nameWithOwner }
             commits(last:1){ nodes{ commit{ statusCheckRollup{ state } } } }
+          }
+          ... on Issue {
+            id url number title author{login} updatedAt
+            repository{ nameWithOwner }
           }
         }
       }
@@ -102,11 +110,12 @@ module OpsGithub
       }
     end
 
-    # Phase 1: one `gh api graphql` call per page, both roles aliased in one
-    # query. Rows carry id, role (authored|review-requested|both), and signature.
+    # Phase 1: one `gh api graphql` call per page, all roles aliased in one query.
+    # Rows carry id, kind (pr|issue), role (authored|review-requested|both|assigned)
+    # and signature.
     def discover(owners)
       scope = Array(owners).map { |owner| "user:#{owner}" }.join(" ")
-      cursors = { "authored" => nil, "requested" => nil }
+      cursors = { "authored" => nil, "requested" => nil, "assigned" => nil }
       pending = SEARCH_ROLES.keys
       rows_by_url = {}
       until pending.empty?
@@ -114,13 +123,15 @@ module OpsGithub
           SEARCH_QUERY,
           "-F", "authored=is:pr is:open author:@me #{scope}".strip,
           "-F", "requested=is:pr is:open review-requested:@me #{scope}".strip,
+          "-F", "assigned=is:issue is:open assignee:@me #{scope}".strip,
           "-F", "withA=#{pending.include?('authored')}",
           "-F", "withR=#{pending.include?('requested')}",
+          "-F", "withI=#{pending.include?('assigned')}",
           *cursor_args(cursors)
         )
         pending = pending.select do |field|
           page = data[field] || {}
-          Array(page["nodes"]).each { |node| merge_row(rows_by_url, node, SEARCH_ROLES[field]) }
+          Array(page["nodes"]).each { |node| merge_row(rows_by_url, node, field) }
           cursors[field] = page.dig("pageInfo", "endCursor")
           page.dig("pageInfo", "hasNextPage") && cursors[field]
         end
@@ -138,6 +149,14 @@ module OpsGithub
     # (NOT_FOUND) is dropped, any other failure fails the caller.
     def pr_states(ids)
       Array(ids).each_slice(STATE_CHUNK).flat_map { |chunk| chunk_states(chunk) }
+    end
+
+    # Phase 2 for changed discover rows: PR rows go through pr_states; issue rows
+    # are already complete from discovery and never reach nodes(ids:).
+    def states(rows)
+      issues, prs = Array(rows).partition { |row| row["kind"] == "issue" }
+      issue_states = issues.map { |row| row.reject { |k, _| %w[id role signature].include?(k) } }
+      pr_states(prs.map { |row| row["id"] }) + issue_states
     end
 
     private
@@ -188,13 +207,16 @@ module OpsGithub
       nodes.select { |node| node["state"] == "OPEN" }.map { |node| normalize_state(node) }
     end
 
-    def merge_row(rows_by_url, node, role)
+    def merge_row(rows_by_url, node, field)
       url = node["url"]
       return if url.nil?
 
+      role = SEARCH_ROLES[field]
       existing = rows_by_url[url]
       if existing
         existing["role"] = "both" if existing["role"] != role
+      elsif ISSUE_ALIASES.include?(field)
+        rows_by_url[url] = issue_row(node, role)
       else
         rows_by_url[url] = search_row(node, role)
       end
@@ -205,6 +227,7 @@ module OpsGithub
       rollup = commit["statusCheckRollup"] || {}
       checks = normalize_checks((rollup["contexts"] || {})["nodes"])
       {
+        "kind" => "pr",
         "url" => node["url"],
         "number" => node["number"],
         "title" => node["title"],
@@ -238,8 +261,26 @@ module OpsGithub
         "updatedAt" => node["updatedAt"],
         "isDraft" => node["isDraft"],
         "author" => (node["author"] || {})["login"],
+        "kind" => "pr",
         "role" => role,
         "signature" => [node["updatedAt"], rollup_state].map(&:to_s).join("|")
+      }
+    end
+
+    # Constant signature: only a new assignment (unseen key) is a delta; comments and
+    # label edits bump updatedAt and would wake the watcher for nothing.
+    def issue_row(node, role)
+      {
+        "id" => node["id"],
+        "url" => node["url"],
+        "repository" => (node["repository"] || {})["nameWithOwner"],
+        "title" => node["title"],
+        "number" => node["number"],
+        "updatedAt" => node["updatedAt"],
+        "author" => (node["author"] || {})["login"],
+        "kind" => "issue",
+        "role" => role,
+        "signature" => "issue"
       }
     end
 

@@ -43,6 +43,36 @@ class GithubTest < Minitest::Test
     refute_includes(calls.first.join(" "), "reviewDecision")
   end
 
+  def test_discover_assigned_issues_as_issue_rows
+    calls = []
+    response = search_response(authored: [pr_node("pr_bundler_audit.json")], assigned: [issue_node(5)])
+    runner = lambda do |argv|
+      calls << argv
+      response
+    end
+    rows = OpsGithub::Github.new(runner: runner).discover(%w[acme beta])
+    assert_equal(1, calls.size)
+    assert_includes(calls.first, "assigned=is:issue is:open assignee:@me user:acme user:beta")
+    issue = rows.find { |r| r["kind"] == "issue" }
+    assert_equal(%w[acme/app#5 assigned issue],
+                 [OpsGithub::Github.pr_key(issue), issue["role"], issue["signature"]])
+    assert_equal(%w[pr], rows.reject { |r| r["kind"] == "issue" }.map { |r| r["kind"] })
+  end
+
+  def test_states_fetches_only_pr_ids
+    calls = []
+    runner = lambda do |argv|
+      calls << argv
+      nodes_response([pr_node("pr_bundler_audit.json")])
+    end
+    issue_row = OpsGithub::Github.new(runner: ->(_) { search_response(assigned: [issue_node(5)]) })
+                                 .discover(%w[acme]).first
+    states = OpsGithub::Github.new(runner: runner).states([{ "id" => "PR_app2", "kind" => "pr" }, issue_row])
+    assert_equal([["ids[]=PR_app2"]], calls.map { |argv| argv.grep(/\Aids\[\]=/) })
+    assert_equal(%w[acme/app#2 acme/app#5], states.map { |st| OpsGithub::Github.pr_key(st) })
+    assert_equal("issue", states.last["kind"])
+  end
+
   def test_discover_pages_each_alias_until_exhausted
     pages = [
       { "authored" => search_page([pr_node("pr_authored_clean.json")], "A1"),
@@ -57,6 +87,26 @@ class GithubTest < Minitest::Test
     rows = OpsGithub::Github.new(runner: runner).discover(%w[acme])
     assert_equal([1, 9, 2], rows.map { |r| r["number"] })
     assert_includes(calls.last, "ac=A1")
+    assert_includes(calls.last, "withR=false")
+  end
+
+  def test_discover_pages_assigned_alias_until_exhausted
+    pages = [
+      { "authored" => search_page([]), "requested" => search_page([]),
+        "assigned" => search_page([issue_node(5)], "I1") },
+      { "assigned" => search_page([issue_node(6)]) }
+    ]
+    calls = []
+    runner = lambda do |argv|
+      calls << argv
+      JSON.generate("data" => pages[calls.size - 1])
+    end
+    rows = OpsGithub::Github.new(runner: runner).discover(%w[acme])
+    assert_equal([5, 6], rows.map { |r| r["number"] })
+    assert_equal(2, calls.size)
+    assert_includes(calls.last, "ic=I1")
+    assert_includes(calls.last, "withI=true")
+    assert_includes(calls.last, "withA=false")
     assert_includes(calls.last, "withR=false")
   end
 

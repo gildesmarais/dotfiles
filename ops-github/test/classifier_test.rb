@@ -321,6 +321,31 @@ class ClassifierTest < Minitest::Test
       "action" => action, "invoke" => "/x", "fingerprint" => id }
   end
 
+  # Issue state through the production discover + states path.
+  def issue_state(number)
+    gh = OpsGithub::Github.new(runner: ->(_) { search_response(assigned: [issue_node(number)]) })
+    gh.states(gh.discover(%w[acme])).first
+  end
+
+  def test_issue_yields_one_ask_and_never_auto
+    state = issue_state(5).merge("isDraft" => true, "failing_checks" => [{ "name" => "bundler_audit" }])
+    items = @classifier.classify(search_rows: [], states: [state], ledger: @ledger)
+    assert_equal([%w[issue-assigned ask batch]], items.map { |i| i.values_at("class", "action", "urgency") })
+    env = @classifier.envelope(items, ledger: @ledger, dry: true)
+    assert_empty(env["auto"])
+    assert_equal(%w[issue-assigned], env["ask"].map { |i| i["class"] })
+  end
+
+  def test_report_ranks_pr_items_ahead_of_issues_at_equal_urgency
+    issues = (11..19).map { |n| issue_state(n) }
+    pr = state_from_fixture("pr_bot_thread.json", "threads_bot_open.json")
+    items = @classifier.classify(search_rows: [search_row(pr, "authored")], states: issues + [pr], ledger: @ledger)
+    lines = @classifier.envelope(items, ledger: @ledger)["report_md"].lines.select { |l| l.start_with?("- ") }
+    assert_equal(8, lines.size)
+    assert_includes(lines.first, "bot-thread")
+    assert_includes(lines.last, "acme/app#17: issue-assigned")
+  end
+
   def test_line_quiet
     env = @classifier.envelope([], ledger: @ledger)
     assert_equal("ops: quiet", env["line"])
