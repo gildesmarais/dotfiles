@@ -11,6 +11,17 @@ playground() {
   }
 }
 
+gco() {
+  local target
+  target="$(command gco "$@")" || return $?
+  [ -z "$target" ] && return 0
+
+  cd "$target" || {
+    echo "gco: unable to change directory to $target" >&2
+    return 1
+  }
+}
+
 function command_exists {
   type "$1" >/dev/null 2>&1;
 }

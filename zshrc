@@ -3,27 +3,6 @@ function command_exists {
   type "$1" >/dev/null 2>&1
 }
 
-fzf_git_switch() {
-  if [ $# -eq 0 ]; then
-    local ref
-    ref="$(
-      git for-each-ref --format='%(refname:short)' refs/heads refs/remotes |
-        rg -v '^origin/HEAD$' |
-        fzf
-    )" || return 1
-
-    case "$ref" in
-      origin/*)
-        git switch --track "${ref#origin/}" 2>/dev/null || git switch "${ref#origin/}" 2>/dev/null || git switch -c "${ref#origin/}" --track "$ref"
-        ;;
-      *)
-        git switch "$ref"
-        ;;
-    esac
-  else
-    git switch "$@"
-  fi
-}
 #endregion
 
 #region homebrew provided stuff: zsh completions, libs
@@ -124,7 +103,6 @@ glog() {
 alias gb='git branch'
 alias gc='git commit'
 alias gca='git commit --amend'
-alias gco='fzf_git_switch'
 alias gcp='git cherry-pick -x'
 alias gd='git diff'
 alias gfix='git commit --fixup'

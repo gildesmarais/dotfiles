@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+#
+# gco
+#
+# Switches git branches; prints a directory for shell wrappers to `cd` into
+# when the branch is already checked out in another worktree.
+# - gco              => fzf picker over local and remote branches
+# - gco <branch>     => switch, or hop to the worktree holding <branch>
+# - gco <args...>    => passed through to `git switch`
+#
+# Git output goes to stderr; stdout carries only the worktree path.
+
+set -euo pipefail
+
+# worktree_for <branch>: path of the worktree holding <branch>, if any.
+worktree_for() {
+  git worktree list --porcelain | awk -v ref="refs/heads/$1" '
+    /^worktree / { path = substr($0, 10) }
+    $0 == "branch " ref { print path; exit }
+  '
+}
+
+# switch_or_hop <branch> <git switch args...>
+switch_or_hop() {
+  local branch="$1" path current
+  shift
+  path="$(worktree_for "$branch")"
+  current="$(git rev-parse --show-toplevel)"
+
+  if [ -n "$path" ] && [ "$path" != "$current" ]; then
+    echo "gco: '$branch' is checked out in $path" >&2
+    printf '%s\n' "$path"
+    return 0
+  fi
+
+  git switch "$@" >&2
+}
+
+if [ $# -eq 0 ]; then
+  ref="$(
+    git for-each-ref --format='%(refname:short)' refs/heads refs/remotes |
+      rg -v '^origin/HEAD$' |
+      fzf
+  )" || exit 1
+
+  case "$ref" in
+    origin/*)
+      branch="${ref#origin/}"
+      path="$(worktree_for "$branch")"
+      if [ -n "$path" ]; then
+        switch_or_hop "$branch" "$branch"
+      else
+        git switch --track "$branch" 2>/dev/null >&2 ||
+          git switch "$branch" 2>/dev/null >&2 ||
+          git switch -c "$branch" --track "$ref" >&2
+      fi
+      ;;
+    *)
+      switch_or_hop "$ref" "$ref"
+      ;;
+  esac
+elif [ $# -eq 1 ] && [ "${1#-}" = "$1" ]; then
+  switch_or_hop "$1" "$1"
+else
+  git switch "$@" >&2
+fi
