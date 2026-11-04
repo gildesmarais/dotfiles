@@ -267,9 +267,8 @@ setopt HIST_SAVE_NO_DUPS      # Do not save duplicate entries.
 setopt HIST_REDUCE_BLANKS     # Remove extra blanks.
 
 export HISTFILE="$HOME/.zsh_history"
-export HISTFILESIZE=1000000000
 export HISTSIZE=1000000000
-export HISTTIMEFORMAT="[%F %T] "
+export SAVEHIST=1000000000
 
 alias hgrep="history 0 | grep"
 alias h="history 0 | fzf"
