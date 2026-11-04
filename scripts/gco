@@ -6,6 +6,8 @@
 # when the branch is already checked out in another worktree.
 # - gco              => fzf picker over local and remote branches
 # - gco <branch>     => switch, or hop to the worktree holding <branch>
+# - gco main|master  => the default branch, whichever name the repo uses
+# - gco -b <branch>  => `git switch -c`, for checkout muscle memory
 # - gco <args...>    => passed through to `git switch`
 #
 # Git output goes to stderr; stdout carries only the worktree path.
@@ -35,6 +37,27 @@ switch_or_hop() {
 
   git switch "$@" >&2
 }
+
+# default_branch: origin's HEAD branch, e.g. main or master.
+default_branch() {
+  git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@'
+}
+
+# checkout muscle memory: -b/-B create a branch, as -c/-C do for switch.
+case "${1:-}" in
+  -b) set -- -c "${@:2}" ;;
+  -B) set -- -C "${@:2}" ;;
+esac
+
+# main and master both mean the default branch when the named one is absent.
+case "${1:-}" in
+  main | master)
+    if [ $# -eq 1 ] && ! git show-ref --verify --quiet "refs/heads/$1"; then
+      set -- "$(default_branch)"
+      [ -n "$1" ] || { echo "gco: origin/HEAD is unset; run git remote set-head origin -a" >&2; exit 1; }
+    fi
+    ;;
+esac
 
 if [ $# -eq 0 ]; then
   ref="$(
