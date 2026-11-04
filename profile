@@ -68,4 +68,8 @@ export FZF_DEFAULT_COMMAND='rg --files --ignore-case'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS='--cycle'
 #: }}}
-eval "$(mise activate bash)"
+if [ -n "${ZSH_VERSION:-}" ]; then
+  eval "$(mise activate zsh)"
+else
+  eval "$(mise activate bash)"
+fi
