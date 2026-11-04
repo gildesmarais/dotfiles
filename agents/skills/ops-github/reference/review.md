@@ -1,16 +1,19 @@
 # Review
 
-Others' PRs only (`review-requested`). Never approve or merge.
+Others' PRs (`review-requested`). Operator approves/merges by hand, never agent.
 
-1. Spawn a read-only strongest / high Hand (`Task`, timebox ≤12 turns) loading
-   `review.gil` `findings` on the URL. Scratch → `/tmp/ops-github/<id>.log`.
-   Return Findings + Readiness (≤12 lines). Brief / tiers:
+1. Spawn read-only strongest/high Hand (`Task`, ≤12 turns) loading `review.gil`
+   `findings` on URL. Scratch → `/tmp/ops-github/<id>.log`. Return Findings +
+   Readiness (≤12 lines). Brief/tiers:
    [`../../brain/reference/orchestrate.md`](../../brain/reference/orchestrate.md).
-2. Show a one-line verdict. AskQuestion for per-PR OK before any GitHub write.
-3. On OK: submit a `COMMENT` review (not approve). Prefer \`\`\`suggestion
-   blocks. Use `pull-request` `comment` / host review APIs; never `/approve`.
-4. If a local gate can't run, AskQuestion — do not guess green.
-5. Record `ops-github ledger decide <id> done|deferred` after the outcome.
+2. Verdict + AskQuestion for per-PR OK before GitHub write:
+   - `<repo#n> — "<title>" · Ready for human review` when mergeability is
+     positive (`Readiness: Yes`, 0 Critical/Important, CI green); operator
+     approves by hand.
+   - `<repo#n> — "<title>" · Follow-up (<Readiness>)` else (blockers/unrun gates).
+3. On OK: submit `COMMENT` review (\`\`\`suggestion blocks; `pull-request`
+   `comment` / host APIs; never `APPROVE`/`/approve`).
+4. Unrun gate → AskQuestion; never guess green.
+5. Record `ops-github ledger decide <id> done|deferred`.
 
-Budget: `budgets.review` Hands per wake; overflow waits for the next wake.
-Security-matrix hits stay frontier tier.
+Budget: `budgets.review` Hands/wake; security-matrix stays frontier.

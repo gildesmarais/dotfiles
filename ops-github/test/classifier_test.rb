@@ -139,6 +139,9 @@ class ClassifierTest < Minitest::Test
     refute_nil(req)
     assert_equal("urgent", req["urgency"])
     assert_equal("ask", req["action"])
+    env = @classifier.envelope(items, ledger: @ledger)
+    assert_equal(state["title"], env["ask"].first["title"])
+    assert_equal(state["title"], @ledger.items[req["id"]]["title"])
   end
 
   def test_dependabot_review_requested_is_batch_and_clustered
