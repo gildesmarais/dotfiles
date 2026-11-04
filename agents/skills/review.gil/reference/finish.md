@@ -1,14 +1,18 @@
 # Finish
 
-Production-readiness baseline. Report only — no boy-scout edits. PR targets: PR patch + surrounding code at the recorded head SHA.
+Production-readiness baseline. Report only. For PRs, review the patch and surrounding code at the recorded head SHA.
+
+## Issue / ticket
+
+Search prompt, branch name, commit messages, and PR body/links for a referenced issue or ticket; retrieve it with the matching tracker tool, MCP, or CLI. Enumerate its DoD/AC; verify each against the diff and tests. Unmet or unverified criteria are findings and readiness blockers.
 
 ## Output format (required)
 
-All lenses fold into one report. Always emit **Findings** and **Readiness**; other sections only when non-empty or a Critical exists.
+Fold all lenses into one report. Always emit **Findings** and **Readiness**; add other sections only when non-empty or a Critical exists.
 
-- **Findings** — Critical / Important / Nice-to-Have; each with impact + recommended action.
-- **Readiness** — Production readiness: Yes / No / Conditional; top risks; immediate actions.
-- Optional: **Non-Goals**, **Confidence & Uncertainty** (known vs inferred/unverified), **Compliance & Risk Posture** (passes, flags, minimum remediation or compensating controls).
+- **Findings** — Critical / Important / Nice-to-Have, each with impact and recommended action.
+- **Readiness** — Yes / No / Conditional; top risks and immediate actions.
+- Optional: **Non-Goals**, **Confidence & Uncertainty**, **Compliance & Risk Posture**.
 
 ## Incident / fix-diff postures
 
@@ -16,14 +20,14 @@ For `fix`, `Revert`, or production-incident diffs, fold into Findings (no extra 
 
 1. Did the fix wander onto a second surface, or does a neighboring layer absorb a boundary failure? → `$dev` → `{lang}-dev` → `architecture`.
 2. Does a path assume an invisible contract (shape, reload, cache identity, cutover), or treat disclosure/access as mere presence? → overlay, `security`, else `architecture`.
-3. Do validate and execute see the same truth; is each guard owned at one lifecycle point; does the published contract accept only what runtime accepts?
+3. Do validate and execute see the same truth; is each guard owned once; does the published contract match runtime?
 4. Dual public API or silent old-shape hydrate? → [`legacy.md`](legacy.md).
-5. Races across a startup/suspension gate; parse/unwrap or generated-client types escaping the transport edge; checker silenced instead of fixed; durable bags used as live domain objects without rehydrate; wire enum renamed in app code instead of normalized once → `{lang}-dev`.
+5. Startup/suspension races; transport types escaping their edge; checker silenced; durable bags used as live objects without rehydrate; wire enum normalized outside the boundary → `{lang}-dev`.
 6. Repeated harden/follow-up commits hinting at a missing principle?
-7. Different clocks for server/data/clients: break for lagged client, pre-backfill pod, or existing session? Can temp compat be removed later? Any mechanism counts; find only real breaks or undeletable temp paths — not missing names.
+7. Different server/data/client clocks: break for a lagged client, pre-backfill pod, or existing session? Can temporary compatibility be removed? Find real breaks or undeletable paths, not missing names.
 
 
 ## Surfaces
 
-Review passes folded here (not lenses/executions; `quality` skips). Code diffs only — skip docs-only/trivial and say so. Prefer host review subagent (security review only with `security` lens), else second inline pass. Pass repo path, target (`branch changes` | `uncommitted changes`), non-default base if needed, user instructions; it computes the diff. Fail → retry once (per-file desc if no diff), name blocker, continue inline. Never fix, publish, or relaunch from output.
+Code diffs only; skip docs-only/trivial and say so; `quality` skips. Prefer a host review subagent (`security` only with that lens), else a second inline pass. Pass repo path, target (`branch changes` | `uncommitted changes`), non-default base, and instructions; it computes the diff. On failure, retry once with per-file descriptions, name the blocker, and continue inline. Never fix, publish, or relaunch from output.
 
