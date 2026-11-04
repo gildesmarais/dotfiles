@@ -3,7 +3,8 @@ name: communication
 description: >-
   Distill and draft written communication. Use to summarize raw one-on-one
   notes, refine an internal Slack message or announcement, distill a comparable
-  project status update, or draft a customer, partner, or public-facing message.
+  project status update, draft a sprint recap and kickoff from Jira for a team
+  channel, or draft a customer, partner, or public-facing message.
 disable-model-invocation: true
 ---
 
@@ -16,6 +17,7 @@ disable-model-invocation: true
 | Summarize raw 1:1 notes into a shared two-person summary (I/You voice)     | `one-on-one`       |
 | Draft/refine an internal Slack message, announcement, or escalation        | `slack-message`    |
 | Distill a project status line comparable across projects                   | `project-update`   |
+| Sprint recap / kickoff from Jira for a team channel                        | `sprint-update`    |
 | Draft a customer, partner, or public-facing message (email, support reply) | `external-message` |
 | Marketing copy or public PR/press statement                                | out of scope       |
 
@@ -30,6 +32,7 @@ Load exactly one:
 - **`one-on-one`** → [`reference/one-on-one.md`](reference/one-on-one.md)
 - **`slack-message`** → [`reference/slack-message.md`](reference/slack-message.md)
 - **`project-update`** → [`reference/project-update.md`](reference/project-update.md)
+- **`sprint-update`** → [`reference/sprint-update.md`](reference/sprint-update.md)
 - **`external-message`** → [`reference/external-message.md`](reference/external-message.md)
 
 Every branch returns only the final artifact.

@@ -18,11 +18,12 @@ words:
   architecture/reference/structure-survey.md: 326
   brain/SKILL.md: 567
   brain/reference/orchestrate.md: 520
-  communication/SKILL.md: 201
+  communication/SKILL.md: 231
   communication/reference/external-message.md: 107
   communication/reference/one-on-one.md: 262
   communication/reference/project-update.md: 105
   communication/reference/slack-message.md: 281
+  communication/reference/sprint-update.md: 424
   dependabot/SKILL.md: 167
   dependabot/reference/configure.md: 87
   dependabot/reference/pr-commands.md: 146
