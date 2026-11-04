@@ -168,10 +168,6 @@ alias rr='bundle exec rails routes | fzf'
 alias rubocop-update="rubocop_update"
 #endregion
 
-#region# start GUI applications
-alias marta="open -a Marta"
-#endregion
-
 #region# grepping code
 alias ag="rg"
 #endregion
@@ -187,15 +183,12 @@ alias .....="cd ../../../.."
 alias pg="playground"
 #endregion
 
-#region# better cat and "imagec" (icat)
+#region# better cat
 if command_exists bat; then
   # use bat for cat, and let it behave like cat
   alias cat="bat --style=plain --paging=never"
 fi
 
-if command_exists wezterm; then
-  alias icat="wezterm imgcat"
-fi
 #endregion
 
 #region# likewise powerful aliases beginning with 'l'
