@@ -227,6 +227,7 @@ module OpsGithub
       rollup = commit["statusCheckRollup"] || {}
       checks = normalize_checks((rollup["contexts"] || {})["nodes"])
       {
+        "kind" => "pr",
         "url" => node["url"],
         "number" => node["number"],
         "title" => node["title"],
