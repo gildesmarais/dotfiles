@@ -1,0 +1,11 @@
+[settings.ruby]
+compile = false
+
+[tools]
+awscli = "2.24.27"
+kubectl = "1.28.4"
+node = "22"
+pnpm = "latest"
+python = "3.12.3"
+ruby = "latest"
+rust = "latest"
