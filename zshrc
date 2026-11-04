@@ -76,10 +76,6 @@ fi
 
 
 # Fuzzy brew functions
-brew-search() {
-  brew search --formula | fzf --multi --reverse --prompt="brew> " | xargs -r brew install
-}
-
 brew-remove() {
   brew list --formula | fzf --multi --reverse --prompt="remove> " | xargs -r brew uninstall
 }
@@ -100,18 +96,9 @@ glog() {
   git log --abbrev-commit --date=short --decorate=short --decorate-refs='refs/heads/*' --decorate-refs='refs/tags/*' --pretty=format:'%C(red)%h%Creset %C(bold blue)%an%Creset: %s %C(yellow)%d%Creset %C(green)(%ad)%Creset'
 }
 
-alias gb='git branch'
-alias gc='git commit'
-alias gca='git commit --amend'
 alias gcp='git cherry-pick -x'
 alias gd='git diff'
-alias gfix='git commit --fixup'
-alias gmain='gco $(git_default_branch)'
-alias gpf='git push --force-with-lease'
-alias gpu='git push -u origin HEAD'
-alias gria='git rebase -i --autostash --autosquash'
 alias gs='tig status -sb'
-alias gup="git pull --rebase --autostash"
 alias gundo="git reset --soft HEAD~1"
 
 lag() {
@@ -176,25 +163,16 @@ function rubocop_update() {
 }
 
 alias be='bundle exec'
-alias berd='RAILS_ENV=${RAILS_ENV:-test} bundle exec rspec --format documentation'
 alias ber='RAILS_ENV=${RAILS_ENV:-test} bundle exec rspec'
-alias rdbm='bundle exec rake db:migrate'
-alias rdbr='bundle exec rake db:rollback'
-alias fs='overmind start'
 alias rr='bundle exec rails routes | fzf'
-alias rubocop-global="rubocop --require rubocop-rails --require rubocop-rspec --require rubocop-performance --require test_prof/rubocop --require rubocop-thread_safety -c .rubocop.yml"
 alias rubocop-update="rubocop_update"
-alias yarn-upgrade='npx npm-check-updates -u && yarn install && npx yarn-deduplicate yarn.lock & yarn install'
 #endregion
 
 #region# start GUI applications
-alias subl="open -a 'Sublime Text'"
 alias marta="open -a Marta"
-alias vsc="open -a 'Visual Studio Code'"
 #endregion
 
 #region# grepping code
-alias todo-rg="rg '(TODO|FIXME|XXX|NOTE|OPTIMIZE|HACK|REVIEW)'"
 alias ag="rg"
 #endregion
 
@@ -229,11 +207,6 @@ if command_exists lsd; then
   alias la='lsd -a'
 fi
 
-if [ "$(uname)" = "Darwin" ]; then
-  # we are on macosx
-  alias lsusb="system_profiler SPUSBDataType"
-fi
-
 if command_exists lazydocker; then
   alias lad="lazydocker"
 fi
@@ -241,9 +214,7 @@ fi
 #endregion
 
 #region# powerful aliases beginning with 'p'
-alias psgrep="ps aux | grep"
 alias p8="ping 8.8.8.8"
-alias p6="ping6 2606:4700:4700::1111"
 #endregion
 
 #endregion
@@ -271,7 +242,6 @@ export HISTSIZE=1000000000
 export SAVEHIST=1000000000
 
 alias hgrep="history 0 | grep"
-alias h="history 0 | fzf"
 #endregion
 
 #region key bindings
