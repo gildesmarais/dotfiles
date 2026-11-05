@@ -4,7 +4,7 @@ Finished local change → commit → push → `gh pr create`. Autonomous; ask on
 
 ## Ticket
 
-First match of `/[A-Z][A-Z0-9]+-\d+/` in `git branch --show-current`. Found → put it in the commit title, PR title, and body. None → continue ticketless; request one only in a top-level interactive session when repo law requires it.
+First match of `/[A-Z][A-Z0-9]+-\d+/` in `git branch --show-current`; with tracker kind github (`.agents/tracker.md`) also a leading `<N>-` branch prefix, or a `#N`/issue URL from the session → issue `#N`. Found → put the key or `#N` in the commit title, PR title, and body. None → continue ticketless; request one only in a top-level interactive session when repo law requires it.
 
 ## Commit scope
 

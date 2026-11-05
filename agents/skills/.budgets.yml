@@ -24,7 +24,7 @@ words:
   communication/reference/one-on-one.md: 262
   communication/reference/project-update.md: 105
   communication/reference/slack-message.md: 281
-  communication/reference/sprint-update.md: 426
+  communication/reference/sprint-update.md: 440
   dependabot/SKILL.md: 167
   dependabot/reference/configure.md: 87
   dependabot/reference/pr-commands.md: 146
@@ -42,7 +42,7 @@ words:
   harvest/SKILL.md: 213
   harvest/reference/debt.md: 281
   harvest/reference/distill.md: 280
-  ticket/SKILL.md: 513
+  ticket/SKILL.md: 514
   ticket/reference/challenge.md: 197
   ticket/reference/github.md: 299
   ticket/reference/groom.md: 482
@@ -68,7 +68,7 @@ words:
   pull-request/reference/conflicts.md: 167
   pull-request/reference/fix-ci.md: 192
   pull-request/reference/gh-api.md: 244
-  pull-request/reference/open.md: 299
+  pull-request/reference/open.md: 323
   pull-request/reference/pr-narrative.md: 222
   pull-request/reference/reply.md: 93
   pull-request/reference/resolve.md: 234

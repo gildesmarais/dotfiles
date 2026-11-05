@@ -22,7 +22,7 @@ description: >-
 ## Shared prep
 
 - **Tracker:** `<project>/.agents/tracker.md` (`kind: jira|github`, status names, link types, epic/parent field, team channel, portfolio link type) wins; else discover, never hardcode; kind unclear → infer from input, ask once, never guess across orgs. Load only the matching adapter ([`reference/jira.md`](reference/jira.md) | [`reference/github.md`](reference/github.md)); it owns every tracker call.
-- **Fetch:** fields, parent/epic, links, comments, attachments, linked docs; never ask the user to restate; mark assumed AC.
+- **Fetch:** fields, parent/epic, links, comments, attachments, linked docs; never ask to restate; mark assumed AC.
 - **Product gate:** non-trivial user-facing scope → `product-owner` `gate`; continue on Build Now only. Multi-slice / UX-mandated AC → `product-owner` `story-slice` → `$dev` `plan`. Skip bug fix/refactor/infra.
 - Observability/security cues, Assure, phase commits, land: `$dev` Shared prep + Handoff via **Handoff load** ([`../CONTEXT.md`](../CONTEXT.md)).
 
@@ -43,13 +43,13 @@ Fetch ticket + observability evidence; read code; gate → `$dev` `plan` → fre
 ### create
 
 - Draft from code evidence; match type (story/task/bug) to the ask; don't implement unless asked.
-- Parent under the named epic; verify; transition out of unhelpful defaults (e.g. On Hold → Ready) unless asked to hold.
+- Parent under the named epic; verify; transition out of unhelpful defaults (On Hold → Ready) unless asked to hold.
 - Link predecessors with the project's exact link type.
 - Epic/parent has start/due dates and its portfolio link where one exists.
 
 ### Status lifecycle
 
-List available status changes first; apply if unambiguous, else ask once. Targets: created → **Ready** (or equivalent); started → **In Progress** only if asked or workflow-used; PR opened → **Ready for Review** (else `In Review`/`Code Review`, else ask); Done / Won't Do only as requested — never invent Done on merge.
+List available status changes first; apply if unambiguous, else ask once. Targets: created → **Ready** (or equivalent); started → **In Progress** only if asked or workflow-used; PR opened → **Ready for Review** (else `In Review`/`Code Review`, else ask); Done / Won't Do only as requested; a merge sets Done only via GitHub's closing keyword.
 
 Before closing as Done/duplicate/superseded (incl. completed epic/idea): comment a redirect naming the canonical target and team channel (Shared prep); close with the matching reason, hidden from grouped views.
 
