@@ -379,6 +379,20 @@ class SkillCliTest < Minitest::Test
 
     assert_equal(1, result.exitstatus, result.output)
     assert_match(/^claude:ticket\s+drift$/m, result.output)
+    assert_includes(result.output, Skill::Operations::CLAUDE_DRIFT_HINT)
+    refute_includes(result.output, "backfill")
+  end
+
+  def test_doctor_agents_drift_has_no_claude_rcup_hint
+    create_store_skill("delta")
+    File.write(File.join(@skills_dir, "delta", "SKILL.md"), "# Store\n")
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "delta"))
+    File.write(File.join(@agents_skills_dir, "delta", "SKILL.md"), "# Agent\n")
+
+    result = run_skill("doctor")
+
+    assert_match(/^delta\s+drift$/m, result.output)
+    refute_includes(result.output, Skill::Operations::CLAUDE_DRIFT_HINT)
   end
 
   def test_prune_removes_orphan_links_and_empty_dirs

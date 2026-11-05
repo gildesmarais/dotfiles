@@ -17,6 +17,7 @@ module Skill
     NO_DRIFT_BACKFILL_ERROR = "no real-file drift for %<name>s"
     TYPE_CLASH_BACKFILL_ERROR = "refusing to backfill over non-file store path: %<path>s"
     RCUP_HINT = "run rcup (or wait for topgrade) to install into ~/.agents/skills and ~/.claude/skills"
+    CLAUDE_DRIFT_HINT = "run rcup to restore drifted ~/.claude/skills from the store"
     PRUNE_HINT = "run skill prune to remove orphan links"
 
     def initialize(paths:, shell_ui:)
@@ -45,6 +46,8 @@ module Skill
       width = [entries.map { |label, _status| label.length }.max, 24].max
       entries.each { |label, status| puts(format("%-#{width}s  %s", label, status)) }
       statuses = entries.map(&:last)
+      claude_drift = entries.any? { |label, status| label.start_with?("claude:") && status == "drift" }
+      @shell_ui.note(CLAUDE_DRIFT_HINT) if claude_drift
       @shell_ui.note(PRUNE_HINT) if statuses.include?("orphan")
 
       raise ExitError.new(status: 1) if (statuses & %w[drift orphan]).any?
