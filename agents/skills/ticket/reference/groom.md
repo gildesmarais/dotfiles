@@ -15,14 +15,14 @@ Make the board tell the truth: PO (value, Create bar) + Scrum Master (WIP, statu
 - Done foundation stays Done (never reopen as MVP). Close per `SKILL.md` Status lifecycle.
 - Empty future epics stay parked until evidence or an explicit Create ask.
 - Ticket text: short Context / Outcome / AC.
-- Status names, link types, Ready transitions, Epic parent field: discover via tracker MCP / repo wrapper / `AGENTS.md`; never hardcode. Inspect a working reference card and the link schema before judging link direction.
+- Status names, link types, Ready transitions, epic/parent field: `<project>/.agents/tracker.md`, else discover via the adapter / repo wrapper / `AGENTS.md`; never hardcode. Inspect a working reference card and the link schema before judging link direction.
 - Create adding user-facing scope → `gate` (or user confirm) first.
 
 ## Pipeline
 
-1. **Inventory** (tracker MCP): target epic(s) + open children (exclude Done / Won't Do / Duplicate unless diagnosing misparents), related delivery/Integration epics, named Done foundation labels, local docs claiming sequencing (cite paths); depth ≥ 2: code search for named gaps only.
+1. **Inventory** (adapter): target epic(s) + open children (exclude Done / Won't Do / Duplicate unless diagnosing misparents), related delivery/Integration epics, named Done foundation labels, local docs claiming sequencing (cite paths); depth ≥ 2: code search for named gaps only.
 2. **Target shape:** portfolio umbrella (initiative home, not a Ready dump) → active delivery epic(s) → later Integration/capability epics (soft order in prose; `Blocks` only if blocking).
-3. **Disposition table:** `| Key | Keep / Rehome / On Hold / Amend AC / Create (rare) / Skip | Why (one line) |` — Skip Done misparents unless they pollute live queries.
+3. **Disposition table:** `| ID | Keep / Rehome / On Hold / Amend AC / Create (rare) / Skip | Why (one line) |` — Skip Done misparents unless they pollute live queries.
 4. **Create evidence gate:** each Create cites path + fact or ticket + gap; else drop it.
 5. **Execute (approved):** retitle, rewrite, reparent, transition, closing comments, hard-order links, Creates.
 6. **Verify:** re-query; no Ready orphans on the umbrella (unless project pattern); held work in hold/next status; Creates have parent + intended status; no open unparented stories or stories under Done Epics; open Epics meet the `create` epic rule and are not overdue; linked technical RFCs link both ways.
@@ -33,7 +33,7 @@ Links: hard order → the project's dependency link (often `Blocks`), one chain 
 
 Depth + sequencing lock; target shape; disposition table; Create evidence; Forced Challenge (strongest case this groom over- or under-files; why it fails). Wait for approval unless already approved.
 
-After mutate: keys changed, Create keys, verify notes, handoff.
+After mutate: IDs changed, Create IDs, verify notes, handoff.
 
 ## Completion criteria
 

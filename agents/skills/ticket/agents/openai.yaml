@@ -6,4 +6,4 @@ dependencies:
   tools:
     - type: "mcp"
       value: "atlassian"
-      description: "Required for Jira and Confluence ticket context and status transitions"
+      description: "Jira adapter only: ticket and Confluence context, status transitions"

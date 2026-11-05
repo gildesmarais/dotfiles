@@ -13,7 +13,7 @@ description: >-
 
 | Branch              | Signals                                                |
 | ------------------- | ------------------------------------------------------ |
-| implement (default) | Jira URL or key (`ABC-123`) to implement |
+| implement (default) | Jira key/URL (`ABC-123`) or GitHub issue URL/`#N` |
 | challenge           | review / gate an incoming ticket; `ops-github` ticket item |
 | create              | "file a ticket", follow-up under an epic               |
 | groom               | backlog/epic cleanup, reparent orphans, board sync after sequencing |
@@ -21,7 +21,7 @@ description: >-
 
 ## Shared prep
 
-- Atlassian MCP required: fetch the ticket (fields, parent/epic, links, comments, attachments) and linked Confluence; never ask the user to restate it; mark assumed AC.
+- **Tracker:** `<project>/.agents/tracker.md` (`kind: jira|github`, status names, link types, epic/parent field, team channel, portfolio link type); absent → infer from input, ask once if ambiguous, never guess across orgs. Load only the matching adapter ([`reference/jira.md`](reference/jira.md) | [`reference/github.md`](reference/github.md)); it owns every tracker call. Fetch fields, parent/epic, links, comments, attachments, linked docs; never ask the user to restate; mark assumed AC.
 - **Product gate:** non-trivial user-facing scope → `product-owner` `gate`; continue on Build Now only. Multi-slice / UX-mandated AC → `product-owner` `story-slice` → `$dev` `plan`. Skip bug fix/refactor/infra.
 - Observability/security cues, Assure, phase commits, land: `$dev` Shared prep + Handoff via **Handoff load** ([`../CONTEXT.md`](../CONTEXT.md)).
 
@@ -41,38 +41,29 @@ Fetch ticket + observability evidence; read code; gate → `$dev` `plan` → fre
 
 ### create
 
-- `createJiraIssue`; draft from code evidence; match Story/Task/Bug to the ask; don't implement unless asked.
-- Parent under the named epic (`parent` / Epic Link); verify; transition out of unhelpful defaults (e.g. On Hold → Ready) unless asked.
-- Link predecessors via `getIssueLinkTypes` exact type name.
-- Epic: set start/due dates; link its portfolio item if the project has one.
+- Draft from code evidence; match type (story/task/bug) to the ask; don't implement unless asked.
+- Parent under the named epic; verify; leave unhelpful default statuses (e.g. On Hold → Ready) unless asked.
+- Link predecessors with the project's exact link type.
+- Epic/parent has start and due dates and its portfolio link where the project has one.
 
 ### Status lifecycle
 
-`getTransitionsForJiraIssue` first; transition if unambiguous, else ask once.
+List available status changes first; apply if unambiguous, else ask once. Targets: created → **Ready** (or equivalent); started → **In Progress** only if asked or workflow-used; PR opened → **Ready for Review** (else `In Review`/`Code Review`, else ask); Done / Won't Do only as requested — never invent Done on merge.
 
-| Event                             | Target                                                  |
-| --------------------------------- | ------------------------------------------------------- |
-| Ticket created                    | **Ready** (or equivalent)                               |
-| Implementation started (optional) | **In Progress** — only if asked or workflow-used |
-| PR opened                         | **Ready for Review**                                    |
-| User asks Done / Won't Do         | As requested; never invent Done on merge                |
-
-Before closing as Done / duplicate / superseded (incl. completed Epic/idea): comment a redirect naming the canonical target and team channel (`<project>/.agents/product.md` if configured); set the archive flag and terminal board-column field so grouped views hide it.
-
-Review transition: `Ready for review` → `In Review` / `Code Review` → ask.
+Before closing as Done/duplicate/superseded (incl. completed epic/idea): comment a redirect naming the canonical target and team channel (`<project>/.agents/tracker.md` if configured); close with the matching reason, hidden from grouped views.
 
 ### Post-PR sync
 
-After `pull-request` `open`: transition per the table; comment PR URL + branch if comment tools exist (transition even if the comment fails). Report key, status, PR URL; on failure, list transitions.
+After `pull-request` `open`: sync per Status lifecycle and adapter; comment PR URL + branch (sync even if commenting fails). Report ticket ID, status, PR URL; on failure, list status changes.
 
 ## Handoff
 
-`$dev` Handoff plus: branch, commands run, PR URL, Jira status, residual risks. Unavailable skill → say so; continue locally.
+`$dev` Handoff plus: branch, commands run, PR URL, ticket status, residual risks. Unavailable skill → say so; continue locally.
 
 ## Completion criteria
 
 - challenge: per [`reference/challenge.md`](reference/challenge.md).
-- implement: `$dev` plan emitted; delivered per `$dev`; Jira synced if PR opened.
+- implement: `$dev` plan emitted; delivered per `$dev`; ticket synced if PR opened.
 - groom: per [`reference/groom.md`](reference/groom.md).
 - create: issue created; parent/epic verified; links and status correct.
-- Post-PR sync: transitioned (or transitions listed) and reported.
+- Post-PR sync: synced (or status changes listed) and reported.
