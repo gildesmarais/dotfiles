@@ -15,7 +15,7 @@
    assigned or new in intake; skip `<state-dir>/jira.txt`). One AskQuestion per
    ticket (`<key> — "<title>"`): challenge / implement / skip. GitHub: chosen →
    **act**; skip → `ledger decide <id> deferred`; never → `ledger exclude
-   owner/repo#n`. Jira: append key; Hand → `jira-ticket`.
+   owner/repo#n`. Jira: append key; Hand → `ticket`.
 7. Watcher PID gone (`doctor`) → arm `ops-github watch` in a session background
    shell notifying on `OPS_GITHUB_WAKE` (debounce ≥60s); never `nohup … &`.
    Claude Code: `Monitor` (`timeout_ms` 1800000) over `ops-github … watch 2>&1 |

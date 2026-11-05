@@ -1,12 +1,13 @@
 ---
-name: jira-ticket
+name: ticket
 description: >-
-  Investigate, scope, implement, or create a Jira ticket via Atlassian MCP and
-  sync its status (e.g. Ready for Review after PR open). Use for Jira URLs/keys,
-  challenging an incoming ticket, follow-ups under an epic, post-PR handoff.
+  Investigate, challenge, implement, or create a ticket (Jira or GitHub issue),
+  groom a backlog/board, and sync status after a PR. Use for ticket URLs/keys,
+  incoming-ticket challenge, follow-ups under an epic, backlog cleanup, post-PR
+  handoff.
 ---
 
-# Jira Ticket
+# Ticket
 
 ## Pick branch
 
@@ -15,6 +16,7 @@ description: >-
 | implement (default) | Jira URL or key (`ABC-123`) to investigate / implement |
 | challenge           | review / challenge / gate an incoming ticket; `ops-github` ticket item |
 | create              | "file a ticket", follow-up under an epic               |
+| groom               | groom backlog, epic cleanup, reparent orphans, board sync after sequencing |
 | Post-PR sync        | ticket has a new PR URL; "open PR + move to review"    |
 
 ## Shared prep
@@ -32,6 +34,10 @@ description: >-
 ### implement
 
 Fetch ticket + observability evidence; read code; gate → `$dev` `plan` → fresh branch `TICKET-ID-short-kebab-summary` → `$dev` `implement` → Handoff. PR ask → `pull-request` `open` → Post-PR sync. Interrupt only on real ambiguity or missing access.
+
+### groom
+
+[`reference/groom.md`](reference/groom.md)
 
 ### create
 
@@ -61,11 +67,12 @@ After `pull-request` `open`: transition per the table, comment PR URL + branch i
 
 ## Handoff
 
-`$dev` Handoff plus: branch, commands run, PR URL, Jira status after sync, residual risks. Unavailable skill → say so; continue locally.
+`groom` Create adding user-facing scope → `product-owner` `gate`. `$dev` Handoff plus: branch, commands run, PR URL, Jira status after sync, residual risks. Unavailable skill → say so; continue locally.
 
 ## Completion criteria
 
 - challenge: per [`reference/challenge.md`](reference/challenge.md).
 - implement: `$dev` plan emitted; delivered per `$dev`; Jira synced if a PR opened.
+- groom: per [`reference/groom.md`](reference/groom.md).
 - create: issue created with verified parent/epic, correct links and status.
 - Post-PR sync: transitioned (or transitions listed) and reported.

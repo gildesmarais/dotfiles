@@ -19,7 +19,6 @@ Default **`gate`**.
 | `gate`        | should we build, admit/defer, parity, UI/API surface, UAT expansion, debt tranche admission                             |
 | `story-slice` | user stories, GWT, UX budgets, AC — only after `gate` Build Now / founder override                                      |
 | `rebaseline`  | doctrine feels stale, north star predates shipped product, many founder overrides; step 0 `re-baseline`                 |
-| `groom`       | groom backlog, epic cleanup, reparent orphans, board sync after sequencing |
 
 Skip: surgical bug fix or single-slice cleanup with no user-facing concept or step change; stress-test-only → `grilling`; one cited AC and no slice ask → no `story-slice`.
 
@@ -37,7 +36,6 @@ Cite personas, golden paths, click budgets, mental models, and the doctrine ledg
 - `gate`: [`reference/gate.md`](reference/gate.md)
 - `story-slice`: [`reference/story-slice.md`](reference/story-slice.md)
 - `rebaseline`: [`reference/rebaseline.md`](reference/rebaseline.md)
-- `groom`: [`reference/groom.md`](reference/groom.md)
 
 ## Handoff
 

@@ -1,0 +1,9 @@
+interface:
+  display_name: "Ticket"
+  short_description: "Investigate, create, implement, groom tickets; sync status after PR"
+  default_prompt: "Use $ticket to investigate and implement ABC-123 in this repository."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "atlassian"
+      description: "Required for Jira and Confluence ticket context and status transitions"

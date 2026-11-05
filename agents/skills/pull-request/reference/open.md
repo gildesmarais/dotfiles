@@ -31,7 +31,7 @@ Repo-local conventions also apply. `Resolves: DEBT-<NUMBER>`: [`../../harvest/re
 
 ## Jira sync
 
-Ticket derived (or `jira-ticket` flow) + Jira tool → `jira-ticket` **Post-PR sync** without re-asking. Unavailable / no transition → report and continue. Own PR with Delivery Ledger `Rollout` removal owed → `jira-ticket` `create` Cutover follow-up (same epic; trigger if known); else Residuals + say so. Report key in Output.
+Ticket derived (or `ticket` flow) + Jira tool → `ticket` **Post-PR sync** without re-asking. Unavailable / no transition → report and continue. Own PR with Delivery Ledger `Rollout` removal owed → `ticket` `create` Cutover follow-up (same epic; trigger if known); else Residuals + say so. Report key in Output.
 
 ## Output
 

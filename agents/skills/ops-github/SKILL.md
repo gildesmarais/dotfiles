@@ -45,7 +45,7 @@ Hands, never restates engine rules. Co-load
 
 - Fix, conflicts, threads on your PR → Hand → `pull-request` resolve | fix-ci | conflicts | reply.
 - Others' PR → Hand → `review.gil` `findings` (after per-PR OK).
-- Ticket: Jira → Hand → `jira-ticket` `challenge` | `implement`; GitHub issue → `jira-ticket` `challenge` | `$dev`.
+- Ticket: Jira → Hand → `ticket` `challenge` | `implement`; GitHub issue → `ticket` `challenge` | `$dev`.
 - Dependabot fallout → `dependabot` `triage`; multi-repo delivery → `brain` `orchestrate`.
 
 ## Completion criteria

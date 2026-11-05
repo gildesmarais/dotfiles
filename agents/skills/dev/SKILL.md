@@ -21,7 +21,7 @@ Single Build entry. Load packs/overlays by name; never paste their bodies. Craft
 | multi-repo or long-running orchestration           | stop → `brain`          |
 | assure / findings / tests review / merge prep      | stop → `review.gil`     |
 | open / slice / comment a PR                        | stop → `pull-request`   |
-| Jira key or URL                                    | stop → `jira-ticket`    |
+| Jira key or URL                                    | stop → `ticket`    |
 
 ## Shared prep
 

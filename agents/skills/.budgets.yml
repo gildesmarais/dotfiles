@@ -42,8 +42,9 @@ words:
   harvest/SKILL.md: 213
   harvest/reference/debt.md: 281
   harvest/reference/distill.md: 280
-  jira-ticket/SKILL.md: 495
-  jira-ticket/reference/challenge.md: 218
+  ticket/SKILL.md: 525
+  ticket/reference/challenge.md: 218
+  ticket/reference/groom.md: 514
   omnifocus/SKILL.md: 292
   omnifocus/reference/applescript.md: 241
   ops-chore/SKILL.md: 301
@@ -58,7 +59,6 @@ words:
   ops-github/reference/wrap.md: 55
   product-owner/SKILL.md: 372
   product-owner/reference/gate.md: 456
-  product-owner/reference/groom.md: 514
   product-owner/reference/rebaseline.md: 317
   product-owner/reference/story-slice.md: 146
   pull-request/SKILL.md: 403
