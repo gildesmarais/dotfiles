@@ -41,7 +41,7 @@ words:
   docs/reference/evidence.md: 250
   harvest/SKILL.md: 213
   harvest/reference/debt.md: 281
-  harvest/reference/distill.md: 273
+  harvest/reference/distill.md: 280
   jira-ticket/SKILL.md: 495
   jira-ticket/reference/challenge.md: 218
   omnifocus/SKILL.md: 292
@@ -85,6 +85,8 @@ words:
   review.gil/reference/quality.md: 456
   review.gil/reference/security.md: 278
   review.gil/reference/tests.md: 369
+  skill-trim/SKILL.md: 131
+  skill-trim/reference/project.md: 156
   ruby-dev/SKILL.md: 266
   ruby-dev/reference.md: 233
   ruby-on-rails-dev/SKILL.md: 267

@@ -2,7 +2,7 @@
 
 ## Mantra standard
 
-Preventive Mantra form (`SKILL.md`), 1–2 sentences. Reject incident writeups, stack traces, debug stories, platitudes. Skill edits are clean cutovers: delete superseded aliases and compat wrappers.
+What a skill line must earn: [`../../skill-trim/reference/project.md`](../../skill-trim/reference/project.md). Preventive Mantra form (`SKILL.md`), 1–2 sentences. Reject incident writeups, stack traces, debug stories, platitudes. Skill edits are clean cutovers: delete superseded aliases and compat wrappers.
 
 ## Scope filter
 
