@@ -11,6 +11,7 @@ skill/
     cli.rb
     skill/
       classifier.rb
+      dropped_identifiers.rb
       error.rb
       filesystem.rb
       linter.rb
@@ -26,6 +27,7 @@ skill/
 - `src/skill/paths.rb`: canonical store, `claude/skills` entry, home, and project path resolution
 - `src/skill/classifier.rb`: closed status set, real-file drift, and orphan-link detection
 - `src/skill/linter.rb`: store shape, word ratchet, link graph, and related lint checks
+- `src/skill/dropped_identifiers.rb`: `lint --since` identifier extraction and ownership
 - `src/skill/filesystem.rb`: shared skill-name safety helpers
 - `src/skill/error.rb`: shared CLI exit/error object used below the entrypoint
 - `src/skill/operations.rb`: list / doctor / lint / prune / backfill / promote / rename behavior
@@ -55,9 +57,9 @@ Run the CLI entrypoint:
 Expected results:
 
 - `lint` checks store Markdown against `agents/skills/.budgets.yml` (word ratchet, description budget, 100-line hard cap), router/pinned headers, link resolve, link graph (acyclic, ≤2 hops from each `SKILL.md`, no router-to-router links), duplicate lines, and `claude/skills/` entries (every store skill and shared `CONTEXT.md` needs a relative symlink into the store; wrong or stale entries fail); exits `0` with `lint ok`, else `1` with one finding per line
-- `--project PATH lint` lints `PATH/.agents/skills` (else `PATH/.claude/skills`; neither exits `1` with one finding) with the structural checks only: description cap, 100-line cap, link resolve, link graph, duplicate lines. The word ratchet and pinned headers apply only if that store has its own `.budgets.yml`; `claude/skills/` entry checks are skipped. Without `--project`, `lint` audits the dotfiles store exactly as before
-- `lint --measure` prints `<surface> files=N words=N lines=N` for `catalog` (frontmatter `description`), `router` (`SKILL.md` body), and `branch` (all other Markdown) before the result; works for the store and `--project`
-- `lint --since REF` collects identifiers (backticked spans, Markdown link targets, `$skill` refs) from the store's Markdown at git `REF` and the working tree; each one gone from the working tree that also appears nowhere in the working-tree store or the project root's `AGENTS.md` / `CONTEXT.md` / `CLAUDE.md` is a `dropped: <id> (<file at REF>)` finding (exit `1`)
+- `--project PATH lint` lints the project stores `PATH/.agents/skills` and `PATH/.claude/skills` (neither exits `1` with one finding), each resolved with `realpath` so a symlinked store root is walked. When both exist and are distinct real paths, both are linted and every finding is prefixed with its store (`.agents/skills: ...`); two names for one real path count once. Structural checks only: description cap, 100-line cap, link resolve, link graph, duplicate lines. A relative link that leaves the store is valid when it resolves to an existing file inside the project root (for example `../../../AGENTS.md`); a missing file or one outside the root is broken. Once a store has its own `.budgets.yml`, the word ratchet and the whole router-header shape (`Pick branch`, optional `Shared prep`, `Branch reference`, `Handoff`, `Completion criteria`, in that order) are enforced for that store, not only headers listed under `pinned_headers`; without one, neither applies. `claude/skills/` entry checks are skipped. Without `--project`, `lint` audits the dotfiles store as before
+- `lint --measure` prints `<surface> files=N words=N lines=N` for `catalog` (frontmatter `description`), `router` (`SKILL.md` body), and `branch` (all other Markdown) before the result; works for the store and `--project`. With two project stores each line is prefixed with its store. In project mode a final `context files=N words=N lines=N` line counts the project-root `AGENTS.md` / `CONTEXT.md` / `CLAUDE.md` that exist (symlinked duplicates count once; `files=0` when none exist)
+- `lint --since REF` collects identifiers (backticked spans, Markdown link targets, `$skill` refs) from Markdown at git `REF` and the working tree; each one gone from the working tree and not owned anywhere else is a `dropped: <id> (<file at REF>)` finding (exit `1`). Ownership is a token match (`dev` is not owned by `devops`, `$dev`, or `dev-tools`) in the text of every working-tree store plus the root docs; the root docs are the project root's with `--project`, the dotfiles repo's without it. With `--project`, identifiers dropped from the root docs are reported too. A `REF` that predates the store lints ok
 - `doctor` prints aligned columns (padded name, then status: `ok`, `drift`, `home-only`, `broken`, `orphan`); exits `0` when no `drift` or `orphan`, else `1`
 - An **orphan** is a symlink under `~/.agents/skills/<name>/` whose target is inside the store and no longer exists; links pointing elsewhere are never orphans
 - `prune` deletes orphan links (and emptied directories), prints each `name/relative` path, and notes the count; a second run notes `no orphans to prune`

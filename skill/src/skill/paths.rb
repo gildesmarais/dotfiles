@@ -7,6 +7,9 @@ require_relative "error"
 
 module Skill
   class Paths
+    # Root docs that own identifiers and make up a project's always-loaded context.
+    ROOT_DOCS = %w[AGENTS.md CONTEXT.md CLAUDE.md].freeze
+
     attr_writer :project_root
 
     def initialize(dotfiles_root:, project_root: nil, home_dir: nil)
@@ -70,9 +73,30 @@ module Skill
       @project_skills_dir = File.join(project_root, ".agents", "skills")
     end
 
-    # Store `skill --project` lints: .agents/skills, else .claude/skills, else nil.
-    def project_store_dir
-      [".agents", ".claude"].map { |dir| File.join(project_root, dir, "skills") }.find { |dir| File.directory?(dir) }
+    # Stores `skill --project` lints, as { "<dir>/skills" => real path }: each of
+    # .agents/skills and .claude/skills that exists, symlinks resolved, one entry
+    # per distinct real path. Empty when neither exists.
+    def project_stores
+      stores = {}
+      [".agents", ".claude"].each do |dir|
+        path = File.join(project_root, dir, "skills")
+        next unless File.directory?(path)
+
+        real = File.realpath(path)
+        stores["#{dir}/skills"] = real unless stores.value?(real)
+      end
+      stores
+    rescue Errno::ENOENT
+      {}
+    end
+
+    # Existing root docs (distinct real files) of the project, or of the
+    # dotfiles repo when project is false.
+    def root_doc_paths(project:)
+      root = project ? project_root : @dotfiles_root
+      ROOT_DOCS.map { |name| File.join(root, name) }
+               .select { |path| File.file?(path) }
+               .uniq { |path| File.realpath(path) }
     end
 
     def legacy_codex_skills_dir

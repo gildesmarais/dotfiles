@@ -482,7 +482,89 @@ class SkillCliTest < Minitest::Test
     assert_equal(1, run_skill("--project", @project_root, "lint").exitstatus, ".claude store is linted")
 
     write_project_skill(".agents", "other", "# Other\n")
-    assert_equal(0, run_skill("--project", @project_root, "lint").exitstatus, ".agents store wins")
+    result = run_skill("--project", @project_root, "lint")
+    assert_equal(1, result.exitstatus, "both stores are linted")
+    assert_includes(result.output, ".claude/skills: note/SKILL.md: 101 lines exceeds hard cap of 100")
+    refute_includes(result.output, ".agents/skills:")
+  end
+
+  def test_project_lint_walks_symlinked_store_root
+    external = File.join(@tmpdir, "external")
+    FileUtils.mkdir_p(File.join(external, "note"))
+    File.write(File.join(external, "note", "SKILL.md"), "word\n" * 101)
+    FileUtils.mkdir_p(File.join(@project_root, ".claude"))
+    File.symlink(external, File.join(@project_root, ".claude", "skills"))
+
+    result = run_skill("--project", @project_root, "lint", "--measure")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "note/SKILL.md: 101 lines exceeds hard cap of 100")
+    assert_includes(result.output, "router files=1 words=101")
+  end
+
+  def test_project_lint_treats_symlinked_twin_stores_as_one
+    write_project_skill(".claude", "note", "# Note\n\nplain\n")
+    FileUtils.mkdir_p(File.join(@project_root, ".agents"))
+    File.symlink(File.join(@project_root, ".claude", "skills"), File.join(@project_root, ".agents", "skills"))
+
+    result = run_skill("--project", @project_root, "lint", "--measure")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "router files=1")
+    refute_includes(result.output, ".agents/skills router")
+  end
+
+  def test_project_lint_measures_both_stores_and_context_line
+    write_project_skill(".agents", "note", "# Note\n\none two\n")
+    write_project_skill(".claude", "side", "# Side\n")
+    File.write(File.join(@project_root, "AGENTS.md"), "a b c\nd e\n")
+    File.write(File.join(@project_root, "CONTEXT.md"), "f\n")
+    File.symlink("AGENTS.md", File.join(@project_root, "CLAUDE.md"))
+
+    result = run_skill("--project", @project_root, "lint", "--measure")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, ".agents/skills router files=1 words=4 lines=3\n")
+    assert_includes(result.output, ".claude/skills router files=1 words=2 lines=1\n")
+    assert_includes(result.output, "context files=2 words=6 lines=3\n")
+  end
+
+  def test_measure_context_line_is_project_mode_only_and_always_present_there
+    write_project_skill(".agents", "note", "# Note\n")
+    result = run_skill("--project", @project_root, "lint", "--measure")
+    assert_includes(result.output, "context files=0 words=0 lines=0\n")
+
+    create_store_skill("demo")
+    File.write(File.join(@skills_dir, "demo", "SKILL.md"), "# Demo\n")
+    File.write(File.join(@skills_dir, ".budgets.yml"), YAML.dump("words" => { "demo/SKILL.md" => 9 }))
+    refute_includes(run_skill("lint", "--measure").output, "context")
+  end
+
+  def test_project_lint_accepts_links_to_existing_files_inside_project_root
+    File.write(File.join(@project_root, "AGENTS.md"), "owner\n")
+    File.write(File.join(@tmpdir, "outside.md"), "outside\n")
+    write_project_skill(".agents", "note", "# Note\n\n[a](../../../AGENTS.md) [m](../../../MISSING.md) " \
+                                          "[o](../../../../outside.md) [e](../../../../../../../../../etc/hosts.md)\n")
+
+    result = run_skill("--project", @project_root, "lint")
+
+    assert_equal(1, result.exitstatus)
+    refute_includes(result.output, "-> ../../../AGENTS.md")
+    assert_includes(result.output, "broken link -> ../../../MISSING.md")
+    assert_includes(result.output, "broken link -> ../../../../outside.md")
+    assert_includes(result.output, "broken link -> ../../../../../../../../../etc/hosts.md")
+  end
+
+  def test_lint_rejects_unknown_option_and_since_without_argument
+    write_project_skill(".agents", "note", "# Note\n")
+
+    result = run_skill("--project", @project_root, "lint", "--bogus")
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "invalid option: --bogus")
+
+    result = run_skill("--project", @project_root, "lint", "--since")
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "missing argument: --since")
   end
 
   def test_project_lint_skips_ratchet_without_local_budgets_and_applies_with_them
@@ -526,6 +608,89 @@ class SkillCliTest < Minitest::Test
     assert_includes(result.output, "dropped: gone-id (note/SKILL.md)")
     refute_includes(result.output, "kept-id")
     refute_includes(result.output, "moved-id")
+  end
+
+  def test_lint_since_ref_predating_the_store_is_ok
+    File.write(File.join(@project_root, "README"), "x\n")
+    git_project("add", "-A")
+    git_project("commit", "-q", "-m", "empty")
+    write_project_skill(".agents", "note", "# Note\n\nUse `new-id`.\n")
+    git_project("add", "-A")
+    git_project("commit", "-q", "-m", "store")
+
+    result = run_skill("--project", @project_root, "lint", "--since", "HEAD~1")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "lint ok")
+  end
+
+  def test_lint_since_reads_non_ascii_paths
+    write_project_skill(".agents", "né", "# N\n\n`unicode-id`\n")
+    git_project("add", "-A")
+    git_project("commit", "-q", "-m", "base")
+    write_project_skill(".agents", "né", "# N\n\nx\n")
+
+    result = run_skill("--project", @project_root, "lint", "--since", "HEAD")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "dropped: unicode-id (")
+  end
+
+  def test_lint_since_ownership_is_a_token_match
+    write_project_skill(".agents", "note", "# Note\n\nUse `dev` and `$dev` and `make up`.\n")
+    git_project("add", "-A")
+    git_project("commit", "-q", "-m", "base")
+    write_project_skill(".agents", "note", "# Note\n\nSee `devops`; make up later.\n")
+
+    result = run_skill("--project", @project_root, "lint", "--since", "HEAD")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "dropped: dev (note/SKILL.md)")
+    assert_includes(result.output, "dropped: $dev (note/SKILL.md)")
+    refute_includes(result.output, "make up")
+  end
+
+  def test_lint_since_checks_both_stores_and_root_docs
+    write_project_skill(".agents", "note", "# Note\n\n`agents-id`\n")
+    write_project_skill(".claude", "side", "# Side\n\n`claude-id`\n")
+    File.write(File.join(@project_root, "AGENTS.md"), "`root-id` `kept-id`\n")
+    File.write(File.join(@project_root, "CONTEXT.md"), "`ctx-id`\n")
+    File.symlink("AGENTS.md", File.join(@project_root, "CLAUDE.md"))
+    git_project("add", "-A")
+    git_project("commit", "-q", "-m", "base")
+    write_project_skill(".agents", "note", "# Note\n\n`kept-id`\n")
+    write_project_skill(".claude", "side", "# Side\n")
+    File.write(File.join(@project_root, "AGENTS.md"), "x\n")
+
+    result = run_skill("--project", @project_root, "lint", "--since", "HEAD")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, ".agents/skills: dropped: agents-id (note/SKILL.md)")
+    assert_includes(result.output, ".claude/skills: dropped: claude-id (side/SKILL.md)")
+    assert_includes(result.output, "dropped: root-id (AGENTS.md)")
+    refute_includes(result.output, "kept-id")
+    refute_includes(result.output, "ctx-id")
+    refute_includes(result.output, "(CLAUDE.md)")
+  end
+
+  def test_default_lint_since_consults_dotfiles_root_docs_not_cwd_git_root
+    system("git", "init", "-q", @dotfiles_root, exception: true)
+    system("git", "-C", @dotfiles_root, "config", "user.name", "Test User", exception: true)
+    system("git", "-C", @dotfiles_root, "config", "user.email", "test@example.com", exception: true)
+    create_store_skill("demo")
+    File.write(File.join(@skills_dir, "demo", "SKILL.md"), "# Demo\n\n`owned-id` `lost-id`\n")
+    File.write(File.join(@skills_dir, ".budgets.yml"), YAML.dump("words" => { "demo/SKILL.md" => 9 }))
+    system("git", "-C", @dotfiles_root, "add", "-A", exception: true)
+    system("git", "-C", @dotfiles_root, "commit", "-q", "-m", "base", exception: true)
+    File.write(File.join(@skills_dir, "demo", "SKILL.md"), "# Demo\n")
+    File.write(File.join(@dotfiles_root, "AGENTS.md"), "Owns `owned-id`.\n")
+    File.write(File.join(@project_root, "AGENTS.md"), "Owns `lost-id`.\n")
+
+    result = run_skill("lint", "--since", "HEAD")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "dropped: lost-id (demo/SKILL.md)")
+    refute_includes(result.output, "owned-id")
   end
 
   private

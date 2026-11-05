@@ -14,21 +14,21 @@ module Skill
     SKILL_REF_RE = /(?<![\w$])\$[a-z][a-z0-9_-]*/.freeze
     FENCE_RE = /^```.*?^```/m.freeze
 
-    # current: { rel => text } of the working-tree store; owned_text: all text
-    # that may still own an identifier (working tree store + root docs).
-    def initialize(store:, ref:, current:, owned_text:)
-      @store = store
+    # dir: a git work tree directory. names nil: every non-hidden, non-README
+    # Markdown file under it (a skill store); names given: those top-level files
+    # (root docs). owned_text: all text that may still own an identifier.
+    def initialize(dir:, ref:, owned_text:, names: nil)
+      @dir = dir
       @ref = ref
-      @current = current
       @owned_text = owned_text
+      @names = names
     end
 
     def findings
-      now = @current.values.flat_map { |text| identifiers(text) }
       seen = {}
       ref_files.sort.each do |rel, text|
         identifiers(text).each do |id|
-          next if seen.key?(id) || now.include?(id) || @owned_text.include?(id)
+          next if seen.key?(id) || owned?(id)
 
           seen[id] = "dropped: #{id} (#{rel})"
         end
@@ -38,6 +38,11 @@ module Skill
 
     private
 
+    # Token match: `dev` is not owned by `devops`, `$dev`, or `dev-tools`.
+    def owned?(id)
+      @owned_text.match?(/(?<![\w$-])#{Regexp.escape(id)}(?![\w-])/)
+    end
+
     def identifiers(text)
       body = text.gsub(FENCE_RE, "")
       (body.scan(SPAN_RE).flatten + body.scan(LINK_RE).flatten + body.scan(SKILL_REF_RE))
@@ -46,22 +51,34 @@ module Skill
 
     def ref_files
       files = []
-      git("ls-tree", "-r", @ref).each_line do |line|
-        meta, path = line.chomp.split("\t", 2)
+      listing.split("\0").each do |entry|
+        meta, path = entry.split("\t", 2)
         next if path.nil? || meta.start_with?("120000")
-        next unless path.end_with?(".md") && File.basename(path) != "README.md"
-        next if path.split("/").any? { |part| part.start_with?(".") }
+        next unless markdown_doc?(path)
 
         files << [path, git("show", "#{@ref}:./#{path}")]
       end
       files
     end
 
+    def listing
+      return git("ls-tree", "-z", "-r", @ref) unless @names
+
+      git("ls-tree", "-z", @ref, "--", *@names)
+    end
+
+    def markdown_doc?(path)
+      return true if @names
+      return false unless path.end_with?(".md") && File.basename(path) != "README.md"
+
+      path.split("/").none? { |part| part.start_with?(".") }
+    end
+
     def git(*args)
-      output, err, status = Open3.capture3("git", "-C", @store, *args)
+      output, err, status = Open3.capture3("git", "-C", @dir, *args)
       raise ExitError, "git #{args.first} #{@ref} failed: #{err.strip}" unless status.success?
 
-      output
+      output.force_encoding(Encoding::UTF_8)
     end
   end
 end

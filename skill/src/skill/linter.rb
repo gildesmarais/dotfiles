@@ -5,6 +5,7 @@ require "yaml"
 
 require_relative "dropped_identifiers"
 require_relative "error"
+require_relative "paths"
 
 module Skill
   class Linter
@@ -22,7 +23,7 @@ module Skill
     MD_LINK_RE = /\[(?:[^\]]*)\]\(([^)]+)\)/.freeze
     FRONTMATTER_RE = /\A---\r?\n(.*?)\r?\n---\r?\n/m.freeze
 
-    # project: lint the project-local store (Paths#project_store_dir) instead of
+    # project: lint the project-local stores (Paths#project_stores) instead of
     # the dotfiles store; dotfiles-only checks are skipped.
     def initialize(paths:, project: false, since: nil)
       @paths = paths
@@ -31,19 +32,45 @@ module Skill
       @errors = []
       @files = []
       @contents = {}
+      @store_contents = []
+      @measure = []
+      @label = nil
     end
 
     def run
       @paths.ensure_store! unless @project
-      @store = @project ? @paths.project_store_dir : @paths.store_dir
-      if @store.nil?
+      stores = @project ? @paths.project_stores : { nil => @paths.store_dir }
+      if stores.empty?
         error("no project skill store: expected #{@paths.project_root}/.agents/skills or .claude/skills")
         return @errors
       end
 
+      stores.each { |label, dir| lint_store(stores.size > 1 ? label : nil, dir) }
+      check_dropped_identifiers(stores) if @since
+
+      @errors
+    end
+
+    # One line per surface: catalog (descriptions), router (SKILL.md bodies),
+    # branch (every other file); prefixed with the store when a project has two.
+    # Project mode ends with a context line for the root docs. Valid after run.
+    def measure_lines
+      return @measure unless @project
+
+      docs = @paths.root_doc_paths(project: true).map { |path| File.read(path) }
+      @measure + [measure_line("context", docs)]
+    end
+
+    private
+
+    def lint_store(label, dir)
+      @label = label
+      @store = dir
       @budgets = load_budgets
       @files = installed_markdown_files
+      @contents = {}
       @files.each { |rel| @contents[rel] = File.read(File.join(@store, rel)) }
+      @store_contents << @contents
 
       check_line_caps
       check_word_ratchet if ratchet?
@@ -53,14 +80,10 @@ module Skill
       check_link_graph
       check_duplicate_lines
       check_claude_entries unless @project
-      check_dropped_identifiers if @since
-
-      @errors
+      @measure.concat(surface_lines.map { |line| label ? "#{label} #{line}" : line })
     end
 
-    # One line per surface: catalog (descriptions), router (SKILL.md bodies),
-    # branch (every other file). Valid after run.
-    def measure_lines
+    def surface_lines
       surfaces = { "catalog" => [], "router" => [], "branch" => [] }
       @files.each do |rel|
         text = @contents[rel]
@@ -72,12 +95,12 @@ module Skill
           surfaces["branch"] << text
         end
       end
-      surfaces.map do |name, texts|
-        "#{name} files=#{texts.size} words=#{texts.sum { |t| word_count(t) }} lines=#{texts.sum { |t| t.lines.size }}"
-      end
+      surfaces.map { |name, texts| measure_line(name, texts) }
     end
 
-    private
+    def measure_line(name, texts)
+      "#{name} files=#{texts.size} words=#{texts.sum { |t| word_count(t) }} lines=#{texts.sum { |t| t.lines.size }}"
+    end
 
     # The word ratchet and pinned headers need a budgets file; the dotfiles
     # store requires one, a project store opts in by having its own.
@@ -201,6 +224,7 @@ module Skill
       each_relative_md_link do |rel, _line_no, target, _raw|
         dest = resolve_link(rel, target)
         next if dest && File.file?(File.join(@store, dest))
+        next if @project && project_file?(rel, target)
 
         error("#{rel}: broken link -> #{target}")
       end
@@ -268,10 +292,19 @@ module Skill
       end
     end
 
-    def check_dropped_identifiers
-      roots = %w[AGENTS.md CONTEXT.md CLAUDE.md].map { |name| File.join(@paths.project_root, name) }
-      owned = @contents.values + roots.select { |path| File.file?(path) }.map { |path| File.read(path) }
-      DroppedIdentifiers.new(store: @store, ref: @since, current: @contents, owned_text: owned.join("\n"))
+    # Ownership is the union of every store's text and the root docs, so an
+    # identifier moved between stores or into AGENTS.md is not dropped.
+    def check_dropped_identifiers(stores)
+      docs = @paths.root_doc_paths(project: @project).map { |path| File.read(path) }
+      owned = (@store_contents.flat_map(&:values) + docs).join("\n")
+      stores.each do |label, dir|
+        @label = stores.size > 1 ? label : nil
+        DroppedIdentifiers.new(dir: dir, ref: @since, owned_text: owned).findings.each { |message| error(message) }
+      end
+      @label = nil
+      return unless @project
+
+      DroppedIdentifiers.new(dir: @paths.project_root, ref: @since, owned_text: owned, names: Paths::ROOT_DOCS)
                         .findings.each { |message| error(message) }
     end
 
@@ -335,6 +368,16 @@ module Skill
       parts.join("/")
     end
 
+    # Project mode: a link may leave the store for an existing file inside the
+    # project root (AGENTS.md, CONTEXT.md); anything outside the root is broken.
+    def project_file?(from_rel, target)
+      root = File.realpath(@paths.project_root)
+      dest = File.realpath(File.expand_path(target, File.dirname(File.join(@store, from_rel))))
+      dest.start_with?(root + File::SEPARATOR) && File.file?(dest)
+    rescue SystemCallError
+      false
+    end
+
     def skill_md?(rel)
       File.basename(rel) == "SKILL.md"
     end
@@ -393,7 +436,7 @@ module Skill
     end
 
     def error(message)
-      @errors << message
+      @errors << (@label ? "#{@label}: #{message}" : message)
     end
 
     def yaml_load(text)

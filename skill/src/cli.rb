@@ -88,7 +88,7 @@ module Skill
           doctor                       Report store vs ~/.agents/skills status
           lint [--measure] [--since REF]
                                        Lint store shape, budgets, and link graph
-                                       (with --project: that project's skill store)
+                                       (with --project: that project's skill stores)
           prune                        Remove orphan rcup links whose store source is gone
           backfill <name>              Copy drifted agent files into the store
           promote <name>               Move .agents/skills/<name> into the store
