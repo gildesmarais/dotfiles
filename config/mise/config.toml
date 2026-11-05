@@ -4,7 +4,7 @@ compile = false
 [tools]
 awscli = "2.24.27"
 kubectl = "1.28.4"
-node = "22"
+node = "26"
 pnpm = "latest"
 python = "3.15.2"
 ruby = "latest"
