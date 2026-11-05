@@ -59,12 +59,12 @@ After every verdict, fold `Discoveries` into the Backlog, then merge, split, reo
 
 ## Brain Ledger
 
-Scratch file by default; `<repo>/.agents/brain-ledger.md` when the user wants it kept. Rewrite it after every verdict; it is the only state re-read on resume.
+Default path `~/.local/state/brain/<goal-slug>.md`: one per goal so parallel sessions don't clobber, outside git; `<repo>/.agents/brain-ledger.md` when the user wants it kept in the repo. Entries are dated. Rewrite it after every verdict; it is the only state re-read on resume.
 
 ```markdown
 Goal: <one line>
 Repos: <root> · <default> · <baseline> · <gate>
-| Tranche | Repo | Status | SHA | Residual |
+| Tranche | Repo | Status | SHA | Date | Residual |
 Backlog: <ordered ids + one-line reason for last re-plan>
 Decisions: <date — decision — why>
 ```
