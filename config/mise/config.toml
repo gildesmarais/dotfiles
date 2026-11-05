@@ -3,7 +3,7 @@ compile = false
 
 [tools]
 actionlint = "latest"
-awscli = "2.24.27"
+awscli = "2.39.4"
 kubectl = "1.28.4"
 "npm:npm-check-updates" = "latest"
 "npm:prettier" = "latest"
