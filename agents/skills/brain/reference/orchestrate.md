@@ -49,9 +49,9 @@ Set `model` and `effort` per spawn; the strongest tier is where defects get caug
 1. **Bounds:** `git diff --name-only <baseline>` in the Hand's worktree ⊆ whitelist.
 2. **Gate:** the Brain runs the gate and acceptance check itself; exit 0 observed.
 3. **Land:** merge the worktree branch; commit per the commit law; record SHA.
-4. **Reject:** discard the worktree; write a diagnosis (what failed, likely cause, what the brief changes); retry once with the revised brief, or a higher tier. Second failure → tranche blocked.
+4. **Reject:** discard the worktree; write a diagnosis (what failed, likely cause, what the brief changes); retry once with the revised brief, or a higher tier.
 
-Pipeline: while verifying tranche N, brief the next tranche that does not depend on it. Independent tranches go out in one message.
+Pipeline: while verifying tranche N, brief the next independent tranche; independent tranches go out in one message.
 
 ## Re-plan
 
@@ -59,7 +59,7 @@ After every verdict, fold `Discoveries` into the Backlog, then merge, split, reo
 
 ## Brain Ledger
 
-Default path `~/.local/state/brain/<goal-slug>.md`: one per goal so parallel sessions don't clobber, outside git; `<repo>/.agents/brain-ledger.md` when the user wants it kept in the repo. Entries are dated. Rewrite it after every verdict; it is the only state re-read on resume.
+Default path `~/.local/state/brain/<goal-slug>.md`: one per goal so parallel sessions don't clobber, outside git; `<repo>/.agents/brain-ledger.md` when the user wants it kept in the repo. Entries are dated. Rewrite it after every verdict.
 
 ```markdown
 Goal: <one line>

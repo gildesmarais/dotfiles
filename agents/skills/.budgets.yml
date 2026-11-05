@@ -16,8 +16,9 @@ words:
   architecture/reference/refactor-boundaries.md: 311
   architecture/reference/refactor-types.md: 280
   architecture/reference/structure-survey.md: 326
-  brain/SKILL.md: 567
-  brain/reference/orchestrate.md: 520
+  brain/SKILL.md: 566
+  brain/reference/consult.md: 413
+  brain/reference/orchestrate.md: 519
   communication/SKILL.md: 231
   communication/reference/external-message.md: 107
   communication/reference/one-on-one.md: 262
