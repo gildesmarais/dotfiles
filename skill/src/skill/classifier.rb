@@ -5,7 +5,9 @@ require "find"
 
 module Skill
   class Classifier
-    STATUSES = %w[ok drift home-only broken orphan].freeze
+    # Per-skill statuses, plus "overlap" for an install root that overlaps the
+    # store (see #overlaps_store?).
+    STATUSES = %w[ok drift home-only broken orphan overlap].freeze
 
     def initialize(paths:)
       @paths = paths
@@ -52,12 +54,12 @@ module Skill
     # Links under ~/.<root>/skills/<name>/ that dangle and whose target, as the
     # OS resolves it, lies inside the dotfiles store (agents/skills or
     # claude/skills).
-    # An install root inside the store is never scanned: its dangling links
-    # belong to the store, not to an rcup install.
+    # An install root that overlaps the store is never scanned: its dangling
+    # links belong to the store, not to an rcup install.
     def orphan_paths(name, root: "agents")
       agent = File.join(@paths.install_dir(root), name)
       return [] unless File.directory?(agent)
-      return [] if store_internal_root?(root)
+      return [] if overlaps_store?(root)
 
       agent_root = File.expand_path(agent)
 
@@ -83,10 +85,12 @@ module Skill
       orphans.sort
     end
 
-    # True when ~/.<root>/skills resolves into the dotfiles store (agents/skills
-    # or claude/skills), e.g. ~/.agents/skills -> ~/.dotfiles/agents/skills.
-    def store_internal_root?(root)
-      under_store?(@paths.install_dir(root), store_roots)
+    # True when ~/.<root>/skills, resolved, lies inside the dotfiles store
+    # (agents/skills or claude/skills) or contains it, e.g.
+    # ~/.agents/skills -> ~/.dotfiles/agents/skills or ~/.claude/skills -> ~/.dotfiles.
+    def overlaps_store?(root)
+      install = canonical_prefix(@paths.install_dir(root))
+      store_roots.any? { |store| under_root?(install, store) || under_root?(store, install) }
     end
 
     # [name, status] rows for one install root. The agents root lists every

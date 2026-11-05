@@ -17,10 +17,10 @@ module Skill
     NO_DRIFT_BACKFILL_ERROR = "no real-file drift for %<name>s"
     TYPE_CLASH_BACKFILL_ERROR = "refusing to backfill over non-file store path: %<path>s"
     RCUP_HINT = "run rcup (or wait for topgrade) to install into ~/.agents/skills and ~/.claude/skills"
-    CLAUDE_DRIFT_HINT = "claude:<name> drift: copy local edits into the store and remove extra files, " \
+    CLAUDE_DRIFT_HINT = "%<names>s drift: copy local edits into the store and remove extra files, " \
                         "then rerun rcup (rcup overwrites replaced links and keeps extra files)"
-    STORE_INTERNAL_PRUNE_ERROR = "refusing to prune %<dir>s: it resolves into the skill store; " \
-                                 "make it a real directory and rerun rcup"
+    STORE_OVERLAP_HINT = "%<dir>s overlaps the skill store; make it a real directory and rerun rcup"
+    STORE_OVERLAP_PRUNE_ERROR = "refusing to prune: #{STORE_OVERLAP_HINT}"
     PRUNE_HINT = "run skill prune to remove orphan links"
 
     def initialize(paths:, shell_ui:)
@@ -42,18 +42,18 @@ module Skill
     def doctor_skills
       @paths.ensure_store!
       entries = Paths::INSTALL_ROOTS.flat_map do |root|
+        # One row for an overlapping root: its skill rows would compare the store with itself.
+        next [[root, @paths.install_dir(root), "overlap"]] if classifier.overlaps_store?(root)
+
         classifier.report_entries(root: root).map { |name, status| [root, install_label(root, name), status] }
       end
       return if entries.empty?
 
       width = [entries.map { |_root, label, _status| label.length }.max, 24].max
       entries.each { |_root, label, status| puts(format("%-#{width}s  %s", label, status)) }
-      statuses = entries.map(&:last)
-      claude_drift = entries.any? { |root, _label, status| root == "claude" && status == "drift" }
-      @shell_ui.note(CLAUDE_DRIFT_HINT) if claude_drift
-      @shell_ui.note(PRUNE_HINT) if statuses.include?("orphan")
+      note_doctor_hints(entries)
 
-      raise ExitError.new(status: 1) if (statuses & %w[drift orphan]).any?
+      raise ExitError.new(status: 1) if (entries.map(&:last) & %w[drift orphan overlap]).any?
     end
 
     def lint_skills(project: false, measure: false, since: nil)
@@ -73,9 +73,9 @@ module Skill
     def prune_skills
       @paths.ensure_store!
       Paths::INSTALL_ROOTS.each do |root|
-        next unless classifier.store_internal_root?(root)
+        next unless classifier.overlaps_store?(root)
 
-        raise ExitError, format(STORE_INTERNAL_PRUNE_ERROR, dir: @paths.install_dir(root))
+        raise ExitError, format(STORE_OVERLAP_PRUNE_ERROR, dir: @paths.install_dir(root))
       end
       removed = 0
 
@@ -181,6 +181,18 @@ module Skill
     end
 
     private
+
+    # Notes for doctor's [root, label, status] rows, after the table.
+    def note_doctor_hints(entries)
+      claude_drift = entries.select { |root, _label, status| root == "claude" && status == "drift" }
+      unless claude_drift.empty?
+        @shell_ui.note(format(CLAUDE_DRIFT_HINT, names: claude_drift.map { |_root, label, _status| label }.join(", ")))
+      end
+      @shell_ui.note(PRUNE_HINT) if entries.any? { |_root, _label, status| status == "orphan" }
+      entries.each do |_root, label, status|
+        @shell_ui.note(format(STORE_OVERLAP_HINT, dir: label)) if status == "overlap"
+      end
+    end
 
     # Rows from ~/.agents/skills stay bare; other install roots carry "<root>:".
     def install_label(root, name)

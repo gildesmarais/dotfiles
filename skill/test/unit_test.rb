@@ -132,8 +132,62 @@ class SkillUnitTest < Minitest::Test
   end
 
   def test_classifier_statuses_are_frozen_closed_set
-    assert_equal(%w[ok drift home-only broken orphan], Skill::Classifier::STATUSES)
+    assert_equal(%w[ok drift home-only broken orphan overlap], Skill::Classifier::STATUSES)
     assert(Skill::Classifier::STATUSES.frozen?)
+  end
+
+  def test_classifier_overlaps_store_both_directions_with_path_boundary
+    classifier = Skill::Classifier.new(paths: @paths)
+    FileUtils.mkdir_p(File.join(@home_dir, ".agents"))
+    FileUtils.mkdir_p(File.join(@home_dir, ".claude"))
+    refute(classifier.overlaps_store?("agents"), "absent root does not overlap")
+
+    {
+      @skills_dir => true,
+      File.join(@skills_dir, "x") => true,
+      File.join(@dotfiles_root, "agents") => true,
+      @dotfiles_root => true,
+      "#{@skills_dir}-local" => false,
+      File.join(@dotfiles_root, "agents", "skil") => false
+    }.each do |target, expected|
+      FileUtils.mkdir_p(target)
+      FileUtils.rm_f(@paths.install_dir("claude"))
+      File.symlink(target, @paths.install_dir("claude"))
+
+      assert_equal(expected, classifier.overlaps_store?("claude"), target)
+      refute(classifier.overlaps_store?("agents"))
+    end
+  end
+
+  def test_prune_skills_refuses_root_containing_store_without_unlinking
+    create_store_skill("x")
+    link = File.join(@paths.store_skill_path("x"), "gone.md")
+    FileUtils.ln_s(File.join(@paths.store_skill_path("x"), "missing.md"), link)
+    FileUtils.mkdir_p(File.join(@home_dir, ".claude"))
+    File.symlink(@dotfiles_root, @paths.install_dir("claude"))
+
+    error = assert_raises(Skill::ExitError) { capture_io { @operations.prune_skills } }
+
+    assert_equal(
+      format(Skill::Operations::STORE_OVERLAP_PRUNE_ERROR, dir: @paths.install_dir("claude")),
+      error.message
+    )
+    assert(File.symlink?(link), "in-store link must survive")
+  end
+
+  def test_doctor_skills_reports_overlapping_root_and_exits_one
+    create_store_skill("x")
+    FileUtils.mkdir_p(File.join(@home_dir, ".claude"))
+    File.symlink(@dotfiles_root, @paths.install_dir("claude"))
+
+    error = nil
+    out, = capture_io { error = assert_raises(Skill::ExitError) { @operations.doctor_skills } }
+
+    assert_equal(1, error.status)
+    assert_match(/^x\s+ok$/, out)
+    assert_match(/^#{Regexp.escape(@paths.install_dir('claude'))}\s+overlap$/, out)
+    refute_match(/claude:/, out)
+    assert_includes(@ui.notes, format(Skill::Operations::STORE_OVERLAP_HINT, dir: @paths.install_dir("claude")))
   end
 
   def test_classifier_status_broken_when_agent_symlink_dangling

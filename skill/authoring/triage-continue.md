@@ -14,7 +14,7 @@ Evidence → Triage Ledger → `product-owner` gate and/or `$dev` plan only. No 
 
 ## Pipeline fit
 
-Intent domain. Compose: incident/observability without Jira or IR → `triage` first (store README rule 1). Handoff matrix lives in `SKILL.md`. Never owns Assure or Ship.
+Intent domain. Compose: incident/observability without a ticket → `triage` first (store README rule 1). Handoff matrix lives in `SKILL.md`. Never owns Assure or Ship.
 
 ## Usage flows (considered)
 
@@ -46,7 +46,7 @@ Continue refining the global triage skill in the dotfiles skill store.
 1. `~/.agents/skills/triage/SKILL.md`
 2. `~/.agents/skills/triage/reference/intake.md`
 3. `~/.agents/skills/triage/reference/scrape-incident.md`
-4. Store Intent + compose: `~/.agents/skills/README.md` (Intent row; compose rule 1 — triage first without Jira/IR)
+4. Store Intent + compose: `~/.agents/skills/README.md` (Intent row; compose rule 1 — triage first without a ticket)
 5. Vocabulary: `~/.agents/skills/CONTEXT.md` (Triage + Doc-class — do not conflate)
 6. Genesis / usage only: `~/.dotfiles/skill/authoring/triage-continue.md` (human section above this prompt)
 

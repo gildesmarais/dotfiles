@@ -372,14 +372,20 @@ class SkillCliTest < Minitest::Test
 
   def test_doctor_reports_claude_root_drift
     claude_home = install_claude_skill("ticket")
-    File.unlink(File.join(claude_home, "ticket", "SKILL.md"))
-    File.write(File.join(claude_home, "ticket", "SKILL.md"), "# Edited\n")
+    install_claude_skill("grilling")
+    install_claude_skill("alpha")
+    %w[ticket grilling].each do |name|
+      File.unlink(File.join(claude_home, name, "SKILL.md"))
+      File.write(File.join(claude_home, name, "SKILL.md"), "# Edited\n")
+    end
 
     result = run_skill("doctor")
 
     assert_equal(1, result.exitstatus, result.output)
     assert_match(/^claude:ticket\s+drift$/m, result.output)
-    assert_includes(result.output, Skill::Operations::CLAUDE_DRIFT_HINT)
+    assert_match(/^claude:alpha\s+ok$/m, result.output)
+    hint = format(Skill::Operations::CLAUDE_DRIFT_HINT, names: "claude:grilling, claude:ticket")
+    assert_includes(result.output, hint)
     refute_includes(result.output, "backfill")
   end
 
@@ -392,7 +398,7 @@ class SkillCliTest < Minitest::Test
     result = run_skill("doctor")
 
     assert_match(/^delta\s+drift$/m, result.output)
-    refute_includes(result.output, Skill::Operations::CLAUDE_DRIFT_HINT)
+    refute_includes(result.output, "drift: copy local edits")
   end
 
   def test_prune_removes_orphan_links_and_empty_dirs
@@ -521,7 +527,60 @@ class SkillCliTest < Minitest::Test
     assert(File.symlink?(link), "in-store link must survive")
 
     doctor = run_skill("doctor")
+    assert_equal(1, doctor.exitstatus, doctor.output)
     refute_match(/orphan/, doctor.output)
+    assert_match(/^#{Regexp.escape(@agents_skills_dir)}\s+overlap$/m, doctor.output)
+  end
+
+  def test_prune_refuses_install_root_containing_store
+    create_store_skill("x")
+    link = File.join(@skills_dir, "x", "gone.md")
+    FileUtils.ln_s(File.join(@skills_dir, "x", "missing.md"), link)
+    claude_home = File.join(@home_dir, ".claude", "skills")
+    FileUtils.mkdir_p(File.dirname(claude_home))
+    File.symlink(@dotfiles_root, claude_home)
+
+    result = run_skill("prune")
+
+    assert_equal(1, result.exitstatus, result.output)
+    assert_includes(
+      result.output,
+      "refusing to prune: #{claude_home} overlaps the skill store; make it a real directory and rerun rcup"
+    )
+    assert(File.symlink?(link), "in-store link must survive")
+  end
+
+  def test_doctor_reports_install_root_containing_store
+    create_store_skill("x")
+    FileUtils.mkdir_p(File.join(@home_dir, ".agents"))
+    File.symlink(File.join(@dotfiles_root, "agents"), @agents_skills_dir)
+
+    result = run_skill("doctor")
+
+    assert_equal(1, result.exitstatus, result.output)
+    assert_match(/^#{Regexp.escape(@agents_skills_dir)}\s+overlap$/m, result.output)
+    refute_match(/^x\s/m, result.output)
+    assert_includes(
+      result.output,
+      "#{@agents_skills_dir} overlaps the skill store; make it a real directory and rerun rcup"
+    )
+  end
+
+  def test_prune_runs_under_install_root_with_store_prefix_name
+    create_store_skill("linked")
+    sibling = "#{@skills_dir}-local"
+    FileUtils.mkdir_p(File.join(sibling, "linked"))
+    gone = File.join(sibling, "linked", "gone.md")
+    FileUtils.ln_s(File.join(@skills_dir, "linked", "gone.md"), gone)
+    FileUtils.mkdir_p(File.join(@home_dir, ".agents"))
+    File.symlink(sibling, @agents_skills_dir)
+
+    result = run_skill("prune")
+
+    assert_equal(0, result.exitstatus, result.output)
+    refute_includes(result.output, "refusing to prune")
+    assert_includes(result.output, "linked/gone.md")
+    refute_path_exists(gone)
   end
 
   def test_prune_keeps_symlinked_directories_beside_an_orphan
