@@ -460,6 +460,113 @@ class SkillCliTest < Minitest::Test
     assert_includes(second.output, "no orphans to prune")
   end
 
+  def test_prune_keeps_live_relative_link_under_symlinked_install_root
+    claude_home = symlink_claude_install_root
+    FileUtils.mkdir_p(File.join(claude_home, "x"))
+    live_target = File.join(@tmpdir, "deep", "dotfiles", "claude", "skills", "x", "f.md")
+    FileUtils.mkdir_p(File.dirname(live_target))
+    File.write(live_target, "live\n")
+    link = File.join(claude_home, "x", "f.md")
+    FileUtils.ln_s("../../../../dotfiles/claude/skills/x/f.md", link)
+    assert(File.exist?(link), "fixture link must resolve")
+
+    result = run_skill("prune")
+
+    assert_equal(0, result.exitstatus, result.output)
+    assert_includes(result.output, "no orphans to prune")
+    assert(File.symlink?(link))
+  end
+
+  def test_prune_removes_relative_dangling_link_under_symlinked_install_root
+    claude_home = symlink_claude_install_root
+    FileUtils.mkdir_p(File.join(claude_home, "x"))
+    File.write(File.join(claude_home, "x", "notes.md"), "mine\n")
+    link = File.join(claude_home, "x", "gone.md")
+    FileUtils.ln_s("../../../../../dotfiles/claude/skills/x/gone.md", link)
+
+    result = run_skill("prune")
+
+    assert_equal(0, result.exitstatus, result.output)
+    assert_includes(result.output, "claude:x/gone.md")
+    refute_path_exists(link)
+    assert(File.file?(File.join(claude_home, "x", "notes.md")))
+  end
+
+  def test_prune_keeps_symlinked_directories_beside_an_orphan
+    claude_home = File.join(@home_dir, ".claude", "skills")
+    skill = File.join(claude_home, "x")
+    FileUtils.mkdir_p([skill, File.join(@tmpdir, "emptydir"), File.join(@tmpdir, "fulldir")])
+    File.write(File.join(@tmpdir, "fulldir", "a.md"), "a\n")
+    FileUtils.ln_s(File.join(@dotfiles_root, "claude", "skills", "x", "gone.md"), File.join(skill, "gone.md"))
+    FileUtils.ln_s(File.join(@tmpdir, "emptydir"), File.join(skill, "empty-link"))
+    FileUtils.ln_s(File.join(@tmpdir, "fulldir"), File.join(skill, "full-link"))
+
+    2.times do
+      result = run_skill("prune")
+      assert_equal(0, result.exitstatus, result.output)
+    end
+    refute_path_exists(File.join(skill, "gone.md"))
+    assert(File.symlink?(File.join(skill, "empty-link")))
+    assert(File.symlink?(File.join(skill, "full-link")))
+    assert(File.directory?(File.join(@tmpdir, "emptydir")))
+  end
+
+  def test_prune_keeps_user_made_and_hidden_empty_directories
+    skill = File.join(@home_dir, ".claude", "skills", "x")
+    FileUtils.mkdir_p([File.join(skill, ".keep"), File.join(skill, "notes"), File.join(skill, "reference")])
+    FileUtils.ln_s(
+      File.join(@dotfiles_root, "claude", "skills", "x", "reference", "gone.md"),
+      File.join(skill, "reference", "gone.md")
+    )
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "y", "drafts"))
+    FileUtils.ln_s(File.join(@skills_dir, "y", "gone.md"), File.join(@agents_skills_dir, "y", "gone.md"))
+
+    result = run_skill("prune")
+
+    assert_equal(0, result.exitstatus, result.output)
+    assert_includes(result.output, "pruned 2 orphan links")
+    refute_path_exists(File.join(skill, "reference"))
+    assert(File.directory?(File.join(skill, ".keep")))
+    assert(File.directory?(File.join(skill, "notes")))
+    assert(File.directory?(File.join(@agents_skills_dir, "y", "drafts")))
+  end
+
+  def test_prune_removes_emptied_parents_up_to_the_skill_dir
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "z", "a", "b"))
+    FileUtils.mkdir_p(File.join(@agents_skills_dir, "w", "deep", "er"))
+    File.write(File.join(@agents_skills_dir, "w", "keep.md"), "keep\n")
+    {
+      "z" => "a/b/gone.md",
+      "w" => "deep/er/gone.md"
+    }.each do |name, relative|
+      FileUtils.ln_s(File.join(@skills_dir, name, relative), File.join(@agents_skills_dir, name, relative))
+    end
+
+    result = run_skill("prune")
+
+    assert_equal(0, result.exitstatus, result.output)
+    refute_path_exists(File.join(@agents_skills_dir, "z"))
+    refute_path_exists(File.join(@agents_skills_dir, "w", "deep"))
+    assert(File.file?(File.join(@agents_skills_dir, "w", "keep.md")))
+    assert(File.directory?(@agents_skills_dir))
+  end
+
+  def test_prune_removes_install_left_by_stale_claude_entry_after_rename
+    claude_home = install_claude_skill("old")
+    FileUtils.mv(File.join(@skills_dir, "old"), File.join(@skills_dir, "new"))
+    assert(File.symlink?(File.join(@dotfiles_root, "claude", "skills", "old")), "stale entry stays")
+
+    doctor = run_skill("doctor")
+    assert_match(/^claude:old\s+orphan$/m, doctor.output)
+
+    result = run_skill("prune")
+
+    assert_equal(0, result.exitstatus, result.output)
+    assert_includes(result.output, "claude:old/SKILL.md")
+    refute_path_exists(File.join(claude_home, "old"))
+    assert(File.symlink?(File.join(@dotfiles_root, "claude", "skills", "old")), "prune never touches the repo")
+  end
+
   def test_backfill_copies_drifted_files_and_preserves_store_only
     create_store_skill("drifted")
     File.write(File.join(@skills_dir, "drifted", "SKILL.md"), "# Store\n")
@@ -920,6 +1027,16 @@ class SkillCliTest < Minitest::Test
     FileUtils.mkdir_p(File.join(claude_home, name))
     FileUtils.ln_s(File.join(claude_store, name, "SKILL.md"), File.join(claude_home, name, "SKILL.md"))
     claude_home
+  end
+
+  # ~/.claude as a symlink to a deeper real directory, so a relative link
+  # resolves differently lexically than the OS resolves it; returns the
+  # lexical ~/.claude/skills.
+  def symlink_claude_install_root
+    real = File.join(@tmpdir, "deep", "a", "claude")
+    FileUtils.mkdir_p(File.join(real, "skills"))
+    File.symlink(real, File.join(@home_dir, ".claude"))
+    File.join(@home_dir, ".claude", "skills")
   end
 
   def create_store_skill(name)

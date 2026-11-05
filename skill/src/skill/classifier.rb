@@ -49,8 +49,9 @@ module Skill
       drifted.sort
     end
 
-    # Links under ~/.<root>/skills/<name>/ that point into the dotfiles store
-    # (agents/skills or claude/skills) at a target that no longer exists.
+    # Links under ~/.<root>/skills/<name>/ that dangle and whose target, as the
+    # OS resolves it, lies inside the dotfiles store (agents/skills or
+    # claude/skills).
     def orphan_paths(name, root: "agents")
       agent = File.join(@paths.install_dir(root), name)
       return [] unless File.directory?(agent)
@@ -67,9 +68,12 @@ module Skill
         next if relative.nil? || relative.empty?
         next if relative.split("/").any? { |part| part.start_with?(".") }
 
-        absolute = File.expand_path(File.readlink(path), File.dirname(path))
-        next unless under_store?(absolute, store_roots)
-        next if File.exist?(absolute)
+        next if File.exist?(path)
+
+        # Resolve relative targets from the link's real directory, as the OS
+        # does, so a symlinked install root cannot misplace them.
+        target = File.expand_path(File.readlink(path), File.realpath(File.dirname(path)))
+        next unless under_store?(target, store_roots)
 
         orphans << relative
       end
@@ -91,9 +95,9 @@ module Skill
       File.directory?(path) || (File.symlink?(path) && File.exist?(path))
     end
 
-    def under_store?(absolute, store_roots)
-      candidates = [canonical_prefix(absolute), File.expand_path(absolute)]
-      store_roots.any? { |root| candidates.any? { |candidate| under_root?(candidate, root) } }
+    def under_store?(target, store_roots)
+      canonical = canonical_prefix(target)
+      store_roots.any? { |root| under_root?(canonical, root) }
     end
 
     def under_root?(path, root)

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "fileutils"
-require "find"
 
 require_relative "classifier"
 require_relative "error"
@@ -79,8 +78,8 @@ module Skill
             File.unlink(File.join(install, relative))
             puts("#{install_label(root, name)}/#{relative}")
             removed += 1
+            remove_emptied_parents(install, relative)
           end
-          remove_empty_directories(install)
         end
       end
 
@@ -194,22 +193,21 @@ module Skill
       @classifier ||= Classifier.new(paths: @paths)
     end
 
-    def remove_empty_directories(root)
-      return unless File.directory?(root)
+    # Removes the parents of a pruned link that it left empty, deepest first,
+    # up to and including the skill's install dir. A symlink, hidden component,
+    # or non-empty directory ends the walk.
+    def remove_emptied_parents(install, relative)
+      parts = File.dirname(relative).split(File::SEPARATOR) - ["."]
+      return if parts.any? { |part| part.start_with?(".") }
 
-      directories = []
-      Find.find(root) do |path|
-        directories << path if File.directory?(path)
+      parts.length.downto(0) do |depth|
+        dir = File.join(install, *parts.first(depth))
+        break if File.symlink?(dir) || !File.directory?(dir) || !Dir.empty?(dir)
+
+        Dir.rmdir(dir)
       end
-
-      directories.sort_by(&:length).reverse_each do |path|
-        next unless File.directory?(path)
-        next unless Dir.children(path).empty?
-
-        Dir.rmdir(path)
-      rescue Errno::ENOTEMPTY, Errno::ENOENT
-        # Another process or a non-empty residual; leave in place.
-      end
+    rescue Errno::ENOTEMPTY, Errno::ENOENT, Errno::ENOTDIR
+      # Changed underneath us; leave the rest in place.
     end
   end
 end

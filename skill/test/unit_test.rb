@@ -309,16 +309,19 @@ class SkillUnitTest < Minitest::Test
       File.join(@paths.agents_skill_path("linked"), "reference", "gone.md")
     )
     FileUtils.mkdir_p(File.join(@paths.agents_skill_path("dead"), "nested"))
-    FileUtils.ln_s(
-      File.join(@paths.store_dir, "dead", "SKILL.md"),
-      File.join(@paths.agents_skill_path("dead"), "SKILL.md")
-    )
+    %w[SKILL.md nested/x.md].each do |relative|
+      FileUtils.ln_s(
+        File.join(@paths.store_dir, "dead", relative),
+        File.join(@paths.agents_skill_path("dead"), relative)
+      )
+    end
 
     out, = capture_io { @operations.prune_skills }
 
     assert_includes(out, "linked/reference/gone.md")
     assert_includes(out, "dead/SKILL.md")
-    assert_includes(@ui.notes, "pruned 2 orphan links")
+    assert_includes(out, "dead/nested/x.md")
+    assert_includes(@ui.notes, "pruned 3 orphan links")
     refute(File.exist?(File.join(@paths.agents_skill_path("linked"), "reference", "gone.md")))
     assert(File.symlink?(File.join(@paths.agents_skill_path("linked"), "SKILL.md")))
     refute(File.exist?(File.join(@paths.agents_skill_path("linked"), "reference")))
