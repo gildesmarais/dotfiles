@@ -15,13 +15,16 @@ module Skill
     FENCE_RE = /^```.*?^```/m.freeze
 
     # dir: a git work tree directory. names nil: every non-hidden, non-README
-    # Markdown file under it (a skill store); names given: those top-level files
-    # (root docs). owned_text: all text that may still own an identifier.
-    def initialize(dir:, ref:, owned_text:, names: nil)
+    # Markdown file under it (a skill store), or under its subpath when given
+    # (a store at REF whatever the working tree holds there; reported relative
+    # to it); names given: those top-level files (root docs). owned_text: all
+    # text that may still own an identifier.
+    def initialize(dir:, ref:, owned_text:, names: nil, subpath: nil)
       @dir = dir
       @ref = ref
       @owned_text = owned_text
       @names = names
+      @subpath = subpath
     end
 
     def findings
@@ -38,9 +41,13 @@ module Skill
 
     private
 
-    # Token match: `dev` is not owned by `devops`, `$dev`, or `dev-tools`.
+    # Token match: `dev` is not owned by `devops`, `$dev`, or `dev-tools`. A
+    # boundary applies only where the id's edge is a word-like character, so
+    # `agents/skills/` is owned by `agents/skills/x.md` and `.md` by `SKILL.md`.
     def owned?(id)
-      @owned_text.match?(/(?<![\w$-])#{Regexp.escape(id)}(?![\w-])/)
+      before = id.match?(/\A[\w$-]/) ? '(?<![\w$-])' : ""
+      after = id.match?(/[\w-]\z/) ? '(?![\w-])' : ""
+      @owned_text.match?(/#{before}#{Regexp.escape(id)}#{after}/)
     end
 
     def identifiers(text)
@@ -54,15 +61,17 @@ module Skill
       listing.split("\0").each do |entry|
         meta, path = entry.split("\t", 2)
         next if path.nil? || meta.start_with?("120000")
-        next unless markdown_doc?(path)
 
-        files << [path, git("show", "#{@ref}:./#{path}")]
+        rel = @subpath ? path.sub(%r{\A#{Regexp.escape(@subpath)}/}, "") : path
+        next unless markdown_doc?(rel)
+
+        files << [rel, git("show", "#{@ref}:./#{path}")]
       end
       files
     end
 
     def listing
-      return git("ls-tree", "-z", "-r", @ref) unless @names
+      return git("ls-tree", "-z", "-r", @ref, *(@subpath ? ["--", @subpath] : [])) unless @names
 
       git("ls-tree", "-z", @ref, "--", *@names)
     end

@@ -293,19 +293,27 @@ module Skill
     end
 
     # Ownership is the union of every store's text and the root docs, so an
-    # identifier moved between stores or into AGENTS.md is not dropped.
+    # identifier moved between stores or into AGENTS.md is not dropped. Project
+    # mode diffs every store location present at REF, not only those that still
+    # exist, so a deleted or symlinked-away store cannot hide its drops.
     def check_dropped_identifiers(stores)
       docs = @paths.root_doc_paths(project: @project).map { |path| File.read(path) }
       owned = (@store_contents.flat_map(&:values) + docs).join("\n")
-      stores.each do |label, dir|
-        @label = stores.size > 1 ? label : nil
-        DroppedIdentifiers.new(dir: dir, ref: @since, owned_text: owned).findings.each { |message| error(message) }
+      prefixed = stores.size > 1
+      sources = if @project
+                  Paths::PROJECT_STORES.map { |label| [label, { dir: @paths.project_root, subpath: label }] }
+                else
+                  stores.map { |label, dir| [label, { dir: dir }] }
+                end
+      findings = sources.flat_map do |label, source|
+        DroppedIdentifiers.new(ref: @since, owned_text: owned, **source).findings
+                          .map { |message| prefixed ? "#{label}: #{message}" : message }
       end
-      @label = nil
+      @errors.concat(findings.uniq)
       return unless @project
 
       DroppedIdentifiers.new(dir: @paths.project_root, ref: @since, owned_text: owned, names: Paths::ROOT_DOCS)
-                        .findings.each { |message| error(message) }
+                        .findings.each { |message| @errors << message }
     end
 
     def check_claude_entries
@@ -349,7 +357,21 @@ module Skill
       end
     end
 
+    # Store-relative path a link lands on. Project mode also follows a link that
+    # leaves the store and re-enters it, so the link graph sees it.
     def resolve_link(from_rel, target)
+      lexical_link(from_rel, target) || (@project ? reentered_link(from_rel, target) : nil)
+    end
+
+    def reentered_link(from_rel, target)
+      real = File.realpath(File.expand_path(target, File.dirname(File.join(@store, from_rel))))
+      prefix = @store + File::SEPARATOR
+      real.start_with?(prefix) ? real[prefix.length..] : nil
+    rescue SystemCallError
+      nil
+    end
+
+    def lexical_link(from_rel, target)
       base_dir = File.dirname(from_rel)
       base_dir = "" if base_dir == "."
       joined = base_dir.empty? ? target : File.join(base_dir, target)
@@ -368,7 +390,7 @@ module Skill
       parts.join("/")
     end
 
-    # Project mode: a link may leave the store for an existing file inside the
+    # Project mode: a link may leave every store for an existing file inside the
     # project root (AGENTS.md, CONTEXT.md); anything outside the root is broken.
     def project_file?(from_rel, target)
       root = File.realpath(@paths.project_root)

@@ -9,6 +9,8 @@ module Skill
   class Paths
     # Root docs that own identifiers and make up a project's always-loaded context.
     ROOT_DOCS = %w[AGENTS.md CONTEXT.md CLAUDE.md].freeze
+    # Project-relative store locations, in lint order.
+    PROJECT_STORES = %w[.agents/skills .claude/skills].freeze
 
     attr_writer :project_root
 
@@ -78,12 +80,12 @@ module Skill
     # per distinct real path. Empty when neither exists.
     def project_stores
       stores = {}
-      [".agents", ".claude"].each do |dir|
-        path = File.join(project_root, dir, "skills")
+      PROJECT_STORES.each do |label|
+        path = File.join(project_root, label)
         next unless File.directory?(path)
 
         real = File.realpath(path)
-        stores["#{dir}/skills"] = real unless stores.value?(real)
+        stores[label] = real unless stores.value?(real)
       end
       stores
     rescue Errno::ENOENT

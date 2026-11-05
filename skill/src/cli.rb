@@ -7,6 +7,11 @@ require_relative "skill/operations"
 require_relative "skill/paths"
 require_relative "skill/ui"
 
+# Skill files are UTF-8 whatever the locale; the C locale would otherwise make
+# every read US-ASCII and raise on non-ASCII text.
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = nil
+
 module Skill
   class CLI
     COMMANDS = {

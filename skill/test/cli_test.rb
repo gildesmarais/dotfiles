@@ -693,6 +693,81 @@ class SkillCliTest < Minitest::Test
     refute_includes(result.output, "owned-id")
   end
 
+  def test_lint_since_diffs_stores_present_at_ref_even_when_removed_or_symlinked
+    write_project_skill(".agents", "a", "# A\n\n`a-id`\n")
+    write_project_skill(".claude", "c", "# C\n\n`c-id` `c-kept`\n")
+    File.write(File.join(@project_root, "AGENTS.md"), "Owns `c-kept`.\n")
+    git_project("add", "-A")
+    git_project("commit", "-q", "-m", "base")
+
+    FileUtils.rm_rf(File.join(@project_root, ".claude", "skills"))
+    result = run_skill("--project", @project_root, "lint", "--since", "HEAD")
+    assert_equal(1, result.exitstatus, "deleted store")
+    assert_includes(result.output, "dropped: c-id (c/SKILL.md)")
+    refute_includes(result.output, "c-kept")
+
+    FileUtils.rm_rf(File.join(@project_root, ".claude"))
+    FileUtils.mkdir_p(File.join(@project_root, ".claude"))
+    File.symlink("../.agents/skills", File.join(@project_root, ".claude", "skills"))
+    result = run_skill("--project", @project_root, "lint", "--since", "HEAD")
+    assert_equal(1, result.exitstatus, "store replaced by a symlink")
+    assert_includes(result.output, "dropped: c-id (c/SKILL.md)")
+    refute_includes(result.output, "c-kept")
+  end
+
+  def test_project_links_that_leave_and_reenter_the_store_join_the_link_graph
+    write_project_skill(".agents", "a", "# A\n\n[b](../../skills/b/SKILL.md)\n")
+    write_project_skill(".agents", "b", "# B\n\n[a](../../skills/a/SKILL.md)\n")
+
+    result = run_skill("--project", @project_root, "lint")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "a/SKILL.md: router-to-router link -> b/SKILL.md")
+    assert_includes(result.output, "b/SKILL.md: router-to-router link -> a/SKILL.md")
+    assert_includes(result.output, "cycle: a/SKILL.md -> b/SKILL.md -> a/SKILL.md")
+    refute_includes(result.output, "broken link")
+  end
+
+  def test_lint_since_ownership_covers_ids_with_non_word_edges
+    write_project_skill(".agents", "note", "# Note\n\nSpans `agents/skills/` and `.md` and `dev`.\n")
+    git_project("add", "-A")
+    git_project("commit", "-q", "-m", "base")
+    write_project_skill(".agents", "note", "# Note\n\nEdit agents/skills/note/SKILL.md files; see devops.\n")
+
+    result = run_skill("--project", @project_root, "lint", "--since", "HEAD")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "dropped: dev (note/SKILL.md)")
+    refute_includes(result.output, "dropped: .md")
+    refute_includes(result.output, "dropped: agents/skills/")
+  end
+
+  def test_lint_measure_since_survive_c_locale_with_non_ascii_text
+    body = "---\nname: note\ndescription: caf\u00e9 r\u00e9sum\u00e9\n---\n\n`d\u00e9j\u00e0-id` \u2014 ok\n"
+    write_project_skill(".agents", "note", body)
+    File.write(File.join(@project_root, "AGENTS.md"), "Owns `d\u00e9j\u00e0-id` \u2014 caf\u00e9.\n")
+    git_project("add", "-A")
+    git_project("commit", "-q", "-m", "base")
+
+    result = run_skill_env({ "LC_ALL" => "C" }, "--project", @project_root, "lint", "--measure", "--since", "HEAD")
+
+    assert_equal(0, result.exitstatus, result.output)
+    assert_includes(result.output, "context files=1")
+    assert_includes(result.output, "lint ok")
+  end
+
+  def test_lint_measure_since_survive_c_locale_with_non_ascii_only_in_root_docs
+    write_project_skill(".agents", "note", "# Note\n\n`plain-id`\n")
+    File.write(File.join(@project_root, "AGENTS.md"), "Owns `plain-id` — café.\n")
+    git_project("add", "-A")
+    git_project("commit", "-q", "-m", "base")
+
+    result = run_skill_env({ "LC_ALL" => "C" }, "--project", @project_root, "lint", "--measure", "--since", "HEAD")
+
+    assert_equal(0, result.exitstatus, result.output)
+    assert_includes(result.output, "lint ok")
+  end
+
   private
 
   def write_project_skill(root, name, body, file: "SKILL.md")
@@ -709,9 +784,13 @@ class SkillCliTest < Minitest::Test
     run_skill_from(@script_path, *args)
   end
 
-  def run_skill_from(script_path, *args)
+  def run_skill_env(env, *args)
+    run_skill_from(@script_path, *args, env: env)
+  end
+
+  def run_skill_from(script_path, *args, env: {})
     output, status = Open3.capture2e(
-      { "HOME" => @home_dir },
+      { "HOME" => @home_dir }.merge(env),
       script_path,
       *args,
       chdir: @project_root
