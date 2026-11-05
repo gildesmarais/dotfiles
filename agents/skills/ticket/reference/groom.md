@@ -1,6 +1,6 @@
 # Backlog groom (`groom`)
 
-Make the board tell the truth: PO (value, Create bar) + Scrum Master (WIP, status, links). No code unless asked.
+Make the board tell the truth: Create bar + Scrum Master hygiene (WIP, status, links). Value calls go to `product-owner` `gate`. No code unless asked.
 
 ## Intake (max 2 questions; never re-ask)
 
@@ -15,7 +15,7 @@ Make the board tell the truth: PO (value, Create bar) + Scrum Master (WIP, statu
 - Done foundation stays Done (never reopen as MVP). Close per `SKILL.md` Status lifecycle.
 - Empty future epics stay parked until evidence or an explicit Create ask.
 - Ticket text: short Context / Outcome / AC.
-- Status names, link types, Ready transitions, epic/parent field: `<project>/.agents/tracker.md`, else discover via the adapter / repo wrapper / `AGENTS.md`; never hardcode. Inspect a working reference card and the link schema before judging link direction.
+- Tracker facts (status names, link types, Ready transitions, epic/parent field) per `SKILL.md` Shared prep. Inspect a working reference card and the link schema before judging link direction.
 - Create adding user-facing scope → `gate` (or user confirm) first.
 
 ## Pipeline

@@ -18,7 +18,7 @@ Default and only branch: **`intake`**.
 
 Playbook (load after `intake.md` on signal; not a peer branch): Botasaurus, scrape-api, `challenge_block`, `timeout/work`, fail-closed scrape UX → [`reference/scrape-incident.md`](reference/scrape-incident.md).
 
-Skip: approved plan / explicit go → `$dev` `implement`; Jira key/URL → `ticket`; stress-test → `grilling`; morning PR attention → `ops-github`; periodic or post-deploy service review → `ops-chore`.
+Skip: approved plan / explicit go → `$dev` `implement`; Jira key/URL or GitHub issue URL/`#N` → `ticket`; stress-test → `grilling`; morning PR attention → `ops-github`; periodic or post-deploy service review → `ops-chore`.
 
 ## Shared prep
 

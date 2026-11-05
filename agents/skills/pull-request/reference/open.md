@@ -29,11 +29,11 @@ Repo-local conventions also apply. `Resolves: DEBT-<NUMBER>`: [`../../harvest/re
 - Base: `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` → `git symbolic-ref refs/remotes/origin/HEAD` → repo-declared base; ask only if underivable.
 - Push with upstream, confirm, then `gh pr create --base <default> --title … --body …`. `gh` unavailable → URL/manual step.
 
-## Jira sync
+## Ticket sync
 
-Ticket derived (or `ticket` flow) + Jira tool → `ticket` **Post-PR sync** without re-asking. Unavailable / no transition → report and continue. Own PR with Delivery Ledger `Rollout` removal owed → `ticket` `create` Cutover follow-up (same epic; trigger if known); else Residuals + say so. Report key in Output.
+PR resolves a ticket (Jira key or GitHub issue; derived or `ticket` flow) → `ticket` **Post-PR sync** without re-asking. Unavailable / no transition → report and continue. Own PR with Delivery Ledger `Rollout` removal owed → `ticket` `create` Cutover follow-up (same epic; trigger if known); else Residuals + say so. Report ticket ID in Output.
 
 ## Output
 
-Branch, ticket, commit hash + title, validation run, PR URL, Jira status (or why skipped), files left out.
+Branch, ticket, commit hash + title, validation run, PR URL, ticket status (or why skipped), files left out.
 

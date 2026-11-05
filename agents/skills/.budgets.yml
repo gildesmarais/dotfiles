@@ -24,13 +24,13 @@ words:
   communication/reference/one-on-one.md: 262
   communication/reference/project-update.md: 105
   communication/reference/slack-message.md: 281
-  communication/reference/sprint-update.md: 424
+  communication/reference/sprint-update.md: 426
   dependabot/SKILL.md: 167
   dependabot/reference/configure.md: 87
   dependabot/reference/pr-commands.md: 146
   dependabot/reference/triage.md: 142
   dependabot/reference/yml-keys.md: 81
-  dev/SKILL.md: 640
+  dev/SKILL.md: 642
   dev/reference/api-truth.md: 99
   communication/reference/outward-text.md: 383
   dev/reference/plan.md: 378
@@ -42,11 +42,11 @@ words:
   harvest/SKILL.md: 213
   harvest/reference/debt.md: 281
   harvest/reference/distill.md: 280
-  ticket/SKILL.md: 515
-  ticket/reference/challenge.md: 218
-  ticket/reference/github.md: 300
-  ticket/reference/groom.md: 484
-  ticket/reference/jira.md: 200
+  ticket/SKILL.md: 513
+  ticket/reference/challenge.md: 197
+  ticket/reference/github.md: 299
+  ticket/reference/groom.md: 482
+  ticket/reference/jira.md: 186
   omnifocus/SKILL.md: 292
   omnifocus/reference/applescript.md: 241
   ops-chore/SKILL.md: 301
@@ -68,7 +68,7 @@ words:
   pull-request/reference/conflicts.md: 167
   pull-request/reference/fix-ci.md: 192
   pull-request/reference/gh-api.md: 244
-  pull-request/reference/open.md: 293
+  pull-request/reference/open.md: 299
   pull-request/reference/pr-narrative.md: 222
   pull-request/reference/reply.md: 93
   pull-request/reference/resolve.md: 234
@@ -97,7 +97,7 @@ words:
   swift-dev/SKILL.md: 200
   swift-dev/reference.md: 294
   swiftui-dev/SKILL.md: 140
-  triage/SKILL.md: 277
+  triage/SKILL.md: 281
   triage/reference/intake.md: 260
   triage/reference/scrape-incident.md: 188
   typescript-dev/SKILL.md: 300

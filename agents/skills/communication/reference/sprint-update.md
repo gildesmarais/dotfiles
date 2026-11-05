@@ -4,7 +4,7 @@ Closed-sprint recap + active-sprint kickoff for a public team Slack channel. Atl
 
 ## Config
 
-Read `<project>/.agents/product.md` → `## Sprint update`. Need: Jira project key, board ID, Slack channel, audience roles/squads for heads-up. Optional: epic→theme map. Absent → ask once; offer to write the block. Never invent audience teams.
+Read `<project>/.agents/tracker.md` → `## Sprint update`. Need: Jira project key, board ID, Slack channel, audience roles/squads for heads-up. Optional: epic→theme map from `<project>/.agents/product.md`. Absent → ask once; offer to write the block. Never invent audience teams.
 
 ## MCP recipe
 
