@@ -88,4 +88,4 @@ Git-tracked `agents/skills/<name>/` is SoT. `rcup` installs file-level links int
 | `skill rename <old> <new>` | Rename in the store                                                   |
 | `rcup`                     | Install store skills into `~/.agents/skills` and `~/.claude/skills`   |
 
-`drift` on `~/.agents/skills` → `skill backfill <name>` → `rcup`; `claude:<name> drift` → `rcup` only (`backfill` never reads `~/.claude/skills`). `orphan` → `skill prune`. Project drafts: `<repo>/.agents/skills/<name>/`.
+`drift` on `~/.agents/skills` → `skill backfill <name>` → `rcup`; `claude:<name> drift` → copy local edits into the store and remove extra files, then `rcup` (`rcup` overwrites replaced links and keeps extra files; `backfill` never reads `~/.claude/skills`). `orphan` → `skill prune`. Project drafts: `<repo>/.agents/skills/<name>/`.

@@ -17,7 +17,10 @@ module Skill
     NO_DRIFT_BACKFILL_ERROR = "no real-file drift for %<name>s"
     TYPE_CLASH_BACKFILL_ERROR = "refusing to backfill over non-file store path: %<path>s"
     RCUP_HINT = "run rcup (or wait for topgrade) to install into ~/.agents/skills and ~/.claude/skills"
-    CLAUDE_DRIFT_HINT = "run rcup to restore drifted ~/.claude/skills from the store"
+    CLAUDE_DRIFT_HINT = "claude:<name> drift: copy local edits into the store and remove extra files, " \
+                        "then rerun rcup (rcup overwrites replaced links and keeps extra files)"
+    STORE_INTERNAL_PRUNE_ERROR = "refusing to prune %<dir>s: it resolves into the skill store; " \
+                                 "make it a real directory and rerun rcup"
     PRUNE_HINT = "run skill prune to remove orphan links"
 
     def initialize(paths:, shell_ui:)
@@ -39,14 +42,14 @@ module Skill
     def doctor_skills
       @paths.ensure_store!
       entries = Paths::INSTALL_ROOTS.flat_map do |root|
-        classifier.report_entries(root: root).map { |name, status| [install_label(root, name), status] }
+        classifier.report_entries(root: root).map { |name, status| [root, install_label(root, name), status] }
       end
       return if entries.empty?
 
-      width = [entries.map { |label, _status| label.length }.max, 24].max
-      entries.each { |label, status| puts(format("%-#{width}s  %s", label, status)) }
+      width = [entries.map { |_root, label, _status| label.length }.max, 24].max
+      entries.each { |_root, label, status| puts(format("%-#{width}s  %s", label, status)) }
       statuses = entries.map(&:last)
-      claude_drift = entries.any? { |label, status| label.start_with?("claude:") && status == "drift" }
+      claude_drift = entries.any? { |root, _label, status| root == "claude" && status == "drift" }
       @shell_ui.note(CLAUDE_DRIFT_HINT) if claude_drift
       @shell_ui.note(PRUNE_HINT) if statuses.include?("orphan")
 
@@ -69,6 +72,11 @@ module Skill
 
     def prune_skills
       @paths.ensure_store!
+      Paths::INSTALL_ROOTS.each do |root|
+        next unless classifier.store_internal_root?(root)
+
+        raise ExitError, format(STORE_INTERNAL_PRUNE_ERROR, dir: @paths.install_dir(root))
+      end
       removed = 0
 
       Paths::INSTALL_ROOTS.each do |root|

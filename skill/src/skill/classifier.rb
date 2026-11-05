@@ -52,12 +52,14 @@ module Skill
     # Links under ~/.<root>/skills/<name>/ that dangle and whose target, as the
     # OS resolves it, lies inside the dotfiles store (agents/skills or
     # claude/skills).
+    # An install root inside the store is never scanned: its dangling links
+    # belong to the store, not to an rcup install.
     def orphan_paths(name, root: "agents")
       agent = File.join(@paths.install_dir(root), name)
       return [] unless File.directory?(agent)
+      return [] if store_internal_root?(root)
 
       agent_root = File.expand_path(agent)
-      store_roots = [@paths.store_dir, @paths.claude_dir].map { |dir| canonical_prefix(dir) }
 
       orphans = []
       Find.find(agent_root) do |path|
@@ -81,6 +83,12 @@ module Skill
       orphans.sort
     end
 
+    # True when ~/.<root>/skills resolves into the dotfiles store (agents/skills
+    # or claude/skills), e.g. ~/.agents/skills -> ~/.dotfiles/agents/skills.
+    def store_internal_root?(root)
+      under_store?(@paths.install_dir(root), store_roots)
+    end
+
     # [name, status] rows for one install root. The agents root lists every
     # store skill too; other roots list only what is installed there.
     def report_entries(root: "agents")
@@ -93,6 +101,10 @@ module Skill
 
     def agent_entry?(path)
       File.directory?(path) || (File.symlink?(path) && File.exist?(path))
+    end
+
+    def store_roots
+      [@paths.store_dir, @paths.claude_dir].map { |dir| canonical_prefix(dir) }
     end
 
     def under_store?(target, store_roots)

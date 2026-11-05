@@ -4,7 +4,7 @@
 
 `skill/` owns the implementation and tests for the `skill` command used to manage the dotfiles skill store (`~/.dotfiles/agents/skills`).
 
-Install first-party skills into agents with [`rcup`](https://github.com/thoughtbot/rcm) (repo `agents/skills/<name>/` → `~/.agents/skills/<name>/`). This CLI handles store hygiene only: `list`, `doctor`, `lint`, `prune`, `backfill`, `promote`, and `rename`.
+Install first-party skills into agents with [`rcup`](https://github.com/thoughtbot/rcm) (repo `agents/skills/<name>/` → `~/.agents/skills/<name>/` and `~/.claude/skills/<name>/`). This CLI handles store hygiene only: `list`, `doctor`, `lint`, `prune`, `backfill`, `promote`, and `rename`.
 
 ## Key Decision
 

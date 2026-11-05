@@ -506,6 +506,24 @@ class SkillCliTest < Minitest::Test
     assert(File.file?(File.join(claude_home, "x", "notes.md")))
   end
 
+  def test_prune_refuses_install_root_inside_store
+    create_store_skill("x")
+    link = File.join(@skills_dir, "x", "gone.md")
+    FileUtils.ln_s(File.join(@skills_dir, "x", "missing.md"), link)
+    FileUtils.mkdir_p(File.join(@home_dir, ".agents"))
+    File.symlink(@skills_dir, @agents_skills_dir)
+
+    result = run_skill("prune")
+
+    assert_equal(1, result.exitstatus, result.output)
+    assert_includes(result.output, "refusing to prune")
+    assert_includes(result.output, @agents_skills_dir)
+    assert(File.symlink?(link), "in-store link must survive")
+
+    doctor = run_skill("doctor")
+    refute_match(/orphan/, doctor.output)
+  end
+
   def test_prune_keeps_symlinked_directories_beside_an_orphan
     claude_home = File.join(@home_dir, ".claude", "skills")
     skill = File.join(claude_home, "x")
