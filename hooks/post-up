@@ -1,6 +1,9 @@
 #!/bin/sh
 # Converge global mise tools on config/mise/config.toml after rcup.
-command -v mise >/dev/null 2>&1 || exit 0
+if ! command -v mise >/dev/null 2>&1; then
+  echo "post-up: mise not installed, skipping tools (run brew bundle)" >&2
+  exit 0
+fi
 
 mise install --yes
 mise upgrade --yes

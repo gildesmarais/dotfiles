@@ -16,6 +16,10 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         with:
           scandir: "./scripts"
+      - name: Run ShellCheck on rcm hooks
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: "./hooks"
       - name: Run ShellCheck on skills
         uses: ludeeus/action-shellcheck@master
         with:

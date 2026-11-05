@@ -7,10 +7,8 @@ Maintained by [Gil Desmarais](https://gil.desmarais.de) (Berlin). Profile, proje
 ## Getting started
 
 - Install [homebrew](https://brew.sh/)
-- `brew install rcm topgrade`
-- `git clone git@github.com:gildesmarais/dotfiles.git ~/.dotfiles && cd ~/.dotfiles && rcup -v`
+- `git clone git@github.com:gildesmarais/dotfiles.git ~/.dotfiles && make -C ~/.dotfiles install`
 - `topgrade`
-- `cd ~/.dotfiles && brew bundle`
 - Setup vim:
 
   ```sh
@@ -18,6 +16,19 @@ Maintained by [Gil Desmarais](https://gil.desmarais.de) (Berlin). Profile, proje
   mkdir -p ~/.vim/swaps
   mkdir -p ~/.vim/undo
   ```
+
+### Keeping a machine in sync
+
+`make up` pulls, runs `rcup`, prunes orphan skill links, and lints the skill store. topgrade runs it as `dotfiles: make up`.
+
+Every `rcup` runs [`hooks/post-up`](hooks/post-up), which installs, upgrades, and prunes the global [mise](https://mise.jdx.dev/) tools in [`config/mise/config.toml`](config/mise/config.toml). Pass `rcup -K` to skip it.
+
+Tools for one machine only go in `~/.config/mise/conf.d/local.toml`, which is not tracked. mise loads it with the global config, and `mise prune` keeps what it lists:
+
+```toml
+[tools]
+aws-vault = "latest"
+```
 
 ### Quick-start tools
 
