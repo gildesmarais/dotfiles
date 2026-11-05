@@ -11,21 +11,21 @@ module Skill
       @paths = paths
     end
 
-    def status_for(name)
-      agent = @paths.agents_skill_path(name)
+    def status_for(name, root: "agents")
+      agent = File.join(@paths.install_dir(root), name)
       store = @paths.store_skill_path(name)
 
       return "broken" if File.symlink?(agent) && !File.exist?(agent)
-      return "drift" if File.directory?(store) && File.directory?(agent) && drift_paths(name).any?
-      return "orphan" if orphan_paths(name).any?
+      return "drift" if File.directory?(store) && File.directory?(agent) && drift_paths(name, root: root).any?
+      return "orphan" if orphan_paths(name, root: root).any?
       return "home-only" if agent_entry?(agent) && !File.directory?(store)
 
       "ok"
     end
 
-    def drift_paths(name)
+    def drift_paths(name, root: "agents")
       store = @paths.store_skill_path(name)
-      agent = @paths.agents_skill_path(name)
+      agent = File.join(@paths.install_dir(root), name)
       return [] unless File.directory?(store) && File.directory?(agent)
 
       agent_root = File.expand_path(agent)
@@ -77,9 +77,12 @@ module Skill
       orphans.sort
     end
 
-    def report_entries
-      names = (@paths.store_skill_names | @paths.agents_skill_names).sort
-      names.map { |name| [name, status_for(name)] }
+    # [name, status] rows for one install root. The agents root lists every
+    # store skill too; other roots list only what is installed there.
+    def report_entries(root: "agents")
+      installed = @paths.install_skill_names(root)
+      names = root == "agents" ? (@paths.store_skill_names | installed).sort : installed
+      names.map { |name| [name, status_for(name, root: root)] }
     end
 
     private

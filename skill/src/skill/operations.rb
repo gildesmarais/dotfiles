@@ -17,7 +17,8 @@ module Skill
     BROKEN_BACKFILL_ERROR = "refusing to backfill broken agent path: %<name>s"
     NO_DRIFT_BACKFILL_ERROR = "no real-file drift for %<name>s"
     TYPE_CLASH_BACKFILL_ERROR = "refusing to backfill over non-file store path: %<path>s"
-    RCUP_HINT = "run rcup (or wait for topgrade) to install into ~/.agents/skills"
+    RCUP_HINT = "run rcup (or wait for topgrade) to install into ~/.agents/skills and ~/.claude/skills"
+    PRUNE_HINT = "run skill prune to remove orphan links"
 
     def initialize(paths:, shell_ui:)
       @paths = paths
@@ -37,17 +38,17 @@ module Skill
 
     def doctor_skills
       @paths.ensure_store!
-      entries = classifier.report_entries
+      entries = Paths::INSTALL_ROOTS.flat_map do |root|
+        classifier.report_entries(root: root).map { |name, status| [install_label(root, name), status] }
+      end
       return if entries.empty?
 
-      width = [entries.map { |name, _status| name.length }.max, 24].max
-      failed = false
-      entries.each do |name, status|
-        puts(format("%-#{width}s  %s", name, status))
-        failed = true if %w[drift orphan].include?(status)
-      end
+      width = [entries.map { |label, _status| label.length }.max, 24].max
+      entries.each { |label, status| puts(format("%-#{width}s  %s", label, status)) }
+      statuses = entries.map(&:last)
+      @shell_ui.note(PRUNE_HINT) if statuses.include?("orphan")
 
-      raise ExitError.new(status: 1) if failed
+      raise ExitError.new(status: 1) if (statuses & %w[drift orphan]).any?
     end
 
     def lint_skills(project: false, measure: false, since: nil)
@@ -69,7 +70,6 @@ module Skill
       removed = 0
 
       Paths::INSTALL_ROOTS.each do |root|
-        prefix = root == "agents" ? "" : "#{root}:"
         @paths.install_skill_names(root).each do |name|
           orphans = classifier.orphan_paths(name, root: root)
           next if orphans.empty?
@@ -77,7 +77,7 @@ module Skill
           install = File.join(@paths.install_dir(root), name)
           orphans.each do |relative|
             File.unlink(File.join(install, relative))
-            puts("#{prefix}#{name}/#{relative}")
+            puts("#{install_label(root, name)}/#{relative}")
             removed += 1
           end
           remove_empty_directories(install)
@@ -171,6 +171,11 @@ module Skill
     end
 
     private
+
+    # Rows from ~/.agents/skills stay bare; other install roots carry "<root>:".
+    def install_label(root, name)
+      root == "agents" ? name : "#{root}:#{name}"
+    end
 
     def add_claude_entry(name)
       entry = @paths.claude_entry_path(name)

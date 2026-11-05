@@ -94,4 +94,5 @@ When reviewing changes here, prioritize:
 - drift between README, tests, and executable behavior
 - accidental reintroduction of `skill sync` or `.codex/skills` promote workflows
 - dual ownership of status/drift/orphan outside `Skill::Classifier`
+- doctor scope: both install roots (`Paths::INSTALL_ROOTS`), claude rows prefixed `claude:`
 - doctor exit-on-failure (`1` when any `drift` or `orphan` row is printed)

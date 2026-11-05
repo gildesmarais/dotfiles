@@ -343,6 +343,44 @@ class SkillCliTest < Minitest::Test
     assert_match(/^linked\s+orphan$/m, result.output)
   end
 
+  def test_doctor_reports_claude_root_orphan
+    claude_home = install_claude_skill("ticket")
+    FileUtils.mkdir_p(File.join(claude_home, "ticket", "reference"))
+    FileUtils.ln_s(
+      File.join(@dotfiles_root, "claude", "skills", "ticket", "reference", "gone.md"),
+      File.join(claude_home, "ticket", "reference", "gone.md")
+    )
+
+    result = run_skill("doctor")
+
+    assert_equal(1, result.exitstatus, result.output)
+    assert_match(/^ticket\s+ok$/m, result.output)
+    assert_match(/^claude:ticket\s+orphan$/m, result.output)
+    assert_includes(result.output, "skill prune")
+  end
+
+  def test_doctor_healthy_claude_install_ok
+    install_claude_skill("ticket")
+
+    result = run_skill("doctor")
+
+    assert_equal(0, result.exitstatus, result.output)
+    assert_match(/^ticket\s+ok$/m, result.output)
+    assert_match(/^claude:ticket\s+ok$/m, result.output)
+    refute_includes(result.output, "skill prune")
+  end
+
+  def test_doctor_reports_claude_root_drift
+    claude_home = install_claude_skill("ticket")
+    File.unlink(File.join(claude_home, "ticket", "SKILL.md"))
+    File.write(File.join(claude_home, "ticket", "SKILL.md"), "# Edited\n")
+
+    result = run_skill("doctor")
+
+    assert_equal(1, result.exitstatus, result.output)
+    assert_match(/^claude:ticket\s+drift$/m, result.output)
+  end
+
   def test_prune_removes_orphan_links_and_empty_dirs
     create_store_skill("linked")
     store_file = File.join(@skills_dir, "linked", "SKILL.md")
@@ -868,6 +906,20 @@ class SkillCliTest < Minitest::Test
     )
 
     Result.new(output, status.exitstatus)
+  end
+
+  # Store skill with its claude/skills entry and an rcup-style link install
+  # under ~/.claude/skills; returns the claude install root.
+  def install_claude_skill(name)
+    create_store_skill(name)
+    File.write(File.join(@skills_dir, name, "SKILL.md"), "# #{name}\n")
+    claude_store = File.join(@dotfiles_root, "claude", "skills")
+    FileUtils.mkdir_p(claude_store)
+    FileUtils.ln_s(File.join("..", "..", "agents", "skills", name), File.join(claude_store, name))
+    claude_home = File.join(@home_dir, ".claude", "skills")
+    FileUtils.mkdir_p(File.join(claude_home, name))
+    FileUtils.ln_s(File.join(claude_store, name, "SKILL.md"), File.join(claude_home, name, "SKILL.md"))
+    claude_home
   end
 
   def create_store_skill(name)

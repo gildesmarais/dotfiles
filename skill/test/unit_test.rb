@@ -385,6 +385,22 @@ class SkillUnitTest < Minitest::Test
     )
   end
 
+  def test_classifier_report_entries_for_claude_root
+    create_store_skill("alpha")
+    create_store_skill("delta")
+    File.write(File.join(@paths.store_skill_path("delta"), "SKILL.md"), "# A\n")
+    claude_home = @paths.install_dir("claude")
+    FileUtils.mkdir_p(File.join(claude_home, "delta"))
+    File.write(File.join(claude_home, "delta", "SKILL.md"), "# B\n")
+    FileUtils.mkdir_p(File.join(claude_home, "old"))
+    FileUtils.ln_s(File.join(@paths.claude_dir, "old", "SKILL.md"), File.join(claude_home, "old", "SKILL.md"))
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal([%w[delta drift], %w[old orphan]], classifier.report_entries(root: "claude"))
+    assert_equal([%w[alpha ok], %w[delta ok]], classifier.report_entries)
+  end
+
   def test_doctor_skills_silent_when_empty
     @operations.doctor_skills
 

@@ -86,11 +86,12 @@ module Skill
         Usage: skill [--project PATH] <command> [args]
 
         Manage the dotfiles skill store (~/.dotfiles/agents/skills). First-party
-        skills install into ~/.agents/skills via rcup.
+        skills install into ~/.agents/skills and ~/.claude/skills via rcup.
 
         Commands:
           list                         List skills available in #{paths.store_dir}
-          doctor                       Report store vs ~/.agents/skills status
+          doctor                       Report store vs ~/.agents/skills and
+                                       ~/.claude/skills status
           lint [--measure] [--since REF]
                                        Lint store shape, budgets, and link graph
                                        (with --project: that project's skill stores)
