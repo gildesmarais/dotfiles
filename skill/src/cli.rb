@@ -94,7 +94,8 @@ module Skill
           lint [--measure] [--since REF]
                                        Lint store shape, budgets, and link graph
                                        (with --project: that project's skill stores)
-          prune                        Remove orphan rcup links whose store source is gone
+          prune                        Remove orphan rcup links under ~/.agents/skills
+                                       and ~/.claude/skills whose store source is gone
           backfill <name>              Copy drifted agent files into the store
           promote <name>               Move .agents/skills/<name> into the store
           rename <old> <new>           Rename a stored skill

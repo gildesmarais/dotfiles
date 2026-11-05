@@ -49,12 +49,14 @@ module Skill
       drifted.sort
     end
 
-    def orphan_paths(name)
-      agent = @paths.agents_skill_path(name)
+    # Links under ~/.<root>/skills/<name>/ that point into the dotfiles store
+    # (agents/skills or claude/skills) at a target that no longer exists.
+    def orphan_paths(name, root: "agents")
+      agent = File.join(@paths.install_dir(root), name)
       return [] unless File.directory?(agent)
 
       agent_root = File.expand_path(agent)
-      store_root = canonical_prefix(@paths.store_dir)
+      store_roots = [@paths.store_dir, @paths.claude_dir].map { |dir| canonical_prefix(dir) }
 
       orphans = []
       Find.find(agent_root) do |path|
@@ -66,7 +68,7 @@ module Skill
         next if relative.split("/").any? { |part| part.start_with?(".") }
 
         absolute = File.expand_path(File.readlink(path), File.dirname(path))
-        next unless under_store?(absolute, store_root)
+        next unless under_store?(absolute, store_roots)
         next if File.exist?(absolute)
 
         orphans << relative
@@ -86,9 +88,9 @@ module Skill
       File.directory?(path) || (File.symlink?(path) && File.exist?(path))
     end
 
-    def under_store?(absolute, store_root)
-      candidate = canonical_prefix(absolute)
-      under_root?(candidate, store_root) || under_root?(File.expand_path(absolute), store_root)
+    def under_store?(absolute, store_roots)
+      candidates = [canonical_prefix(absolute), File.expand_path(absolute)]
+      store_roots.any? { |root| candidates.any? { |candidate| under_root?(candidate, root) } }
     end
 
     def under_root?(path, root)

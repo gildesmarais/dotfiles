@@ -385,6 +385,43 @@ class SkillCliTest < Minitest::Test
     assert_includes(second.output, "no orphans to prune")
   end
 
+  def test_prune_removes_orphan_links_under_claude_root
+    claude_store = File.join(@dotfiles_root, "claude", "skills")
+    claude_home = File.join(@home_dir, ".claude", "skills")
+    create_store_skill("ticket")
+    File.write(File.join(@skills_dir, "ticket", "SKILL.md"), "# Ticket\n")
+    FileUtils.mkdir_p(claude_store)
+    FileUtils.ln_s(File.join("..", "..", "agents", "skills", "ticket"), File.join(claude_store, "ticket"))
+
+    FileUtils.mkdir_p(File.join(claude_home, "ticket"))
+    FileUtils.ln_s(File.join(claude_store, "ticket", "SKILL.md"), File.join(claude_home, "ticket", "SKILL.md"))
+    FileUtils.mkdir_p(File.join(claude_home, "jira-ticket", "reference"))
+    %w[SKILL.md reference/challenge.md].each do |relative|
+      FileUtils.ln_s(
+        File.join(claude_store, "jira-ticket", relative),
+        File.join(claude_home, "jira-ticket", relative)
+      )
+    end
+    FileUtils.mkdir_p(File.join(claude_home, "foreign"))
+    File.write(File.join(claude_home, "foreign", "SKILL.md"), "# Foreign\n")
+    FileUtils.ln_s(File.join(@tmpdir, "elsewhere", "gone.md"), File.join(claude_home, "foreign", "extra.md"))
+
+    result = run_skill("prune")
+
+    assert_equal(0, result.exitstatus, result.output)
+    assert_includes(result.output, "claude:jira-ticket/SKILL.md")
+    assert_includes(result.output, "claude:jira-ticket/reference/challenge.md")
+    assert_includes(result.output, "pruned 2 orphan links")
+    refute_path_exists(File.join(claude_home, "jira-ticket"))
+    assert(File.exist?(File.join(claude_home, "ticket", "SKILL.md")))
+    assert(File.file?(File.join(claude_home, "foreign", "SKILL.md")))
+    assert(File.symlink?(File.join(claude_home, "foreign", "extra.md")))
+
+    second = run_skill("prune")
+    assert_equal(0, second.exitstatus)
+    assert_includes(second.output, "no orphans to prune")
+  end
+
   def test_backfill_copies_drifted_files_and_preserves_store_only
     create_store_skill("drifted")
     File.write(File.join(@skills_dir, "drifted", "SKILL.md"), "# Store\n")

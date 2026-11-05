@@ -7,6 +7,7 @@ require_relative "classifier"
 require_relative "error"
 require_relative "filesystem"
 require_relative "linter"
+require_relative "paths"
 
 module Skill
   class Operations
@@ -67,17 +68,20 @@ module Skill
       @paths.ensure_store!
       removed = 0
 
-      @paths.agents_skill_names.each do |name|
-        orphans = classifier.orphan_paths(name)
-        next if orphans.empty?
+      Paths::INSTALL_ROOTS.each do |root|
+        prefix = root == "agents" ? "" : "#{root}:"
+        @paths.install_skill_names(root).each do |name|
+          orphans = classifier.orphan_paths(name, root: root)
+          next if orphans.empty?
 
-        agent = @paths.agents_skill_path(name)
-        orphans.each do |relative|
-          File.unlink(File.join(agent, relative))
-          puts("#{name}/#{relative}")
-          removed += 1
+          install = File.join(@paths.install_dir(root), name)
+          orphans.each do |relative|
+            File.unlink(File.join(install, relative))
+            puts("#{prefix}#{name}/#{relative}")
+            removed += 1
+          end
+          remove_empty_directories(install)
         end
-        remove_empty_directories(agent)
       end
 
       if removed.zero?

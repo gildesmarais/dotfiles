@@ -48,7 +48,7 @@ Do not optimize for:
 - Behavior should remain understandable from CLI output alone. Errors should be explicit and actionable.
 - Do not create agent install links. Print an `rcup` hint after promote/rename/backfill.
 - `promote` / `rename` keep `claude/skills/<name>` in sync inside the repo; `lint` fails on missing, wrong, or stale entries, including the shared `CONTEXT.md` (`Paths::SHARED_FILES`). They never write under `$HOME`.
-- `prune` only removes rcup links under `~/.agents/skills` whose store source is gone; it never creates links.
+- `prune` only removes rcup links under `~/.agents/skills` and `~/.claude/skills` whose store source (`agents/skills` or `claude/skills`) is gone; it never creates links.
 - `Skill::Classifier` owns status, drift, and orphan detection; doctor/backfill/prune must not reimplement those rules.
 
 ## Canonical Paths

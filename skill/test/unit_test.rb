@@ -330,6 +330,41 @@ class SkillUnitTest < Minitest::Test
     assert_includes(@ui.notes, "no orphans to prune")
   end
 
+  def test_classifier_orphan_paths_under_claude_root
+    claude_home = File.join(@home_dir, ".claude", "skills")
+    create_store_skill("live")
+    File.write(File.join(@paths.store_skill_path("live"), "SKILL.md"), "# Live\n")
+    write_claude_entry("live")
+    FileUtils.mkdir_p(File.join(claude_home, "live"))
+    FileUtils.ln_s(File.join(@paths.claude_dir, "live", "SKILL.md"), File.join(claude_home, "live", "SKILL.md"))
+    FileUtils.ln_s(File.join(@paths.claude_dir, "live", "gone.md"), File.join(claude_home, "live", "gone.md"))
+    FileUtils.ln_s(File.join(@tmpdir, "elsewhere", "x.md"), File.join(claude_home, "live", "foreign.md"))
+    FileUtils.mkdir_p(File.join(claude_home, "live", ".cache"))
+    FileUtils.ln_s(File.join(@paths.claude_dir, "live", "h.md"), File.join(claude_home, "live", ".cache", "h.md"))
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal(%w[gone.md], classifier.orphan_paths("live", root: "claude"))
+    assert_equal([], classifier.orphan_paths("live"))
+  end
+
+  def test_prune_skills_covers_claude_root
+    claude_home = File.join(@home_dir, ".claude", "skills")
+    FileUtils.mkdir_p(File.join(claude_home, "old", "agents"))
+    FileUtils.ln_s(File.join(@paths.claude_dir, "old", "SKILL.md"), File.join(claude_home, "old", "SKILL.md"))
+    FileUtils.ln_s(
+      File.join(@paths.claude_dir, "old", "agents", "openai.yaml"),
+      File.join(claude_home, "old", "agents", "openai.yaml")
+    )
+
+    out, = capture_io { @operations.prune_skills }
+
+    assert_includes(out, "claude:old/SKILL.md")
+    assert_includes(out, "claude:old/agents/openai.yaml")
+    assert_includes(@ui.notes, "pruned 2 orphan links")
+    refute(File.exist?(File.join(claude_home, "old")))
+  end
+
   def test_classifier_report_entries_sorted_union
     create_store_skill("alpha")
     FileUtils.mkdir_p(@paths.agents_skill_path("beta"))

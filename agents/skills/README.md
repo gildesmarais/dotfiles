@@ -82,7 +82,7 @@ Git-tracked `agents/skills/<name>/` is SoT. `rcup` installs file-level links int
 | `skill list`               | List non-hidden store skills                                          |
 | `skill doctor`             | Report `ok` / `drift` / `home-only` / `broken` / `orphan`             |
 | `skill lint`               | Word ratchet, 100-line cap, router shape, link graph, duplicates      |
-| `skill prune`              | Remove orphan rcup links whose store source is gone                   |
+| `skill prune`              | Remove orphan rcup links under `~/.agents` and `~/.claude` skills     |
 | `skill backfill <name>`    | Copy drifted real files from `~/.agents/skills/<name>` into the store |
 | `skill promote <name>`     | Move `<project>/.agents/skills/<name>` into the store                 |
 | `skill rename <old> <new>` | Rename in the store                                                   |

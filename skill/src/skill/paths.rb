@@ -11,6 +11,8 @@ module Skill
     ROOT_DOCS = %w[AGENTS.md CONTEXT.md CLAUDE.md].freeze
     # Project-relative store locations, in lint order.
     PROJECT_STORES = %w[.agents/skills .claude/skills].freeze
+    # rcup install roots under $HOME (~/.<root>/skills), in prune order.
+    INSTALL_ROOTS = %w[agents claude].freeze
 
     attr_writer :project_root
 
@@ -53,7 +55,11 @@ module Skill
     end
 
     def agents_skills_dir
-      File.join(home_dir, ".agents", "skills")
+      install_dir("agents")
+    end
+
+    def install_dir(root)
+      File.join(home_dir, ".#{root}", "skills")
     end
 
     def agents_skill_path(name)
@@ -130,9 +136,14 @@ module Skill
     end
 
     def agents_skill_names
-      return [] unless File.directory?(agents_skills_dir)
+      install_skill_names("agents")
+    end
 
-      skill_entry_names(agents_skills_dir)
+    def install_skill_names(root)
+      dir = install_dir(root)
+      return [] unless File.directory?(dir)
+
+      skill_entry_names(dir)
     end
 
     private
