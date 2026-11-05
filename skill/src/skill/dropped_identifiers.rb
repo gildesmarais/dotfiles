@@ -14,6 +14,44 @@ module Skill
     SKILL_REF_RE = /(?<![\w$])\$[a-z][a-z0-9_-]*/.freeze
     FENCE_RE = /^```.*?^```/m.freeze
 
+    # The tree subpath that `path` names at ref, following git symlink entries
+    # (the path itself or a parent) to their in-dir targets; nil when it is
+    # absent, not a tree, or its target leaves dir.
+    def self.tree_at_ref(dir, ref, path, depth = 0)
+      return nil if depth > 8
+
+      parts = path.split("/")
+      mode = type = nil
+      parts.each_index do |i|
+        cur = parts[0..i].join("/")
+        mode, type = git_in(dir, ref, "ls-tree", "-z", ref, "--", cur).split(/[ \t]/, 3).first(2)
+        return nil if mode.nil?
+        next unless mode == "120000"
+
+        target = normalize(File.join(File.dirname(cur), git_in(dir, ref, "show", "#{ref}:./#{cur}")))
+        return target && tree_at_ref(dir, ref, [target, *parts[(i + 1)..]].join("/"), depth + 1)
+      end
+      type == "tree" ? path : nil
+    end
+
+    def self.normalize(joined)
+      parts = []
+      joined.split("/").each do |part|
+        next if part.empty? || part == "."
+        return nil if part == ".." && parts.empty?
+
+        part == ".." ? parts.pop : parts << part
+      end
+      parts.empty? ? nil : parts.join("/")
+    end
+
+    def self.git_in(dir, ref, *args)
+      output, err, status = Open3.capture3("git", "-C", dir, *args)
+      raise ExitError, "git #{args.first} #{ref} failed: #{err.strip}" unless status.success?
+
+      output.force_encoding(Encoding::UTF_8)
+    end
+
     # dir: a git work tree directory. names nil: every non-hidden, non-README
     # Markdown file under it (a skill store), or under its subpath when given
     # (a store at REF whatever the working tree holds there; reported relative
@@ -84,10 +122,7 @@ module Skill
     end
 
     def git(*args)
-      output, err, status = Open3.capture3("git", "-C", @dir, *args)
-      raise ExitError, "git #{args.first} #{@ref} failed: #{err.strip}" unless status.success?
-
-      output.force_encoding(Encoding::UTF_8)
+      self.class.git_in(@dir, @ref, *args)
     end
   end
 end

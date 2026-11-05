@@ -715,6 +715,40 @@ class SkillCliTest < Minitest::Test
     refute_includes(result.output, "c-kept")
   end
 
+  def test_lint_since_diffs_the_directory_a_symlinked_store_points_to
+    FileUtils.mkdir_p(File.join(@project_root, ".agents"))
+    write_skill_at("skills", "`keep-me` `drop-me`")
+    File.symlink("../skills", File.join(@project_root, ".agents", "skills"))
+    File.write(File.join(@project_root, "AGENTS.md"), "# A\n")
+    git_project("add", "-A")
+    git_project("commit", "-q", "-m", "base")
+    write_skill_at("skills", "`keep-me`")
+
+    result = run_skill("--project", @project_root, "lint", "--since", "HEAD")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "dropped: drop-me (a/SKILL.md)")
+    assert_equal(1, result.output.scan("drop-me").size)
+  end
+
+  def test_lint_since_diffs_a_store_under_a_symlinked_parent_directory
+    write_skill_at("agents/skills", "`keep-me` `drop-me`")
+    File.symlink("agents", File.join(@project_root, ".agents"))
+    File.write(File.join(@project_root, "AGENTS.md"), "# A\n")
+    git_project("add", "-A")
+    git_project("commit", "-q", "-m", "base")
+    write_skill_at("agents/skills", "`keep-me`")
+
+    result = run_skill("--project", @project_root, "lint", "--since", "HEAD")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "dropped: drop-me (a/SKILL.md)")
+  end
+
+  def write_skill_at(root, body)
+    write_project_skill(root.sub(%r{/?skills\z}, ""), "a", "# A\n\n#{body}\n")
+  end
+
   def test_project_links_that_leave_and_reenter_the_store_join_the_link_graph
     write_project_skill(".agents", "a", "# A\n\n[b](../../skills/b/SKILL.md)\n")
     write_project_skill(".agents", "b", "# B\n\n[a](../../skills/a/SKILL.md)\n")

@@ -301,7 +301,7 @@ module Skill
       owned = (@store_contents.flat_map(&:values) + docs).join("\n")
       prefixed = stores.size > 1
       sources = if @project
-                  Paths::PROJECT_STORES.map { |label| [label, { dir: @paths.project_root, subpath: label }] }
+                  project_ref_stores(stores).map { |label, sub| [label, { dir: @paths.project_root, subpath: sub }] }
                 else
                   stores.map { |label, dir| [label, { dir: dir }] }
                 end
@@ -314,6 +314,24 @@ module Skill
 
       DroppedIdentifiers.new(dir: @paths.project_root, ref: @since, owned_text: owned, names: Paths::ROOT_DOCS)
                         .findings.each { |message| @errors << message }
+    end
+
+    # Subpaths to diff at REF, each once, labelled by the first store claiming
+    # it: every literal store path that is a tree at REF (a git symlink entry is
+    # followed to its in-repo target) plus the in-repo realpath of each current
+    # store.
+    def project_ref_stores(stores)
+      root = File.realpath(@paths.project_root)
+      found = {}
+      Paths::PROJECT_STORES.each do |label|
+        subpath = DroppedIdentifiers.tree_at_ref(@paths.project_root, @since, label)
+        found[subpath] ||= label if subpath
+      end
+      stores.each do |label, dir|
+        real = File.realpath(dir)
+        found[real.sub(%r{\A#{Regexp.escape(root)}/}, "")] ||= label if real.start_with?("#{root}/")
+      end
+      found.map { |subpath, label| [label, subpath] }
     end
 
     def check_claude_entries
