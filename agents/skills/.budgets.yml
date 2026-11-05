@@ -44,7 +44,7 @@ words:
   harvest/reference/distill.md: 280
   ticket/SKILL.md: 514
   ticket/reference/challenge.md: 197
-  ticket/reference/github.md: 299
+  ticket/reference/github.md: 318
   ticket/reference/groom.md: 482
   ticket/reference/jira.md: 186
   omnifocus/SKILL.md: 292
@@ -68,7 +68,7 @@ words:
   pull-request/reference/conflicts.md: 167
   pull-request/reference/fix-ci.md: 192
   pull-request/reference/gh-api.md: 244
-  pull-request/reference/open.md: 323
+  pull-request/reference/open.md: 344
   pull-request/reference/pr-narrative.md: 222
   pull-request/reference/reply.md: 93
   pull-request/reference/resolve.md: 234
