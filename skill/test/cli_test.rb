@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "fileutils"
+require "yaml"
 require "minitest/autorun"
 require "open3"
 require "rbconfig"
@@ -467,7 +468,77 @@ class SkillCliTest < Minitest::Test
     assert_includes(result.output, "backfill requires exactly one skill name")
   end
 
+  def test_project_lint_discovers_agents_then_claude_store_and_reports_missing
+    result = run_skill("--project", @project_root, "lint")
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "no project skill store")
+
+    write_project_skill(".claude", "note", "# Note\n\nplain\n")
+    result = run_skill("--project", @project_root, "lint")
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "lint ok")
+
+    write_project_skill(".claude", "note", "word\n" * 101)
+    assert_equal(1, run_skill("--project", @project_root, "lint").exitstatus, ".claude store is linted")
+
+    write_project_skill(".agents", "other", "# Other\n")
+    assert_equal(0, run_skill("--project", @project_root, "lint").exitstatus, ".agents store wins")
+  end
+
+  def test_project_lint_skips_ratchet_without_local_budgets_and_applies_with_them
+    write_project_skill(".agents", "note", "# Note\n\nsome words here\n")
+
+    assert_equal(0, run_skill("--project", @project_root, "lint").exitstatus)
+
+    budgets = File.join(@project_root, ".agents", "skills", ".budgets.yml")
+    File.write(budgets, YAML.dump("words" => { "note/SKILL.md" => 1 }))
+    result = run_skill("--project", @project_root, "lint")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "exceeds budget 1")
+  end
+
+  def test_lint_measure_prints_one_line_per_surface
+    body = "---\nname: note\ndescription: one two three\n---\n\n# Note\n\nbody words\n[r](reference/a.md)\n"
+    write_project_skill(".agents", "note", body)
+    write_project_skill(".agents", "note/reference", "a b c d\n", file: "a.md")
+
+    result = run_skill("--project", @project_root, "lint", "--measure")
+
+    assert_equal(0, result.exitstatus)
+    assert_includes(result.output, "catalog files=1 words=3 lines=1\n")
+    assert_includes(result.output, "router files=1 words=5 lines=5\n")
+    assert_includes(result.output, "branch files=1 words=4 lines=1\n")
+    assert_operator(result.output.index("branch files"), :<, result.output.index("lint ok"))
+  end
+
+  def test_lint_since_reports_orphaned_dropped_identifier_only
+    write_project_skill(".agents", "note", "# Note\n\nUse `gone-id` and `kept-id` and `moved-id`.\n")
+    git_project("add", "-A")
+    git_project("commit", "-q", "-m", "base")
+    write_project_skill(".agents", "note", "# Note\n\nNothing here.\n")
+    File.write(File.join(@project_root, "AGENTS.md"), "Owns `kept-id`.\n")
+    write_project_skill(".agents", "other", "See `moved-id`.\n")
+
+    result = run_skill("--project", @project_root, "lint", "--since", "HEAD")
+
+    assert_equal(1, result.exitstatus)
+    assert_includes(result.output, "dropped: gone-id (note/SKILL.md)")
+    refute_includes(result.output, "kept-id")
+    refute_includes(result.output, "moved-id")
+  end
+
   private
+
+  def write_project_skill(root, name, body, file: "SKILL.md")
+    dir = File.join(@project_root, root, "skills", name)
+    FileUtils.mkdir_p(dir)
+    File.write(File.join(dir, file), body)
+  end
+
+  def git_project(*args)
+    system("git", "-C", @project_root, *args, exception: true)
+  end
 
   def run_skill(*args)
     run_skill_from(@script_path, *args)

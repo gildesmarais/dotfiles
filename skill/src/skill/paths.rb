@@ -70,6 +70,11 @@ module Skill
       @project_skills_dir = File.join(project_root, ".agents", "skills")
     end
 
+    # Store `skill --project` lints: .agents/skills, else .claude/skills, else nil.
+    def project_store_dir
+      [".agents", ".claude"].map { |dir| File.join(project_root, dir, "skills") }.find { |dir| File.directory?(dir) }
+    end
+
     def legacy_codex_skills_dir
       File.join(project_root, ".codex", "skills")
     end

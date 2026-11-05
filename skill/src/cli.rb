@@ -24,6 +24,7 @@ module Skill
       "skill list",
       "skill doctor",
       "skill lint",
+      "skill --project . lint --measure --since HEAD~1",
       "skill prune",
       "skill backfill my-skill",
       "skill promote my-skill",
@@ -53,6 +54,9 @@ module Skill
       raise ExitError, "unknown command: #{command}" unless handler
 
       send(handler, command_args)
+    rescue OptionParser::ParseError => e
+      ui.error(e.message)
+      exit(1)
     rescue ExitError => e
       ui.error(e.message) unless e.message.nil? || e.message.empty?
       exit(e.status)
@@ -82,7 +86,9 @@ module Skill
         Commands:
           list                         List skills available in #{paths.store_dir}
           doctor                       Report store vs ~/.agents/skills status
-          lint                         Lint store shape, budgets, and link graph
+          lint [--measure] [--since REF]
+                                       Lint store shape, budgets, and link graph
+                                       (with --project: that project's skill store)
           prune                        Remove orphan rcup links whose store source is gone
           backfill <name>              Copy drifted agent files into the store
           promote <name>               Move .agents/skills/<name> into the store
@@ -108,8 +114,13 @@ module Skill
     end
 
     def run_lint(args)
+      options = {}
+      OptionParser.new do |parser|
+        parser.on("--measure", "Print files/words/lines per surface") { options[:measure] = true }
+        parser.on("--since REF", "Fail on identifiers dropped since REF") { |ref| options[:since] = ref }
+      end.parse!(args)
       ui.reject_extra_args("lint", args)
-      operations.lint_skills
+      operations.lint_skills(project: !@project_root.nil?, **options)
     end
 
     def run_prune(args)

@@ -49,9 +49,11 @@ module Skill
       raise ExitError.new(status: 1) if failed
     end
 
-    def lint_skills
-      @paths.ensure_store!
-      errors = Linter.new(paths: @paths).run
+    def lint_skills(project: false, measure: false, since: nil)
+      @paths.ensure_store! unless project
+      linter = Linter.new(paths: @paths, project: project, since: since)
+      errors = linter.run
+      linter.measure_lines.each { |line| puts(line) } if measure
       if errors.empty?
         @shell_ui.note("lint ok")
         return

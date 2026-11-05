@@ -3,6 +3,7 @@
 require "find"
 require "yaml"
 
+require_relative "dropped_identifiers"
 require_relative "error"
 
 module Skill
@@ -21,35 +22,72 @@ module Skill
     MD_LINK_RE = /\[(?:[^\]]*)\]\(([^)]+)\)/.freeze
     FRONTMATTER_RE = /\A---\r?\n(.*?)\r?\n---\r?\n/m.freeze
 
-    def initialize(paths:)
+    # project: lint the project-local store (Paths#project_store_dir) instead of
+    # the dotfiles store; dotfiles-only checks are skipped.
+    def initialize(paths:, project: false, since: nil)
       @paths = paths
+      @project = project
+      @since = since
       @errors = []
+      @files = []
+      @contents = {}
     end
 
     def run
-      @paths.ensure_store!
-      @store = @paths.store_dir
+      @paths.ensure_store! unless @project
+      @store = @project ? @paths.project_store_dir : @paths.store_dir
+      if @store.nil?
+        error("no project skill store: expected #{@paths.project_root}/.agents/skills or .claude/skills")
+        return @errors
+      end
+
       @budgets = load_budgets
       @files = installed_markdown_files
-      @contents = {}
       @files.each { |rel| @contents[rel] = File.read(File.join(@store, rel)) }
 
       check_line_caps
-      check_word_ratchet
+      check_word_ratchet if ratchet?
       check_descriptions
-      check_router_shapes
+      check_router_shapes if ratchet?
       check_links_resolve
       check_link_graph
       check_duplicate_lines
-      check_claude_entries
+      check_claude_entries unless @project
+      check_dropped_identifiers if @since
 
       @errors
     end
 
+    # One line per surface: catalog (descriptions), router (SKILL.md bodies),
+    # branch (every other file). Valid after run.
+    def measure_lines
+      surfaces = { "catalog" => [], "router" => [], "branch" => [] }
+      @files.each do |rel|
+        text = @contents[rel]
+        if skill_md?(rel)
+          desc = frontmatter_description(text)
+          surfaces["catalog"] << desc unless desc.nil?
+          surfaces["router"] << text.sub(FRONTMATTER_RE, "")
+        else
+          surfaces["branch"] << text
+        end
+      end
+      surfaces.map do |name, texts|
+        "#{name} files=#{texts.size} words=#{texts.sum { |t| word_count(t) }} lines=#{texts.sum { |t| t.lines.size }}"
+      end
+    end
+
     private
+
+    # The word ratchet and pinned headers need a budgets file; the dotfiles
+    # store requires one, a project store opts in by having its own.
+    def ratchet?
+      !@project || File.file?(File.join(@store, BUDGETS_FILE))
+    end
 
     def load_budgets
       path = File.join(@store, BUDGETS_FILE)
+      return {} if @project && !File.file?(path)
       raise ExitError, "missing budgets file: #{path}" unless File.file?(path)
 
       data = yaml_load(File.read(path))
@@ -228,6 +266,13 @@ module Skill
 
         error("duplicate line in #{files.join(', ')}: #{truncate(norm)}")
       end
+    end
+
+    def check_dropped_identifiers
+      roots = %w[AGENTS.md CONTEXT.md CLAUDE.md].map { |name| File.join(@paths.project_root, name) }
+      owned = @contents.values + roots.select { |path| File.file?(path) }.map { |path| File.read(path) }
+      DroppedIdentifiers.new(store: @store, ref: @since, current: @contents, owned_text: owned.join("\n"))
+                        .findings.each { |message| error(message) }
     end
 
     def check_claude_entries

@@ -43,6 +43,9 @@ Run the CLI entrypoint:
 ./scripts/skill list
 ./scripts/skill doctor
 ./scripts/skill lint
+./scripts/skill lint --measure
+./scripts/skill lint --since HEAD~1
+./scripts/skill --project . lint --measure --since main
 ./scripts/skill prune
 ./scripts/skill backfill my-skill
 ./scripts/skill promote my-skill
@@ -52,6 +55,9 @@ Run the CLI entrypoint:
 Expected results:
 
 - `lint` checks store Markdown against `agents/skills/.budgets.yml` (word ratchet, description budget, 100-line hard cap), router/pinned headers, link resolve, link graph (acyclic, ≤2 hops from each `SKILL.md`, no router-to-router links), duplicate lines, and `claude/skills/` entries (every store skill and shared `CONTEXT.md` needs a relative symlink into the store; wrong or stale entries fail); exits `0` with `lint ok`, else `1` with one finding per line
+- `--project PATH lint` lints `PATH/.agents/skills` (else `PATH/.claude/skills`; neither exits `1` with one finding) with the structural checks only: description cap, 100-line cap, link resolve, link graph, duplicate lines. The word ratchet and pinned headers apply only if that store has its own `.budgets.yml`; `claude/skills/` entry checks are skipped. Without `--project`, `lint` audits the dotfiles store exactly as before
+- `lint --measure` prints `<surface> files=N words=N lines=N` for `catalog` (frontmatter `description`), `router` (`SKILL.md` body), and `branch` (all other Markdown) before the result; works for the store and `--project`
+- `lint --since REF` collects identifiers (backticked spans, Markdown link targets, `$skill` refs) from the store's Markdown at git `REF` and the working tree; each one gone from the working tree that also appears nowhere in the working-tree store or the project root's `AGENTS.md` / `CONTEXT.md` / `CLAUDE.md` is a `dropped: <id> (<file at REF>)` finding (exit `1`)
 - `doctor` prints aligned columns (padded name, then status: `ok`, `drift`, `home-only`, `broken`, `orphan`); exits `0` when no `drift` or `orphan`, else `1`
 - An **orphan** is a symlink under `~/.agents/skills/<name>/` whose target is inside the store and no longer exists; links pointing elsewhere are never orphans
 - `prune` deletes orphan links (and emptied directories), prints each `name/relative` path, and notes the count; a second run notes `no orphans to prune`
