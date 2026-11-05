@@ -12,7 +12,7 @@ Make the board tell the truth: PO (value, Create bar) + Scrum Master (WIP, statu
 - Local backlog docs are inputs; the board wins after the lock.
 - **Create bar (depth ≥ 2):** cited code evidence or a named gap on a ticket; else Amend AC / Rehome / On Hold / Research Further.
 - Remove → Hide (On Hold) → Consolidate (rehome/amend) → Automate → Add (create).
-- Done foundation stays Done (never reopen as MVP). Before closing a duplicate, superseded, or completed Epic/idea, comment a redirect naming the canonical target and team discussion channel (`<project>/.agents/product.md` if configured); also set its archive flag and terminal board-column field so grouped views hide it.
+- Done foundation stays Done (never reopen as MVP). Close per `SKILL.md` Status lifecycle.
 - Empty future epics stay parked until evidence or an explicit Create ask.
 - Ticket text: short Context / Outcome / AC.
 - Status names, link types, Ready transitions, Epic parent field: discover via tracker MCP / repo wrapper / `AGENTS.md`; never hardcode. Inspect a working reference card and the link schema before judging link direction.
@@ -25,7 +25,7 @@ Make the board tell the truth: PO (value, Create bar) + Scrum Master (WIP, statu
 3. **Disposition table:** `| Key | Keep / Rehome / On Hold / Amend AC / Create (rare) / Skip | Why (one line) |` — Skip Done misparents unless they pollute live queries.
 4. **Create evidence gate:** each Create cites path + fact or ticket + gap; else drop it.
 5. **Execute (approved):** retitle, rewrite, reparent, transition, closing comments, hard-order links, Creates.
-6. **Verify:** re-query; no Ready orphans on the umbrella (unless project pattern); held work in hold/next status; Creates have parent + intended status; no open unparented stories or stories under Done Epics; open Epics have non-overdue start/target dates and portfolio delivery links; linked technical RFCs link both ways.
+6. **Verify:** re-query; no Ready orphans on the umbrella (unless project pattern); held work in hold/next status; Creates have parent + intended status; no open unparented stories or stories under Done Epics; open Epics meet the `create` epic rule and are not overdue; linked technical RFCs link both ways.
 
 Links: hard order → the project's dependency link (often `Blocks`), one chain per active epic.
 
