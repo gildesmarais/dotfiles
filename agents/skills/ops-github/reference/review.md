@@ -6,13 +6,13 @@ Others' PRs (`review-requested`). Operator approves/merges by hand, never agent.
    `findings` on URL. Scratch → `/tmp/ops-github/<id>.log`. Return Findings +
    Readiness (≤12 lines). Brief/tiers:
    [`../../brain/reference/orchestrate.md`](../../brain/reference/orchestrate.md).
-2. Verdict + AskQuestion for per-PR OK before GitHub write:
-   - `<repo#n> — "<title>" · Ready for human review` when mergeability is
-     positive (`Readiness: Yes`, 0 Critical/Important, CI green); operator
-     approves by hand.
-   - `<repo#n> — "<title>" · Follow-up (<Readiness>)` else (blockers/unrun gates).
-3. On OK: submit `COMMENT` review (\`\`\`suggestion blocks; `pull-request`
-   `comment` / host APIs; never `APPROVE`/`/approve`).
+2. Digest row (`tick.md`): class, `repo#n`, title, author, head → base, URL,
+   readiness, human step. AskQuestion buttons only:
+   `N. <class> — <repo#n> — <url>` plus the line below.
+   - Ready (`Readiness: Yes`, 0 Critical/Important, CI green) → `You merge`.
+   - Else `Follow-up (<Readiness>)` → the blocker.
+3. On OK: `COMMENT` review (\`\`\`suggestion; `pull-request` `comment`; never
+   `APPROVE`). Tell `<repo#n> — <url>`, review URL, human step.
 4. Unrun gate → AskQuestion; never guess green.
 5. Record `ops-github ledger decide <id> done|deferred`.
 

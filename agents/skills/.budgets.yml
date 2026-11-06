@@ -54,10 +54,10 @@ words:
   ops-chore/reference/ledger.md: 130
   ops-chore/reference/playbook.md: 369
   ops-github/SKILL.md: 291
-  ops-github/reference/act.md: 193
-  ops-github/reference/review.md: 114
+  ops-github/reference/act.md: 204
+  ops-github/reference/review.md: 120
   ops-github/reference/setup.md: 96
-  ops-github/reference/tick.md: 263
+  ops-github/reference/tick.md: 400
   ops-github/reference/wrap.md: 55
   ops-slack/SKILL.md: 242
   ops-slack/reference/digest.md: 325

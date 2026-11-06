@@ -7,6 +7,7 @@ user-approved `ask` items too). Mark `in_flight` before;
 Hand brief, Merge-main, Tiers, Verify:
 [`../../brain/reference/orchestrate.md`](../../brain/reference/orchestrate.md).
 Cap tool output; logs → `/tmp/ops-github/<id>.log`; Hand ≤12 lines.
+Report `<repo#n> — <url>` + human step; clusters list every URL.
 
 ## Resolve invoke
 
