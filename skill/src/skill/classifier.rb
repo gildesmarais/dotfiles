@@ -94,8 +94,12 @@ module Skill
     end
 
     # [name, status] rows for one install root. The agents root lists every
-    # store skill too; other roots list only what is installed there.
+    # store skill too; other roots list only what is installed there. An
+    # overlapping root yields one [install_dir, "overlap"] row instead: its skill
+    # rows would compare the store with itself.
     def report_entries(root: "agents")
+      return [[@paths.install_dir(root), "overlap"]] if overlaps_store?(root)
+
       installed = @paths.install_skill_names(root)
       names = root == "agents" ? (@paths.store_skill_names | installed).sort : installed
       names.map { |name| [name, status_for(name, root: root)] }
@@ -117,7 +121,7 @@ module Skill
     end
 
     def under_root?(path, root)
-      path == root || path.start_with?(root + File::SEPARATOR)
+      path == root || path.start_with?(root.end_with?(File::SEPARATOR) ? root : root + File::SEPARATOR)
     end
 
     # Resolve existing path prefixes so /var vs /private/var comparisons match.

@@ -42,10 +42,10 @@ module Skill
     def doctor_skills
       @paths.ensure_store!
       entries = Paths::INSTALL_ROOTS.flat_map do |root|
-        # One row for an overlapping root: its skill rows would compare the store with itself.
-        next [[root, @paths.install_dir(root), "overlap"]] if classifier.overlaps_store?(root)
-
-        classifier.report_entries(root: root).map { |name, status| [root, install_label(root, name), status] }
+        # An overlap row already carries its install dir as the label.
+        classifier.report_entries(root: root).map do |name, status|
+          [root, status == "overlap" ? name : install_label(root, name), status]
+        end
       end
       return if entries.empty?
 

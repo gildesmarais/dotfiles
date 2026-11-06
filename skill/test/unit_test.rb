@@ -147,6 +147,7 @@ class SkillUnitTest < Minitest::Test
       File.join(@skills_dir, "x") => true,
       File.join(@dotfiles_root, "agents") => true,
       @dotfiles_root => true,
+      "/" => true,
       "#{@skills_dir}-local" => false,
       File.join(@dotfiles_root, "agents", "skil") => false
     }.each do |target, expected|
@@ -456,6 +457,17 @@ class SkillUnitTest < Minitest::Test
 
     assert_equal([%w[delta drift], %w[old orphan]], classifier.report_entries(root: "claude"))
     assert_equal([%w[alpha ok], %w[delta ok]], classifier.report_entries)
+  end
+
+  def test_classifier_report_entries_single_overlap_row_for_overlapping_root
+    create_store_skill("alpha")
+    FileUtils.mkdir_p(File.join(@home_dir, ".claude"))
+    File.symlink(@dotfiles_root, @paths.install_dir("claude"))
+
+    classifier = Skill::Classifier.new(paths: @paths)
+
+    assert_equal([[@paths.install_dir("claude"), "overlap"]], classifier.report_entries(root: "claude"))
+    assert_equal([%w[alpha ok]], classifier.report_entries)
   end
 
   def test_doctor_skills_silent_when_empty
