@@ -59,6 +59,8 @@ words:
   ops-github/reference/setup.md: 96
   ops-github/reference/tick.md: 263
   ops-github/reference/wrap.md: 55
+  ops-slack/SKILL.md: 242
+  ops-slack/reference/digest.md: 325
   product-owner/SKILL.md: 372
   product-owner/reference/gate.md: 456
   product-owner/reference/rebaseline.md: 317
@@ -97,7 +99,7 @@ words:
   swift-dev/SKILL.md: 200
   swift-dev/reference.md: 294
   swiftui-dev/SKILL.md: 140
-  triage/SKILL.md: 281
+  triage/SKILL.md: 278
   triage/reference/intake.md: 260
   triage/reference/scrape-incident.md: 188
   typescript-dev/SKILL.md: 300
