@@ -3,6 +3,14 @@ theme = neon-ember
 cursor-style = block
 unfocused-split-opacity = 0.85
 window-padding-x = 8
+window-padding-balance = true
+macos-titlebar-style = tabs
+
+# Dock icon in the neon-ember colors (experimental; needs a full restart)
+macos-icon = custom-style
+macos-icon-frame = plastic
+macos-icon-ghost-color = #ff8800
+macos-icon-screen-color = #0e0c0a,#241e1a
 copy-on-select = true
 
 # --- Keybindings ---
