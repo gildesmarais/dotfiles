@@ -1,0 +1,2 @@
+# Use the terminal palette (Ghostty neon-ember) instead of a fixed theme
+--theme=ansi

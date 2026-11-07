@@ -21,6 +21,11 @@ set mouse = yes
 set truncation-delimiter = "..."
 set wrap-lines = yes
 
+# Colors follow the Ghostty neon-ember theme; 208 is its #ff8800 accent
+color cursor 0 208 bold
+color title-focus 0 208 bold
+color title-blur 7 0
+
 # Commit ordering (prefer default visual/logical behavior)
 set commit-order = default
 

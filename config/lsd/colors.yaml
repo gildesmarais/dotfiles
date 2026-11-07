@@ -1,0 +1,39 @@
+# ANSI slots (0-15) track the Ghostty neon-ember palette; 208 is its #ff8800 accent
+user: 208
+group: 7
+permission:
+  read: 2
+  write: 3
+  exec: 1
+  exec-sticky: 5
+  no-access: 8
+  octal: 6
+  acl: 6
+  context: 6
+date:
+  hour-old: 208
+  day-old: 3
+  older: 8
+size:
+  none: 8
+  small: 7
+  medium: 3
+  large: 208
+inode:
+  valid: 5
+  invalid: 8
+links:
+  valid: 6
+  invalid: 1
+tree-edge: 8
+git-status:
+  default: 7
+  unmodified: 8
+  ignored: 8
+  new-in-index: 2
+  new-in-workdir: 2
+  typechange: 3
+  deleted: 1
+  renamed: 2
+  modified: 3
+  conflicted: 1

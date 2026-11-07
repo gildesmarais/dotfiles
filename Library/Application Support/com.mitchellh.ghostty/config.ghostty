@@ -1,7 +1,8 @@
 font-size = 18
-theme = Tomorrow Night Eighties
-foreground = 1cd468
-background = 192129
+theme = neon-ember
+cursor-style = block
+unfocused-split-opacity = 0.85
+window-padding-x = 8
 copy-on-select = true
 
 # --- Keybindings ---

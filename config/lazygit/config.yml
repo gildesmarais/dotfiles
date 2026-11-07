@@ -8,6 +8,9 @@ gui:
   confirmOnQuit: true
   theme:
     lightTheme: false
+    activeBorderColor: ["#ff8800", "bold"]
+    inactiveBorderColor: ["#72665e"]
+    searchingActiveBorderColor: ["yellow", "bold"]
     selectedLineBgColor: ["reverse"]
 git:
   diffRenderers:

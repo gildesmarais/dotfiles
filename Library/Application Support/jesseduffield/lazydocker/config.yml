@@ -1,0 +1,7 @@
+gui:
+  # Matches lazygit and the Ghostty neon-ember theme; #72665e is its bright black
+  theme:
+    activeBorderColor: ["#ff8800", "bold"]
+    inactiveBorderColor: ["#72665e"]
+    selectedLineBgColor: ["reverse"]
+    optionsTextColor: ["blue"]

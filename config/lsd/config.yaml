@@ -1,0 +1,4 @@
+# Colors in colors.yaml follow the Ghostty neon-ember theme
+color:
+  when: auto
+  theme: custom

@@ -38,6 +38,8 @@ fi
 
 # setup fzf
 if command_exists fzf; then
+  # colors follow the Ghostty neon-ember theme; #ff8800 is its accent
+  export FZF_DEFAULT_OPTS="--color=fg:-1,bg:-1,hl:#ff8800,fg+:15,bg+:0,hl+:#ff8800,info:8,prompt:#ff8800,pointer:#ff8800,marker:2,spinner:#ff8800,header:8,border:8,gutter:-1"
   eval "$(fzf --zsh)"
 fi
 

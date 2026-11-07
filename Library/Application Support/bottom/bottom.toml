@@ -1,0 +1,15 @@
+# Only overrides; bottom's defaults already use ANSI names that track the
+# Ghostty neon-ember palette. #ff8800 is its accent.
+[styles.cpu]
+avg_entry_color = "#ff8800"
+
+[styles.memory]
+ram_color = "#ff8800"
+
+[styles.tables]
+headers = {color = "#ff8800", bold = true}
+
+[styles.widgets]
+border_color = "dark gray"
+selected_border_color = "#ff8800"
+selected_text = {color = "black", bg_color = "#ff8800"}
