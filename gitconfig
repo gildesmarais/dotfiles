@@ -8,32 +8,18 @@
 	helper = osxkeychain
 [push]
 	default = current
-[filter "media"]
-	clean = git media clean %f
-	smudge = git media smudge %f
-	required = true
 [help]
 	autocorrect = 100
-[color]
-	ui = auto
 [merge]
 	conflictstyle = zdiff3
 	ff = only
 [alias]
-	showtool = "!f() { git difftool $1^ $1; }; f"
-	added = difftool --cached
 	changelog = !git --no-pager log --reverse --pretty=format:\"- %s (%h)%n%b%n\"
 [diff]
-	tool = icdiff
-	compactionHeuristic = true
 	colorMoved = dimmed-zebra
-[pager]
-	difftool = true
 [pull]
 	ff = only
 	rebase = true
-[http]
-	postBuffer = 524288000
 [fetch]
 	prune = true
 [rebase]
