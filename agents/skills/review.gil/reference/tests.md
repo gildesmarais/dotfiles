@@ -1,13 +1,12 @@
 # Tests
 
-Lens for changed tests/specs: over-mocking, hidden regressions, contract gaps, weak assertions, dishonest fixtures, flaky seams, inflated flight height.
+Lens for changed tests/specs.
 
 ## Method
 
 1. Read the implementation diff before judging its tests.
 2. Classify flight height: **Pure unit** · **Component** · **Integration** · **UI smoke** · **Regression / characterization** (definition → [`../../dev/reference/surgical-laws.md`](../../dev/reference/surgical-laws.md)).
 3. Useful isolation removes nondeterminism/expense while keeping the contract; harmful mocking reimplements production or asserts sequencing over outcomes.
-4. Tie findings to a production defect or bug risk.
 
 Probe: What bug does this catch? What bug in this diff still passes? Would it pass with the key production branch deleted? Is the seam the narrowest public one?
 
@@ -19,7 +18,7 @@ Probe: What bug does this catch? What bug in this diff still passes? Would it pa
 - Kitchen-sink suites mixing parse + component + disk + UI without tier split.
 - Private-surface reach, manually invoked captured callbacks/hooks, stubs reimplementing collaborator logic.
 - Called-with expectations without asserting visible outcome; broad global stubs where a narrow fake fits.
-- Happy-path-only specs when the diff changed error, fallback, or security handling.
+- Happy-path-only specs when the diff changed error, fallback, or security handling; multi-step flows need a case per earlier-step terminal failure and failed side effect: error shown over later-step state, never routed as success.
 - Snapshot/golden tests locking shape, not semantics; many coarse assertions, none discriminating the likely bug.
 - Fixtures creating impossible states or bypassing validation; frozen time/random/order/concurrency that drops the real contract.
 - Lifecycle/race fixes never replaying the broken storage or unhydrated-cache state.
