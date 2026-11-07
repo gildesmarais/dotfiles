@@ -246,5 +246,3 @@ bindkey "^[^[[C" forward-word
 bindkey "^[^[[D" backward-word
 #endregion
 
-#region Completions
-autoload -U compinit && compinit
