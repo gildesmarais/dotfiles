@@ -1,18 +1,2 @@
-# dotfile relevant directories
-config/gtk-2.0/
-config/mc/*
-newsbeuter/history*
-newsbeuter/*.db
-scripts/npm-debug.log
-
-vim/backups/*
-!vim/backups/.keep
-vim/swaps/*
-!vim/swaps/.keep
-vim/undo/*
-!vim/undo/.keep
-
-vim/viminfo
-zsh/local_aliases
 skill/.cache/
 .agents/skills/
