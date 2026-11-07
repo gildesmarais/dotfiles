@@ -1,0 +1,73 @@
+[core]
+	excludesfile = ~/.gitignore_global
+	autocrlf = input
+	attributesfile = ~/.gitattributes
+	editor = vim
+	pager = delta
+[credential]
+	helper = osxkeychain
+[push]
+	default = current
+[filter "media"]
+	clean = git media clean %f
+	smudge = git media smudge %f
+	required = true
+[help]
+	autocorrect = 100
+[color]
+	ui = auto
+[merge]
+	conflictstyle = zdiff3
+	ff = only
+[alias]
+	showtool = "!f() { git difftool $1^ $1; }; f"
+	added = difftool --cached
+	changelog = !git --no-pager log --reverse --pretty=format:\"- %s (%h)%n%b%n\"
+[diff]
+	tool = icdiff
+	compactionHeuristic = true
+	colorMoved = dimmed-zebra
+[pager]
+	difftool = true
+[pull]
+	ff = only
+	rebase = true
+[http]
+	postBuffer = 524288000
+[fetch]
+	prune = true
+[rebase]
+	autosquash = true
+	autoStash = true
+[init]
+	defaultBranch = main
+[commit]
+	template = ~/.gitmessage
+[merge "merge-structure-sql"]
+	name = Rails structure.sql merge driver
+	driver = git-merge-structure-sql %A %O %B
+[delta]
+	navigate = true
+	syntax-theme = ansi
+	features = decorations
+[delta "decorations"]
+	commit-decoration-style = bold "#ff8800" box
+	file-style = bold "#ff8800"
+	hunk-header-style = bold magenta
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[interactive]
+	diffFilter = delta --color-only
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+
+# identity and signing live outside the repo
+[include]
+	path = ~/.gitconfig.local

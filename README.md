@@ -9,6 +9,18 @@ Maintained by [Gil Desmarais](https://gil.desmarais.de) (Berlin). Profile, proje
 - Install [homebrew](https://brew.sh/)
 - `git clone git@github.com:gildesmarais/dotfiles.git ~/.dotfiles && make -C ~/.dotfiles install`
 - `topgrade`
+- Create `~/.gitconfig.local` with this machine's git identity and signing. The managed `gitconfig` includes it and holds neither:
+
+  ```ini
+  [user]
+  	name = Your Name
+  	email = you@example.com
+  	signingkey = ~/.ssh/id_ed25519.pub
+  [commit]
+  	gpgsign = true
+  [gpg]
+  	format = ssh
+  ```
 
 ### Keeping a machine in sync
 
