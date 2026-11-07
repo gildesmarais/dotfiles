@@ -1,0 +1,6 @@
+*~
+.DS_Store
+.byebug_history
+examples.txt
+tsconfig.tsbuildinfo
+**/.claude/settings.local.json

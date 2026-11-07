@@ -1,5 +1,4 @@
 # dotfile relevant directories
-config/git
 config/gtk-2.0/
 config/mc/*
 newsbeuter/history*
