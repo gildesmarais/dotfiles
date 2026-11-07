@@ -9,8 +9,8 @@
 #
 #   scripts/neon-ember-palette > config/ghostty/themes/neon-ember
 #
-# vim/colors/neon-ember.vim and the lazygit/lazydocker borders copy these
-# values; update them after a change.
+# Other tools use ANSI slots or names, so they follow without edits; only
+# #ff8800 is spelled out where a tool needs the accent.
 
 ACCENT = '#ff8800'
 HUES = { 1 => 25, 2 => 140, 3 => 90, 4 => 255, 5 => 340, 6 => 195 }.freeze

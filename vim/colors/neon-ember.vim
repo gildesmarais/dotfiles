@@ -1,26 +1,17 @@
 " neon-ember: mirrors the Ghostty theme of the same name.
-" cterm uses the terminal's ANSI slots (0-15) so it tracks the palette;
+" Only terminal colors: ANSI slots (0-15) track the Ghostty palette, and
 " 208 is the #ff8800 accent, which has no ANSI slot.
 hi clear
 if exists('syntax_on') | syntax reset | endif
 set background=dark
 let g:colors_name = 'neon-ember'
 
-let s:gui = {
-  \ 0: '#241e1a', 1: '#ff817a', 2: '#71c45e', 3: '#d1a601',
-  \ 4: '#70affe', 5: '#ed80cc', 6: '#0ac4c5', 7: '#d3c8c1',
-  \ 8: '#72665e', 9: '#feb5ae', 10: '#9ae08a', 11: '#edc656',
-  \ 12: '#a8ceff', 13: '#feace3', 14: '#2fe6e6', 15: '#f7f0eb',
-  \ 208: '#ff8800', 'NONE': 'NONE' }
-
 function! s:hi(group, fg, bg, attr) abort
-  execute 'hi' a:group
-    \ 'ctermfg=' . a:fg 'ctermbg=' . a:bg 'cterm=' . a:attr
-    \ 'guifg=' . s:gui[a:fg] 'guibg=' . s:gui[a:bg] 'gui=' . a:attr
+  execute 'hi' a:group 'ctermfg=' . a:fg 'ctermbg=' . a:bg 'cterm=' . a:attr
 endfunction
 
-" Normal follows the terminal's own fg/bg; gui needs them spelled out.
-hi Normal ctermfg=NONE ctermbg=NONE guifg=#ff9c4d guibg=#0e0c0a
+" Normal keeps the terminal's own fg/bg
+hi Normal ctermfg=NONE ctermbg=NONE
 
 " Syntax
 call s:hi('Comment',      8,   'NONE', 'italic')

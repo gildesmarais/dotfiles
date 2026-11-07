@@ -9,7 +9,7 @@ gui:
   theme:
     lightTheme: false
     activeBorderColor: ["#ff8800", "bold"]
-    inactiveBorderColor: ["#72665e"]
+    inactiveBorderColor: ["white"]
     searchingActiveBorderColor: ["yellow", "bold"]
     selectedLineBgColor: ["reverse"]
 git:
