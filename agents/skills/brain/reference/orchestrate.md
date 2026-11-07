@@ -1,23 +1,23 @@
 # Orchestrate
 
-`brain` `orchestrate`: brief, tiers, verify loop, re-plan, ledger. Time matters: optimize wall-clock to a shippable state without lowering the Definition of Done.
+`brain` `orchestrate`: brief, tiers, verify loop, re-plan, ledger. Optimize wall-clock to shippable without lowering the Definition of Done.
 
 ## Hand brief
 
-Fixed part first, task fields last, so repeated spawns reuse the cached prefix. Spawn with worktree isolation; parallel Hands get disjoint whitelists.
+Fixed part first, task fields last, so spawns reuse the cached prefix. Worktrees do not start on the target branch, hence Setup; parallel Hands get disjoint whitelists.
 
 ```text
-Load `$dev`, branch `implement`. You are a Hand: one task, then return.
-Time matters: run the narrowest check each iteration and the full gate once at
-the end; make the smallest correct change; put improvements you notice under
-Discoveries instead of editing them; at the timebox or on a wrong assumption,
-stop and return `blocked` or `partial` with evidence rather than guessing.
-Edit only whitelisted paths. Do not commit. Full logs go to a scratch file.
-Return the Delivery Ledger in <=25 lines; unknowns are allowed, unevidenced
-claims count as not done.
+Read ~/.agents/skills/dev/SKILL.md, follow branch `implement`. You are a Hand:
+one task, then return. Time matters: narrowest check per iteration, full gate
+once at the end; smallest correct change; improvements → Discoveries.
+At the timebox or a wrong assumption, return `blocked` or `partial` with
+evidence. Run Setup; edit only whitelisted paths; commit on your branch per the
+commit law; no push, merge, or rebase. Full logs to scratch. Return the Delivery
+Ledger (<=25 lines) with branch + head SHA; unevidenced claims count as undone.
 
 Task: <id> — <imperative intent>
-Repo: <root> @ <baseline>
+Repo: <root>
+Base: <target branch>@<sha> — Setup: `git switch -c brain/<id> <sha>`
 Whitelist: <paths>
 Read-only context: <paths or none>
 Acceptance: <observable check; behavior change → test failing before, passing after>
@@ -25,46 +25,43 @@ Gate: <repo-native command>
 Timebox: <turns or minutes>
 ```
 
-Merge-main variant (smallest tier; replaces the task fields):
+Update variant (smallest tier; replaces task fields):
 
 ```text
-Task: <PR> — merge origin/main, no rebase/force. You MAY commit the merge.
-Resolve keeping both sides; generated swagger → take main's copy, then regenerate.
-Semantic conflict → `git merge --abort`, return blocked with the hunks.
-Return: merge SHA, conflicted files + how each was resolved, narrow check exit codes.
+Task: <PR | brain/<id>> — bring onto <branch>@<sha>. PR: merge origin/main, no
+rebase/force; you MAY commit the merge. Unpushed Hand branch: rebase onto <sha>.
+Resolve keeping both sides; generated swagger → take main's copy, regenerate.
+Semantic conflict → abort, return blocked with hunks.
+Return: new head SHA, conflicted files + resolution, narrow check exit codes.
 ```
 
 ## Tiers
 
-Set `model` and `effort` per spawn; the strongest tier is where defects get caught, the small tier is where cost is saved.
-
-| Work                                           | Model     | Effort |
-| ---------------------------------------------- | --------- | ------ |
-| Mechanical: rename, lint fix, format, config   | smallest  | low    |
-| Bounded change inside one module               | mid       | medium |
-| Design, cross-boundary, reviewer Hand          | strongest | high   |
+`model` + `effort` per spawn: mechanical (rename, lint, format, config) → smallest, low; one-module change → mid, medium; design, cross-boundary, reviewer → strongest, high.
 
 ## Verify loop
 
-1. **Bounds:** `git diff --name-only <baseline>` in the Hand's worktree ⊆ whitelist.
-2. **Gate:** the Brain runs the gate and acceptance check itself; exit 0 observed.
-3. **Land:** merge the worktree branch; commit per the commit law; record SHA.
-4. **Reject:** discard the worktree; write a diagnosis (what failed, likely cause, what the brief changes); retry once with the revised brief, or a higher tier.
+**Expected HEAD** per repo: last landed SHA, else Base. Re-check it (`git rev-parse`) before each land and wave (independent tranches in one message; brief the next while one verifies).
 
-Pipeline: while verifying tranche N, brief the next independent tranche; independent tranches go out in one message.
+1. **Bounds:** branch descends from Base, worktree clean, `git diff --name-only <base> <branch>` ⊆ whitelist; `git log <base>..<branch>` holds only the Hand's commits, each message matching its diff, no conflict markers.
+2. **Gate:** the Brain runs gate + acceptance on that branch; exit 0 observed.
+3. **Land:** target tree clean and HEAD == expected → `git merge --ff-only <branch>`; update expected. Else land nothing; never patch, stage, commit, or resolve conflicts:
+   - dirty tree or moved HEAD = another writer → stop, ask the user (wait, or target an integration branch). On resume, re-plan tranches whose whitelist overlaps `git diff --name-only <old> <new>`.
+   - non-ff → Update variant to that Hand; re-verify from 1.
+4. **Reject:** discard worktree; diagnose (failure, cause, brief change); retry once revised or a tier higher.
 
 ## Re-plan
 
-After every verdict, fold `Discoveries` into the Backlog, then merge, split, reorder, drop, or add tranches with a one-line reason. Order by unblocking value and risk: unknowns first, cosmetic last. Cut scope before stretching time; cuts become residuals. Product-scope changes go through `product-owner` `gate`; the rest is the Brain's call.
+After every verdict, fold `Discoveries` into Backlog; merge, split, reorder, drop, or add tranches, one-line reason each. Unknowns first, cosmetic last; cut scope before stretching time (cuts become residuals). Product scope → `product-owner` `gate`.
 
 ## Brain Ledger
 
-Default path `~/.local/state/brain/<goal-slug>.md`: one per goal so parallel sessions don't clobber, outside git; `<repo>/.agents/brain-ledger.md` when the user wants it kept in the repo. Entries are dated. Rewrite it after every verdict.
+`~/.local/state/brain/<goal-slug>.md` (outside git), or `<repo>/.agents/brain-ledger.md` on request. Dated; rewrite after every verdict.
 
 ```markdown
 Goal: <one line>
-Repos: <root> · <default> · <baseline> · <gate>
+Repos: <root> · <target branch> · <expected HEAD> · <gate>
 | Tranche | Repo | Status | SHA | Date | Residual |
-Backlog: <ordered ids + one-line reason for last re-plan>
-Decisions: <date — decision — why>
+Backlog: <ordered ids; last re-plan reason>
+Decisions: <date: decision, why>
 ```

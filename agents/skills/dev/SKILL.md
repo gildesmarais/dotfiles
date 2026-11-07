@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 # Dev
 
-Single Build entry. Load packs/overlays by name; never paste their bodies. Craft lives in `architecture`; product scope in `product-owner`. Repo `AGENTS.md` overrides these defaults. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md).
+Single Build entry. Load packs/overlays by name; never paste their bodies. Repo `AGENTS.md` overrides these defaults. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md).
 
 ## Pick branch
 
@@ -41,21 +41,21 @@ Single Build entry. Load packs/overlays by name; never paste their bodies. Craft
    | SwiftUI / WidgetKit / AppKit UI                                           | `swift-dev` + `swiftui-dev`         |
    | `.ts` / `.tsx` / `.js` / `.jsx`                                           | `typescript-dev`                   |
 
-3. **On signal:** tests / dual paths / acceptance → [`reference/surgical-laws.md`](reference/surgical-laws.md); material API claim → [`reference/api-truth.md`](reference/api-truth.md); committing or executing a plan, or delegating to subagents → [`reference/plan.md`](reference/plan.md). **AGENTS.md load**, security and observability cues: [`../CONTEXT.md`](../CONTEXT.md); co-load the security lens when clearly needed.
+3. **On signal:** tests / dual paths / acceptance → [`reference/surgical-laws.md`](reference/surgical-laws.md); material API claim → [`reference/api-truth.md`](reference/api-truth.md); committing or executing a plan, or delegating to subagents → [`reference/plan.md`](reference/plan.md). **AGENTS.md load**, security and observability cues: [`../CONTEXT.md`](../CONTEXT.md).
 4. **Compat:** classify internal vs stable public. Possibly-breaking change to a stable surface with unclear permission → ask first. No silent shims, no silent breaks.
 5. **No destructive git** (`push --force`, hard reset, …) unless explicitly asked.
-6. **Validation:** repo-native entrypoints, narrow → broad, per phase. Never claim green without an observed exit 0 for each cited command.
+6. **Validation:** repo-native entrypoints, narrow → broad, per phase. Never claim green without an observed exit 0 for each cited command. Check the diff against every `AGENTS.md` rule naming a touched surface (file kind, layer, route); loading a rule does not apply it.
 
 ## Branch reference
 
 - **`plan`** — writes no code; contract and checklists in [`reference/plan.md`](reference/plan.md).
-- **`implement`** — Shared prep → classify → routed `{lang}-dev` (+ overlay, reference) → execute → post-delivery Assure → Handoff.
+- **`implement`** — Shared prep → routed `{lang}-dev` → execute → post-delivery Assure → Handoff.
 
 ## Handoff
 
 Path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; never reverse. Emit the **Delivery Ledger** ([`../CONTEXT.md`](../CONTEXT.md)) at delivery → `review.gil`.
 
-- **Post-delivery Assure** (before the delivery report): run it for `design`, a stable-surface change, a matched security/perf/tests cue, or a land ask — prefer a subagent running `review.gil` `findings` (+ warranted lenses) with the Ledger, returning only Findings + Readiness; else reload in-session. A `surgical` change with green gates and no cue skips it (state why). `quality` only on explicit merge-prep / boy-scout / authorized P0/P1. Land ask + Yes/Conditional → `pull-request` `open`.
+- **Post-delivery Assure** (before the delivery report): run it for `design`, a stable-surface change, a matched security/perf/tests cue, or a land ask — prefer a subagent running `review.gil` `findings` with the Ledger, returning only Findings + Readiness; else reload in-session. A `surgical` change with green gates and no cue skips it (state why). `quality` only on explicit merge-prep / boy-scout / authorized P0/P1. Land ask + Yes/Conditional → `pull-request` `open`.
 - `harvest` when pain repeats, a fix was non-obvious, or asked.
 - Forward doc (post-Assure, Yes/Conditional): non-obvious maintenance → repo `AGENTS.md`; skip if self-documenting.
 

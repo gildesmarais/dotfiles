@@ -3,9 +3,9 @@ name: brain
 description: >-
   Long-running macro orchestrator for multi-repo or multi-tranche delivery:
   delegates all code to Hand subagents, verifies their gates, re-plans a live
-  backlog, commits per the commit law. Use for /brain, "orchestrate", or work
-  spanning repos or many phases. Bare /brain consults (read-only verdict) by
-  default.
+  backlog, lands their commits fast-forward only. Use for /brain,
+  "orchestrate", or work spanning repos or many phases. Bare /brain consults
+  (read-only verdict) by default.
 disable-model-invocation: true
 ---
 
@@ -15,7 +15,7 @@ Macro flight height: intent, tranche boundaries, gates, commits, backlog. Hands 
 
 Hard limits (everything else is a default with a reason):
 
-- The Brain changes no tracked file on any tree: no edits, no `git merge` / `rebase` / `cherry-pick` / `checkout -- <path>` / `--theirs`, no conflict resolution, no artifact regeneration — "trivial" and generated files included. In `orchestrate` it reads ledgers, gate output, and `git diff --name-only` / `--stat`; allowed writes are `fetch`, `merge --ff-only` on a clean tree, and committing + pushing a Hand's verified diff.
+- The Brain changes no tracked file on any tree: no edits, `add`, `apply`, `commit`, `rebase`, `cherry-pick`, `checkout -- <path>`, `--theirs`, conflict resolution, or artifact regeneration — "trivial" and generated files included. In `orchestrate` it reads ledgers, gate output, and `git diff --name-only` / `--stat`; allowed writes are `fetch`, push, and `merge --ff-only` of a Hand's committed, verified branch per orchestrate Land.
 - In `orchestrate`'s verify loop the escape hatch is read-only: when a gate proves too little, read one targeted hunk and note it in the ledger.
 - Every user ask after orchestration starts is a tranche → brief a Hand, even for one line. Orchestration starts at the switch to `orchestrate`; the `$dev` row in Pick branch applies only before it.
 - A gate that fails twice for environment reasons is its own tranche: brief a Hand to make it runnable, or record the gap as a residual and rely on CI. The Brain does not debug environments.
@@ -44,12 +44,12 @@ Runs at the switch to `orchestrate`, not on load.
 
 ## Handoff
 
-- Hands load `$dev` `implement` and return the **Delivery Ledger** (incl. `Discoveries`).
+- Hands read `$dev` `implement` (**Handoff load**; path in the brief), return the **Delivery Ledger** (incl. `Discoveries`).
 - Per repo, after its last tranche: a fresh-context reviewer Hand runs `review.gil` `findings` on the Ledger and returns Findings + Readiness only. The Brain judges from that, never from the implementer's self-report.
 - Land ask + Yes/Conditional → `pull-request` `open`. Repeated pain → `harvest`.
 
 ## Completion criteria
 
-- **Tranche green** (Definition of Done): bounds clean; gate exit 0 observed by the Brain; acceptance check passes; no debug/TODO leftovers in the diff; compat decided; committed or deferral recorded; ledger updated.
+- **Tranche green** (Definition of Done): bounds clean; gate exit 0 observed by the Brain; acceptance check passes; no debug/TODO leftovers in the diff; compat decided; landed fast-forward or deferral recorded; ledger updated.
 - **Tranche blocked**: second attempt failed or Hand returned `blocked`; worktree discarded; residual and next step in the ledger; independent tranches continue.
 - **Project done**: backlog empty or explicitly cut; every touched repo has reviewer Readiness Yes/Conditional; residuals listed; final ledger summary reported.

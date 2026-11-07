@@ -7,7 +7,7 @@ words:
   CONTEXT.md: 238
   architecture/SKILL.md: 442
   architecture/reference/axioms.md: 279
-  architecture/reference/deep-modules.md: 404
+  architecture/reference/deep-modules.md: 399
   architecture/reference/design-patterns.md: 202
   architecture/reference/glossary.md: 209
   architecture/reference/growth.md: 113
@@ -30,7 +30,7 @@ words:
   dependabot/reference/pr-commands.md: 146
   dependabot/reference/triage.md: 142
   dependabot/reference/yml-keys.md: 81
-  dev/SKILL.md: 642
+  dev/SKILL.md: 641
   dev/reference/api-truth.md: 99
   communication/reference/outward-text.md: 383
   dev/reference/plan.md: 378

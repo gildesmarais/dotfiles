@@ -1,10 +1,12 @@
 # Finish
 
-Production-readiness baseline. Report only. For PRs, review the patch and surrounding code at the recorded head SHA.
+Production-readiness baseline. Report only; read the code around each hunk.
 
-## Issue / ticket
+## Acceptance
 
-Search prompt, branch name, commit messages, and PR body/links for a referenced issue or ticket; retrieve it with the matching tracker tool, MCP, or CLI. Enumerate its DoD/AC; verify each against the diff and tests. Unmet or unverified criteria are findings and readiness blockers.
+Fetch any issue or ticket referenced by prompt, branch, commits, or PR (tracker tool, MCP, CLI). Verify each DoD/AC against the diff and tests; unmet or unverified ones are findings and readiness blockers.
+
+When the diff adds an input, return value, or derived flag, trace it through every caller and branch, failures included; any path ignoring, dropping, or not setting it is a finding.
 
 ## Output format (required)
 
@@ -24,7 +26,7 @@ For `fix`, `Revert`, or production-incident diffs, fold into Findings (no extra 
 4. Dual public API or silent old-shape hydrate? → [`legacy.md`](legacy.md).
 5. Startup/suspension races; transport types escaping their edge; checker silenced; durable bags used as live objects without rehydrate; wire enum normalized outside the boundary → `{lang}-dev`.
 6. Repeated harden/follow-up commits hinting at a missing principle?
-7. Different server/data/client clocks: break for a lagged client, pre-backfill pod, or existing session? Can temporary compatibility be removed? Find real breaks or undeletable paths, not missing names.
+7. Skewed clocks (lagged client, pre-backfill pod, existing session): real breaks or undeletable compat, not missing names?
 
 
 ## Surfaces
