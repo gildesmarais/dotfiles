@@ -9,13 +9,6 @@ Maintained by [Gil Desmarais](https://gil.desmarais.de) (Berlin). Profile, proje
 - Install [homebrew](https://brew.sh/)
 - `git clone git@github.com:gildesmarais/dotfiles.git ~/.dotfiles && make -C ~/.dotfiles install`
 - `topgrade`
-- Setup vim:
-
-  ```sh
-  mkdir -p ~/.vim/backups
-  mkdir -p ~/.vim/swaps
-  mkdir -p ~/.vim/undo
-  ```
 
 ### Keeping a machine in sync
 

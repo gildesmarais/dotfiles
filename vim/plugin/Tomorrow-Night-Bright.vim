@@ -1,1 +1,0 @@
-/Users/gil/versioned/github/tomorrow-theme/vim/colors/Tomorrow-Night-Bright.vim
