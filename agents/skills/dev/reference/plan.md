@@ -33,5 +33,5 @@ Host owns todo tracking. Per todo: change only its files, run its gate (exit 0 o
 ## Token hygiene
 
 - Closed brief: exact files, one command, stop condition; point to `AGENTS.md`, never restate it. Disjoint file sets when parallel; read-only surveys only when not one grep away.
-- Cheapest model that fits: mechanical edits on a small model, design on the strongest.
+- Cheapest model tier that meets the Definition of Done; torn → lower; escalate for design, review, or a failed attempt.
 - Cap command output (`| tail -n 40`, `grep` the summary, full log to scratch). Clear or compact between unrelated tasks.

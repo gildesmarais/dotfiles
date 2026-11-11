@@ -66,7 +66,7 @@ Build path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; `$dev
 - **Thin `*-dev`** — craft in `architecture`; classify / validation / phase commits in `$dev`; overlays are deltas only.
 - **Proliferation guard** — new top-level skill only if it cannot be a branch of an existing router. Runtime route table stays in `dev/SKILL.md`.
 - **Zero backward compat** — delete superseded aliases, old execution names, and dual shims on cutover.
-- **Tokens are the currency** — single ownership, bounded Markdown DTOs for handoffs, no intermediate prompt layers.
+- **Tokens are the currency** — single ownership, bounded Markdown DTOs for handoffs, no intermediate prompt layers; every spawn names its model tier.
 - **Invocation** — new skills default to `disable-model-invocation: true` unless they are an ambient router.
 
 Router shape: `## Pick branch` → `## Shared prep` (omit when empty) → `## Branch reference` → `## Handoff` → `## Completion criteria`; relative `reference/*.md` links; unnumbered `##` headers. Spec: [agentskills.io](https://agentskills.io/). Repo-only notes: [`skill/authoring/`](../../skill/authoring/) — never cite from installed skill routers.

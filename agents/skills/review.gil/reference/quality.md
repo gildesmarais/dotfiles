@@ -43,7 +43,7 @@ Plan first unless "just do it": commit stack in dependency order; per commit fil
 Stacked commits when ≥2 independent themes. Per commit: smallest behavior-preserving refactor → tests lock behavior → lintfix touched paths → commit.
 
 - Gate failure mid-stack: fix forward; earlier-commit belonging → `git commit --fixup=<sha>`.
-- ≥3 commits: prefer a background subagent if available; parent verifies final gates.
+- ≥3 commits: prefer a small/mid-tier background subagent if available; parent verifies final gates.
 - Never lower coverage thresholds without approval; threshold changes only in the final `chore(test)`.
 
 ## Phase 4 — Verify

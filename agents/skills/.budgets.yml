@@ -16,9 +16,9 @@ words:
   architecture/reference/refactor-boundaries.md: 311
   architecture/reference/refactor-types.md: 280
   architecture/reference/structure-survey.md: 326
-  brain/SKILL.md: 566
+  brain/SKILL.md: 575
   brain/reference/consult.md: 413
-  brain/reference/orchestrate.md: 519
+  brain/reference/orchestrate.md: 523
   communication/SKILL.md: 231
   communication/reference/external-message.md: 107
   communication/reference/one-on-one.md: 262
@@ -33,7 +33,7 @@ words:
   dev/SKILL.md: 641
   dev/reference/api-truth.md: 99
   communication/reference/outward-text.md: 383
-  dev/reference/plan.md: 378
+  dev/reference/plan.md: 384
   dev/reference/surgical-laws.md: 96
   docs/SKILL.md: 298
   docs/reference/architecture.md: 227
@@ -80,13 +80,13 @@ words:
   release/reference/notes.md: 84
   review.gil/SKILL.md: 456
   review.gil/reference/conventional-comments.md: 157
-  review.gil/reference/finish.md: 351
+  review.gil/reference/finish.md: 352
   review.gil/reference/github-state.md: 363
   review.gil/reference/growth.md: 73
   review.gil/reference/legacy.md: 338
   review.gil/reference/perf.md: 129
   review.gil/reference/publish.md: 333
-  review.gil/reference/quality.md: 456
+  review.gil/reference/quality.md: 457
   review.gil/reference/security.md: 278
   review.gil/reference/tests.md: 367
   skill-trim/SKILL.md: 131

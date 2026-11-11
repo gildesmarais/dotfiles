@@ -31,5 +31,5 @@ For `fix`, `Revert`, or production-incident diffs, fold into Findings (no extra 
 
 ## Surfaces
 
-Code diffs only; skip docs-only/trivial and say so; `quality` skips. Prefer a host review subagent (`security` only with that lens), else a second inline pass. Pass repo path, target (`branch changes` | `uncommitted changes`), non-default base, and instructions; it computes the diff. On failure, retry once with per-file descriptions, name the blocker, and continue inline. Never fix, publish, or relaunch from output.
+Code diffs only; skip docs-only/trivial and say so; `quality` skips. Prefer a strongest-tier host review subagent (`security` only with that lens), else a second inline pass. Pass repo path, target (`branch changes` | `uncommitted changes`), non-default base, and instructions; it computes the diff. On failure, retry once with per-file descriptions, name the blocker, and continue inline. Never fix, publish, or relaunch from output.
 

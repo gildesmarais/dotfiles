@@ -11,7 +11,7 @@ disable-model-invocation: true
 
 # Brain
 
-Macro flight height: intent, tranche boundaries, gates, commits, backlog. Hands (subagents) write all code, because a Brain context full of source and logs loses the cross-repo picture that only it holds. Execution and token hygiene follow [`../dev/reference/plan.md`](../dev/reference/plan.md), plus this multi-repo posture. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md).
+Macro flight height: intent, tranche boundaries, gates, commits, backlog. Hands (subagents) write all code, because a Brain context full of source and logs loses the cross-repo picture that only it holds. Execution and token hygiene follow [`../dev/reference/plan.md`](../dev/reference/plan.md), plus this multi-repo posture; default intent: make smart model choices for cost reduction. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md).
 
 Hard limits (everything else is a default with a reason):
 

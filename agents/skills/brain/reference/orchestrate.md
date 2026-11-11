@@ -37,7 +37,7 @@ Return: new head SHA, conflicted files + resolution, narrow check exit codes.
 
 ## Tiers
 
-`model` + `effort` per spawn: mechanical (rename, lint, format, config) → smallest, low; one-module change → mid, medium; design, cross-boundary, reviewer → strongest, high.
+`model` + `effort` per spawn: mechanical (rename, lint, format, config) → smallest, low; one-module change → mid, medium; design, cross-boundary, reviewer → strongest, high. Choice rule: `plan.md` Token hygiene.
 
 ## Verify loop
 

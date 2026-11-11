@@ -9,7 +9,7 @@ Structural design, API contract creation, module decomposition, or structural te
 ## Checklist
 
 1. Design it twice: the chosen design plus ≥1 rejected alternative, compared on interface simplicity, generality, and performance before committing.
-   - Escalate only when the decision fixes a public contract or a seam with many callers: fan out 3 parallel subagents, each bound to one constraint (minimal entry points / maximal flexibility / trivial common case), then pick or hybridize. Never on `surgical` work.
+   - Escalate only when the decision fixes a public contract or a seam with many callers: fan out 3 mid-tier subagents, each bound to one constraint (minimal entry points / maximal flexibility / trivial common case), then pick or hybridize. Never on `surgical` work.
 2. Strategic over tactical: budget ~10–20% of the change for design improvement.
 3. General-purpose interfaces; pull complexity down into the module; adjacent layers offer different abstractions.
 4. Define errors out of existence before adding handling.
