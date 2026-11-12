@@ -1,0 +1,108 @@
+{
+  "model": "opus",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "ruby-lsp@claude-plugins-official": false,
+    "swift-lsp@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": false,
+    "sentry@claude-plugins-official": false
+  },
+  "modelSettings": {
+    "claude-sonnet-5-5": {
+      "autoCompactWindow": 400000
+    },
+    "claude-opus-5-5": {
+      "autoCompactWindow": 400000
+    },
+    "claude-fable-5-2": {
+      "autoCompactWindow": 400000
+    }
+  },
+  "theme": "dark",
+  "autoMode": {
+    "soft_deny": [
+      "$defaults"
+    ],
+    "environment": [
+      "**Cloud provider(s)**: None configured",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Default / protected branches**: main (default); protected branches: main, master",
+      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine with open internet",
+      "**Sensitive data locations & audiences**: .env, .env.local, .env.development.local, .env.test.local, .env.production.local, config/master.key contain credentials; keep out of commits and public surfaces",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment"
+    ]
+  },
+  "skillOverrides": {
+    "app-store-changelog": "off",
+    "coding-guidelines": "off",
+    "domain-cli": "off",
+    "domain-cloud-native": "off",
+    "domain-embedded": "off",
+    "domain-fintech": "off",
+    "domain-iot": "off",
+    "domain-ml": "off",
+    "domain-web": "off",
+    "find-skills": "off",
+    "m01-ownership": "off",
+    "m02-resource": "off",
+    "m03-mutability": "off",
+    "m04-zero-cost": "off",
+    "m05-type-driven": "off",
+    "m06-error-handling": "off",
+    "m07-concurrency": "off",
+    "m09-domain": "off",
+    "m10-performance": "off",
+    "m11-ecosystem": "off",
+    "m12-lifecycle": "off",
+    "m13-domain-error": "off",
+    "m14-mental-model": "off",
+    "m15-anti-pattern": "off",
+    "marketing-psychology": "off",
+    "meta-cognition-parallel": "off",
+    "paywalls": "off",
+    "popups": "off",
+    "rust-call-graph": "off",
+    "rust-code-navigator": "off",
+    "rust-daily": "off",
+    "rust-deps-visualizer": "off",
+    "rust-learner": "off",
+    "rust-refactor-helper": "off",
+    "rust-router": "off",
+    "rust-skill-creator": "off",
+    "rust-symbol-analyzer": "off",
+    "rust-trait-explorer": "off",
+    "swift-testing-expert": "off",
+    "unsafe-checker": "off",
+    "continual-learning": "off",
+    "core-actionbook": "off",
+    "core-agent-browser": "off",
+    "core-dynamic-skills": "off",
+    "core-fix-skill-docs": "off",
+    "dependabot": "off",
+    "harvest": "off",
+    "omnifocus": "off",
+    "release": "off",
+    "ruby-dev": "off",
+    "ruby-on-rails-dev": "off",
+    "triage": "off"
+  },
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+  },
+  "permissions": {
+    "defaultMode": "auto"
+  }
+}
