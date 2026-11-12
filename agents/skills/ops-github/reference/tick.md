@@ -1,43 +1,36 @@
 # Tick
 
-1. `ops-github tick` → envelope JSON (`status`, `report_md`, `auto`, `ask`,
-   `judge`, `budgets`). Exit 0 quiet, 10 changes; both OK.
+One-shot GitHub pass. No Jira, watcher, or wake handling: `ticket` `intake`
+and `$ops` own those.
+
+1. `ops-github tick` → envelope JSON (`status`, `report_md`, `clicks`, `auto`,
+   `ask`, `judge`, `board`, `budgets`). Exit 0 quiet, 10 changes; both OK.
 2. Paste `report_md` (≤15 lines) + ≤1 sentence on what comes first. Non-empty
    `ask`/`judge` → **digest** before the widget. Prompts repeat id + URL
    (`1a. <class> — <repo#n> — <url>`). In flight: `<pr> — <url>`, never bare id.
-3. **Auto:** each `auto[]` via **act** (engine-capped).
-4. **Ask:** one AskQuestion (≤4), urgent then batch (batch on bare `/ops-github`
-   only, minus `issue-assigned`; overflow waits). Digest those rows only.
-   Overflow: `N more waiting`, no links. Record `ledger decide <id>
-   asked|approved|snoozed|deferred|excluded`.
-5. **Judge:** bot-thread — approve/defer/exclude on clear evidence, else digest
+3. **Clicks:** report only, never act. `ready-to-merge` → `You merge`,
+   `ready-to-approve` → `You approve`; each with `<repo#n> — <url>`. If the
+   operator asks to snooze/defer a click: `ledger decide <id> snoozed|deferred`.
+4. **Auto:** each `auto[]` via **act** (engine-capped).
+5. **Ask:** one AskQuestion (≤4) when invoked interactively standalone, urgent
+   then batch (batch on bare `/ops-github` only; overflow waits). Digest those
+   rows only. Overflow: `N more waiting`, no links. Record `ledger decide <id>
+   asked|approved|snoozed|deferred|excluded`. Under `$ops`, return the rows
+   instead; never prompt.
+6. **Judge:** bot-thread — approve/defer/exclude on clear evidence, else digest
    + AskQuestion; `ledger decide`; approved → **act**.
-6. **Tickets** (bare only): `issue-assigned` + Jira keys (Atlassian MCP; JQL
-   assigned or new in intake; skip `<state-dir>/jira.txt`). Digest + AskQuestion
-   per ticket (`N. <key> — "<title>" — <url>`): challenge / implement / skip.
-   Include issue URL. GitHub chosen → **act**; skip → `ledger decide <id>
-   deferred`; never → `ledger exclude owner/repo#n`. Jira: append key; Hand →
-   `ticket`.
-7. Watcher PID gone (`doctor`) → arm `ops-github watch` in a session background
-   shell notifying on `OPS_GITHUB_WAKE` (debounce ≥60s); never `nohup … &`.
-   Claude Code: `Monitor` (`timeout_ms` 1800000) over `ops-github … watch 2>&1 |
-   grep -E --line-buffered 'OPS_GITHUB_WAKE|rror|FAIL'`; re-arm on expiry. Bare
-   `/ops-github` = monitor.
-8. Wake (`OPS_GITHUB_WAKE`, `urgency`: `changes` | `env`):
-   - `changes`: smallest-tier `Task` runs `ops-github tick`, returns `line`,
-     `auto` ids, urgent ask/judge (id, pr, url, title, class) ≤12 lines. Print
-     `line`, run auto via **act**, ask urgent only; digest those rows.
-   - `env`: `ops-github doctor | tail -n 5`, print 1 line, no tick.
-   Urgent/batch come from envelope, never wake.
+7. `issue-assigned` asks: digest only; `$ops` or the operator routes to
+   `ticket` `challenge` | `implement`. Skip → `ledger decide <id> deferred`; never → `ledger exclude owner/repo#n`.
 
 Never re-ask decided/`in_flight` items until fingerprint changes. Enforce
-`budgets` per wake.
+`budgets` per tick.
 
 ## Digest
 
 Group by shared PR, urgent first. One button per decision. Envelope fields:
 `url`, `title`, `class`, `headRefName`, `baseRefName`, `evidence.author`,
-`evidence.prs`, `invoke`. Print every URL; clusters list each PR on its own line.
+`evidence.prs`, `invoke`, `ticket`. Print every URL; clusters list each PR on
+its own line.
 
 ```text
 1. <repo#n>

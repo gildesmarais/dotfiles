@@ -15,6 +15,7 @@ description: >-
 | ------------------- | ------------------------------------------------------ |
 | implement (default) | Jira key/URL (`ABC-123`) or GitHub issue URL/`#N` |
 | challenge           | review / gate an incoming ticket; `ops-github` ticket item |
+| intake              | delta sweep of assigned + incoming tickets for `/ops` or `/ticket intake` |
 | create              | "file a ticket", follow-up under an epic               |
 | groom               | backlog/epic cleanup, reparent orphans, board sync     |
 | Post-PR sync        | ticket has a new PR URL; "open PR + move to review"    |
@@ -35,6 +36,10 @@ description: >-
 ### implement
 
 Fetch ticket + observability evidence; read code; gate → `$dev` `plan` → fresh branch `TICKET-ID-short-kebab-summary` → `$dev` `implement` → Handoff. PR ask → `pull-request` `open` → Post-PR sync. Interrupt only for real ambiguity or missing access.
+
+### intake
+
+[`reference/intake.md`](reference/intake.md)
 
 ### groom
 
@@ -63,7 +68,7 @@ After `pull-request` `open`: sync per Status lifecycle and adapter; if comment t
 
 ## Completion criteria
 
-- challenge, groom: per their reference.
+- challenge, groom, intake: per their reference.
 - implement: `$dev` plan emitted; delivered per `$dev`; ticket synced if PR opened.
 - create: issue created; parent/epic verified; links and status correct.
 - Post-PR sync: synced (or status changes listed) and reported.

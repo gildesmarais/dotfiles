@@ -1,15 +1,17 @@
 ---
 name: ops-github
 description: >-
-  Daily GitHub PR, issue and Jira attention operator: setup, tick, act,
-  review, wrap. Use for /ops-github or "what PRs or issues need me?".
+  One-shot GitHub PR and issue attention leaf: setup, tick, act, review. Use
+  for /ops-github or "what PRs or issues need me?". Continuous monitoring and
+  multi-channel briefs live in `$ops`.
 disable-model-invocation: true
 ---
 
 # Ops GitHub
 
-Brain over a read-only CLI (discover, classify, day ledger, watch): briefs
-Hands, never restates engine rules. Co-load
+Brain over a read-only CLI (discover, classify, day ledger): briefs Hands,
+never restates engine rules. One-shot only: no watcher, no wake loop. Watching
+and multi-channel briefs → `$ops`. Co-load
 [`../brain/reference/orchestrate.md`](../brain/reference/orchestrate.md) for
 **act** / **review**.
 
@@ -18,10 +20,9 @@ Hands, never restates engine rules. Co-load
 | Signal | Branch |
 | ------ | ------ |
 | Bare `/ops-github`, no day ledger; `setup-facts`; `reconfigure` | **setup** |
-| Bare `/ops-github`, day ledger exists; or `OPS_GITHUB_WAKE` | **tick** |
+| Bare `/ops-github`, day ledger exists | **tick** |
 | `act <id>` | **act** |
 | `review <url>` | **review** |
-| `wrap` | **wrap** |
 
 ## Shared prep
 
@@ -36,19 +37,20 @@ Hands, never restates engine rules. Co-load
 ## Branch reference
 
 - **setup** — [`reference/setup.md`](reference/setup.md)
-- **tick** — [`reference/tick.md`](reference/tick.md)
+- **tick** — [`reference/tick.md`](reference/tick.md); `clicks`
+  (`ready-to-merge`, `ready-to-approve`) and `re-review` come from the envelope
 - **act** — [`reference/act.md`](reference/act.md)
 - **review** — [`reference/review.md`](reference/review.md)
-- **wrap** — [`reference/wrap.md`](reference/wrap.md)
 
 ## Handoff
 
 - Fix, conflicts, threads on your PR → Hand → `pull-request` resolve | fix-ci | conflicts | reply.
 - Others' PR → Hand → `review.gil` `findings` (after per-PR OK).
 - Ticket (Jira or GitHub issue) → Hand → `ticket` `challenge` | `implement`.
+- Jira sweep → `ticket` `intake`; watcher, wake, wrap → `$ops`.
 - Dependabot fallout → `dependabot` `triage`; multi-repo delivery → `brain` `orchestrate`.
 
 ## Completion criteria
 
 Matched branch Done; report ≤15 engine lines + ≤1 sentence; no tracked-file
-edits; watch per branch; budgets honored.
+edits; budgets honored.
