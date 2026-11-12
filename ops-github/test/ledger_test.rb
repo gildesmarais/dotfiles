@@ -94,6 +94,23 @@ class LedgerTest < Minitest::Test
     assert_equal(%w[legacy open], ledger.items.keys.sort)
   end
 
+  def test_pr_cache_merges_and_retains_only_open_keys
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    assert_empty(ledger.prs)
+    ledger.cache_prs!("acme/app#1" => { "pr" => "acme/app#1" }, "acme/app#2" => { "pr" => "acme/app#2" })
+    ledger.cache_prs!("acme/app#2" => { "pr" => "acme/app#2", "parked" => true })
+    ledger.retain_prs!(%w[acme/app#2 acme/app#9])
+    assert_equal(%w[acme/app#2], OpsGithub::Ledger.load(ledger.path).prs.keys)
+    assert_equal(true, OpsGithub::Ledger.load(ledger.path).prs["acme/app#2"]["parked"])
+  end
+
+  def test_pr_cache_tolerates_ledger_written_before_it_existed
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    ledger.data.delete("prs")
+    assert_empty(ledger.prs)
+    ledger.retain_prs!([])
+  end
+
   def test_changed_since_seen_compares_signature
     ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
     assert(ledger.changed_since_seen?("acme/app#1", signature: "t1|SUCCESS"))

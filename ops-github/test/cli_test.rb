@@ -13,7 +13,8 @@ class CliTest < Minitest::Test
 
     attr_reader :calls, :state_ids
 
-    def initialize(login: "me", orgs: [], authored: [], requested: [], assigned: [], missing: []) # rubocop:disable Metrics/ParameterLists
+    def initialize(login: "me", orgs: [], authored: [], requested: [], assigned: [], reviewed: [], missing: []) # rubocop:disable Metrics/ParameterLists
+      @reviewed = reviewed
       @missing = missing
       @assigned = assigned
       @state_ids = []
@@ -29,7 +30,9 @@ class CliTest < Minitest::Test
       return "#{@login}\n" if argv[0, 2] == %w[api user]
       return JSON.generate(@orgs) if argv[0, 2] == %w[api user/orgs]
       raise "unexpected gh call: #{argv.inspect}" unless argv[0, 2] == %w[api graphql]
-      return search_response(authored: @authored, requested: @requested, assigned: @assigned) unless state_call?(argv)
+      unless state_call?(argv)
+        return search_response(authored: @authored, requested: @requested, assigned: @assigned, reviewed: @reviewed)
+      end
 
       ids = argv.grep(/\Aids\[\]=/).map { |arg| arg.split("=", 2).last }
       @state_ids.concat(ids)
@@ -37,7 +40,7 @@ class CliTest < Minitest::Test
         raise OpsGithub::ExitError, "gh failed: Could not resolve to a node with the global id of '#{bogus}'"
       end
 
-      nodes_response((@authored + @requested).uniq.select { |node| ids.include?(node["id"]) })
+      nodes_response((@authored + @requested + @reviewed).uniq.select { |node| ids.include?(node["id"]) })
     end
 
     def state_call?(argv)
@@ -82,8 +85,8 @@ class CliTest < Minitest::Test
     end
   end
 
-  def runner_with(authored: [], requested: [], assigned: [], missing: [])
-    FakeRunner.new(authored: authored, requested: requested, assigned: assigned, missing: missing)
+  def runner_with(authored: [], requested: [], assigned: [], reviewed: [], missing: [])
+    FakeRunner.new(authored: authored, requested: requested, assigned: assigned, reviewed: reviewed, missing: missing)
   end
 
   def numbered_nodes(range)
@@ -466,5 +469,85 @@ class CliTest < Minitest::Test
     end
     assert_equal(1, run_cli(["tick"], github: gh))
     assert_empty(OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir)).seen)
+  end
+
+  def approved_clean_node(number = 1)
+    pr_node("pr_authored_clean.json").merge("id" => "PR_#{number}", "number" => number, "reviewDecision" => "APPROVED",
+                                            "url" => "https://github.com/acme/app/pull/#{number}")
+  end
+
+  def test_tick_surfaces_ready_to_merge_click_and_exits_delta
+    assert_equal(10, run_cli(["tick"], github: github_for(runner_with(authored: [approved_clean_node]))))
+    env = JSON.parse(@stdout.string)
+    assert_equal(%w[ready-to-merge], env["clicks"].map { |i| i["class"] })
+    assert_equal("ops: 1 click", env["line"])
+    assert_match(/\Aops: 1 click · \d\d:\d\d\n\z/, File.read(File.join(@tmpdir, "status.txt")))
+    assert_equal(%w[status dry line report_md auto ask judge clicks board budgets], env.keys)
+  end
+
+  def test_tick_board_is_complete_on_later_ticks_without_refetching
+    behind = pr_node("pr_authored_clean.json").merge("mergeStateStatus" => "BEHIND")
+    waiting = pr_node("pr_authored_clean.json").merge(
+      "id" => "PR_2", "number" => 2, "mergeStateStatus" => "BLOCKED", "url" => "https://github.com/acme/app/pull/2"
+    )
+    runner = runner_with(authored: [behind, waiting])
+    gh = github_for(runner)
+    run_cli(["tick"], github: gh)
+    first = JSON.parse(@stdout.string)["board"]
+    assert_equal(%w[acme/app#1], first["behind"].map { |e| e["pr"] })
+    assert_equal(%w[acme/app#2], first["waiting_review"].map { |e| e["pr"] })
+    reset_output
+    state_calls = runner.state_calls
+    assert_equal(0, run_cli(["tick"], github: gh))
+    assert_equal(state_calls, runner.state_calls)
+    assert_equal(first, JSON.parse(@stdout.string)["board"])
+    reset_output
+    run_cli(["tick"], github: github_for(runner_with(authored: [waiting])))
+    assert_empty(JSON.parse(@stdout.string)["board"]["behind"])
+    assert_equal(%w[acme/app#2], OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir)).prs.keys)
+  end
+
+  def test_tick_hydrates_open_prs_missing_from_the_board_cache_once
+    node = pr_node("pr_authored_clean.json").merge("mergeStateStatus" => "BEHIND")
+    runner = runner_with(authored: [node])
+    gh = github_for(runner)
+    run_cli(["tick"], github: gh)
+    ledger = OpsGithub::Ledger.load(OpsGithub::Ledger.day_path(@tmpdir))
+    ledger.data.delete("prs")
+    ledger.save!
+    reset_output
+    run_cli(["tick"], github: gh)
+    assert_equal(2, runner.state_calls)
+    assert_equal(%w[acme/app#1], JSON.parse(@stdout.string)["board"]["behind"].map { |e| e["pr"] })
+    reset_output
+    run_cli(["tick"], github: gh)
+    assert_equal(2, runner.state_calls)
+  end
+
+  def test_tick_reviewed_pr_with_new_push_asks_re_review
+    node = pr_node("pr_review_requested.json").merge(
+      "headRefOid" => "eee555",
+      "reviews" => { "nodes" => [{ "author" => { "login" => "me" }, "state" => "COMMENTED",
+                                   "submittedAt" => "2026-11-02T12:10:00Z", "commit" => { "oid" => "ddd444" } }] }
+    )
+    runner = runner_with(reviewed: [node])
+    assert_equal(10, run_cli(["tick"], github: github_for(runner)))
+    env = JSON.parse(@stdout.string)
+    assert_equal([["re-review", "/ops-github review https://github.com/acme/other/pull/9"]],
+                 env["ask"].map { |i| [i["class"], i["invoke"]] })
+    assert_equal({ "since_oid" => "ddd444", "head_oid" => "eee555" }, env["ask"].first["evidence"])
+  end
+
+  def test_watch_accepts_brief_every_and_rejects_bad_values
+    ledger = OpsGithub::Ledger.init(@tmpdir, owners: %w[acme])
+    node = pr_node("pr_authored_clean.json")
+    ledger.mark_seen!("acme/app#1", signature: seen_signature(node))
+    gh = github_for(runner_with(authored: [node]))
+    assert_equal(0, run_cli(["watch", "--max-ticks", "1", "--brief-every", "1800"], github: gh))
+    refute_match(/OPS_GITHUB_WAKE/, @stdout.string)
+    assert_equal(1, run_cli(["watch", "--brief-every", "-5"], github: gh))
+    assert_match(/--brief-every must be >= 0/, @stderr.string)
+    assert_equal(1, run_cli(["watch", "--brief-every", "soon"], github: gh))
+    assert_match(/watch: invalid argument/, @stderr.string)
   end
 end

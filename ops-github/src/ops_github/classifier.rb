@@ -18,6 +18,20 @@ module OpsGithub
     ISSUE_CLASS = "issue-assigned"
     # An authored PR with one of these labels (case-insensitive) is parked like a draft.
     PARKED_LABELS = %w[on-hold do-not-merge parked].freeze
+    # Ticket keys: uppercase PROJECT-123; these prefixes are standards and hashes, not projects.
+    TICKET_KEY = /(?<![A-Za-z0-9])([A-Z][A-Z0-9]+)-\d+(?!\d)/.freeze
+    NOT_TICKET_PREFIXES = %w[UTF SHA ISO HTTP CVE RFC PEP].freeze
+    STANDING_REVIEW_STATES = %w[APPROVED CHANGES_REQUESTED DISMISSED].freeze
+
+    # First ticket key in the title, else in the head branch name; nil when none.
+    def self.ticket_key(record)
+      [record["title"], record["headRefName"]].each do |text|
+        text.to_s.scan(TICKET_KEY) do |(prefix)|
+          return Regexp.last_match(0) unless NOT_TICKET_PREFIXES.include?(prefix)
+        end
+      end
+      nil
+    end
 
     def initialize(login:, parked_labels: PARKED_LABELS)
       @login = login.to_s
@@ -31,6 +45,7 @@ module OpsGithub
       items = []
       rows_by_url = {}
       Array(search_rows).each { |r| rows_by_url[r["url"]] = r }
+      summaries = {}
 
       Array(states).each do |state|
         url = state["url"]
@@ -44,8 +59,10 @@ module OpsGithub
         # "both" (authored + review-requested, e.g. a team request on your own PR)
         # resolves by author so authored rules still apply.
         role = infer_role(state) if role.nil? || role == "both"
+        summaries[pr_key] = pr_summary(state, role)
         items.concat(items_for_pr(state, role: role))
       end
+      ledger.cache_prs!(summaries)
 
       items = cluster_red(items)
       items = cluster_dependabot(items)
@@ -59,7 +76,7 @@ module OpsGithub
 
     # +in_flight+: ledger items a Hand marked in_flight (classifier items carry no status).
     def render_report(items, in_flight: [])
-      needs = items.select { |i| %w[ask judge].include?(i["action"]) }
+      needs = items.select { |i| %w[ask judge click].include?(i["action"]) }
       lines = ["## Needs you"]
       if needs.empty?
         lines << "(none)"
@@ -69,7 +86,7 @@ module OpsGithub
           [URGENCY_RANK.fetch(i["urgency"], 9), i["class"] == ISSUE_CLASS ? 1 : 0, index]
         end
         ranked.map(&:first).first(8).each do |i|
-          lines << "- #{i['urgency']} #{report_label(i)}: #{i['class']}"
+          lines << "- #{i['action'] == 'click' ? 'click' : i['urgency']} #{report_label(i)}: #{i['class']}"
         end
       end
       lines << "## In flight"
@@ -89,18 +106,35 @@ module OpsGithub
       auto = actionable.select { |i| i["action"] == "auto" }.first(ledger.budgets["auto"] || 3)
       ask = actionable.select { |i| i["action"] == "ask" }
       judge = actionable.select { |i| i["action"] == "judge" }
+      clicks = actionable.select { |i| i["action"] == "click" }
       in_flight = ledger.items.values.select { |i| i["status"] == "in_flight" }
       report = render_report(actionable, in_flight: in_flight)
-      status = (auto + ask + judge).empty? ? "quiet" : "changes"
+      status = (auto + ask + judge + clicks).empty? ? "quiet" : "changes"
       {
         "status" => status,
         "dry" => dry,
-        "line" => status_line(ask + judge, auto, in_flight, dry),
+        "line" => status_line(ask + judge, auto, clicks, in_flight, dry),
         "report_md" => report,
         "auto" => auto.map { |i| slim(i) },
         "ask" => ask.map { |i| slim(i) },
         "judge" => judge.map { |i| slim(i) },
+        "clicks" => clicks.map { |i| slim(i) },
+        "board" => board(ledger.prs),
         "budgets" => ledger.budgets
+      }
+    end
+
+    # Standing view of the authored PRs, from the summaries Ledger#cache_prs! holds
+    # (kept current across ticks without refetching unchanged PRs).
+    def board(prs)
+      mine = prs.values.select { |s| s["authored"] }
+      active = mine.reject { |s| s["parked"] }.reject { |s| s["failing"] }
+      {
+        "behind" => active.select { |s| s["mergeStateStatus"] == "BEHIND" }
+                          .map { |s| s.slice("pr", "url", "title", "ticket", "reviewDecision") },
+        "waiting_review" => active.select { |s| waiting_review?(s) }
+                                  .map { |s| s.slice("pr", "url", "title", "ticket", "rollup_state") },
+        "parked_count" => mine.count { |s| s["parked"] }
       }
     end
 
@@ -117,15 +151,39 @@ module OpsGithub
       prs ? "#{item['repository']} (#{prs.size} PRs)" : item["pr"]
     end
 
-    def status_line(needs, auto, in_flight, dry)
+    def status_line(needs, auto, clicks, in_flight, dry)
       urgent = needs.count { |i| i["urgency"] == "urgent" }
       segs = []
       segs << "#{needs.size} need you#{" (#{urgent} urgent)" if urgent.positive?}" unless needs.empty?
+      segs << "#{clicks.size} click#{'s' unless clicks.size == 1}" unless clicks.empty?
       segs << "#{auto.size} auto" unless auto.empty?
       segs << "#{in_flight.size} in flight" unless in_flight.empty?
       segs << "quiet" if segs.empty?
       segs << "dry" if dry
       "ops: #{segs.join(' · ')}"
+    end
+
+    # Compact per-PR record the board is computed from; the only thing Ledger#prs stores.
+    def pr_summary(state, role)
+      {
+        "pr" => Github.pr_key(state),
+        "url" => state["url"],
+        "title" => state["title"],
+        "ticket" => Classifier.ticket_key(state),
+        "authored" => role == "authored",
+        "parked" => parked?(state),
+        "failing" => !Array(state["failing_checks"]).empty?,
+        "mergeStateStatus" => state["mergeStateStatus"],
+        "mergeable" => state["mergeable"],
+        "reviewDecision" => state["reviewDecision"],
+        "rollup_state" => state["rollup_state"].to_s
+      }
+    end
+
+    def waiting_review?(summary)
+      summary["reviewDecision"] == "REVIEW_REQUIRED" &&
+        summary["mergeStateStatus"] != "BEHIND" &&
+        summary["mergeStateStatus"] != "DIRTY" && summary["mergeable"] != "CONFLICTING"
     end
 
     def infer_role(state)
@@ -152,7 +210,8 @@ module OpsGithub
         "url" => state["url"],
         "title" => state["title"],
         "repository" => state["repository"],
-        "number" => state["number"]
+        "number" => state["number"],
+        "ticket" => Classifier.ticket_key(state)
       }
       item(base, ISSUE_CLASS, "batch", "ask", :act, "author" => state["author"])
     end
@@ -168,7 +227,8 @@ module OpsGithub
         "number" => state["number"],
         "baseRefName" => state["baseRefName"],
         "headRefName" => state["headRefName"],
-        "headRefOid" => state["headRefOid"]
+        "headRefOid" => state["headRefOid"],
+        "ticket" => Classifier.ticket_key(state)
       }
 
       if role == "review-requested" && state["author"].to_s != @login
@@ -243,7 +303,76 @@ module OpsGithub
         end
       end
 
+      out.concat(merge_items(base, state)) if role == "authored"
+      out.concat(reviewed_items(base, state)) if role == "reviewed" && state["author"].to_s != @login
       out
+    end
+
+    # The operator's one click: approved, up to date, green, nothing blocking.
+    def merge_items(base, state)
+      return [] unless state["reviewDecision"] == "APPROVED" && state["mergeStateStatus"] == "CLEAN"
+      return [] unless Array(state["failing_checks"]).empty? && state["rollup_state"] != "PENDING"
+      return [] unless Array(state["threads"]).reject { |t| t["isResolved"] || t["bot"] }.empty?
+
+      [item(base, "ready-to-merge", "urgent", "click", "merge #{state['url']}", "head_oid" => state["headRefOid"])]
+    end
+
+    # PRs you reviewed (no live request): re-review once the author moved, else approve when settled.
+    def reviewed_items(base, state)
+      mine = my_review(state)
+      return [] if mine.nil? || my_standing_review(state)&.fetch("state") == "APPROVED"
+
+      evidence = re_review_evidence(state, mine)
+      unless evidence.empty?
+        return [item(base, "re-review", "urgent", "ask", "/ops-github review #{state['url']}", evidence)]
+      end
+      return [] unless approvable?(state)
+
+      [item(base, "ready-to-approve", "urgent", "click", "approve #{state['url']}", "head_oid" => state["headRefOid"])]
+    end
+
+    def my_review(state)
+      Array(state["reviews"]).select { |r| r["author"] == @login && r["submittedAt"] }.max_by { |r| r["submittedAt"] }
+    end
+
+    # Latest APPROVED / CHANGES_REQUESTED / DISMISSED review of mine: a thread reply's
+    # COMMENTED review must not cancel an approval.
+    def my_standing_review(state)
+      mine = Array(state["reviews"]).select do |r|
+        r["author"] == @login && r["submittedAt"] && STANDING_REVIEW_STATES.include?(r["state"])
+      end
+      mine.max_by { |r| r["submittedAt"] }
+    end
+
+    # Empty when the author has not moved since +mine+. A push changes since/head oid,
+    # a new reply changes comment_id, so each moves the fingerprint.
+    def re_review_evidence(state, mine)
+      evidence = {}
+      if mine["commit_oid"] && state["headRefOid"] != mine["commit_oid"]
+        evidence.merge!("since_oid" => mine["commit_oid"], "head_oid" => state["headRefOid"])
+      end
+      reply = latest_reply(state, mine)
+      evidence["comment_id"] = reply["databaseId"] if reply
+      evidence
+    end
+
+    # Newest unresolved human reply after +mine+ in a thread you started or the author answered.
+    def latest_reply(state, mine)
+      replies = Array(state["threads"]).reject { |t| t["isResolved"] || t["bot"] }.map do |thread|
+        last = thread["last"]
+        next if last.nil? || last["author"] == @login || bot_author?(last["author"])
+        next unless last["createdAt"].to_s > mine["submittedAt"].to_s
+        next unless (thread["first"] || {})["author"] == @login || last["author"] == state["author"]
+
+        last
+      end
+      replies.compact.max_by { |c| c["createdAt"].to_s }
+    end
+
+    def approvable?(state)
+      state["reviewDecision"] != "APPROVED" &&
+        Array(state["threads"]).reject { |t| t["isResolved"] || t["bot"] }.empty? &&
+        Array(state["failing_checks"]).empty? && state["rollup_state"] == "SUCCESS"
     end
 
     def item(base, klass, urgency, action, invoke, evidence = {}) # rubocop:disable Metrics/ParameterLists
@@ -267,6 +396,7 @@ module OpsGithub
         "pr_keys" => item["pr_keys"],
         "url" => item["url"],
         "title" => item["title"],
+        "ticket" => item["ticket"],
         "repository" => item["repository"],
         "class" => item["class"],
         "action" => item["action"],
@@ -291,6 +421,7 @@ module OpsGithub
         "pr" => item["pr"],
         "url" => item["url"],
         "title" => item["title"],
+        "ticket" => item["ticket"],
         "class" => item["class"],
         "urgency" => item["urgency"],
         "action" => item["action"],
@@ -350,6 +481,7 @@ module OpsGithub
           primary["id"] = Digest::SHA1.hexdigest((["cluster"] + prs.sort + checks).join("|"))[0, 12]
           primary["class"] = "red-ci-shared"
           primary["pr"] = prs.join(",")
+          primary["ticket"] = nil
           primary["evidence"] = (primary["evidence"] || {}).merge(
             "checks" => checks,
             "prs" => prs
@@ -383,6 +515,7 @@ module OpsGithub
         primary["id"] = Digest::SHA1.hexdigest("dependabot|#{repo}")[0, 12]
         primary["class"] = "dependabot-triage"
         primary["pr"] = group.map { |g| g["pr"] }.join(",")
+        primary["ticket"] = nil
         primary["evidence"] = (primary["evidence"] || {}).merge(
           "prs" => group.map { |g| g["pr"] },
           "count" => group.size

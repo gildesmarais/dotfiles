@@ -378,4 +378,247 @@ class ClassifierTest < Minitest::Test
     assert_operator(line.length, :<=, 80)
     refute_includes(line, "\n")
   end
+
+  def classes_for(state, role)
+    @classifier.classify(search_rows: [search_row(state, role)], states: [state], ledger: @ledger)
+  end
+
+  def approved_state
+    state = state_from_fixture("pr_authored_clean.json")
+    state["reviewDecision"] = "APPROVED"
+    state
+  end
+
+  def reviewed_state
+    state = state_from_fixture("pr_review_requested.json")
+    state["reviews"] = [{ "author" => "me", "state" => "COMMENTED", "submittedAt" => "2026-11-02T12:10:00Z",
+                          "commit_oid" => state["headRefOid"] }]
+    state
+  end
+
+  def thread_reply(author, created_at, id: 3001, first_author: "me", resolved: false)
+    comment = ->(who, at, cid) { { "databaseId" => cid, "author" => who, "body" => "b", "createdAt" => at } }
+    { "id" => "PRRT_#{id}", "isResolved" => resolved, "bot" => false,
+      "first" => comment.call(first_author, "2026-11-02T12:10:00Z", id - 1),
+      "last" => comment.call(author, created_at, id) }
+  end
+
+  def test_ticket_key_prefers_title_then_branch
+    key = ->(title, branch = nil) { OpsGithub::Classifier.ticket_key("title" => title, "headRefName" => branch) }
+    assert_equal("ABC-1476", key.call("[ABC-1476] align things"))
+    assert_equal("ABC-1476", key.call("ABC-1476: align", "feat/OPS-2950/x"))
+    assert_equal("OPS-2950", key.call("no key here", "feat/OPS-2950/some-thing"))
+    assert_equal("ABC-1476", key.call("x", "ABC-1476-align-things"))
+    assert_nil(key.call("no key", "main"))
+    assert_nil(key.call(nil, nil))
+  end
+
+  def test_ticket_key_ignores_pseudo_keys_and_lowercase
+    key = ->(title, branch = nil) { OpsGithub::Classifier.ticket_key("title" => title, "headRefName" => branch) }
+    %w[UTF-8 SHA-1 SHA-256 ISO-8601 HTTP-2 CVE-2024-1234 RFC-7231 PEP-8].each do |pseudo|
+      assert_nil(key.call("support #{pseudo} here"), pseudo)
+    end
+    assert_equal("ABC-12", key.call("use UTF-8 and SHA-256 for ABC-12"))
+    assert_equal("ABC-9", key.call("Fix UTF-8 handling", "ABC-9-fix"))
+    assert_nil(key.call("abc-12 lower", "xABC-12"))
+  end
+
+  def test_ticket_is_stamped_on_items_board_and_envelope
+    state = state_from_fixture("pr_bundler_audit.json").merge("title" => "[ABC-77] bump")
+    items = classes_for(state, "authored")
+    assert_equal(["ABC-77"], items.map { |i| i["ticket"] }.uniq)
+    assert_equal("ABC-77", @classifier.envelope(items, ledger: @ledger)["auto"].first["ticket"])
+    assert_equal("ABC-77", @ledger.items[items.first["id"]]["ticket"])
+    plain = classes_for(state_from_fixture("pr_review_requested.json"), "review-requested")
+    assert_nil(plain.first["ticket"])
+    assert(plain.first.key?("ticket"))
+  end
+
+  def test_ready_to_merge_is_a_urgent_click
+    items = classes_for(approved_state, "authored")
+    assert_equal([%w[ready-to-merge click urgent]], items.map { |i| i.values_at("class", "action", "urgency") })
+    assert_equal("merge https://github.com/acme/app/pull/1", items.first["invoke"])
+    env = @classifier.envelope(items, ledger: @ledger, dry: true)
+    assert_equal(%w[ready-to-merge], env["clicks"].map { |i| i["class"] })
+    assert_empty(env["auto"] + env["ask"] + env["judge"])
+    assert_equal("changes", env["status"])
+    assert_equal("ops: 1 click · dry", env["line"])
+    assert_includes(env["report_md"], "- click acme/app#1: ready-to-merge")
+  end
+
+  def test_ready_to_merge_requires_every_condition
+    mutations = {
+      "pending" => ->(s) { s["rollup_state"] = "PENDING" },
+      "behind" => ->(s) { s["mergeStateStatus"] = "BEHIND" },
+      "not approved" => ->(s) { s["reviewDecision"] = "REVIEW_REQUIRED" },
+      "failing" => ->(s) { s["failing_checks"] = [{ "name" => "unit", "state" => "FAILURE" }] },
+      "draft" => ->(s) { s["isDraft"] = true },
+      "parked" => ->(s) { s["labels"] = ["on-hold"] }
+    }
+    mutations.each do |name, mutate|
+      state = approved_state
+      mutate.call(state)
+      assert_empty(classes_for(state, "authored").select { |i| i["class"] == "ready-to-merge" }, name)
+    end
+    assert_empty(classes_for(approved_state, "review-requested").select { |i| i["class"] == "ready-to-merge" })
+  end
+
+  def test_unresolved_human_thread_blocks_ready_to_merge
+    state = approved_state
+    state["threads"] = [thread_reply("alice", "2026-11-02T12:30:00Z")]
+    classes = classes_for(state, "authored").map { |i| i["class"] }
+    assert_includes(classes, "unresolved-review")
+    refute_includes(classes, "ready-to-merge")
+    state["threads"] = [thread_reply("alice", "2026-11-02T12:30:00Z", resolved: true)]
+    assert_includes(classes_for(state, "authored").map { |i| i["class"] }, "ready-to-merge")
+  end
+
+  def test_two_clicks_pluralize_in_line
+    a = approved_state
+    b = approved_state.merge("url" => "https://github.com/acme/app/pull/5", "number" => 5)
+    items = @classifier.classify(search_rows: [search_row(a, "authored"), search_row(b, "authored")],
+                                 states: [a, b], ledger: @ledger)
+    assert_equal("ops: 2 clicks", @classifier.envelope(items, ledger: @ledger)["line"])
+  end
+
+  def test_decided_click_is_hidden
+    item = classes_for(approved_state, "authored").first
+    @ledger.decide!(item["id"], "deferred")
+    env = @classifier.envelope(classes_for(approved_state, "authored"), ledger: @ledger)
+    assert_empty(env["clicks"])
+    assert_equal("quiet", env["status"])
+  end
+
+  def test_reviewed_pr_with_new_push_is_re_review_ask
+    state = reviewed_state
+    assert_empty(classes_for(state, "reviewed").select { |i| i["class"] == "re-review" })
+    state["headRefOid"] = "eee555"
+    item = classes_for(state, "reviewed").first
+    assert_equal(%w[re-review ask urgent], item.values_at("class", "action", "urgency"))
+    assert_equal("/ops-github review #{state['url']}", item["invoke"])
+    assert_equal({ "since_oid" => "ddd444", "head_oid" => "eee555" }, item["evidence"])
+    other = classes_for(state.merge("headRefOid" => "fff666"), "reviewed").first
+    assert_equal(item["id"], other["id"])
+    refute_equal(item["fingerprint"], other["fingerprint"])
+  end
+
+  def test_reviewed_pr_with_author_reply_after_review_is_re_review
+    state = reviewed_state
+    state["rollup_state"] = "PENDING"
+    state["threads"] = [thread_reply("alice", "2026-11-02T12:30:00Z")]
+    item = classes_for(state, "reviewed").first
+    assert_equal("re-review", item["class"])
+    assert_equal({ "comment_id" => 3001 }, item["evidence"])
+    state["threads"] = [thread_reply("alice", "2026-11-02T12:05:00Z")]
+    assert_empty(classes_for(state, "reviewed"))
+    state["threads"] = [thread_reply("me", "2026-11-02T12:30:00Z")]
+    assert_empty(classes_for(state, "reviewed"))
+  end
+
+  def test_reviewed_pr_skipped_without_my_review_or_when_approved
+    state = reviewed_state
+    state["headRefOid"] = "eee555"
+    state["reviews"] = [{ "author" => "bob", "state" => "COMMENTED", "submittedAt" => "t", "commit_oid" => "x" }]
+    assert_empty(classes_for(state, "reviewed"))
+    state["reviews"] = [{ "author" => "me", "state" => "COMMENTED", "submittedAt" => "2026-11-02T12:00:00Z",
+                          "commit_oid" => "ddd444" },
+                        { "author" => "me", "state" => "APPROVED", "submittedAt" => "2026-11-02T12:20:00Z",
+                          "commit_oid" => "ddd444" }]
+    assert_empty(classes_for(state, "reviewed"))
+  end
+
+  def test_approved_then_commented_review_stays_approved
+    state = reviewed_state.merge("reviewDecision" => "REVIEW_REQUIRED", "headRefOid" => "eee555")
+    state["reviews"] = [{ "author" => "me", "state" => "APPROVED", "submittedAt" => "2026-11-02T12:00:00Z",
+                          "commit_oid" => "ddd444" },
+                        { "author" => "me", "state" => "COMMENTED", "submittedAt" => "2026-11-02T12:40:00Z",
+                          "commit_oid" => "eee555" }]
+    assert_empty(classes_for(state, "reviewed"))
+    state["reviews"] << { "author" => "me", "state" => "CHANGES_REQUESTED", "submittedAt" => "2026-11-02T12:50:00Z",
+                          "commit_oid" => "eee555" }
+    assert_equal(%w[ready-to-approve], classes_for(state, "reviewed").map { |i| i["class"] })
+  end
+
+  def test_reviewed_pr_uses_latest_review_of_mine
+    state = reviewed_state
+    state["headRefOid"] = "eee555"
+    state["reviews"] << { "author" => "me", "state" => "COMMENTED", "submittedAt" => "2026-11-02T12:40:00Z",
+                          "commit_oid" => "eee555" }
+    assert_equal(%w[ready-to-approve], classes_for(state, "reviewed").map { |i| i["class"] })
+  end
+
+  def test_ready_to_approve_is_a_urgent_click_when_settled
+    state = reviewed_state
+    item = classes_for(state, "reviewed").first
+    assert_equal(%w[ready-to-approve click urgent], item.values_at("class", "action", "urgency"))
+    assert_equal("approve #{state['url']}", item["invoke"])
+    bot_thread = thread_reply("copilot-pull-request-reviewer", "2026-11-02T12:30:00Z", first_author: "copilot")
+    bot_thread["bot"] = true
+    state["threads"] = [bot_thread, thread_reply("me", "2026-11-02T12:00:00Z", resolved: true)]
+    assert_equal(%w[ready-to-approve], classes_for(state, "reviewed").map { |i| i["class"] })
+  end
+
+  def test_ready_to_approve_requires_every_condition
+    mutations = {
+      "pending" => ->(s) { s["rollup_state"] = "PENDING" },
+      "no checks" => ->(s) { s["rollup_state"] = "" },
+      "failing" => ->(s) { s["failing_checks"] = [{ "name" => "unit", "state" => "FAILURE" }] },
+      "approved already" => ->(s) { s["reviewDecision"] = "APPROVED" },
+      "open human thread" => ->(s) { s["threads"] = [thread_reply("me", "2026-11-02T12:00:00Z")] }
+    }
+    mutations.each do |name, mutate|
+      state = reviewed_state
+      mutate.call(state)
+      assert_empty(classes_for(state, "reviewed"), name)
+    end
+  end
+
+  def test_reviewed_role_never_yields_authored_items
+    state = reviewed_state.merge("labels" => [], "mergeable" => "CONFLICTING", "reviewDecision" => "CHANGES_REQUESTED",
+                                 "failing_checks" => [{ "name" => "unit", "state" => "FAILURE" }])
+    assert_empty(classes_for(state, "reviewed"))
+    assert_equal(%w[review-requested], classes_for(state, "review-requested").map { |i| i["class"] })
+  end
+
+  def board_state(number, **fields)
+    state = state_from_fixture("pr_authored_clean.json")
+    state.merge!("url" => "https://github.com/acme/app/pull/#{number}", "number" => number,
+                 "title" => "[ABC-#{number}] t#{number}")
+    state.merge(fields.transform_keys(&:to_s))
+  end
+
+  def test_board_summarizes_authored_prs_and_survives_partial_ticks
+    states = [
+      board_state(1, mergeStateStatus: "BEHIND", reviewDecision: "APPROVED"),
+      board_state(2, reviewDecision: "REVIEW_REQUIRED", mergeStateStatus: "BLOCKED"),
+      board_state(3, reviewDecision: "REVIEW_REQUIRED", mergeStateStatus: "DIRTY", mergeable: "CONFLICTING"),
+      board_state(4, isDraft: true, reviewDecision: "REVIEW_REQUIRED"),
+      board_state(5, labels: ["on-hold"], mergeStateStatus: "BEHIND"),
+      board_state(6, mergeStateStatus: "BEHIND", failing_checks: [{ "name" => "u", "state" => "FAILURE" }]),
+      board_state(7, reviewDecision: "REVIEW_REQUIRED", mergeStateStatus: "BEHIND")
+    ]
+    rows = states.map { |s| search_row(s, "authored") }
+    @classifier.classify(search_rows: rows, states: states, ledger: @ledger)
+    board = @classifier.envelope([], ledger: @ledger)["board"]
+    assert_equal(%w[acme/app#1 acme/app#7], board["behind"].map { |e| e["pr"] })
+    assert_equal({ "pr" => "acme/app#1", "url" => states[0]["url"], "title" => "[ABC-1] t1", "ticket" => "ABC-1",
+                   "reviewDecision" => "APPROVED" }, board["behind"].first)
+    assert_equal([{ "pr" => "acme/app#2", "url" => states[1]["url"], "title" => "[ABC-2] t2", "ticket" => "ABC-2",
+                    "rollup_state" => "SUCCESS" }], board["waiting_review"])
+    assert_equal(2, board["parked_count"])
+    # A later tick that refetches only PR 2 leaves the other entries intact.
+    changed = board_state(2, reviewDecision: "APPROVED")
+    @classifier.classify(search_rows: [search_row(changed, "authored")], states: [changed], ledger: @ledger)
+    board = @classifier.envelope([], ledger: @ledger)["board"]
+    assert_empty(board["waiting_review"])
+    assert_equal(%w[acme/app#1 acme/app#7], board["behind"].map { |e| e["pr"] })
+  end
+
+  def test_board_ignores_reviewed_and_requested_prs
+    state = reviewed_state.merge("mergeStateStatus" => "BEHIND")
+    classes_for(state, "reviewed")
+    classes_for(state, "review-requested")
+    assert_equal({ "behind" => [], "waiting_review" => [], "parked_count" => 0 },
+                 @classifier.envelope([], ledger: @ledger)["board"])
+  end
 end

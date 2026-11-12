@@ -16,8 +16,10 @@ module OpsGithub
       dependabot
       renovate
     ].freeze
-    SEARCH_ROLES = { "authored" => "authored", "requested" => "review-requested", "assigned" => "assigned" }.freeze
-    CURSOR_VARS = { "authored" => "ac", "requested" => "rc", "assigned" => "ic" }.freeze
+    SEARCH_ROLES = {
+      "authored" => "authored", "requested" => "review-requested", "assigned" => "assigned", "reviewed" => "reviewed"
+    }.freeze
+    CURSOR_VARS = { "authored" => "ac", "requested" => "rc", "assigned" => "ic", "reviewed" => "vc" }.freeze
     # Aliases whose rows are issues; every other alias returns pull requests.
     ISSUE_ALIASES = %w[assigned].freeze
     # Full-state chunk; sized from a live measurement (see AGENTS.md).
@@ -29,11 +31,13 @@ module OpsGithub
     # Phase 1: cheap. No mergeable/contexts/threads: merge-state computation is what
     # pushes a full search past GitHub's ~10s timeout.
     SEARCH_QUERY = <<~GRAPHQL
-      query($authored:String!,$requested:String!,$assigned:String!,$ac:String,$rc:String,$ic:String,
-            $withA:Boolean!,$withR:Boolean!,$withI:Boolean!){
+      query($authored:String!,$requested:String!,$assigned:String!,$reviewed:String!,
+            $ac:String,$rc:String,$ic:String,$vc:String,
+            $withA:Boolean!,$withR:Boolean!,$withI:Boolean!,$withV:Boolean!){
         authored: search(type:ISSUE,first:50,query:$authored,after:$ac) @include(if:$withA){ ...page }
         requested: search(type:ISSUE,first:50,query:$requested,after:$rc) @include(if:$withR){ ...page }
         assigned: search(type:ISSUE,first:50,query:$assigned,after:$ic) @include(if:$withI){ ...page }
+        reviewed: search(type:ISSUE,first:50,query:$reviewed,after:$vc) @include(if:$withV){ ...page }
       }
       fragment page on SearchResultItemConnection {
         pageInfo{ hasNextPage endCursor }
@@ -61,6 +65,7 @@ module OpsGithub
         mergeable mergeStateStatus reviewDecision updatedAt
         repository{ nameWithOwner }
         labels(first:20){ nodes{ name } }
+        reviews(last:20){ nodes{ author{login} state submittedAt commit{ oid } } }
         commits(last:1){
           nodes{
             commit{
@@ -111,11 +116,11 @@ module OpsGithub
     end
 
     # Phase 1: one `gh api graphql` call per page, all roles aliased in one query.
-    # Rows carry id, kind (pr|issue), role (authored|review-requested|both|assigned)
-    # and signature.
+    # Rows carry id, kind (pr|issue), role (authored|review-requested|both|assigned|reviewed)
+    # and signature. +reviewed+ is a PR you reviewed that no longer requests your review.
     def discover(owners)
       scope = Array(owners).map { |owner| "user:#{owner}" }.join(" ")
-      cursors = { "authored" => nil, "requested" => nil, "assigned" => nil }
+      cursors = SEARCH_ROLES.keys.map { |field| [field, nil] }.to_h
       pending = SEARCH_ROLES.keys
       rows_by_url = {}
       until pending.empty?
@@ -124,9 +129,11 @@ module OpsGithub
           "-F", "authored=is:pr is:open author:@me #{scope}".strip,
           "-F", "requested=is:pr is:open review-requested:@me #{scope}".strip,
           "-F", "assigned=is:issue is:open assignee:@me #{scope}".strip,
+          "-F", "reviewed=is:pr is:open reviewed-by:@me -author:@me #{scope}".strip,
           "-F", "withA=#{pending.include?('authored')}",
           "-F", "withR=#{pending.include?('requested')}",
           "-F", "withI=#{pending.include?('assigned')}",
+          "-F", "withV=#{pending.include?('reviewed')}",
           *cursor_args(cursors)
         )
         pending = pending.select do |field|
@@ -214,12 +221,25 @@ module OpsGithub
       role = SEARCH_ROLES[field]
       existing = rows_by_url[url]
       if existing
-        existing["role"] = "both" if existing["role"] != role
+        existing["role"] = merge_role(existing["role"], role)
       elsif ISSUE_ALIASES.include?(field)
         rows_by_url[url] = issue_row(node, role)
       else
         rows_by_url[url] = search_row(node, role)
       end
+    end
+
+    # One PR in several searches: authored + review-requested is "both"; a live review
+    # request outranks a past review; authorship outranks everything but "both".
+    def merge_role(existing, incoming)
+      return existing if existing == incoming || existing == "both"
+
+      pair = [existing, incoming]
+      return "both" if pair.sort == %w[authored review-requested]
+      return "authored" if pair.include?("authored") && pair.include?("reviewed")
+      return "review-requested" if pair.include?("review-requested") && pair.include?("reviewed")
+
+      "both"
     end
 
     def normalize_state(node)
@@ -234,6 +254,7 @@ module OpsGithub
         "author" => (node["author"] || {})["login"],
         "isDraft" => node["isDraft"],
         "labels" => Array((node["labels"] || {})["nodes"]).map { |l| l["name"] },
+        "reviews" => Array((node["reviews"] || {})["nodes"]).map { |r| normalize_review(r) },
         "baseRefName" => node["baseRefName"],
         "headRefName" => node["headRefName"],
         "headRefOid" => node["headRefOid"],
@@ -242,6 +263,7 @@ module OpsGithub
         "mergeStateStatus" => node["mergeStateStatus"],
         "reviewDecision" => node["reviewDecision"],
         "updatedAt" => node["updatedAt"],
+        "rollup_state" => rollup["state"].to_s.upcase,
         "failing_checks" => checks.select { |c| FAILING_STATES.include?(c["state"]) },
         "threads" => Array((node["reviewThreads"] || {})["nodes"]).map { |t| normalize_thread(t) },
         "repository" => (node["repository"] || {})["nameWithOwner"]
@@ -281,6 +303,15 @@ module OpsGithub
         "kind" => "issue",
         "role" => role,
         "signature" => "issue"
+      }
+    end
+
+    def normalize_review(review)
+      {
+        "author" => (review["author"] || {})["login"],
+        "state" => review["state"],
+        "submittedAt" => review["submittedAt"],
+        "commit_oid" => (review["commit"] || {})["oid"]
       }
     end
 

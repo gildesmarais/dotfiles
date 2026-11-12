@@ -43,6 +43,63 @@ class GithubTest < Minitest::Test
     refute_includes(calls.first.join(" "), "reviewDecision")
   end
 
+  def test_discover_reviewed_alias_and_role_merging
+    calls = []
+    response = search_response(
+      authored: [pr_node("pr_bundler_audit.json")],
+      requested: [pr_node("pr_review_requested.json")],
+      reviewed: %w[pr_review_requested pr_bundler_audit pr_authored_clean].map { |name| pr_node("#{name}.json") }
+    )
+    rows = OpsGithub::Github.new(runner: ->(argv) { calls << argv && response }).discover(%w[acme])
+    assert_includes(calls.first, "reviewed=is:pr is:open reviewed-by:@me -author:@me user:acme")
+    assert_includes(calls.first, "withV=true")
+    assert_equal({ 2 => "authored", 9 => "review-requested", 1 => "reviewed" },
+                 rows.map { |r| [r["number"], r["role"]] }.to_h)
+  end
+
+  def test_merge_role_keeps_both_over_reviewed
+    gh = OpsGithub::Github.new(runner: ->(_) { "{}" })
+    assert_equal("both", gh.send(:merge_role, "both", "reviewed"))
+    assert_equal("both", gh.send(:merge_role, "authored", "review-requested"))
+    assert_equal("authored", gh.send(:merge_role, "reviewed", "authored"))
+    assert_equal("review-requested", gh.send(:merge_role, "reviewed", "review-requested"))
+  end
+
+  def test_discover_pages_reviewed_alias
+    pages = [
+      { "reviewed" => search_page([pr_node("pr_authored_clean.json")], "V1") },
+      { "reviewed" => search_page([pr_node("pr_review_requested.json")]) }
+    ]
+    calls = []
+    runner = lambda do |argv|
+      calls << argv
+      JSON.generate("data" => pages[calls.size - 1])
+    end
+    rows = OpsGithub::Github.new(runner: runner).discover(%w[acme])
+    assert_equal([1, 9], rows.map { |r| r["number"] })
+    assert_includes(calls.last, "vc=V1")
+    assert_includes(calls.last, "withV=true")
+    assert_includes(calls.last, "withA=false")
+  end
+
+  def test_pr_states_normalizes_reviews_and_rollup_state
+    node = pr_node("pr_authored_clean.json").merge(
+      "reviews" => { "nodes" => [{ "author" => { "login" => "me" }, "state" => "COMMENTED",
+                                   "submittedAt" => "2026-11-02T09:00:00Z", "commit" => { "oid" => "abc" } },
+                                 { "author" => nil, "state" => "APPROVED", "submittedAt" => "t2", "commit" => nil }] }
+    )
+    state = OpsGithub::Github.new(runner: ->(_) { nodes_response([node]) }).pr_states(%w[id]).first
+    assert_equal([{ "author" => "me", "state" => "COMMENTED", "submittedAt" => "2026-11-02T09:00:00Z",
+                    "commit_oid" => "abc" },
+                  { "author" => nil, "state" => "APPROVED", "submittedAt" => "t2", "commit_oid" => nil }],
+                 state["reviews"])
+    assert_equal("SUCCESS", state["rollup_state"])
+    bare = pr_node("pr_authored_clean.json")
+    bare["commits"]["nodes"][0]["commit"]["statusCheckRollup"] = nil
+    state = OpsGithub::Github.new(runner: ->(_) { nodes_response([bare]) }).pr_states(%w[id]).first
+    assert_equal(["", []], [state["rollup_state"], state["reviews"]])
+  end
+
   def test_discover_assigned_issues_as_issue_rows
     calls = []
     response = search_response(authored: [pr_node("pr_bundler_audit.json")], assigned: [issue_node(5)])

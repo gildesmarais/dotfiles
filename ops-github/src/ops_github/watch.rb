@@ -7,15 +7,19 @@ module OpsGithub
   class Watch
     SENTINEL = "OPS_GITHUB_WAKE"
 
-    def initialize(probe:, stdout: $stdout, sleep_fn: nil)
+    # +brief_every+: seconds between "/ops brief" wakes; 0 = never. +clock_fn+ is monotonic.
+    def initialize(probe:, stdout: $stdout, sleep_fn: nil, clock_fn: nil, brief_every: 0)
       @probe = probe
       @stdout = stdout
       @sleep_fn = sleep_fn || ->(seconds) { sleep(seconds) }
+      @clock_fn = clock_fn || -> { Process.clock_gettime(Process::CLOCK_MONOTONIC) }
+      @brief_every = brief_every.to_i
       @quiet_streak = 0
     end
 
     def run(max_ticks: nil)
       ticks = 0
+      @next_brief_at = @clock_fn.call + @brief_every
       loop do
         break if max_ticks && ticks >= max_ticks
 
@@ -30,13 +34,13 @@ module OpsGithub
           emit_wake("env")
           break if max_ticks && ticks >= max_ticks
 
-          @sleep_fn.call(300)
+          pause(300)
           next
         end
 
         break if max_ticks && ticks >= max_ticks
 
-        @sleep_fn.call(interval_seconds)
+        pause(interval_seconds)
       end
     end
 
@@ -49,8 +53,25 @@ module OpsGithub
 
     private
 
-    def emit_wake(urgency)
-      payload = { "prompt" => "/ops-github tick", "urgency" => urgency }
+    # Sleeps +seconds+ in total; a brief due inside the pause fires on time and the
+    # rest of the pause continues, so probe cadence neither starves nor drifts.
+    def pause(seconds)
+      return @sleep_fn.call(seconds) unless @brief_every.positive?
+
+      remaining = seconds
+      while remaining.positive?
+        step = [remaining, [@next_brief_at - @clock_fn.call, 0].max].min
+        @sleep_fn.call(step) if step.positive?
+        remaining -= step
+        next unless @clock_fn.call >= @next_brief_at
+
+        emit_wake("brief", "/ops brief")
+        @next_brief_at = @clock_fn.call + @brief_every
+      end
+    end
+
+    def emit_wake(urgency, prompt = "/ops")
+      payload = { "prompt" => prompt, "urgency" => urgency }
       @stdout.write("#{SENTINEL} #{JSON.generate(payload)}\n")
       @stdout.flush if @stdout.respond_to?(:flush)
     end

@@ -62,6 +62,7 @@ module OpsGithub
         "exclusions" => carry_exclusions.uniq,
         "watcher_pid" => watcher_pid,
         "seen" => {},
+        "prs" => {},
         "items" => carry,
         "budgets" => { "auto" => 3, "review" => 4, "retry" => 1 }
       )
@@ -146,6 +147,28 @@ module OpsGithub
 
     def items
       @data["items"] ||= {}
+    end
+
+    # Compact summaries (built by Classifier) of every open PR fetched today, keyed by
+    # pr_key: the standing board without refetching unchanged PRs. Missing for an open
+    # PR means it was never fetched (e.g. a ledger written before this cache existed).
+    def prs
+      @data["prs"] ||= {}
+    end
+
+    def cache_prs!(summaries)
+      return if summaries.empty?
+
+      prs.merge!(summaries)
+      save!
+    end
+
+    # Drops summaries of PRs no longer open (or excluded): +open_keys+ as in prune_closed!.
+    def retain_prs!(open_keys)
+      return if (prs.keys - open_keys).empty?
+
+      prs.select! { |key, _| open_keys.include?(key) }
+      save!
     end
 
     # +signature+: opaque change string built by Github (updatedAt + head-commit CI

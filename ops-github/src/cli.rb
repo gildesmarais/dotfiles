@@ -119,7 +119,9 @@ module OpsGithub
         next if ledger.exclusions.include?(key)
 
         open_keys << key
-        next unless first_tick || ledger.changed_since_seen?(key, signature: row["signature"])
+        # A PR missing from the board cache (ledger written before it existed) is fetched once.
+        unfetched = row["kind"] == "pr" && !ledger.prs.key?(key)
+        next unless first_tick || unfetched || ledger.changed_since_seen?(key, signature: row["signature"])
 
         changed_rows << row
         changed_keys << key
@@ -147,6 +149,7 @@ module OpsGithub
       # undecided items retire. Undecided items of unchanged open PRs stay visible.
       fresh_ids = items.map { |i| i["id"] }
       ledger.retire_stale!(changed_keys, fresh_ids)
+      ledger.retain_prs!(open_keys)
       items += ledger.undecided(open_keys - changed_keys).reject { |i| fresh_ids.include?(i["id"]) }
       env = classifier.envelope(items, ledger: ledger, dry: dry_run?)
       emit(env)
@@ -208,7 +211,17 @@ module OpsGithub
 
     def run_watch(args)
       max_ticks = nil
-      OptionParser.new { |opts| opts.on("--max-ticks N") { |n| max_ticks = n.to_i } }.parse!(args)
+      brief_every = 0
+      begin
+        OptionParser.new do |opts|
+          opts.on("--max-ticks N") { |n| max_ticks = n.to_i }
+          opts.on("--brief-every SECONDS", Integer) { |n| brief_every = n }
+        end.parse!(args)
+      rescue OptionParser::ParseError => e
+        raise ExitError, "watch: #{e.message}"
+      end
+      raise ExitError, "watch: --brief-every must be >= 0" if brief_every.negative?
+
       ledger = ensure_ledger
       if ledger.watcher_alive?
         emit("status" => "already-running", "pid" => ledger.watcher_pid)
@@ -235,7 +248,7 @@ module OpsGithub
           1
         end
       end
-      Watch.new(probe: probe, stdout: @stdout).run(max_ticks: max_ticks)
+      Watch.new(probe: probe, stdout: @stdout, brief_every: brief_every).run(max_ticks: max_ticks)
     end
 
     def run_doctor(_args)
@@ -305,7 +318,8 @@ module OpsGithub
         Commands:
           setup-facts          Owners + login from gh (no org names hardcoded)
           probe                Exit 0 quiet / 10 delta vs day ledger
-          tick                 Attention Ledger envelope (JSON); writes <state>/status.txt
+          tick                 Attention Ledger envelope (JSON: auto/ask/judge/clicks/board);
+                               writes <state>/status.txt
                                OPS_GITHUB_DRY=1 demotes all auto to ask (0|false|no = off)
                                OPS_GITHUB_PARKED_LABELS=a,b replaces the parked label set
           ledger summary       Compact day summary
@@ -313,7 +327,9 @@ module OpsGithub
           ledger exclude KEY   Exclude owner/repo#n (PR or issue) until included or closed
           ledger exclude --clear
           ledger include KEY   Drop owner/repo#n from the exclusions
-          watch [--max-ticks N]
+          watch [--max-ticks N] [--brief-every SECONDS]
+                               Wake on probe delta; with --brief-every also emit a
+                               "/ops brief" wake every SECONDS (0 or omitted = off)
           doctor               Self-check
           help
       USAGE

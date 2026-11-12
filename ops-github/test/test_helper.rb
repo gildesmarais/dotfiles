@@ -38,9 +38,9 @@ module OpsGithubTest
     { "pageInfo" => { "hasNextPage" => !cursor.nil?, "endCursor" => cursor }, "nodes" => nodes }
   end
 
-  def search_response(authored: [], requested: [], assigned: [])
+  def search_response(authored: [], requested: [], assigned: [], reviewed: [])
     JSON.generate("data" => { "authored" => search_page(authored), "requested" => search_page(requested),
-                              "assigned" => search_page(assigned) })
+                              "assigned" => search_page(assigned), "reviewed" => search_page(reviewed) })
   end
 
   # Issue node as the assigned search alias returns it.
@@ -64,8 +64,8 @@ module OpsGithubTest
   def search_row(state, role)
     node = state.slice("id", "url", "number", "title", "updatedAt", "isDraft")
     node.merge!("author" => { "login" => state["author"] }, "repository" => { "nameWithOwner" => state["repository"] })
-    page = role == "authored" ? { authored: [node] } : { requested: [node] }
-    response = search_response(**page)
+    field = { "authored" => :authored, "reviewed" => :reviewed }.fetch(role, :requested)
+    response = search_response(field => [node])
     OpsGithub::Github.new(runner: ->(_) { response }).discover(%w[acme]).first
   end
 end
