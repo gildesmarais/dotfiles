@@ -68,8 +68,23 @@ export FZF_DEFAULT_COMMAND='rg --files --ignore-case'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS='--cycle'
 #: }}}
-if [ -n "${ZSH_VERSION:-}" ]; then
-  eval "$(mise activate zsh)"
-else
-  eval "$(mise activate bash)"
+
+#: Homebrew + mise {{{
+# Homebrew is under a custom prefix; put it on PATH before anything that
+# needs brew-installed tools (mise). Prezto loads later and is too late.
+if [ -x "${HOME}/opt/homebrew/bin/brew" ]; then
+  eval "$("${HOME}/opt/homebrew/bin/brew" shellenv)"
+elif [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+  eval "$(/usr/local/bin/brew shellenv)"
 fi
+
+if command_exists mise; then
+  if [ -n "${ZSH_VERSION:-}" ]; then
+    eval "$(mise activate zsh)"
+  else
+    eval "$(mise activate bash)"
+  fi
+fi
+#: }}}
