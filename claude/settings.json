@@ -93,7 +93,6 @@
     "core-fix-skill-docs": "off",
     "dependabot": "off",
     "harvest": "off",
-    "omnifocus": "off",
     "release": "off",
     "ruby-dev": "off",
     "ruby-on-rails-dev": "off",
