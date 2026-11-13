@@ -1,4 +1,3 @@
-tap "abue-ammar/tinycast"
 tap "datadog-labs/pack"
 brew "act"
 brew "age"
@@ -76,7 +75,7 @@ cask "omnifocus"
 cask "orbstack"
 cask "rectangle"
 cask "signal"
-cask "abue-ammar/tinycast/tinycast"
+cask "tinycast"
 cask "transmit"
 cask "visual-studio-code"
 mas "Actions", id: 1586435171
