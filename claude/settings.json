@@ -43,6 +43,10 @@
       "**Sensitive data locations & audiences**: .env, .env.local, .env.development.local, .env.test.local, .env.production.local, config/master.key contain credentials; keep out of commits and public surfaces",
       "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
       "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment"
+    ],
+    "allow": [
+      "$defaults",
+      "Managing git worktrees (git worktree list/add/remove/prune/lock/unlock/move/repair), including forced removal (`git worktree remove -f -f`) of agent worktrees under a repo's .claude/worktrees/ — these are disposable scratch checkouts created by Claude Code agent isolation."
     ]
   },
   "skillOverrides": {
@@ -96,12 +100,18 @@
     "release": "off",
     "ruby-dev": "off",
     "ruby-on-rails-dev": "off",
-    "triage": "off"
+    "triage": "off",
+    "skill-trim": "off",
+    "ops-slack": "off"
   },
   "env": {
     "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
   },
   "permissions": {
-    "defaultMode": "auto"
+    "defaultMode": "auto",
+    "allow": [
+      "Bash(git -C * worktree *)",
+      "Bash(git worktree *)"
+    ]
   }
 }
