@@ -1,0 +1,235 @@
+#!/usr/bin/env bash
+#
+# macos-cache-clean
+#
+# Frees disk space by clearing regenerable caches. Prints a size per item and
+# exits without deleting unless `--apply` is given. Never touches documents,
+# settings, keychains, Mail/Messages/Photos, Xcode Archives, simulator device
+# data, or iOS backups (those are reported as hints only).
+#
+# Tiers:
+#   default  caches that rebuild on demand: Homebrew, Xcode build products and
+#            SwiftPM/Carthage caches, JS/Python/Ruby/Go/Rust package caches,
+#            mise and bun caches, Docker build cache, editor/browser/chat-app
+#            caches, ~/Library/Logs, QuickLook thumbnails.
+#   --deep   also caches that are slow or costly to get back: Docker system
+#            prune, unused simulator runtimes, old DeviceSupport, Cargo git
+#            checkouts, Gradle, unused mise/rustup toolchains, unused brew
+#            dependencies, Hugging Face models, Playwright browsers, Time
+#            Machine local snapshots (needs passwordless sudo), Trash.
+#
+# A step is skipped quietly when its tool or path is missing, and with a note
+# when a running process holds the cache (uvx/npx MCP servers, open apps,
+# Xcode). Commands never prompt and are cut off after a time limit.
+#
+# Usage: macos-cache-clean [--apply] [--deep] [--only xcode|pkg|apps|system]
+
+set -uo pipefail
+
+APPLY=false
+DEEP=false
+ONLY=""
+usage() { echo "Usage: $(basename "$0") [--apply] [--deep] [--only xcode|pkg|apps|system]" >&2; exit 1; }
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --apply) APPLY=true ;;
+    --deep) DEEP=true ;;
+    --only) shift; [[ ${1:-} =~ ^(xcode|pkg|apps|system)$ ]] || usage; ONLY=$1 ;;
+    *) usage ;;
+  esac
+  shift
+done
+
+C_RESET=$'\033[0m'; C_INFO=$'\033[1;34m'; C_SUCCESS=$'\033[1;32m'; C_WARN=$'\033[1;33m'
+
+LIMIT=600  # seconds before a cleaning command is killed
+AS=~/Library/Application\ Support
+
+free_space() { df -h / | awk 'NR==2 {print $4}'; }
+size_of() {
+  du -sk "$@" 2>/dev/null | awk '{k+=$1} END {
+    if (k >= 1048576) printf "%.1fG", k/1048576; else if (k >= 1024) printf "%.0fM", k/1024; else printf "%dK", k }'
+}
+has() { command -v "$1" >/dev/null 2>&1; }
+section() { [[ -z $ONLY || $ONLY == "$1" ]] || return 1; printf "%s%s%s\n" "$C_INFO" "$2" "$C_RESET"; }
+
+# bounded <seconds> <command...>: no stdin, no output, killed after the limit.
+bounded() {
+  local secs=$1 pid w rc; shift
+  "$@" </dev/null >/dev/null 2>&1 & pid=$!
+  { sleep "$secs"; kill "$pid"; } >/dev/null 2>&1 & w=$!
+  wait "$pid" 2>/dev/null; rc=$?
+  pkill -P "$w" 2>/dev/null; kill "$w" 2>/dev/null; wait "$w" 2>/dev/null
+  return $rc
+}
+
+# step <label> <path...|-> :: <command...>
+# Measures the paths that exist (nothing to do if none), then runs the command
+# on --apply. `BUSY=<ERE> step ...` skips the item while a matching process
+# runs (matched against full command lines).
+step() {
+  local label=$1 p size=""; shift
+  local paths=() found=()
+  while [[ $1 != :: ]]; do paths+=("$1"); shift; done; shift
+  if [[ ${paths[0]} != "-" ]]; then
+    for p in "${paths[@]}"; do [[ -e $p ]] && found+=("$p"); done
+    [[ ${#found[@]} -gt 0 ]] || return 0
+    size=$(size_of "${found[@]}")
+  fi
+  if [[ -n ${BUSY:-} ]] && pgrep -f "$BUSY" >/dev/null; then
+    printf "  %-34s %s\n" "$label" "skipped: in use"
+  elif $APPLY; then
+    printf "%s› %s%s %s\n" "$C_INFO" "$label" "$C_RESET" "$size"
+    bounded "$LIMIT" "$@" || printf "  %s⚠️ failed or timed out%s\n" "$C_WARN" "$C_RESET"
+  else
+    printf "  %-34s %s\n" "$label" "${size:-(tool-managed)}"
+  fi
+}
+
+purge() { rm -rf "$@"; }
+# Empty directories but keep them (apps expect their cache dirs to exist).
+purge_in() { local d; for d; do [[ -d $d ]] && find "$d" -mindepth 1 -maxdepth 1 -exec rm -rf {} +; done; }
+# Report a size without ever deleting it.
+hint() { [[ -e $2 ]] && printf "  %-34s %s  (hint: %s)\n" "$1" "$(size_of "$2")" "$3"; return 0; }
+
+# app_caches <label> <app-name ERE> <path...>: cache dirs, only while the app is closed.
+app_caches() {
+  local label=$1 app=$2; shift 2
+  BUSY="/($app)\.app/Contents/MacOS/" step "$label" "$@" :: purge_in "$@"
+}
+# Cache dirs of an Electron app / of every Chromium profile, into APPD.
+electron() {
+  APPD=("$1/Cache" "$1/CachedData" "$1/CachedExtensionVSIXs" "$1/Code Cache" "$1/GPUCache" "$1/DawnGraphiteCache" "$1/DawnWebGPUCache" "$1/logs")
+}
+chromium() {
+  local d; APPD=()
+  for d in "$1"/*/Cache "$1"/*/"Code Cache" "$1"/*/GPUCache; do APPD+=("$d"); done
+}
+
+# stale_versions <dir>: sets STALE to entries older than the newest version
+# (DeviceSupport names look like "18.1 (22B83)", optionally prefixed "iPhone14,2 ").
+stale_versions() {
+  local t=$'\t' n; STALE=()
+  [[ -d $1 ]] || return 0
+  while IFS= read -r n; do STALE+=("$1/$n"); done < <(
+    # shellcheck disable=SC2012
+    ls -1 "$1" | sed -E "s/^([A-Za-z]+[0-9]+,[0-9]+ )?(.*)\$/\\2${t}&/" | sort -V |
+      awk -F'\t' '{k[NR]=$1; n[NR]=$2} END {for (i=1; i<=NR; i++) if (k[i] != k[NR]) print n[i]}')
+}
+
+# rustup toolchains that are neither default nor active (listed without "(...)").
+unused_toolchains() { rustup toolchain list 2>/dev/null | awk '!/\(/ {print $1}'; }
+drop_toolchains() { local t; for t in $(unused_toolchains); do rustup toolchain uninstall "$t"; done; }
+
+before=$(free_space)
+$APPLY || printf "%sDry run — pass --apply to delete.%s\n" "$C_WARN" "$C_RESET"
+
+# --- Xcode ---
+if section xcode "Xcode"; then
+  XC='/Xcode\.app/Contents/MacOS/Xcode$|xcodebuild|swift-build'
+  XCD=~/Library/Developer/Xcode
+  BUSY=$XC step "DerivedData" "$XCD/DerivedData" :: purge "$XCD/DerivedData"
+  BUSY=$XC step "Build products" "$XCD/Products" :: purge "$XCD/Products"
+  BUSY=$XC step "SwiftPM cache" ~/Library/Caches/org.swift.swiftpm :: purge ~/Library/Caches/org.swift.swiftpm
+  BUSY=$XC step "Carthage cache" ~/Library/Caches/org.carthage.CarthageKit :: purge ~/Library/Caches/org.carthage.CarthageKit
+  BUSY=$XC step "Xcode cache" ~/Library/Caches/com.apple.dt.Xcode :: purge ~/Library/Caches/com.apple.dt.Xcode
+  BUSY="$XC|/Contents/MacOS/Simulator( |\$)" step "CoreSimulator caches" ~/Library/Developer/CoreSimulator/Caches :: purge_in ~/Library/Developer/CoreSimulator/Caches
+  if xcode-select -p >/dev/null 2>&1 && has xcrun; then
+    step "Unavailable simulators" - :: xcrun simctl delete unavailable
+    $DEEP && step "Unused simulator runtimes (60d)" - :: xcrun simctl runtime delete --notUsedSinceDays 60
+  fi
+  if $DEEP; then
+    for d in "iOS DeviceSupport" "watchOS DeviceSupport" "tvOS DeviceSupport"; do
+      stale_versions "$XCD/$d"
+      [[ ${#STALE[@]} -gt 0 ]] && step "$d (old)" "${STALE[@]}" :: purge "${STALE[@]}"
+    done
+  fi
+fi
+
+# --- Package managers and toolchains ---
+if section pkg "Package managers"; then
+  has brew && step "Homebrew" "$(brew --cache)" :: brew cleanup -s --prune=all
+  has pnpm && step "pnpm store (prune)" "$(pnpm store path 2>/dev/null || echo ~/Library/pnpm/store)" :: pnpm store prune
+  BUSY='Caches/pnpm/dlx' step "pnpm metadata" ~/Library/Caches/pnpm :: purge ~/Library/Caches/pnpm
+  has npm && step "npm" ~/.npm/_cacache :: npm cache clean --force
+  # npx-launched tools (e.g. MCP servers) run out of _npx, like uvx from uv.
+  BUSY='\.npm/_npx/' step "npm npx cache" ~/.npm/_npx :: purge ~/.npm/_npx
+  step "Yarn" ~/Library/Caches/Yarn :: purge ~/Library/Caches/Yarn
+  has bun && BUSY='\.bun/install/cache' step "bun" ~/.bun/install/cache :: bun pm cache rm
+  step "node-gyp" ~/Library/Caches/node-gyp :: purge ~/Library/Caches/node-gyp
+  step "Deno" ~/Library/Caches/deno :: purge ~/Library/Caches/deno
+  step "pip" ~/Library/Caches/pip :: purge ~/Library/Caches/pip
+  step "CocoaPods" ~/Library/Caches/CocoaPods :: purge ~/Library/Caches/CocoaPods
+  go version >/dev/null 2>&1 && step "Go build cache" "$(go env GOCACHE)" :: go clean -cache
+  has gem && step "Old gem versions" - :: gem cleanup
+  has mise && step "mise cache" "$(mise cache 2>/dev/null)" :: mise cache clear
+  # cargo waits on a package-cache lock, so leave it alone while cargo runs.
+  BUSY='(^|/)cargo( |$)' step "Cargo registry" ~/.cargo/registry/cache ~/.cargo/registry/src :: purge ~/.cargo/registry/cache ~/.cargo/registry/src
+  has docker && bounded 15 docker info && step "Docker build cache" - :: docker builder prune -af
+
+  # uvx-launched tools (e.g. MCP servers) run out of the uv cache and hold its
+  # lock; pruning then blocks indefinitely and cleaning would break them.
+  has uv && BUSY='(^|/)uv( |$)|/\.cache/uv/' step "uv (prune)" "$(uv cache dir)" :: uv cache prune
+
+  if $DEEP; then
+    has docker && bounded 15 docker info && step "Docker (system prune)" - :: docker system prune -af
+    has brew && step "Homebrew unused deps" - :: brew autoremove
+    has mise && step "mise unused versions" - :: mise prune --yes
+    BUSY='(^|/)cargo( |$)' step "Cargo git checkouts" ~/.cargo/git :: purge ~/.cargo/git
+    rustup --version >/dev/null 2>&1 && [[ -n $(unused_toolchains) ]] &&
+      step "rustup unused toolchains" - :: drop_toolchains
+    BUSY='GradleDaemon|gradle-launcher|gradlew' step "Gradle caches" ~/.gradle/caches :: purge ~/.gradle/caches
+    step "Hugging Face models" ~/.cache/huggingface :: purge ~/.cache/huggingface
+    step "Playwright browsers" ~/Library/Caches/ms-playwright ~/Library/Caches/ms-playwright-go :: purge ~/Library/Caches/ms-playwright ~/Library/Caches/ms-playwright-go
+  fi
+fi
+
+# --- Editors and apps (only while the app is closed) ---
+if section apps "Apps"; then
+  electron "$AS/Code"
+  app_caches "VS Code" "Visual Studio Code" ~/Library/Caches/com.microsoft.VSCode "${APPD[@]}"
+  electron "$AS/Cursor"
+  app_caches "Cursor" "Cursor" ~/Library/Caches/com.todesktop.230313mzl4w4u92 ~/Library/Caches/cursor-compile-cache "${APPD[@]}"
+  app_caches "JetBrains" "(IntelliJ IDEA|WebStorm|PyCharm|GoLand|Rider|CLion|PhpStorm|RubyMine|DataGrip|Android Studio)[^/]*" ~/Library/Caches/JetBrains
+  chromium "$AS/BraveSoftware/Brave-Browser"
+  app_caches "Brave" "Brave Browser[^/]*" ~/Library/Caches/BraveSoftware ~/Library/Caches/com.brave.Browser "${APPD[@]}"
+  chromium "$AS/Google/Chrome"
+  app_caches "Chrome" "Google Chrome[^/]*" ~/Library/Caches/Google/Chrome "${APPD[@]}"
+  app_caches "Firefox" "(Firefox|Nightly)[^/]*" ~/Library/Caches/Firefox ~/Library/Caches/Mozilla
+  app_caches "Slack" "Slack" ~/Library/Caches/com.tinyspeck.slackmacgap "$AS/Slack/Cache" "$AS/Slack/Code Cache" "$AS/Slack/GPUCache" "$AS/Slack/Service Worker/CacheStorage"
+  app_caches "Discord" "Discord" ~/Library/Caches/com.hnc.Discord "$AS/discord/Cache" "$AS/discord/Code Cache" "$AS/discord/GPUCache"
+  app_caches "Spotify" "Spotify" ~/Library/Caches/com.spotify.client
+  app_caches "Telegram" "Telegram" ~/Library/Caches/ru.keepcoder.Telegram
+fi
+
+# --- System and user ---
+if section system "System"; then
+  step "Logs + crash reports" ~/Library/Logs :: purge_in ~/Library/Logs
+  has qlmanage && step "QuickLook thumbnails" "$(getconf DARWIN_USER_CACHE_DIR 2>/dev/null)com.apple.QuickLook.thumbnailcache" :: qlmanage -r cache
+  if $DEEP; then
+    if has tmutil; then
+      snaps=$(tmutil listlocalsnapshots / 2>/dev/null | grep -c 'com.apple.TimeMachine')
+      if [[ $snaps -gt 0 ]]; then
+        if sudo -n true 2>/dev/null; then
+          step "Time Machine snapshots ($snaps)" - :: sudo -n tmutil thinlocalsnapshots / 9999999999999 4
+        else
+          printf "  %-34s %s\n" "Time Machine snapshots ($snaps)" "skipped: needs sudo (run sudo -v first)"
+        fi
+      fi
+    fi
+    step "Trash" ~/.Trash :: bash -c 'rm -rf ~/.Trash/* ~/.Trash/.[!.]*'
+  fi
+  hint "iOS device backups" "$AS/MobileSync/Backup" "never deleted; remove old ones in Finder"
+fi
+
+if $APPLY; then
+  printf "%s✓ Free space: %s → %s%s\n" "$C_SUCCESS" "$before" "$(free_space)" "$C_RESET"
+else
+  # Biggest remaining cache/app-data dirs, for manual review.
+  printf "%sLargest remaining%s\n" "$C_INFO" "$C_RESET"
+  for d in ~/Library/Caches "$AS"; do
+    du -sk "$d"/* 2>/dev/null | sort -rn | head -5 | while IFS=$'\t' read -r _ p; do
+      printf "  %6s  %s\n" "$(size_of "$p")" "${p/#$HOME/~}"
+    done
+  done
+fi
