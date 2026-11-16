@@ -30,21 +30,14 @@ Requires Node.js and GitHub access. Verify: `npx skills list -g`. Browse: `--lis
 Third-party; not in the store install.
 
 ```sh
-npx skills add https://github.com/mattpocock/skills --skill grilling -g -a claude-code -a codex -y && \
-npx skills add https://github.com/twostraws/swiftui-agent-skill --skill swiftui-pro -g -a claude-code -a codex -y && \
-npx skills add https://github.com/twostraws/swift-testing-agent-skill --skill swift-testing-pro -g -a claude-code -a codex -y && \
-npx skills add https://github.com/arjitj2/swiftui-design-principles --skill swiftui-design-principles -g -a claude-code -a codex -y
+npx skills add https://github.com/mattpocock/skills --skill grilling -g -a claude-code -a codex -y
 ```
 
-| Pack                        | Role                                                      |
-| --------------------------- | --------------------------------------------------------- |
-| `grilling`                  | Decide stress-test                                        |
-| `docs-sync`                 | Clean Arch domain doc sync                                |
-| `swiftui-pro`               | SwiftUI review depth — compose via `$dev` + `swiftui-dev` |
-| `swift-testing-pro`         | Swift Testing depth — compose via `$dev` + `swift-dev`    |
-| `swiftui-design-principles` | Spacing/typography/materials — via `$dev` + `swiftui-dev` |
+| Pack       | Role               |
+| ---------- | ------------------ |
+| `grilling` | Decide stress-test |
 
-More: [skills.sh](https://skills.sh/), [Swift-Agent-Skills](https://github.com/twostraws/Swift-Agent-Skills).
+More: [skills.sh](https://skills.sh/).
 
 ## Compose / handoffs
 

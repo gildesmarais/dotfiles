@@ -33,6 +33,5 @@ Hot path → `$dev` `design` → `architecture` `performance` first; recipes aft
 ## Compose routes
 
 - UI → `swiftui-dev` (with this pack).
-- Swift Testing depth → `swift-testing-pro` when installed.
 - On-device AI → `apple-on-device-ai` when present.
 - Repo product overlays (e.g. `prestage-*`) when present.
