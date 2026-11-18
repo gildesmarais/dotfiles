@@ -32,7 +32,7 @@ Load exactly one:
 - **`one-on-one`** → [`reference/one-on-one.md`](reference/one-on-one.md)
 - **`slack-message`** → [`reference/slack-message.md`](reference/slack-message.md)
 - **`project-update`** → [`reference/project-update.md`](reference/project-update.md)
-- **`sprint-update`** → [`reference/sprint-update.md`](reference/sprint-update.md)
+- **`sprint-update`** → [`reference/sprint-update.md`](reference/sprint-update.md). Channel known → Slack draft in that channel. Do not paste mrkdwn for a formatting pass, and do not ask delivery, capacity, or kudos when the board and the last recap are enough.
 - **`external-message`** → [`reference/external-message.md`](reference/external-message.md)
 
 Every branch returns only the final artifact.
