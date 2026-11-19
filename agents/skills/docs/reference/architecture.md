@@ -1,6 +1,6 @@
 # Docs — `architecture`
 
-Goal: a reader can see boundaries, reason about data/control flow, identify constraints, and change the system without breaking critical behavior.
+Goal: a reader can see boundaries, reason about data/control flow, identify constraints, and change the system safely.
 
 ## Evidence ladder
 

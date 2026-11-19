@@ -6,7 +6,7 @@ Run in parallel. `only_my_channels: true`. Newest first. Ids come from Shared pr
 
 1. Mentions: `slack_search_public_and_private`, no keywords, `include_bots: false`, filter `to:<@<operator-id>> after:<window> -in:<#<github-inbox-channel>>`. Open the thread when the latest message is not the operator.
 2. Saved: filter `is:saved`.
-3. Prod pager: `slack_read_channel` on `<prod-pager-channel>`, `detailed`, until a message is older than the window. State is the attachment title (`Triggered`, `Re-Triggered`, `Warn`, `Recovered`). Keyword search does not see those titles. Do not search the word `health`.
+3. Prod pager: `slack_read_channel` on `<prod-pager-channel>`, `detailed`, until a message is older than the window. State is the attachment title (`Triggered`, `Re-Triggered`, `Warn`, `Recovered`). Keyword search does not see those titles. Never search the word `health`.
 4. A page that names an incident channel or chat: read that thread. The human narrative is in `<incident-channel>`.
 
 ## Channels
@@ -20,7 +20,7 @@ Run in parallel. `only_my_channels: true`. Newest first. Ids come from Shared pr
 
 ## Keep
 
-- **Do:** one bullet per thread. Keep it when the latest message asks the operator for something he has not answered. Link the question.
+- **Do:** one bullet per thread. Keep it when the latest message asks the operator for something unanswered. Link the question.
 - **Health open:** `Triggered`, `Re-Triggered`, or `Warn` with no later `Recovered` for the same monitor and group.
 - **Health closed:** recovered, or a person marked it resolved. One line: what happened, resolution permalink, follow-up ticket if the thread named one.
 
@@ -41,4 +41,4 @@ Lead with how many chores are open and whether prod is quiet.
 
 Close with one sentence naming what was dropped.
 
-A credential in a message: say to delete it and link the message. Do not repeat the value.
+A credential in a message: say to delete it and link the message; never repeat the value.

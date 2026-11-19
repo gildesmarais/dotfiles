@@ -11,39 +11,29 @@ description: >-
 
 ## Pick branch
 
-| Branch              | Signals                                                |
-| ------------------- | ------------------------------------------------------ |
-| implement (default) | Jira key/URL (`ABC-123`) or GitHub issue URL/`#N` |
+| Branch              | Signals                                                    |
+| ------------------- | ---------------------------------------------------------- |
+| implement (default) | Jira key/URL (`ABC-123`) or GitHub issue URL/`#N`          |
 | challenge           | review / gate an incoming ticket; `ops-github` ticket item |
 | intake              | delta sweep of assigned + incoming tickets for `/ops` or `/ticket intake` |
-| create              | "file a ticket", follow-up under an epic               |
-| groom               | backlog/epic cleanup, reparent orphans, board sync     |
-| Post-PR sync        | ticket has a new PR URL; "open PR + move to review"    |
+| create              | "file a ticket", follow-up under an epic                   |
+| groom               | backlog/epic cleanup, reparent orphans, board sync         |
+| Post-PR sync        | ticket has a new PR URL; "open PR + move to review"        |
 
 ## Shared prep
 
-- **Tracker:** `<project>/.agents/tracker.md` (`kind: jira|github`, status names, link types, epic/parent field, team channel, portfolio link type) wins; else discover, never hardcode; kind unclear → infer from input, ask once, never guess across orgs. Load only the matching adapter ([`reference/jira.md`](reference/jira.md) | [`reference/github.md`](reference/github.md)); it owns every tracker call.
-- **Fetch:** fields, parent/epic, links, comments, attachments, linked docs; never ask to restate; mark assumed AC.
+- **Tracker:** `<project>/.agents/tracker.md` (`kind: jira|github`, status names, link types, epic/parent field, team channel, portfolio link type) wins, else discover (never hardcode); unclear kind → infer, else ask once, never guessing across orgs. Load only the matching adapter ([`reference/jira.md`](reference/jira.md) | [`reference/github.md`](reference/github.md)); it owns every tracker call.
+- **Fetch:** fields, parent/epic, links, comments, attachments, linked docs in parallel; never ask to restate; mark assumed AC.
 - **Product gate:** non-trivial user-facing scope → `product-owner` `gate`; continue on Build Now only. Multi-slice / UX-mandated AC → `product-owner` `story-slice` → `$dev` `plan`. Skip bug fix/refactor/infra.
 - Observability/security cues, Assure, phase commits, land: `$dev` Shared prep + Handoff via **Handoff load** ([`../CONTEXT.md`](../CONTEXT.md)).
 
 ## Branch reference
 
-### challenge
-
-[`reference/challenge.md`](reference/challenge.md)
+Load only the matched: [`challenge`](reference/challenge.md), [`intake`](reference/intake.md), [`groom`](reference/groom.md).
 
 ### implement
 
-Fetch ticket + observability evidence; read code; gate → `$dev` `plan` → fresh branch `TICKET-ID-short-kebab-summary` → `$dev` `implement` → Handoff. PR ask → `pull-request` `open` → Post-PR sync. Interrupt only for real ambiguity or missing access.
-
-### intake
-
-[`reference/intake.md`](reference/intake.md)
-
-### groom
-
-[`reference/groom.md`](reference/groom.md)
+Fetch ticket + observability evidence, read code; gate → `$dev` `plan` → fresh branch `TICKET-ID-short-kebab-summary` → `$dev` `implement` → Handoff. PR ask → `pull-request` `open` → Post-PR sync. Interrupt only for real ambiguity or missing access.
 
 ### create
 
@@ -60,7 +50,7 @@ Before closing as Done/duplicate/superseded (incl. completed epic/idea): comment
 
 ### Post-PR sync
 
-After `pull-request` `open`: sync per Status lifecycle and adapter; if comment tools exist, comment PR URL + branch (transition regardless). Report ticket ID, status, PR URL; on failure, list status changes.
+After `pull-request` `open`: sync per Status lifecycle and adapter; comment PR URL + branch if comment tools exist (transition regardless). Report ticket ID, status, PR URL; on failure, list status changes.
 
 ## Handoff
 

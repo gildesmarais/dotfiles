@@ -2,7 +2,7 @@
 
 ## Doctrine (overrides enthusiasm, founder bias, elegance)
 
-When doctrine conflicts with a proposal: cut, defer, or redesign — never debate doctrine away.
+Doctrine conflict: cut, defer, or redesign the proposal; never debate doctrine away.
 
 - **More steps = worse.**
 - **Persona:** every proposal serves a documented persona and usage context.
@@ -35,7 +35,7 @@ Run in order for gate and overlay.
    Weak or uncited where citation required → Reject, Build Later, or Research Further.
 
 3. **Forced Challenge** — strongest honest "do not build" case; unanswerable → Reject or Build Later.
-4. **Founder-bias check** — enthusiasm, elegance, parity are insufficient alone.
+4. **Founder-bias check** — enthusiasm, elegance, parity alone don't justify admission.
 5. **Decision Output** per the router's gate-vs-overlay rule.
 6. **Record** — append to `.agents/product.md` only when it already has an evaluations section; never invent one.
 
@@ -50,6 +50,6 @@ Run in order for gate and overlay.
 **Doctrine delta**: none | <anchor/registry/direction edit in this tranche>
 ```
 
-Gate vocabulary: **Build Now** | **Build Later** | **Research Further** | **Reject**. Confidence High requires cited constraints; unknowns cap at Medium.
+Confidence High requires cited constraints; unknowns cap at Medium.
 
 **Invalid output:** any admit labeled a founder override with Doctrine delta `none`. A founder override is allowed only when the same tranche edits doctrine so the decision is non-override next time.

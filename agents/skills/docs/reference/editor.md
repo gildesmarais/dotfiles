@@ -1,6 +1,6 @@
 # Docs — `editor`
 
-Rewrite so a new reader can act without guessing. Recommend a new doc only when a high-value standard doc is missing and the user asked.
+Rewrite so a new reader can act without guessing. Recommend a new doc only when a standard high-value doc is missing and the user asked.
 
 ## Evidence ladder
 

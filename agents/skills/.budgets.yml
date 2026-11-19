@@ -4,74 +4,74 @@
 description_max_words: 45
 line_cap: 100
 words:
-  CONTEXT.md: 238
-  architecture/SKILL.md: 442
-  architecture/reference/axioms.md: 279
-  architecture/reference/deep-modules.md: 399
+  CONTEXT.md: 230
+  architecture/SKILL.md: 428
+  architecture/reference/axioms.md: 236
+  architecture/reference/deep-modules.md: 397
   architecture/reference/design-patterns.md: 202
   architecture/reference/glossary.md: 209
   architecture/reference/growth.md: 113
-  architecture/reference/performance.md: 346
-  architecture/reference/philosophy.md: 199
+  architecture/reference/performance.md: 345
+  architecture/reference/philosophy.md: 198
   architecture/reference/refactor-boundaries.md: 311
   architecture/reference/refactor-types.md: 280
   architecture/reference/structure-survey.md: 326
-  brain/SKILL.md: 575
-  brain/reference/consult.md: 413
-  brain/reference/orchestrate.md: 523
-  communication/SKILL.md: 231
+  brain/SKILL.md: 557
+  brain/reference/consult.md: 387
+  brain/reference/orchestrate.md: 516
+  communication/SKILL.md: 230
   communication/reference/external-message.md: 107
-  communication/reference/one-on-one.md: 262
+  communication/reference/one-on-one.md: 253
   communication/reference/project-update.md: 105
-  communication/reference/slack-message.md: 281
-  communication/reference/sprint-update.md: 440
+  communication/reference/slack-message.md: 277
+  communication/reference/sprint-update.md: 430
   dependabot/SKILL.md: 167
   dependabot/reference/configure.md: 87
   dependabot/reference/pr-commands.md: 146
   dependabot/reference/triage.md: 142
   dependabot/reference/yml-keys.md: 81
-  dev/SKILL.md: 641
+  dev/SKILL.md: 639
   dev/reference/api-truth.md: 99
-  communication/reference/outward-text.md: 383
+  communication/reference/outward-text.md: 341
   dev/reference/plan.md: 384
   dev/reference/surgical-laws.md: 96
-  docs/SKILL.md: 298
-  docs/reference/architecture.md: 227
+  docs/SKILL.md: 287
+  docs/reference/architecture.md: 224
   docs/reference/editor.md: 212
-  docs/reference/evidence.md: 250
-  harvest/SKILL.md: 213
-  harvest/reference/debt.md: 281
+  docs/reference/evidence.md: 248
+  harvest/SKILL.md: 212
+  harvest/reference/debt.md: 278
   harvest/reference/distill.md: 280
-  ticket/SKILL.md: 533
-  ticket/reference/challenge.md: 197
-  ticket/reference/github.md: 318
+  ticket/SKILL.md: 532
+  ticket/reference/challenge.md: 194
+  ticket/reference/github.md: 315
   ticket/reference/groom.md: 482
   ticket/reference/intake.md: 300
   ticket/reference/jira.md: 186
-  ops-chore/SKILL.md: 301
-  ops-chore/reference/hard-stops.md: 133
+  ops-chore/SKILL.md: 288
+  ops-chore/reference/hard-stops.md: 125
   ops-chore/reference/ledger.md: 130
   ops-chore/reference/playbook.md: 369
-  ops-github/SKILL.md: 311
+  ops-github/SKILL.md: 306
   ops-github/reference/act.md: 204
   ops-github/reference/review.md: 120
   ops-github/reference/setup.md: 92
-  ops-github/reference/tick.md: 324
-  ops/SKILL.md: 338
-  ops/reference/brief.md: 354
-  ops/reference/setup.md: 218
-  ops/reference/watch.md: 207
-  ops-slack/SKILL.md: 242
-  ops-slack/reference/digest.md: 325
-  product-owner/SKILL.md: 372
-  product-owner/reference/gate.md: 456
-  product-owner/reference/rebaseline.md: 317
+  ops-github/reference/tick.md: 319
+  ops/SKILL.md: 337
+  ops/reference/brief.md: 341
+  ops/reference/setup.md: 215
+  ops/reference/watch.md: 187
+  ops-slack/SKILL.md: 233
+  ops-slack/reference/digest.md: 320
+  product-owner/SKILL.md: 352
+  product-owner/reference/gate.md: 442
+  product-owner/reference/rebaseline.md: 309
   product-owner/reference/story-slice.md: 146
   pull-request/SKILL.md: 403
   pull-request/reference/comment.md: 224
   pull-request/reference/conflicts.md: 167
   pull-request/reference/fix-ci.md: 192
-  pull-request/reference/gh-api.md: 244
+  pull-request/reference/gh-api.md: 241
   pull-request/reference/open.md: 344
   pull-request/reference/pr-narrative.md: 222
   pull-request/reference/reply.md: 93
@@ -80,16 +80,16 @@ words:
   pull-request/reference/slice.md: 375
   release/SKILL.md: 128
   release/reference/notes.md: 84
-  review.gil/SKILL.md: 456
+  review.gil/SKILL.md: 443
   review.gil/reference/conventional-comments.md: 157
-  review.gil/reference/finish.md: 352
-  review.gil/reference/github-state.md: 363
+  review.gil/reference/finish.md: 350
+  review.gil/reference/github-state.md: 340
   review.gil/reference/growth.md: 73
   review.gil/reference/legacy.md: 338
   review.gil/reference/perf.md: 129
-  review.gil/reference/publish.md: 333
-  review.gil/reference/quality.md: 457
-  review.gil/reference/security.md: 278
+  review.gil/reference/publish.md: 332
+  review.gil/reference/quality.md: 453
+  review.gil/reference/security.md: 277
   review.gil/reference/tests.md: 367
   skill-trim/SKILL.md: 131
   skill-trim/reference/project.md: 156
@@ -101,9 +101,9 @@ words:
   swift-dev/SKILL.md: 200
   swift-dev/reference.md: 294
   swiftui-dev/SKILL.md: 140
-  triage/SKILL.md: 278
+  triage/SKILL.md: 274
   triage/reference/intake.md: 260
-  triage/reference/scrape-incident.md: 188
+  triage/reference/scrape-incident.md: 186
   typescript-dev/SKILL.md: 300
   typescript-dev/reference.md: 271
 pinned_headers:

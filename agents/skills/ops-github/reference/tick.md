@@ -1,7 +1,6 @@
 # Tick
 
-One-shot GitHub pass. No Jira, watcher, or wake handling: `ticket` `intake`
-and `$ops` own those.
+One-shot GitHub pass; Jira → `ticket` `intake`, watcher/wake → `$ops`.
 
 1. `ops-github tick` → envelope JSON (`status`, `report_md`, `clicks`, `auto`,
    `ask`, `judge`, `board`, `budgets`). Exit 0 quiet, 10 changes; both OK.

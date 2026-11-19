@@ -24,7 +24,7 @@ Skip: zero corrections, no new failure class, no debt; trivial typo/rename/bump;
 
 ## Shared prep
 
-Never paste raw logs, incident writeups, or transcripts. Fresh-read the target before edit.
+No raw logs, incident writeups, or transcripts. Fresh-read the target before edit.
 
 ## Branch reference
 

@@ -1,6 +1,6 @@
 # Security
 
-Security/compliance lens. Apply when the change touches authn/authz, sessions, secrets, permissions; confidential, regulated, or multi-tenant data; external interfaces, webhooks, workers; logging, audit trails, exports; or compliance posture. Otherwise skip. Project security guidance layers on top; its absence never blocks.
+Security/compliance lens. Apply when the change touches authn/authz, sessions, secrets, permissions; confidential, regulated, or multi-tenant data; external interfaces, webhooks, workers; logging, audit trails, exports; or compliance posture. Otherwise skip. Project security guidance layers on top; absence never blocks.
 
 ## Method
 

@@ -1,6 +1,6 @@
 # Setup
 
-First run, or `/ops reconfigure`. One interview, no per-leaf prompts.
+First run, or `/ops reconfigure`. One interview.
 
 ## Profile
 

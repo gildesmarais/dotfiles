@@ -25,8 +25,7 @@ Sections, in order; omit empty ones:
 1. `### Prod Health` — open `#alerts` pages from `$ops-slack`.
 2. `### Ready for Your Click` — clusters with `clicks` (`ready-to-merge` →
    **You merge**, `ready-to-approve` → **You approve**) or an unanswered direct
-   Slack ask. Sibling blocked PRs of the same ticket sit directly beneath,
-   each with its `[n]` handle: the whole finish line in one place. To snooze or
+   Slack ask. Sibling blocked PRs of the same ticket sit directly beneath, each with its `[n]` handle. To snooze or
    defer a click when the operator asks: `ops-github ledger decide <id>
    snoozed|deferred`.
 3. `### Needs Decision / Hand Dispatch` — clusters with `review-requested`,
@@ -42,8 +41,7 @@ Handles `[n]` persist in the Brain Ledger until the next brief.
 
 ## Periodic wakes
 
-- **Never `AskQuestion`** on a wake: it would freeze the watcher loop while the
-  operator is away. End with `Reply 1..N to dispatch Hands.` when anything is
+- **No `AskQuestion`** on a wake (it freezes the watcher loop). End with `Reply 1..N to dispatch Hands.` when anything is
   dispatchable. `AskQuestion` only after the operator engages (confirming an
   outward `COMMENT` review or a Jira post).
 - **Quiet rule:** a `brief` wake with zero new deltas on GitHub, Jira, and Slack

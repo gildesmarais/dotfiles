@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 # Dev
 
-Single Build entry. Load packs/overlays by name; never paste their bodies. Repo `AGENTS.md` overrides these defaults. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md).
+Single Build entry. Load packs/overlays by name, never paste their bodies. Repo `AGENTS.md` overrides these defaults. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md).
 
 ## Pick branch
 
@@ -30,7 +30,7 @@ Single Build entry. Load packs/overlays by name; never paste their bodies. Repo 
    - Earn `design` on: dual ownership, shallow modules, primitive obsession across boundaries, structural cleanup, measured perf, type-driven refactor, named patterns. Ambiguous → `design`. Packs may only append "also earn when…" signals.
    - A prompt naming a plan path and phase id inherits that classification and its architecture decisions; no second pass.
    - `design` earned without inheritance → invoke `architecture` and record seam decisions in the plan or milestone ledger **before** writing code.
-2. **Route by touched files** (not repo-wide presence); multi-load OK; packs load their own `reference.md` only on its signal; validate per surface; clarify only when signals are absent or contradictory.
+2. **Route by touched files** (not repo-wide presence); multi-load OK; packs load their own `reference.md` only on its signal; validate per surface; ask only when signals are absent or contradictory.
 
    | Touched                                                                   | Load                                |
    | ------------------------------------------------------------------------- | ----------------------------------- |
@@ -42,9 +42,9 @@ Single Build entry. Load packs/overlays by name; never paste their bodies. Repo 
    | `.ts` / `.tsx` / `.js` / `.jsx`                                           | `typescript-dev`                   |
 
 3. **On signal:** tests / dual paths / acceptance → [`reference/surgical-laws.md`](reference/surgical-laws.md); material API claim → [`reference/api-truth.md`](reference/api-truth.md); committing or executing a plan, or delegating to subagents → [`reference/plan.md`](reference/plan.md). **AGENTS.md load**, security and observability cues: [`../CONTEXT.md`](../CONTEXT.md).
-4. **Compat:** classify internal vs stable public. Possibly-breaking change to a stable surface with unclear permission → ask first. No silent shims, no silent breaks.
+4. **Compat:** classify internal vs stable public. Possibly-breaking change to a stable surface with unclear permission → ask first. No silent shims or breaks.
 5. **No destructive git** (`push --force`, hard reset, …) unless explicitly asked.
-6. **Validation:** repo-native entrypoints, narrow → broad, per phase. Never claim green without an observed exit 0 for each cited command. Check the diff against every `AGENTS.md` rule naming a touched surface (file kind, layer, route); loading a rule does not apply it.
+6. **Validation:** repo-native entrypoints, narrow → broad, per phase. Claim green only on an observed exit 0 per cited command. Check the diff against every `AGENTS.md` rule naming a touched surface (file kind, layer, route); loading a rule does not apply it.
 
 ## Branch reference
 

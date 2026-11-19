@@ -8,7 +8,7 @@ description: >-
 
 # Docs
 
-Rewrite docs to match what the repo does. Existing prose is unverified; prefer improving a doc over creating one.
+Rewrite docs to match the repo. Existing prose is unverified; improve a doc rather than create one.
 
 ## Pick branch
 
@@ -26,15 +26,11 @@ Rewrite docs to match what the repo does. Existing prose is unverified; prefer i
 1. Identify the target doc and the decisions it must support.
 2. Classify by doc-class: `accurate` | `partial` | `misleading` | `obsolete` (`evidence` net-new packs skip this).
 
-Every branch: only verified behavior; no absolute filesystem paths; **Write forward** (owned by `editor.md`).
+Every branch: verified behavior only; no absolute filesystem paths; **Write forward** (owned by `editor.md`).
 
 ## Branch reference
 
-Load exactly one:
-
-- **`editor`** → [`reference/editor.md`](reference/editor.md)
-- **`architecture`** → [`reference/architecture.md`](reference/architecture.md)
-- **`evidence`** → [`reference/evidence.md`](reference/evidence.md)
+Load exactly one: [`editor`](reference/editor.md), [`architecture`](reference/architecture.md), [`evidence`](reference/evidence.md).
 
 ## Handoff
 

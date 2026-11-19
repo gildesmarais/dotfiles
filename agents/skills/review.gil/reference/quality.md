@@ -23,7 +23,7 @@ Apply the `legacy.md` Find table (always). Verify smells by grep/read:
 | Untested logic | Branching helpers with no unit tests; 0%-coverage touched files (if tooling exists) |
 | Invariants     | Project-documented ones                                                            |
 
-Recipes: `git diff --stat "$BASE"..HEAD`; `rg "eslint-disable|# noqa|allow\\(" <srcRoot>`; `rg "@deprecated|DEPRECATED|Obsolete|obsolete|backward compat|during refactor" <srcRoot>`.
+Recipes: `rg "eslint-disable|# noqa|allow\\(" <srcRoot>`; `rg "@deprecated|DEPRECATED|Obsolete|obsolete|backward compat|during refactor" <srcRoot>`.
 
 Output: findings table **P0** correctness/sync, **P1** large untested logic, **P2** DRY/KISS + commit themes.
 

@@ -3,7 +3,7 @@
 Cross-skill terms only; skill-local vocabulary lives in the owning skill. Handoffs live in each skill's `## Handoff`.
 
 **Branch** (skill-internal): verb-path through a skill from the prompt. Not a git branch.
-**AGENTS.md load**: hosts load `AGENTS.md` / `CLAUDE.md` from workspace root upward; nearest wins; cite a line only — never re-read or paste.
+**AGENTS.md load**: hosts load `AGENTS.md` / `CLAUDE.md` from workspace root upward; nearest wins; cite a line, never re-read or paste.
 **Handoff load**: load `$name`; if hidden (`disable-model-invocation`), read `~/.claude/skills/<name>/SKILL.md` (Claude Code) or `~/.agents/skills/<name>/SKILL.md`, then continue.
 **Security cue** / **Observability cue**: sensitive surfaces → `review.gil` `security` lens; APM/trace/error/log links → matching observability tool. No vendor recipes in routers.
 **Ops Ledger**: service-ops evidence DTO from `ops-chore`; admitted items seed `$dev` `plan`.

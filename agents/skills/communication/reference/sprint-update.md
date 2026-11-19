@@ -1,18 +1,17 @@
 # Sprint Update
 
-Closed-sprint recap + active-sprint kickoff as a Slack draft. Needs Atlassian MCP. Overrides [`slack-message.md`](slack-message.md): one-line bullets, no delivery question. Not `project-update`.
+Closed-sprint recap + active-sprint kickoff as a Slack draft (Atlassian MCP). Overrides [`slack-message.md`](slack-message.md): one-line bullets, no delivery question.
 
 ## Config
 
-`<project>/.agents/tracker.md`: team channel, Jira key, `## Sprint update` (board ID, squad, heads-up audience). Optional epic→theme map: `.agents/product.md`. Missing → ask once, write to `tracker.md`. Never invent an audience.
+`<project>/.agents/tracker.md`: team channel, Jira key, `## Sprint update` (board ID, squad, heads-up audience). Optional epic→theme map: `.agents/product.md`. Missing → ask once, write to `tracker.md`. Invent no audience.
 
 ## Fetch
 
-1. `getAccessibleAtlassianResources` → `cloudId`, site URL.
-2. One issue, `getJiraIssue` `fields: ["*all"]`, `expand: "names"` → the `Sprint` field id.
-3. `getJiraBoardSprintData` on the board: **active** = `state: active`; **closed** = latest `completeDate`. Keep sprint names; no ISO weeks.
-4. JQL `project = <KEY> AND sprint = <id>` per sprint (not `closedSprints()`), by rank, paginated; fields `summary, status, issuetype, created, labels`, Sprint.
-5. `slack_read_channel`: newest message containing `Sprint update` — incident continuity only.
+1. `getAccessibleAtlassianResources` → `cloudId`, site URL; one issue via `getJiraIssue` (`fields: ["*all"]`, `expand: "names"`) → the `Sprint` field id.
+2. `getJiraBoardSprintData` on the board: **active** = `state: active`; **closed** = latest `completeDate`. Keep sprint names; no ISO weeks.
+3. JQL `project = <KEY> AND sprint = <id>` per sprint (not `closedSprints()`), by rank, paginated; fields `summary, status, issuetype, created, labels`, Sprint.
+4. `slack_read_channel`: newest message containing `Sprint update` — incident continuity only.
 
 ## Rank
 
@@ -27,7 +26,7 @@ Capacity only if the user or the prior recap stated it for this sprint. No names
 
 ## Render
 
-Standard markdown (the draft tool converts). Link every key `[CAT-1](https://<site>/browse/CAT-1)`. One outcome per bullet; no mechanism, patient counts, or closed weakness ([`outward-text.md`](outward-text.md)). Omit empty sections.
+Standard markdown. Link every key `[CAT-1](https://<site>/browse/CAT-1)`. One outcome per bullet; no mechanism, patient counts, or closed weakness ([`outward-text.md`](outward-text.md)). Omit empty sections.
 
 ```text
 :rocket: **{squad} — Sprint update: {closed} recap · {active} kickoff**
@@ -57,8 +56,8 @@ Standard markdown (the draft tool converts). Link every key `[CAT-1](https://<si
 Questions? Reply in the thread :speech_balloon:
 ```
 
-Goal emoji by subject: key = credentials, hospital = rollout, shield = safety.
+Goal emoji: key = credentials, hospital = rollout, shield = safety.
 
 ## Done when
 
-`slack_send_message_draft` saved in the channel (`attached_draft_exists` → stop, say so); reply with its link and the unmatched keys. Every key exists in either sprint or user input. Post only when told.
+`slack_send_message_draft` saved in the channel (`attached_draft_exists` → stop, say so); reply with its link and the unmatched keys. Every key exists in a sprint or user input. Post only when told.

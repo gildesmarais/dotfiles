@@ -8,7 +8,7 @@ description: >-
 
 # Review
 
-Findings-first review of a working tree, branch, commit range, or PR: the `finish` baseline plus only the lenses the diff warrants (`tests` / `perf` / `security` / `legacy`; a lens is a findings rubric on the same diff prep). Never ask the user to choose a template.
+Findings-first review of a working tree, branch, commit range, or PR: the `finish` baseline plus only the lenses the diff warrants (`tests` / `perf` / `security` / `legacy`). Never ask the user to choose a template.
 
 ## Pick branch
 
@@ -18,7 +18,7 @@ Findings-first review of a working tree, branch, commit range, or PR: the `finis
 | `publish`  | PR reviewed end to end, drafts reconciled, submitted as GitHub `COMMENT`                    |
 | `quality`  | Explicit merge-prep: audit, boy-scout refactors, tests, repo gates; changes code            |
 
-- Ask "Publish review on PR?" only in a top-level interactive human session targeting an existing PR with unspecified intent. The answer selects execution, not lenses.
+- Ask "Publish review on PR?" only in a top-level interactive human session on an existing PR with unspecified intent; the answer selects execution, not lenses.
 - "Review and publish/post/ship the review" → `publish`, no ask.
 - "Post these findings" with a verified list → `pull-request` `comment`.
 - "Draft review" = read-only findings, unless GitHub-pending is asked: end-to-end → `publish` stopping before submit; verified ledger supplied → `pull-request` `comment`.
@@ -32,7 +32,7 @@ Scripts resolve relative to this skill directory. `quality` skips this and runs 
 - **Local:** `scripts/compare_default_branch.sh` (fallback: diff `HEAD` vs `origin/<default>`).
 - **Every target:** **AGENTS.md load** ([`../CONTEXT.md`](../CONTEXT.md)). Separate unrelated dirty changes before selecting lenses.
 
-**Reference load (before findings, each on its signal):**
+**Reference load (before findings, per signal):**
 
 1. Always: [`reference/finish.md`](reference/finish.md) (includes surfaces).
 2. Behavior or tests changed: [`reference/tests.md`](reference/tests.md).

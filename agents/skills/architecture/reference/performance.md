@@ -4,7 +4,7 @@ Measure → baseline → optimize. Language-free stop rules; no SIMD, allocator,
 
 ## Earn this branch
 
-Speed/allocation ask, evidenced hot path, or measured bottleneck. Never co-load on speculation.
+Speed/allocation ask, evidenced hot path, or measured bottleneck. No co-load on speculation.
 
 ## Checklist
 
@@ -13,7 +13,7 @@ Speed/allocation ask, evidenced hot path, or measured bottleneck. Never co-load 
 3. Hardware affinity is layout + seam work: zero-copy / unified memory needs one buffer owner and contiguous lifetime. Co-load `deep-modules` when CPU and accelerator would each own a copy or a forked algorithm.
 4. Offload only when work ≫ setup, measured end-to-end (map, submit, sync, readback).
 5. Stay local to the measured bottleneck unless a co-loaded `deep-modules` move requires layout change.
-6. Fidelity over approximation on correctness-sensitive paths. Never meet an SLA by omitting semantic fields from a fast path claiming parity — change scheduling or placement, never meaning (cue `deep-modules` when delivery modes forked the schema).
+6. Fidelity over approximation on correctness-sensitive paths. Don't meet an SLA by omitting semantic fields from a fast path claiming parity; change scheduling or placement, not meaning (cue `deep-modules` when delivery modes forked the schema).
 7. Verify two layers: (a) evidence the intended path ran (vectorized loop, shared buffer, core class); (b) end-to-end budget vs baseline.
 8. Stop when the goal is met, evidence doesn't support the change, or gains need language/runtime recipes → `$dev` → `{lang}-dev` / overlay / `AGENTS.md`. Portable path stays default; acceleration is explicit opt-in, compared against it.
 

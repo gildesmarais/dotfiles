@@ -9,8 +9,8 @@ disable-model-invocation: true
 
 # Ops
 
-Brain plus a periodic multi-channel attention loop over `$ops-github`,
-`$ops-slack`, and `$ticket` `intake`. Co-load
+Brain plus a periodic attention loop over `$ops-github`, `$ops-slack`, and
+`$ticket` `intake`. Co-load
 [`../brain/reference/orchestrate.md`](../brain/reference/orchestrate.md);
 `$brain` hard limits apply from turn 1.
 
@@ -38,7 +38,7 @@ Brain plus a periodic multi-channel attention loop over `$ops-github`,
    `~/.local/state/ops/<profile>/config.json` (see setup).
 2. Print the Active Config Banner on start, after setup, and after `/compact`.
 3. After `/compact`, re-read only the Brain Ledger and `ops-github ledger summary`.
-4. Leaf failures degrade one channel; never block the others.
+4. A leaf failure degrades one channel, never the others.
 
 ## Branch reference
 

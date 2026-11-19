@@ -10,8 +10,8 @@ disable-model-invocation: true
 # Ops GitHub
 
 Brain over a read-only CLI (discover, classify, day ledger): briefs Hands,
-never restates engine rules. One-shot only: no watcher, no wake loop. Watching
-and multi-channel briefs → `$ops`. Co-load
+never restates engine rules. One-shot only; watching and multi-channel briefs →
+`$ops`. Co-load
 [`../brain/reference/orchestrate.md`](../brain/reference/orchestrate.md) for
 **act** / **review**.
 

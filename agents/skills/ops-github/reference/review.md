@@ -1,6 +1,6 @@
 # Review
 
-Others' PRs (`review-requested`). Operator approves/merges by hand, never agent.
+Others' PRs (`review-requested`). The operator approves/merges, never the agent.
 
 1. Spawn read-only strongest/high Hand (`Task`, ≤12 turns) loading `review.gil`
    `findings` on URL. Scratch → `/tmp/ops-github/<id>.log`. Return Findings +

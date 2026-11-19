@@ -1,6 +1,6 @@
 # External Message
 
-Email or support reply to customers, end users, partners, vendors, or the public. Support/status-style only.
+Email or support reply to customers, end users, partners, vendors, or the public. Support/status style.
 
 - No internal team, service, squad, tool, ticket, release-train, or process names; describe from the reader's perspective.
 - No unconfirmed dates, features, or fixes; conditional language ("We are reviewing this and will follow up when we have a confirmed update.").

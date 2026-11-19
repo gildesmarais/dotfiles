@@ -9,7 +9,7 @@ Prove a stated control from the repo. Never change or remediate the system under
 - **Not met** — the property fails on the evidence
 - **Unverified** — production or live value not read
 
-Never report an estate-wide pass on a mixed control; never invent live config.
+No estate-wide pass on a mixed control; invent no live config.
 
 ## Evidence
 
@@ -19,7 +19,7 @@ Ladder: [`architecture.md`](architecture.md). Cover every named surface; clients
 
 Inverted pyramid:
 
-1. Executive summary — pack job, control answer, 3–6 headlines, residual or compensating note, deep-dive anchors; the reader who stops here has the answer. No citation dumps.
+1. Executive summary — pack job, control answer, 3–6 headlines, residual or compensating note, deep-dive anchors; a reader who stops here has the answer. No citation dumps.
 2. Assessment results — compact table of in-scope surfaces. Related items: one link down.
 3. How to read — scoring, evidence tier, date, access note for private sources.
 4. Deep dives — two-sentence recap plus link up, then evidence.

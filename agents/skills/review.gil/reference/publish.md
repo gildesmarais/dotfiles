@@ -29,7 +29,7 @@ Regex-validate every inline comment and labeled reply before posting.
 
 ## 3. Reconcile → stale guard → publish → verify
 
-Fail-closed procedure in `github-state.md`: keep verified drafts; re-fetch head SHA before the first mutation (stale → abort/re-anchor); draft-only → stop at PENDING; verify URLs; state no code changed.
+Fail-closed per `github-state.md`: keep verified drafts; re-fetch head SHA before the first mutation (stale → abort/re-anchor); draft-only → stop at PENDING; verify URLs; state no code changed.
 
 ## Review body
 

@@ -1,15 +1,15 @@
 # Orchestrate
 
-`brain` `orchestrate`: brief, tiers, verify loop, re-plan, ledger. Optimize wall-clock to shippable without lowering the Definition of Done.
+`brain` `orchestrate`: brief, tiers, verify loop, re-plan, ledger. Optimize wall-clock to shippable at full Definition of Done.
 
 ## Hand brief
 
-Fixed part first, task fields last, so spawns reuse the cached prefix. Worktrees do not start on the target branch, hence Setup; parallel Hands get disjoint whitelists.
+Fixed part first, task fields last (cached prefix). Worktrees do not start on the target branch, hence Setup; parallel Hands get disjoint whitelists.
 
 ```text
 Read ~/.agents/skills/dev/SKILL.md, follow branch `implement`. You are a Hand:
-one task, then return. Time matters: narrowest check per iteration, full gate
-once at the end; smallest correct change; improvements → Discoveries.
+one task, then return. Narrowest check per iteration, full gate once at the
+end; smallest correct change; improvements → Discoveries.
 At the timebox or a wrong assumption, return `blocked` or `partial` with
 evidence. Run Setup; edit only whitelisted paths; commit on your branch per the
 commit law; no push, merge, or rebase. Full logs to scratch. Return the Delivery

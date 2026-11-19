@@ -16,7 +16,7 @@ Dual ownership of one fact, passthrough bags, shallow multi-call husks, or a str
 - Cut over only once the replacement owns the implementation one-way; reverse calls into the old home are dual ownership.
 - Relocating a predicate: verify each call site's argument shape still matches what it inspects.
 - Detect-and-persist in one critical section; check-then-act across suspension points is dual ownership of uniqueness.
-- Once-only effects claim a durable marker by conditional write, never a time window, which skipped runs miss and reruns repeat.
+- Once-only effects claim a durable marker by conditional write, not a time window (skipped runs miss, reruns repeat).
 - Freshness ≠ sync: never gate identity reload or capture visibility behind sync throttles.
 - Quarantine a permanently invalid unit so sequential siblings proceed.
 - Committed primary survives failed enrichment: nest enrichment status on the success value; never unwind the primary.

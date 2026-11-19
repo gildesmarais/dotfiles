@@ -1,6 +1,6 @@
 # Scrape incident playbook
 
-Signals: see `SKILL.md` playbook line; plus SoundCloud-shaped hostile hosts. Re-grill these locks only when new evidence contradicts them.
+Signals: `SKILL.md` playbook line, plus SoundCloud-shaped hostile hosts. Re-grill locks only when new evidence contradicts them.
 
 ## Locks
 

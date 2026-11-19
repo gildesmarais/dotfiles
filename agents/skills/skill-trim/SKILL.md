@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 # Skill trim
 
-Every kept line must change a model's decision. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md).
+Keep only lines that change a model's decision. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md).
 
 ## Pick branch
 

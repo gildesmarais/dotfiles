@@ -1,6 +1,6 @@
 # GitHub API patterns (comment / resolve / reply)
 
-Prefer `scripts/gh-review-comments`; use these for fallback and mutations. End-to-end review publishing is owned by `review.gil` `publish` / `github-state.md`.
+Prefer `scripts/gh-review-comments`; use these for fallback and mutations. End-to-end review publishing: `review.gil` `publish` / `github-state.md`.
 
 Policy: post/submit → one review with `event: COMMENT`. Draft/pending → omit `event`. Never `APPROVE` / `REQUEST_CHANGES`.
 

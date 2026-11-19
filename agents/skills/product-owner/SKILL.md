@@ -8,17 +8,15 @@ description: >-
 
 # Product Owner
 
-Gate vocabulary and doctrine (overrides enthusiasm): [`reference/gate.md`](reference/gate.md).
-
 ## Pick branch
 
 Default **`gate`**.
 
 | Branch        | Signals                                                                                                                 |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `gate`        | should we build, admit/defer, parity, UI/API surface, UAT expansion, debt tranche admission                             |
+| `gate` | should we build, admit/defer, parity, UI/API surface, UAT expansion, debt tranche admission                             |
 | `story-slice` | user stories, GWT, UX budgets, AC — only after `gate` Build Now / founder override                                      |
-| `rebaseline`  | doctrine feels stale, north star predates shipped product, many founder overrides; step 0 `re-baseline`                 |
+| `rebaseline` | doctrine feels stale, north star predates shipped product, many founder overrides; step 0 `re-baseline`                 |
 
 Skip: surgical bug fix or single-slice cleanup with no user-facing concept or step change; stress-test-only → `grilling`; one cited AC and no slice ask → no `story-slice`.
 
@@ -29,13 +27,11 @@ Skip: surgical bug fix or single-slice cleanup with no user-facing concept or st
 
 ## Shared prep
 
-Cite personas, golden paths, click budgets, mental models, and the doctrine ledger only from `<project>/.agents/product.md`. Absent → `unknown`, never invent (no "general user"; no step budget → qualitative delta only). Silent → Confidence ≤ Medium; prefer Research Further or one clarifying question.
+Cite personas, golden paths, click budgets, mental models, and the doctrine ledger only from `<project>/.agents/product.md`. Absent → `unknown`; invent nothing (no "general user"; no step budget → qualitative delta only). Silent → Confidence ≤ Medium; prefer Research Further or one clarifying question.
 
 ## Branch reference
 
-- `gate`: [`reference/gate.md`](reference/gate.md)
-- `story-slice`: [`reference/story-slice.md`](reference/story-slice.md)
-- `rebaseline`: [`reference/rebaseline.md`](reference/rebaseline.md)
+Load only the matched one: [`gate`](reference/gate.md) (doctrine and vocabulary; overrides enthusiasm), [`story-slice`](reference/story-slice.md), [`rebaseline`](reference/rebaseline.md).
 
 ## Handoff
 

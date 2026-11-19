@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 # Ops Chore
 
-Verify observability, triage queues and errors, score APM, and admit service fixes. Evidence in, Ops Ledger out; never application code.
+Evidence in, Ops Ledger out; never application code.
 
 ## Pick branch
 
@@ -24,7 +24,7 @@ Window: user's → prior Ops Ledger end → now (same service only) → preset d
 ## Shared prep
 
 1. **Target:** the workspace's monitoring config (service name, error project, telemetry backends, dashboard generator) defines the target; query it through available observability tools ([`../CONTEXT.md`](../CONTEXT.md) Observability cue). None defined → stop and say so.
-2. **Constraints:** load [`reference/hard-stops.md`](reference/hard-stops.md) every run.
+2. **Constraints:** always load [`reference/hard-stops.md`](reference/hard-stops.md).
 3. Active outage mid-run → hand off to `triage` now.
 
 ## Branch reference

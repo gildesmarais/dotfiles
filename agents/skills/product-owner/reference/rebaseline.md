@@ -1,6 +1,6 @@
 # Doctrine re-baseline (`rebaseline`)
 
-Re-derive doctrine from what shipped and was kept. Not this branch: "should we build X?" → `gate`; slicing → `story-slice`. Never evaluate a feature here; never invent a ledger, thresholds, golden paths, personas, or registry rows. Product state is `<project>/.agents/product.md`.
+Re-derive doctrine from what shipped and was kept. Never evaluate a feature here (→ `gate`) or slice (→ `story-slice`); invent no ledger, thresholds, golden paths, personas, or registry rows. Product state is `<project>/.agents/product.md`.
 
 ## Inputs (discover)
 
@@ -10,7 +10,7 @@ Re-derive doctrine from what shipped and was kept. Not this branch: "should we b
 
 ## Procedure + Output
 
-Cite paths; silent source → `unknown`. Emit these numbered steps as the output:
+Cite paths; silent source → `unknown`. Emit these steps as the output:
 
 1. **Have since baseline:** shipped-and-kept since the ledger's last re-baseline date (no date → say so). Every row cites a path.
 2. **Overrides:** founder overrides since baseline, each cited; flag mismatch with the ledger's override count.

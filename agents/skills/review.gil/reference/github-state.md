@@ -48,12 +48,7 @@ EOF
 
 ## Reply on existing thread
 
-```bash
-gh api graphql -f query='
-mutation($threadId:ID!, $body:String!) {
-  addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:$threadId, body:$body}) { comment { id url body } }
-}' -F threadId=THREAD_ID -F body=$'issue (test): ...'
-```
+See `pull-request` `reference/gh-api.md` (Reply).
 
 ## Last resort: delete whole pending review
 

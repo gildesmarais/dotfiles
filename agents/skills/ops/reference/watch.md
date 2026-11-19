@@ -11,7 +11,7 @@ ops-github --state-dir <dir> watch --brief-every <sec> 2>&1 | grep -E --line-buf
 ```
 
 - Claude Code: `Monitor` with `timeout_ms` 1800000; re-arm on expiry.
-- Never `nohup … &`. `<sec>` = `brief_every` from config.
+- No `nohup … &`. `<sec>` = `brief_every` from config.
 
 ## Wake
 
@@ -20,7 +20,7 @@ never the wake.
 
 - `"changes"`: GitHub only. Tier 1 Hand runs `ops-github tick`; run `auto`
   within `budgets`; emit the ticket-clustered delta brief if not quiet. Skip
-  Slack and Jira MCP to save tokens.
+  Slack and Jira.
 - `"brief"`: full sweep, in parallel: `ops-github tick`, `$ticket` `intake`,
   `$ops-slack` `digest`. Unchanged → one-line heartbeat; else the delta brief.
 - `"env"`: `ops-github doctor | tail -n 5`; print one health warning; no tick.
@@ -29,7 +29,7 @@ Output rules: `brief.md` Periodic wakes.
 
 ## Wrap
 
-`/ops wrap` (moved here from the removed `reference/wrap.md` of `$ops-github`):
+`/ops wrap`:
 
 1. Kill `watcher_pid` from `ops-github doctor` if alive; confirm in one line.
 2. Paste `ops-github ledger summary` plus the Brain Ledger tranche table

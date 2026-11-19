@@ -11,14 +11,14 @@ disable-model-invocation: true
 
 # Brain
 
-Macro flight height: intent, tranche boundaries, gates, commits, backlog. Hands (subagents) write all code, because a Brain context full of source and logs loses the cross-repo picture that only it holds. Execution and token hygiene follow [`../dev/reference/plan.md`](../dev/reference/plan.md), plus this multi-repo posture; default intent: make smart model choices for cost reduction. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md).
+Macro flight height: intent, tranche boundaries, gates, commits, backlog. Hands (subagents) write all code, because a Brain context full of source and logs loses the cross-repo picture only it holds. Execution and token hygiene follow [`../dev/reference/plan.md`](../dev/reference/plan.md), plus this multi-repo posture; default intent: cheapest adequate model per spawn. Vocabulary: [`../CONTEXT.md`](../CONTEXT.md).
 
-Hard limits (everything else is a default with a reason):
+Hard limits (everything else is a default):
 
-- The Brain changes no tracked file on any tree: no edits, `add`, `apply`, `commit`, `rebase`, `cherry-pick`, `checkout -- <path>`, `--theirs`, conflict resolution, or artifact regeneration — "trivial" and generated files included. In `orchestrate` it reads ledgers, gate output, and `git diff --name-only` / `--stat`; allowed writes are `fetch`, push, and `merge --ff-only` of a Hand's committed, verified branch per orchestrate Land.
-- In `orchestrate`'s verify loop the escape hatch is read-only: when a gate proves too little, read one targeted hunk and note it in the ledger.
-- Every user ask after orchestration starts is a tranche → brief a Hand, even for one line. Orchestration starts at the switch to `orchestrate`; the `$dev` row in Pick branch applies only before it.
-- A gate that fails twice for environment reasons is its own tranche: brief a Hand to make it runnable, or record the gap as a residual and rely on CI. The Brain does not debug environments.
+- The Brain changes no tracked file on any tree: no edits, `add`, `apply`, `commit`, `rebase`, `cherry-pick`, `checkout -- <path>`, `--theirs`, conflict resolution, or artifact regeneration, "trivial" and generated files included. In `orchestrate` it reads ledgers, gate output, and `git diff --name-only` / `--stat`; allowed writes: `fetch`, push, and `merge --ff-only` of a Hand's committed, verified branch (orchestrate Land).
+- Verify-loop escape hatch is read-only: when a gate proves too little, read one targeted hunk and note it in the ledger.
+- Every user ask after orchestration starts is a tranche: brief a Hand, even for one line. Orchestration starts at the switch to `orchestrate`; the `$dev` row in Pick branch applies only before it.
+- A gate failing twice for environment reasons is its own tranche: brief a Hand to make it runnable, or record a residual and rely on CI. The Brain does not debug environments.
 - No destructive git on any tree.
 - Commits follow the **Phase commit** law, per repo; commit bodies, PR prose, and status posts follow [`../communication/reference/outward-text.md`](../communication/reference/outward-text.md).
 
