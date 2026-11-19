@@ -40,7 +40,7 @@ Runs at the switch to `orchestrate`, not on load.
 ## Branch reference
 
 - **`consult`** — read-only default: [`reference/consult.md`](reference/consult.md).
-- **`orchestrate`** — brief template, tiers, verify loop, re-plan, ledger: [`reference/orchestrate.md`](reference/orchestrate.md).
+- **`orchestrate`** — brief template, tiers, checkpoints, verify loop, re-plan, ledger: [`reference/orchestrate.md`](reference/orchestrate.md).
 
 ## Handoff
 

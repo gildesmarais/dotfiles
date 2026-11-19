@@ -16,9 +16,9 @@ words:
   architecture/reference/refactor-boundaries.md: 311
   architecture/reference/refactor-types.md: 280
   architecture/reference/structure-survey.md: 326
-  brain/SKILL.md: 557
+  brain/SKILL.md: 558
   brain/reference/consult.md: 387
-  brain/reference/orchestrate.md: 516
+  brain/reference/orchestrate.md: 677
   communication/SKILL.md: 230
   communication/reference/external-message.md: 107
   communication/reference/one-on-one.md: 253
@@ -57,7 +57,7 @@ words:
   ops-github/reference/review.md: 120
   ops-github/reference/setup.md: 92
   ops-github/reference/tick.md: 319
-  ops/SKILL.md: 337
+  ops/SKILL.md: 352
   ops/reference/brief.md: 341
   ops/reference/setup.md: 215
   ops/reference/watch.md: 187

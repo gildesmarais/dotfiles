@@ -14,6 +14,9 @@ At the timebox or a wrong assumption, return `blocked` or `partial` with
 evidence. Run Setup; edit only whitelisted paths; commit on your branch per the
 commit law; no push, merge, or rebase. Full logs to scratch. Return the Delivery
 Ledger (<=25 lines) with branch + head SHA; unevidenced claims count as undone.
+Checkpoint `plan`: after orientation reads, before the first edit, return only
+`Plan` (<=10 lines: approach, files, assumptions, risks) and wait to be
+continued. `plan+done` also returns `Plan` before the full gate.
 
 Task: <id> — <imperative intent>
 Repo: <root>
@@ -23,6 +26,7 @@ Read-only context: <paths or none>
 Acceptance: <observable check; behavior change → test failing before, passing after>
 Gate: <repo-native command>
 Timebox: <turns or minutes>
+Checkpoint: <none | plan | plan+done>
 ```
 
 Update variant (smallest tier; replaces task fields):
@@ -37,7 +41,18 @@ Return: new head SHA, conflicted files + resolution, narrow check exit codes.
 
 ## Tiers
 
-`model` + `effort` per spawn: mechanical (rename, lint, format, config) → smallest, low; one-module change → mid, medium; design, cross-boundary, reviewer → strongest, high. Choice rule: `plan.md` Token hygiene.
+`model` + `effort` + `Checkpoint` per spawn:
+
+- mechanical (rename, lint, format, config) → smallest, low, `none`.
+- one-module change → mid, medium, `none`; `plan` when the brief names an unknown.
+- design, cross-boundary → mid, high, `plan`; `plan+done` on a stable surface or data migration.
+- reviewer, or the retry after a reject → strongest, high.
+
+Choice rule: `plan.md` Token hygiene.
+
+## Checkpoint
+
+The Brain is the advisor: a cheaper Hand keeps its context, the Brain supplies judgment at the two points where it pays. Answer each `Plan` as it lands via `SendMessage` to that Hand: `go`, a correction (<=5 lines), or `stop` with a re-scope. Judge against Acceptance, whitelist, ledger Decisions, and tranches in flight, the picture the Hand lacks. Never read source to answer; ask the Hand. Respawn only when the Hand is gone.
 
 ## Verify loop
 
@@ -48,7 +63,7 @@ Return: new head SHA, conflicted files + resolution, narrow check exit codes.
 3. **Land:** target tree clean and HEAD == expected → `git merge --ff-only <branch>`; update expected. Else land nothing; never patch, stage, commit, or resolve conflicts:
    - dirty tree or moved HEAD = another writer → stop, ask the user (wait, or target an integration branch). On resume, re-plan tranches whose whitelist overlaps `git diff --name-only <old> <new>`.
    - non-ff → Update variant to that Hand; re-verify from 1.
-4. **Reject:** discard worktree; diagnose (failure, cause, brief change); retry once revised or a tier higher.
+4. **Reject:** wrong approach and the Hand is resumable → one correction via `SendMessage`, re-verify from 1. Otherwise discard worktree; diagnose (failure, cause, brief change); retry once revised or a tier higher.
 
 ## Re-plan
 

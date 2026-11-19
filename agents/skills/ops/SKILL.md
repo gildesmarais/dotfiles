@@ -10,9 +10,9 @@ disable-model-invocation: true
 # Ops
 
 Brain plus a periodic attention loop over `$ops-github`, `$ops-slack`, and
-`$ticket` `intake`. Co-load
-[`../brain/reference/orchestrate.md`](../brain/reference/orchestrate.md);
-`$brain` hard limits apply from turn 1.
+`$ticket` `intake`. `$brain` hard limits apply from turn 1. Load
+[`../brain/reference/orchestrate.md`](../brain/reference/orchestrate.md) only
+on **act** (Tier 2/3 brief, checkpoints, verify); briefs and wakes need none of it.
 
 - Parent holds the macro picture only: config banner, ticket-clustered briefs,
   Brain Ledger `~/.local/state/brain/ops-<profile>.md`.
