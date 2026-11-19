@@ -1,8 +1,3 @@
----
-description: Text hygiene and shape — published text leaks nothing and reads for anyone; operator replies are conclusion-first with single-paste manual steps
-alwaysApply: true
----
-
 # Outward text
 
 Always-on for text leaving the agent. Edit history, sent mail, and notifications keep the first draft, so a later scrub never removes a value.

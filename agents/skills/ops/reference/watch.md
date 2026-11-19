@@ -10,7 +10,6 @@ Skip when `ops-github doctor` shows `watcher_alive`. `ops-github watch` runs:
 ops-github --state-dir <dir> watch --brief-every <sec> 2>&1 | grep -E --line-buffered 'OPS_GITHUB_WAKE|rror|FAIL'
 ```
 
-- Cursor: session background shell, `notify_on_output` debounce ≥60s.
 - Claude Code: `Monitor` with `timeout_ms` 1800000; re-arm on expiry.
 - Never `nohup … &`. `<sec>` = `brief_every` from config.
 

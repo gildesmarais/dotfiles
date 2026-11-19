@@ -56,7 +56,6 @@ Do not optimize for:
 - Store: `agents/skills/` at the dotfiles root
 - Agent install: `~/.agents/skills/<name>/` via `rcup` (file-level links from the store)
 - Claude Code install: `claude/skills/<name>` (relative symlink to `../../agents/skills/<name>`) → `~/.claude/skills/<name>/` via `rcup`; Claude Code does not read `~/.agents/skills`
-- Cursor install: `cursor/rules/architecture-axioms.mdc` is a symlink to `agents/skills/architecture/reference/axioms.md` (its frontmatter carries `alwaysApply`); never copy the file
 - Project promote source: `<project>/.agents/skills/` only (`.codex/skills/` is deprecated and rejected)
 - Main implementation: `skill/src/cli.rb`
 - Classifier: `skill/src/skill/classifier.rb`

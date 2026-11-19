@@ -1,6 +1,6 @@
 # dotfiles
 
-Config files to set up my macOS systems and keep them in sync — Homebrew, editor configs, guided defaults, workflow scripts, and [Agent Skills](#agent-skills) for Codex and Cursor.
+Config files to set up my macOS systems and keep them in sync — Homebrew, editor configs, guided defaults, workflow scripts, and [Agent Skills](#agent-skills) for Codex and Claude Code.
 
 Maintained by [Gil Desmarais](https://gil.desmarais.de) (Berlin). Profile, projects, and links: [gildesmarais/gildesmarais](https://github.com/gildesmarais/gildesmarais).
 
@@ -60,8 +60,8 @@ Requires Node.js / `npx`. Skills ship from GitHub path `agents/skills/`.
 
 ```sh
 npx skills add gildesmarais/dotfiles/agents/skills --list
-npx skills add gildesmarais/dotfiles/agents/skills -g -a cursor -a codex -y
-npx skills add gildesmarais/dotfiles/agents/skills --skill review.gil --skill docs -g -a cursor -y
+npx skills add gildesmarais/dotfiles/agents/skills -g -a claude-code -a codex -y
+npx skills add gildesmarais/dotfiles/agents/skills --skill review.gil --skill docs -g -a claude-code -y
 ```
 
 Browse with `--list`, then install all (`-g` = user-level) or pick skills with `--skill`. Full options: [agents/skills/README.md](agents/skills/README.md#install).

@@ -76,7 +76,6 @@ Ask at most **2** clarifying questions. Prefer these goals:
 ## Out of scope
 
 - Running a full incident intake as the primary job of this paste (use `/triage` + SKILL.md instead)
-- Cursor Automations
 - Assure / Ship skills
 - Teaching product-owner or `$dev` craft
 

@@ -5,7 +5,7 @@ Personal product + engineering skill store: domain routers (Build entry: `dev`),
 ## Install
 
 ```sh
-npx skills add gildesmarais/dotfiles/agents/skills -g -a cursor -a codex -y
+npx skills add gildesmarais/dotfiles/agents/skills -g -a claude-code -a codex -y
 ```
 
 Requires Node.js and GitHub access. Verify: `npx skills list -g`. Browse: `--list`. Project-level: omit `-g`. Specific skills: `--skill <name>` (repeatable). This machine: `rcup` — see [Operate the store](#operate-the-store). CLI: [vercel-labs/skills](https://github.com/vercel-labs/skills).
@@ -31,10 +31,10 @@ Requires Node.js and GitHub access. Verify: `npx skills list -g`. Browse: `--lis
 Third-party; not in the store install.
 
 ```sh
-npx skills add https://github.com/mattpocock/skills --skill grilling -g -a cursor -a codex -y && \
-npx skills add https://github.com/twostraws/swiftui-agent-skill --skill swiftui-pro -g -a cursor -a codex -y && \
-npx skills add https://github.com/twostraws/swift-testing-agent-skill --skill swift-testing-pro -g -a cursor -a codex -y && \
-npx skills add https://github.com/arjitj2/swiftui-design-principles --skill swiftui-design-principles -g -a cursor -a codex -y
+npx skills add https://github.com/mattpocock/skills --skill grilling -g -a claude-code -a codex -y && \
+npx skills add https://github.com/twostraws/swiftui-agent-skill --skill swiftui-pro -g -a claude-code -a codex -y && \
+npx skills add https://github.com/twostraws/swift-testing-agent-skill --skill swift-testing-pro -g -a claude-code -a codex -y && \
+npx skills add https://github.com/arjitj2/swiftui-design-principles --skill swiftui-design-principles -g -a claude-code -a codex -y
 ```
 
 | Pack                        | Role                                                      |
@@ -73,7 +73,7 @@ Router shape: `## Pick branch` → `## Shared prep` (omit when empty) → `## Br
 
 ## Operate the store
 
-Git-tracked `agents/skills/<name>/` is SoT. `rcup` installs file-level links into `~/.agents/skills/<name>/`. Claude Code only reads `~/.claude/skills`, so `claude/skills/<name>` (relative symlink into the store) makes `rcup` install there too; `skill promote` / `rename` maintain it and `skill lint` enforces it. `CONTEXT.md` gets the same entry. `architecture/reference/axioms.md` (architecture) and `communication/reference/outward-text.md` (anything published) are the always-on rules: each host points at that one file (Claude: `@~/.agents/skills/<skill>/reference/<file>.md` in `~/.claude/CLAUDE.md`; Cursor: `cursor/rules/*.mdc` symlink), never a copy. Skills that publish (`brain`, `pull-request`, `release`, `communication`) cite it too, so no single router is its only entrypoint. Keep `SYMLINK_DIRS` unset for `agents` / `agents/skills` / `claude`. After clone/pull, promote/rename, or `backfill`, run `rcup` (or topgrade `RCM: rcup`).
+Git-tracked `agents/skills/<name>/` is SoT. `rcup` installs file-level links into `~/.agents/skills/<name>/`. Claude Code only reads `~/.claude/skills`, so `claude/skills/<name>` (relative symlink into the store) makes `rcup` install there too; `skill promote` / `rename` maintain it and `skill lint` enforces it. `CONTEXT.md` gets the same entry. `architecture/reference/axioms.md` (architecture) and `communication/reference/outward-text.md` (anything published) are the always-on rules: each host points at that one file (Claude: `@~/.agents/skills/<skill>/reference/<file>.md` in `~/.claude/CLAUDE.md`), never a copy. Skills that publish (`brain`, `pull-request`, `release`, `communication`) cite it too, so no single router is its only entrypoint. Keep `SYMLINK_DIRS` unset for `agents` / `agents/skills` / `claude`. After clone/pull, promote/rename, or `backfill`, run `rcup` (or topgrade `RCM: rcup`).
 
 `rcup` installs `CONTEXT.md` so `../CONTEXT.md` citations resolve; keep `README.md` in `rcrc` `EXCLUDES`; never exclude `CONTEXT.md`. External `npx skills` installs may lack `CONTEXT.md` — fall back to [conventionalcommits.org](https://www.conventionalcommits.org/) v1.0.0 plus the `$dev` phase-commit law.
 

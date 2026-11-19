@@ -188,8 +188,6 @@ fi
 if section apps "Apps"; then
   electron "$AS/Code"
   app_caches "VS Code" "Visual Studio Code" ~/Library/Caches/com.microsoft.VSCode "${APPD[@]}"
-  electron "$AS/Cursor"
-  app_caches "Cursor" "Cursor" ~/Library/Caches/com.todesktop.230313mzl4w4u92 ~/Library/Caches/cursor-compile-cache "${APPD[@]}"
   app_caches "JetBrains" "(IntelliJ IDEA|WebStorm|PyCharm|GoLand|Rider|CLion|PhpStorm|RubyMine|DataGrip|Android Studio)[^/]*" ~/Library/Caches/JetBrains
   chromium "$AS/BraveSoftware/Brave-Browser"
   app_caches "Brave" "Brave Browser[^/]*" ~/Library/Caches/BraveSoftware ~/Library/Caches/com.brave.Browser "${APPD[@]}"

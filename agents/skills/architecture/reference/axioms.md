@@ -1,8 +1,3 @@
----
-description: Architecture axioms for any code change — reuse first, one owner, no shallow wrappers
-alwaysApply: true
----
-
 # Axioms
 
 Always-on for any code change. Repo structure and `AGENTS.md` win — axioms fill gaps and break ties. Scope for **Before** / **After**: new files, new modules, or edits spanning files; a single-file fix skips both.

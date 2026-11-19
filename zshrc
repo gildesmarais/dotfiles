@@ -46,7 +46,7 @@ fi
 # setup zoxide — smart cd only in interactive TTYs; agents keep builtin cd
 if command_exists zoxide; then
   _zoxide_use_cd_shim() {
-    [ -n "${CURSOR_AGENT:-}${CLAUDECODE:-}${AIDER:-}" ] && return 1
+    [ -n "${CLAUDECODE:-}${AIDER:-}" ] && return 1
     case $- in *i*) ;; *) return 1 ;; esac
     [ -t 1 ] || return 1
     return 0
