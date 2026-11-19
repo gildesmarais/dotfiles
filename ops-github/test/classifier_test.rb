@@ -564,6 +564,7 @@ class ClassifierTest < Minitest::Test
       "no checks" => ->(s) { s["rollup_state"] = "" },
       "failing" => ->(s) { s["failing_checks"] = [{ "name" => "unit", "state" => "FAILURE" }] },
       "approved already" => ->(s) { s["reviewDecision"] = "APPROVED" },
+      "draft" => ->(s) { s["isDraft"] = true },
       "open human thread" => ->(s) { s["threads"] = [thread_reply("me", "2026-11-02T12:00:00Z")] }
     }
     mutations.each do |name, mutate|

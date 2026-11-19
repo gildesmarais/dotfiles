@@ -369,8 +369,9 @@ module OpsGithub
       replies.compact.max_by { |c| c["createdAt"].to_s }
     end
 
+    # A draft is the author saying "not ready": never offer the approve click.
     def approvable?(state)
-      state["reviewDecision"] != "APPROVED" &&
+      !state["isDraft"] && state["reviewDecision"] != "APPROVED" &&
         Array(state["threads"]).reject { |t| t["isResolved"] || t["bot"] }.empty? &&
         Array(state["failing_checks"]).empty? && state["rollup_state"] == "SUCCESS"
     end
