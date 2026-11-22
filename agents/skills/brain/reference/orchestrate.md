@@ -56,7 +56,7 @@ The Brain is the advisor: a cheaper Hand keeps its context, the Brain supplies j
 
 ## Advisor
 
-Opt-in: cheaper Brain plus a stronger advisor (Fable class, never weaker than the Brain) via `/advisor <model>`, `--advisor`, or `advisorModel`. Beta tool `advisor_20260301`: no arguments or tools.
+Opt-in: cheaper Brain plus a stronger advisor (Fable class, never weaker than the Brain) via `/advisor <model>`, `--advisor`, or `advisorModel`. Beta tool `advisor_20260301`: no arguments or tools. Off with 3+ tranches or multiple repos → suggest once: Opus Brain, Fable advisor, Sonnet Hands.
 
 - It sees the Brain's transcript, never a Hand's: get the ledger, `Plan`, and gate output there first.
 - Call after Shared prep, on a contested `Plan`, after a reject, and before Project done; not per routine tranche.
@@ -73,6 +73,15 @@ Opt-in: cheaper Brain plus a stronger advisor (Fable class, never weaker than th
    - non-ff → Update variant to that Hand; re-verify from 1.
 4. **Reject:** wrong approach and the Hand is resumable → one correction via `SendMessage`, re-verify from 1. Otherwise discard worktree; diagnose (failure, cause, brief change); retry once revised or a tier higher.
 
+## Slices and PRs
+
+- **Slice:** one shippable PR on `<TICKET>-<slice>`, else `brain/<goal>-<slice>`, in its own `.claude/worktrees/` checkout. That branch is the Land target. Stack only on a true dependency: open after the parent's CI is green, target the parent branch, take its changes by merge.
+- **Ship:** reviewer Hand per slice before push; Readiness No blocks. Then `pull-request` `open`, watch CI in the background, and continue independent slices.
+- **Red CI:** a Hand fixes it, two attempts at most; then stay draft with a residual. Slice done there or at ready: never wait for merge; handle human review only on ask.
+- **Lean:** after each PR rewrite the ledger, print `Ledger saved, safe to /compact`, keep working. On resume, re-poll `gh pr checks`; live state beats the ledger.
+- **Worktrees:** share package caches (gems, pnpm store), never build output, unless repo `AGENTS.md` says otherwise. Remove once the PR's CI is clean.
+- **Interrupt** only for destructive actions, product scope, a stable-surface break, or another writer. Push-notify only then and at Project done. One status line per verdict: `T3 green · PR #42 draft · CI running · 2 left`.
+
 ## Re-plan
 
 After every verdict, fold `Discoveries` into Backlog; merge, split, reorder, drop, or add tranches, one-line reason each. Unknowns first, cosmetic last; cut scope before stretching time (cuts become residuals). Product scope → `product-owner` `gate`.
@@ -81,12 +90,11 @@ After every verdict, fold `Discoveries` into Backlog; merge, split, reorder, dro
 
 `~/.local/state/brain/<goal-slug>.md` (outside git), or `<repo>/.agents/brain-ledger.md` on request. Dated; rewrite after every verdict.
 
-Stay lean: between PRs rewrite it, compact, and resume from it alone. Reuse the shared bundle and explicit scratch worktrees.
-
 ```markdown
 Goal: <one line>
 Repos: <root> · <target branch> · <expected HEAD> · <gate>
 | Tranche | Repo | Status | SHA | Date | Residual |
+PRs: <slice · number · head SHA · CI>
 Backlog: <ordered ids; last re-plan reason>
 Decisions: <date: decision, why>
 ```

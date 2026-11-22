@@ -15,7 +15,7 @@ Macro flight height: intent, tranche boundaries, gates, commits, backlog. Hands 
 
 Hard limits (everything else is a default):
 
-- The Brain changes no tracked file on any tree: no edits, `add`, `apply`, `commit`, `rebase`, `cherry-pick`, `checkout -- <path>`, `--theirs`, conflict resolution, or artifact regeneration, "trivial" and generated files included. In `orchestrate` it reads ledgers, gate output, and `git diff --name-only` / `--stat`; allowed writes: `fetch`, push, and `merge --ff-only` of a Hand's committed, verified branch (orchestrate Land).
+- The Brain changes no tracked file on any tree: no edits, `add`, `apply`, `commit`, `rebase`, `cherry-pick`, `checkout -- <path>`, `--theirs`, conflict resolution, or artifact regeneration, "trivial" and generated files included. In `orchestrate` it reads ledgers, gate output, and `git diff --name-only` / `--stat`; allowed writes: `fetch`, slice branch and worktree setup, push, PR state, and `merge --ff-only` of a Hand's committed, verified branch (orchestrate Land).
 - Verify-loop escape hatch is read-only: when a gate proves too little, read one targeted hunk and note it in the ledger.
 - Every user ask after orchestration starts is a tranche: brief a Hand, even for one line. Orchestration starts at the switch to `orchestrate`; the `$dev` row in Pick branch applies only before it.
 - A gate failing twice for environment reasons is its own tranche: brief a Hand to make it runnable, or record a residual and rely on CI. The Brain does not debug environments.
@@ -36,6 +36,7 @@ Runs at the switch to `orchestrate`, not on load.
 1. **Repos:** per repo record root, default branch, baseline SHA, and a gate copied from `AGENTS.md` / Makefile / CI. No trustworthy gate → halt and name the missing contract.
 2. **Ledger:** open or resume the Brain Ledger; after `/compact` or a restart, re-read only it.
 3. **Backlog:** admit tranches (features via `product-owner` `gate`; non-trivial tranches via `$dev` `plan`).
+4. **Start:** announce repos, gate, and first tranches in one line; no confirmation.
 
 ## Branch reference
 
@@ -45,11 +46,11 @@ Runs at the switch to `orchestrate`, not on load.
 ## Handoff
 
 - Hands read `$dev` `implement` (**Handoff load**; path in the brief), return the **Delivery Ledger** (incl. `Discoveries`).
-- Per repo, after its last tranche: a fresh-context reviewer Hand runs `review.gil` `findings` on the Ledger and returns Findings + Readiness only. The Brain judges from that, never from the implementer's self-report.
+- Per slice, after its last tranche: a fresh-context reviewer Hand runs `review.gil` `findings` on the Ledger and returns Findings + Readiness only. The Brain judges from that, never from the implementer's self-report.
 - Green gate + Yes/Conditional → `pull-request` `open`, unless the user opted out. Repeated pain → `harvest`.
 
 ## Completion criteria
 
 - **Tranche green** (Definition of Done): bounds clean; gate exit 0 observed by the Brain; acceptance check passes; no debug/TODO leftovers in the diff; compat decided; landed fast-forward or deferral recorded; ledger updated.
 - **Tranche blocked**: second attempt failed or Hand returned `blocked`; worktree discarded; residual and next step in the ledger; independent tranches continue.
-- **Project done**: backlog empty or explicitly cut; every touched repo has reviewer Readiness Yes/Conditional; residuals listed; final ledger summary reported.
+- **Project done**: backlog empty or explicitly cut; every slice has reviewer Readiness Yes/Conditional and a ready or residual-carrying draft PR; residuals listed; final ledger summary reported.
