@@ -54,6 +54,14 @@ Choice rule: `plan.md` Token hygiene.
 
 The Brain is the advisor: a cheaper Hand keeps its context, the Brain supplies judgment at the two points where it pays. Answer each `Plan` as it lands via `SendMessage` to that Hand: `go`, a correction (<=5 lines), or `stop` with a re-scope. Judge against Acceptance, whitelist, ledger Decisions, and tranches in flight, the picture the Hand lacks. Never read source to answer; ask the Hand. Respawn only when the Hand is gone.
 
+## Advisor
+
+Opt-in: cheaper Brain plus a stronger advisor (Fable class, never weaker than the Brain) via `/advisor <model>`, `--advisor`, or `advisorModel`. Beta tool `advisor_20260301`: no arguments or tools.
+
+- It sees the Brain's transcript, never a Hand's: get the ledger, `Plan`, and gate output there first.
+- Call after Shared prep, on a contested `Plan`, after a reject, and before Project done; not per routine tranche.
+- Evidence beats advice: on conflict, one reconcile call naming both sides. Advice never replaces a gate or reviewer Hand.
+
 ## Verify loop
 
 **Expected HEAD** per repo: last landed SHA, else Base. Re-check it (`git rev-parse`) before each land and wave (independent tranches in one message; brief the next while one verifies).
@@ -72,6 +80,8 @@ After every verdict, fold `Discoveries` into Backlog; merge, split, reorder, dro
 ## Brain Ledger
 
 `~/.local/state/brain/<goal-slug>.md` (outside git), or `<repo>/.agents/brain-ledger.md` on request. Dated; rewrite after every verdict.
+
+Stay lean: between PRs rewrite it, compact, and resume from it alone. Reuse the shared bundle and explicit scratch worktrees.
 
 ```markdown
 Goal: <one line>

@@ -16,9 +16,9 @@ words:
   architecture/reference/refactor-boundaries.md: 311
   architecture/reference/refactor-types.md: 280
   architecture/reference/structure-survey.md: 326
-  brain/SKILL.md: 558
+  brain/SKILL.md: 563
   brain/reference/consult.md: 387
-  brain/reference/orchestrate.md: 677
+  brain/reference/orchestrate.md: 784
   communication/SKILL.md: 230
   communication/reference/external-message.md: 107
   communication/reference/one-on-one.md: 253
@@ -30,7 +30,7 @@ words:
   dependabot/reference/pr-commands.md: 146
   dependabot/reference/triage.md: 142
   dependabot/reference/yml-keys.md: 81
-  dev/SKILL.md: 639
+  dev/SKILL.md: 659
   dev/reference/api-truth.md: 99
   communication/reference/outward-text.md: 341
   dev/reference/plan.md: 384
@@ -72,7 +72,7 @@ words:
   pull-request/reference/conflicts.md: 167
   pull-request/reference/fix-ci.md: 192
   pull-request/reference/gh-api.md: 241
-  pull-request/reference/open.md: 344
+  pull-request/reference/open.md: 382
   pull-request/reference/pr-narrative.md: 222
   pull-request/reference/reply.md: 93
   pull-request/reference/resolve.md: 234

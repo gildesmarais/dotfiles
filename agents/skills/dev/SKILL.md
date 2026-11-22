@@ -55,11 +55,12 @@ Single Build entry. Load packs/overlays by name, never paste their bodies. Repo 
 
 Path: `$dev` ⇄ `architecture` → `review.gil` → `pull-request`; never reverse. Emit the **Delivery Ledger** ([`../CONTEXT.md`](../CONTEXT.md)) at delivery → `review.gil`.
 
-- **Post-delivery Assure** (before the delivery report): run it for `design`, a stable-surface change, a matched security/perf/tests cue, or a land ask — prefer a subagent running `review.gil` `findings` with the Ledger, returning only Findings + Readiness; else reload in-session. A `surgical` change with green gates and no cue skips it (state why). `quality` only on explicit merge-prep / boy-scout / authorized P0/P1. Land ask + Yes/Conditional → `pull-request` `open`.
+- **Post-delivery Assure** (before the delivery report): run it for `design`, a stable-surface change, a matched security/perf/tests cue, or a land ask — prefer a subagent running `review.gil` `findings` with the Ledger, returning only Findings + Readiness; else reload in-session. A `surgical` change with green gates and no cue skips it (state why). `quality` only on explicit merge-prep / boy-scout / authorized P0/P1.
+- **Land by default:** green gate + Assure Yes/Conditional or stated skip → `pull-request` `open`. Skip on opt-out or as a Hand.
 - `harvest` when pain repeats, a fix was non-obvious, or asked.
 - Forward doc (post-Assure, Yes/Conditional): non-obvious maintenance → repo `AGENTS.md`; skip if self-documenting.
 
 ## Completion criteria
 
 - **`plan`**: every todo names files, one discovered gate, a Conventional Commit message; no code written.
-- **`implement`**: classification + axioms (+ architecture decisions if design); compat decided; exit-0 honesty; commits made/deferred; Assure done or trivial skip stated.
+- **`implement`**: classification + axioms (+ architecture decisions if design); compat decided; exit-0 honesty; commits made/deferred; Assure done or trivial skip stated; PR opened or why not.

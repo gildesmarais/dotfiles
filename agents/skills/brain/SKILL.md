@@ -46,7 +46,7 @@ Runs at the switch to `orchestrate`, not on load.
 
 - Hands read `$dev` `implement` (**Handoff load**; path in the brief), return the **Delivery Ledger** (incl. `Discoveries`).
 - Per repo, after its last tranche: a fresh-context reviewer Hand runs `review.gil` `findings` on the Ledger and returns Findings + Readiness only. The Brain judges from that, never from the implementer's self-report.
-- Land ask + Yes/Conditional → `pull-request` `open`. Repeated pain → `harvest`.
+- Green gate + Yes/Conditional → `pull-request` `open`, unless the user opted out. Repeated pain → `harvest`.
 
 ## Completion criteria
 

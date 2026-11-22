@@ -27,7 +27,9 @@ Repo-local conventions also apply. `Resolves: DEBT-<NUMBER>`: [`../../harvest/re
 
 - Title/body per [`pr-narrative.md`](pr-narrative.md), rebuilt from full `base...HEAD`; list only validation actually run.
 - Base: `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` → `git symbolic-ref refs/remotes/origin/HEAD` → repo-declared base; ask only if underivable.
-- Push with upstream, confirm, then `gh pr create --base <default> --title … --body …`. `gh` unavailable → URL/manual step.
+- Unasked open needs a green gate; red → stop, report. On default branch → branch first.
+- Push with upstream, confirm, then `gh pr create --draft --base <default> --title … --body …`. `gh` unavailable → URL/manual step.
+- `gh pr checks --watch --fail-fast`: clean/none → `gh pr ready`; red → stay draft, report. Never merge.
 
 ## Ticket sync
 
@@ -35,5 +37,5 @@ PR resolves a ticket (Jira key or GitHub issue; derived or `ticket` flow) → `t
 
 ## Output
 
-Branch, ticket, commit hash + title, validation run, PR URL, ticket status (or why skipped), files left out.
+Branch, ticket, commit hash + title, validation run, PR URL, CI result, ticket status (or why skipped), files left out.
 

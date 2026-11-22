@@ -41,7 +41,7 @@ Load only the matched branch's reference; the unblock chain loads each step as i
 
 Handoff load: [`../CONTEXT.md`](../CONTEXT.md).
 
-- Land ask + Assure readiness Yes/Conditional → **open** (do not re-ask "want a PR?").
+- Green gate + Assure readiness Yes/Conditional → **open** (do not ask "want a PR?").
 - Dependabot PR assessment → `dependabot` **triage** (may call back into **fix-ci**/**conflicts**).
 - Multi-repo attention list → `ops-github`.
 - After landing, non-obvious review fixes, or systemic CI → `harvest` (`distill`; `debt` → `.agents/debt-ledger.md`).
