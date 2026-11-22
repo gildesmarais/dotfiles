@@ -14,7 +14,5 @@ macos-icon-screen-color = #0e0c0a,#241e1a
 copy-on-select = true
 
 # --- Keybindings ---
-keybind = super+p=scroll_page_up
-keybind = shift+up=scroll_page_up
-keybind = shift+down=scroll_page_down
-keybind = super+k=clear_screen
+keybind = super+alt+u=scroll_page_up
+keybind = super+alt+d=scroll_page_down
