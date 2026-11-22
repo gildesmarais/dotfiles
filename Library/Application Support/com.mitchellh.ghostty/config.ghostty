@@ -15,7 +15,6 @@ copy-on-select = true
 
 # --- Keybindings ---
 keybind = super+p=scroll_page_up
-keybind = super+d=scroll_page_down
 keybind = shift+up=scroll_page_up
 keybind = shift+down=scroll_page_down
 keybind = super+k=clear_screen
