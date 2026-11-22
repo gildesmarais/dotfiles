@@ -34,8 +34,6 @@
       "Bash(git reset --hard*)",
       "Bash(git clean *)",
       "Bash(git branch -D *)",
-      "Bash(rm -r*)",
-      "Bash(rm -f*)",
       "Edit(//**/.env*)",
       "Bash(gh pr merge *)",
       "Edit(//**/.github/workflows/**)"
@@ -88,10 +86,12 @@
   "autoMode": {
     "allow": [
       "$defaults",
-      "Managing git worktrees (git worktree list/add/remove/prune/lock/unlock/move/repair), including forced removal (`git worktree remove -f -f`) of agent worktrees under a repo's .claude/worktrees/ — these are disposable scratch checkouts created by Claude Code agent isolation."
+      "Managing git worktrees (git worktree list/add/remove/prune/lock/unlock/move/repair), including forced removal (`git worktree remove -f -f`) of agent worktrees under a repo's .claude/worktrees/ — these are disposable scratch checkouts created by Claude Code agent isolation.",
+      "Recursive or forced `rm` of literal paths that are disposable: files or directories Claude created in this session, the session scratchpad, paths under /tmp or /private/tmp, and regenerable output inside the working directory (node_modules, dist, build, target, coverage, .next, .cache, tmp, __pycache__)."
     ],
     "soft_deny": [
-      "$defaults"
+      "$defaults",
+      "Recursive or forced `rm` of anything not clearly disposable: /, $HOME or its top-level directories, a repository root, any .git directory, paths outside the working directory other than temp paths, credentials or dotfile config, untracked or modified work Claude did not create, and targets built from unset-able variables, command substitution, or broad globs."
     ],
     "environment": [
       "**Cloud provider(s)**: None configured",
