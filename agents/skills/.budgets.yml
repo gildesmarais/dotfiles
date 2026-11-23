@@ -18,7 +18,7 @@ words:
   architecture/reference/structure-survey.md: 326
   brain/SKILL.md: 589
   brain/reference/consult.md: 387
-  brain/reference/orchestrate.md: 979
+  brain/reference/orchestrate.md: 997
   communication/SKILL.md: 230
   communication/reference/external-message.md: 107
   communication/reference/one-on-one.md: 253
@@ -33,7 +33,7 @@ words:
   dev/SKILL.md: 713
   dev/reference/api-truth.md: 99
   communication/reference/outward-text.md: 341
-  dev/reference/plan.md: 384
+  dev/reference/plan.md: 404
   dev/reference/surgical-laws.md: 96
   docs/SKILL.md: 287
   docs/reference/architecture.md: 224

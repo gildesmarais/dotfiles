@@ -34,4 +34,5 @@ Host owns todo tracking. Per todo: change only its files, run its gate (exit 0 o
 
 - Closed brief: exact files, one command, stop condition; point to `AGENTS.md`, never restate it. Disjoint file sets when parallel; read-only surveys only when more than one grep.
 - Cheapest model tier that meets the Definition of Done; torn → lower; escalate for design, review, or a failed attempt.
-- Cap command output (`| tail -n 40`, `grep` the summary, full log to scratch). Clear or compact between unrelated tasks.
+- Reads: `rg -n`, then only the needed range; never `cat` source.
+- Output: full log to scratch, real exit code kept, at most 40 lines shown. Tests: summary on pass, first failures on fail. Clear or compact between unrelated tasks.
