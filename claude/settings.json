@@ -13,6 +13,10 @@
       "Read(//**/.env)",
       "Read(//**/.env.local)",
       "Read(//**/.env.*.local)",
+      "Read(//**/.env.development)",
+      "Read(//**/.env.test)",
+      "Read(//**/.env.staging)",
+      "Read(//**/.env.production)",
       "Read(//**/config/master.key)",
       "Read(~/.ssh/**)",
       "Read(~/.aws/**)",
@@ -98,12 +102,16 @@
       "`gh pr create` that targets a repository other than `origin`, including an upstream of a fork or any `--repo` value naming another repository, or that opens a PR from a protected branch.",
       "`git branch -D` of a protected branch, a branch with commits not on `origin`, or a branch whose merged state has not been established."
     ],
+    "hard_deny": [
+      "$defaults",
+      "Reading, printing, copying, or sending the contents of a sensitive data location by any route the file-tool deny rules miss: recursive grep/rg/find from a parent directory, `xargs`, shell globs, or a Python, Node, Ruby, or other script that opens the file itself."
+    ],
     "environment": [
       "**Cloud provider(s)**: None configured",
       "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
       "**Default / protected branches**: main (default); protected branches: main, master",
       "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine with open internet",
-      "**Sensitive data locations & audiences**: .env, .env.local, .env.development.local, .env.test.local, .env.production.local, config/master.key contain credentials; keep out of commits and public surfaces",
+      "**Sensitive data locations & audiences**: .env and every .env.* file except committed templates (.env.example, .env.sample, .env.template), config/master.key, ~/.ssh, ~/.aws, and `gh auth token` output contain credentials; keep out of commits and public surfaces",
       "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
       "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment"
     ]
