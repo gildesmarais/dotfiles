@@ -45,6 +45,7 @@ Single Build entry. Load packs/overlays by name, never paste their bodies. Repo 
 4. **Compat:** classify internal vs stable public. Possibly-breaking change to a stable surface with unclear permission → ask first. No silent shims or breaks.
 5. **No destructive git** (`push --force`, hard reset, …) unless explicitly asked.
 6. **Validation:** repo-native entrypoints, narrow → broad, per phase. Claim green only on an observed exit 0 per cited command. Check the diff against every `AGENTS.md` rule naming a touched surface (file kind, layer, route); loading a rule does not apply it.
+   - **Lint:** first safe-autocorrect touched files via the repo wrapper (`rubocop -a`, `eslint --fix`, `ruff check --fix`, `prettier -w`), output to `/dev/null`, exit ignored; unsafe or repo-wide only per `AGENTS.md`, never generated trees. Then check, one line per offense (`rubocop --format emacs`, `ruff check --output-format concise`), first 40 lines; hand-fix from flagged hunks only.
 
 ## Branch reference
 
