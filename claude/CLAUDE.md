@@ -6,7 +6,7 @@ Time matters. If the cause is inside the requested behavior, fix that cause; if 
 
 Subagents: pass `model: sonnet` by default; `opus` only when the user explicitly asks; `haiku` for mechanical edits.
 
-Shell: zsh runs with `noclobber`, so `>` fails on an existing file. Use `>|` when overwriting is intended. Write `${VAR}:...` because zsh parses `$VAR:x` as a history modifier. Never let a pipe hide a `git push` failure: run it unpiped or with `set -o pipefail`, and stop on a non-zero exit.
+Shell: agent shells have no `noclobber` or `-i` file aliases, so `>`, `cp`, `mv`, and `ln` overwrite silently. Check the target first when it may hold untracked work. Write `${VAR}:...` because zsh parses `$VAR:x` as a history modifier. Never let a pipe hide a `git push` failure: run it unpiped or with `set -o pipefail`, and stop on a non-zero exit.
 
 Regex: don't use `[...]+\z` on page text, because CodeQL flags it.
 

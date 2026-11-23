@@ -30,6 +30,11 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
+# agents have no TTY to answer overwrite guards; zpreztorc drops safe-ops too
+if [ -n "${CLAUDECODE:-}${AIDER:-}" ]; then
+  setopt clobber
+fi
+
 
 # setup starship
 if command_exists starship; then

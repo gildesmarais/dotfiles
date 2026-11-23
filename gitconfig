@@ -7,6 +7,7 @@
 	helper = osxkeychain
 [push]
 	default = current
+	autoSetupRemote = true
 [help]
 	autocorrect = 100
 [merge]

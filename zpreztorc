@@ -226,3 +226,6 @@ zstyle ':prezto:module:syntax-highlighting' pattern \
 # before deleting or overwriting files. Set to 'no' to disable this safer
 # behavior.
 # zstyle ':prezto:module:utility' safe-ops 'yes'
+if [[ -n "${CLAUDECODE:-}${AIDER:-}" ]]; then
+  zstyle ':prezto:module:utility' safe-ops 'no'
+fi

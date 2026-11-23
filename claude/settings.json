@@ -1,6 +1,8 @@
 {
   "env": {
-    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet",
+    "GH_PROMPT_DISABLED": "1",
+    "GIT_TERMINAL_PROMPT": "0"
   },
   "permissions": {
     "allow": [
@@ -31,7 +33,6 @@
       "mcp__claude_ai_Atlassian_MCP__addOrEditJiraIssueComment",
       "Bash(git reset --hard*)",
       "Bash(git clean *)",
-      "Bash(git branch -D *)",
       "Edit(//**/.env*)",
       "Bash(gh pr merge *)",
       "Edit(//**/.github/workflows/**)"
@@ -87,13 +88,15 @@
       "Managing git worktrees (git worktree list/add/remove/prune/lock/unlock/move/repair), including forced removal (`git worktree remove -f -f`) of agent worktrees under a repo's .claude/worktrees/ — these are disposable scratch checkouts created by Claude Code agent isolation.",
       "Recursive or forced `rm` of literal paths that are disposable: files or directories Claude created in this session, the session scratchpad, paths under /tmp or /private/tmp, and regenerable output inside the working directory (node_modules, dist, build, target, coverage, .next, .cache, tmp, __pycache__).",
       "Plain fast-forward `git push` (including `-u`) of the current non-protected branch to the repository's existing `origin`.",
-      "`gh pr create` (draft or ready) from the current non-protected branch into the same repository as `origin`."
+      "`gh pr create` (draft or ready) from the current non-protected branch into the same repository as `origin`.",
+      "`git branch -D` of a local non-protected branch that is merged (including squash-merged) or whose commits are all on `origin`."
     ],
     "soft_deny": [
       "$defaults",
       "Recursive or forced `rm` of anything not clearly disposable: /, $HOME or its top-level directories, a repository root, any .git directory, paths outside the working directory other than temp paths, credentials or dotfile config, untracked or modified work Claude did not create, and targets built from unset-able variables, command substitution, or broad globs.",
       "Any `git push` that targets main, master, or another protected branch, rewrites or deletes remote refs (`+refspec`, `--mirror`, `--delete`, `:branch`), pushes `--all` or `--tags`, or targets a remote other than the repository's existing `origin`.",
-      "`gh pr create` that targets a repository other than `origin`, including an upstream of a fork or any `--repo` value naming another repository, or that opens a PR from a protected branch."
+      "`gh pr create` that targets a repository other than `origin`, including an upstream of a fork or any `--repo` value naming another repository, or that opens a PR from a protected branch.",
+      "`git branch -D` of a protected branch, a branch with commits not on `origin`, or a branch whose merged state has not been established."
     ],
     "environment": [
       "**Cloud provider(s)**: None configured",
